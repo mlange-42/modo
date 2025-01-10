@@ -11,18 +11,18 @@ Mojo module
 {{if .Structs}}## Structs
 
 {{range .Structs -}}
- - {{.Name}}: {{.Summary}}
+ - {{.Name}}{{if .Summary}}: {{.Summary}}{{end}}
 {{end -}}
 {{end}}
 {{if .Traits}}## Traits
 
 {{range .Traits -}}
- - {{.Name}}: {{.Summary}}
+ - {{.Name}}{{if .Summary}}: {{.Summary}}{{end}}
 {{end -}}
 {{end}}
 {{if .Functions}}## Functions
 
 {{range .Functions -}}
- - {{.Name}}: {{.Summary}}
+ - {{.Name}}{{if .Summary}}: {{.Summary}}{{end}}
 {{end -}}
 {{end}}
