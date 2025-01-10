@@ -3,9 +3,11 @@ Mojo package
 # {{.Name}}
 
 {{if .Summary}}{{.Summary}}
-{{end}}
+
+{{end -}}
 {{if .Description}}{{.Description}}
-{{end}}
+
+{{end -}}
 {{if .Modules}}## Modules
 
 {{range .Modules -}}

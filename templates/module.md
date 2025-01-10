@@ -3,9 +3,11 @@ Mojo module
 # {{.Name}}
 
 {{if .Summary}}{{.Summary}}
-{{end}}
+
+{{end -}}
 {{if .Description}}{{.Description}}
-{{end}}
+
+{{end -}}
 {{if .Structs}}## Structs
 
 {{range .Structs -}}

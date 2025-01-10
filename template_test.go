@@ -1,6 +1,7 @@
 package modo_test
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/mlange-24/modo"
@@ -10,8 +11,8 @@ func TestTemplatePackage(t *testing.T) {
 	pkg := modo.Package{
 		Kind:        modo.NewKind("package"),
 		Name:        "Modo",
-		Description: "",
 		Summary:     "Mojo documentation generator",
+		Description: "Package description",
 		Modules: []*modo.Module{
 			{
 				Name:    "mod1",
@@ -25,14 +26,15 @@ func TestTemplatePackage(t *testing.T) {
 		Packages: []*modo.Package{},
 	}
 
-	err := modo.Render(&pkg)
+	text, err := modo.Render(&pkg)
 	if err != nil {
 		panic(err)
 	}
+	fmt.Println(text)
 }
 
 func TestTemplateModule(t *testing.T) {
-	pkg := modo.Module{
+	mod := modo.Module{
 		Kind:        modo.NewKind("module"),
 		Name:        "modo",
 		Description: "",
@@ -52,8 +54,9 @@ func TestTemplateModule(t *testing.T) {
 		Functions: []*modo.Function{},
 	}
 
-	err := modo.Render(&pkg)
+	text, err := modo.Render(&mod)
 	if err != nil {
 		panic(err)
 	}
+	fmt.Println(text)
 }

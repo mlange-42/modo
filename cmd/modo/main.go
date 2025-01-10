@@ -21,5 +21,10 @@ func main() {
 	}
 	_ = docs
 
-	fmt.Println("Success!")
+	fmt.Println("StdIn read...")
+
+	err = modo.RenderPackage(&docs.Decl, "out")
+	if err != nil {
+		log.Fatal(err)
+	}
 }
