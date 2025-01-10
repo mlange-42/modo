@@ -5,22 +5,38 @@ import (
 	"encoding/json"
 )
 
+type Kinder interface {
+	GetKind() string
+}
+
+type Kind struct {
+	Kind string
+}
+
+func NewKind(kind string) Kind {
+	return Kind{Kind: kind}
+}
+
+func (k *Kind) GetKind() string {
+	return k.Kind
+}
+
 type Docs struct {
 	Decl    Package
 	Version string
 }
 
 type Package struct {
+	Kind
 	Name        string
 	Description string
 	Summary     string
-	Kind        string
 	Modules     []*Module
 	Packages    []*Package
 }
 
 type Module struct {
-	Kind        string
+	Kind
 	Name        string
 	Summary     string
 	Description string
@@ -31,7 +47,7 @@ type Module struct {
 }
 
 type Alias struct {
-	Kind        string
+	Kind
 	Name        string
 	Description string
 	Summary     string
@@ -40,7 +56,7 @@ type Alias struct {
 }
 
 type Struct struct {
-	Kind         string
+	Kind
 	Name         string
 	Description  string
 	Summary      string
@@ -56,7 +72,7 @@ type Struct struct {
 }
 
 type Function struct {
-	Kind                 string
+	Kind
 	Name                 string
 	Description          string
 	Summary              string
@@ -77,7 +93,7 @@ type Function struct {
 }
 
 type Field struct {
-	Kind        string
+	Kind
 	Name        string
 	Description string
 	Summary     string
@@ -85,7 +101,7 @@ type Field struct {
 }
 
 type Trait struct {
-	Kind         string
+	Kind
 	Name         string
 	Description  string
 	Summary      string
@@ -96,7 +112,7 @@ type Trait struct {
 }
 
 type Arg struct {
-	Kind        string
+	Kind
 	Name        string
 	Description string
 	Convention  string
@@ -106,7 +122,7 @@ type Arg struct {
 }
 
 type Parameter struct {
-	Kind        string
+	Kind
 	Name        string
 	Description string
 	Type        string
