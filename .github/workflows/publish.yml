@@ -11,7 +11,7 @@ jobs:
   publish:
     name: Generate and publish docs
     runs-on: ubuntu-latest
-    steps:    
+    steps:
       - name: Install magic CLI
         run: |
           curl -ssL https://magic.modular.com | bash
@@ -23,8 +23,8 @@ jobs:
         run: |
           cd mojo
           source /home/runner/.bash_profile
-          magic install --locked
+          magic shell
       - name: Generate JSON docs
         run: |
-          magic run mojo doc -o ../stdlib.json stdlib/src
+          run mojo doc -o ../stdlib.json stdlib/src
           cd ..
