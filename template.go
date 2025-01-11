@@ -35,14 +35,8 @@ func RenderPackage(p *Package, dir string) error {
 	if err := mkDirs(pkgPath); err != nil {
 		return err
 	}
-	text, err := Render(p)
-	if err != nil {
-		return err
-	}
+	p.SetPath(pkgPath)
 	pkgFile := path.Join(pkgPath, "_index.md")
-	if err := os.WriteFile(pkgFile, []byte(text), 0666); err != nil {
-		return err
-	}
 
 	for _, pkg := range p.Packages {
 		if err := RenderPackage(pkg, pkgPath); err != nil {
@@ -57,21 +51,23 @@ func RenderPackage(p *Package, dir string) error {
 		}
 	}
 
+	text, err := Render(p)
+	if err != nil {
+		return err
+	}
+	if err := os.WriteFile(pkgFile, []byte(text), 0666); err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func renderModule(mod *Module, dir string) error {
-	text, err := Render(mod)
-	if err != nil {
-		return err
-	}
 	if err := mkDirs(dir); err != nil {
 		return err
 	}
+	mod.SetPath(dir)
 	modFile := path.Join(dir, "_index.md")
-	if err := os.WriteFile(modFile, []byte(text), 0666); err != nil {
-		return err
-	}
 
 	if err := renderList(mod.Structs, dir); err != nil {
 		return err
@@ -83,20 +79,30 @@ func renderModule(mod *Module, dir string) error {
 		return err
 	}
 
+	text, err := Render(mod)
+	if err != nil {
+		return err
+	}
+	if err := os.WriteFile(modFile, []byte(text), 0666); err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func renderList[T interface {
 	Named
 	Kinded
+	Pathed
 }](list []T, dir string) error {
 	for _, elem := range list {
 		text, err := Render(elem)
 		if err != nil {
 			return err
 		}
-		strPath := path.Join(dir, elem.GetName()+".md")
-		if err := os.WriteFile(strPath, []byte(text), 0666); err != nil {
+		strPath := path.Join(dir, elem.GetName())
+		elem.SetPath(strPath)
+		if err := os.WriteFile(strPath+".md", []byte(text), 0666); err != nil {
 			return err
 		}
 	}
