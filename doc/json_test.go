@@ -1,9 +1,9 @@
-package modo_test
+package doc_test
 
 import (
 	"testing"
 
-	"github.com/mlange-24/modo"
+	"github.com/mlange-24/modo/doc"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -20,7 +20,7 @@ func TestFromJson(t *testing.T) {
     "version": "0.1.0"
 }`
 
-	docs, err := modo.FromJson([]byte(data))
+	docs, err := doc.FromJson([]byte(data))
 	assert.Nil(t, err)
 	assert.NotNil(t, docs)
 }

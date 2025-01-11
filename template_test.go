@@ -5,25 +5,26 @@ import (
 	"testing"
 
 	"github.com/mlange-24/modo"
+	"github.com/mlange-24/modo/doc"
 )
 
 func TestTemplatePackage(t *testing.T) {
-	pkg := modo.Package{
-		Kind:        modo.NewKind("package"),
-		Name:        modo.NewName("Modo"),
+	pkg := doc.Package{
+		Kind:        doc.NewKind("package"),
+		Name:        doc.NewName("Modo"),
 		Summary:     "Mojo documentation generator",
 		Description: "Package description",
-		Modules: []*modo.Module{
+		Modules: []*doc.Module{
 			{
-				Name:    modo.NewName("mod1"),
+				Name:    doc.NewName("mod1"),
 				Summary: "Mod1 summary",
 			},
 			{
-				Name:    modo.NewName("mod2"),
+				Name:    doc.NewName("mod2"),
 				Summary: "Mod2 summary",
 			},
 		},
-		Packages: []*modo.Package{},
+		Packages: []*doc.Package{},
 	}
 
 	text, err := modo.Render(&pkg)
@@ -34,24 +35,24 @@ func TestTemplatePackage(t *testing.T) {
 }
 
 func TestTemplateModule(t *testing.T) {
-	mod := modo.Module{
-		Kind:        modo.NewKind("module"),
-		Name:        modo.NewName("modo"),
+	mod := doc.Module{
+		Kind:        doc.NewKind("module"),
+		Name:        doc.NewName("modo"),
 		Description: "",
 		Summary:     "a test module",
-		Aliases:     []*modo.Alias{},
-		Structs: []*modo.Struct{
+		Aliases:     []*doc.Alias{},
+		Structs: []*doc.Struct{
 			{
-				Name:    modo.NewName("TestStruct2"),
+				Name:    doc.NewName("TestStruct2"),
 				Summary: "Struct summary...",
 			},
 			{
-				Name:    modo.NewName("TestStruct"),
+				Name:    doc.NewName("TestStruct"),
 				Summary: "Struct summary 2...",
 			},
 		},
-		Traits:    []*modo.Trait{},
-		Functions: []*modo.Function{},
+		Traits:    []*doc.Trait{},
+		Functions: []*doc.Function{},
 	}
 
 	text, err := modo.Render(&mod)

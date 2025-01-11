@@ -7,13 +7,20 @@ import (
 	"os"
 
 	"github.com/mlange-24/modo"
+	"github.com/mlange-24/modo/doc"
+	"github.com/mlange-24/modo/format"
 	"github.com/spf13/cobra"
 )
 
+type renderFormats struct {
+	mdBook bool
+}
+
 func rootCommand() *cobra.Command {
 	var file string
+	var formats renderFormats
 
-	start := &cobra.Command{
+	root := &cobra.Command{
 		Use:   "modo <OUT>",
 		Short: "Mojo documentation generator",
 		Long:  ``,
@@ -30,12 +37,14 @@ func rootCommand() *cobra.Command {
 				return err
 			}
 
-			docs, err := modo.FromJson(data)
+			docs, err := doc.FromJson(data)
 			if err != nil {
 				log.Fatal(err)
 			}
 
-			err = modo.RenderPackage(&docs.Decl, outDir)
+			rFormat := getFormat(&formats)
+
+			err = modo.RenderPackage(&docs.Decl, outDir, rFormat, true)
 			if err != nil {
 				log.Fatal(err)
 			}
@@ -44,9 +53,12 @@ func rootCommand() *cobra.Command {
 		},
 	}
 
-	start.Flags().StringVarP(&file, "input", "I", "", "File to read. Reads from STDIN if not specified.")
+	root.Flags().StringVarP(&file, "input", "I", "", "File to read. Reads from STDIN if not specified.")
+	root.Flags().BoolVar(&formats.mdBook, "mdbook", false, "Write in mdBook format.")
 
-	return start
+	root.MarkFlagsMutuallyExclusive("mdbook")
+
+	return root
 }
 
 func read(file string) ([]byte, error) {
@@ -55,4 +67,11 @@ func read(file string) ([]byte, error) {
 	} else {
 		return os.ReadFile(file)
 	}
+}
+
+func getFormat(f *renderFormats) format.Format {
+	if f.mdBook {
+		return format.MdBook
+	}
+	return format.Plain
 }

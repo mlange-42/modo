@@ -1,0 +1,101 @@
+package format
+
+import (
+	"fmt"
+	"os"
+	"path"
+	"strings"
+	"text/template"
+
+	"github.com/mlange-24/modo/doc"
+)
+
+type MdBookFormatter struct{}
+
+func (f *MdBookFormatter) WriteAuxiliary(p *doc.Package, dir string, t *template.Template) error {
+	if err := f.writeSummary(p, dir, t); err != nil {
+		return err
+	}
+	if err := f.writeToml(p, dir, t); err != nil {
+		return err
+	}
+	return nil
+}
+
+type summary struct {
+	Summary  string
+	Packages string
+	Modules  string
+}
+
+func (f *MdBookFormatter) writeSummary(p *doc.Package, dir string, t *template.Template) error {
+	summaryPath := path.Join(dir, p.GetName(), "SUMMARY.md")
+
+	s := summary{}
+
+	s.Summary = fmt.Sprintf("[%s](./_index.md)", p.GetName())
+
+	pkgs := strings.Builder{}
+	for _, p := range p.Packages {
+		f.renderPackage(p, []string{}, &pkgs)
+	}
+	s.Packages = pkgs.String()
+
+	mods := strings.Builder{}
+	for _, m := range p.Modules {
+		f.renderModule(m, []string{}, &mods)
+	}
+	s.Modules = mods.String()
+
+	b := strings.Builder{}
+	if err := t.ExecuteTemplate(&b, "mdbook_summary.md", &s); err != nil {
+		return err
+	}
+
+	if err := os.WriteFile(summaryPath, []byte(b.String()), 0666); err != nil {
+		return err
+	}
+	return nil
+}
+
+func (f *MdBookFormatter) renderPackage(pkg *doc.Package, linkPath []string, out *strings.Builder) {
+	newPath := append([]string{}, linkPath...)
+	newPath = append(newPath, pkg.GetName())
+	fmt.Fprintf(out, "%-*s- [%s](./%s/_index.md))\n", 2*len(linkPath), "", pkg.GetName(), path.Join(newPath...))
+	for _, p := range pkg.Packages {
+		f.renderPackage(p, newPath, out)
+	}
+	for _, m := range pkg.Modules {
+		f.renderModule(m, newPath, out)
+	}
+}
+
+func (f *MdBookFormatter) renderModule(mod *doc.Module, linkPath []string, out *strings.Builder) {
+	newPath := append([]string{}, linkPath...)
+	newPath = append(newPath, mod.GetName())
+	pathStr := path.Join(newPath...)
+	fmt.Fprintf(out, "%-*s- [%s](./%s/_index.md)\n", 2*len(linkPath), "", mod.GetName(), pathStr)
+
+	for _, s := range mod.Structs {
+		fmt.Fprintf(out, "%-*s- [%s](./%s/%s.md)\n", 2*len(linkPath)+2, "", s.GetName(), pathStr, s.GetName())
+	}
+	for _, t := range mod.Traits {
+		fmt.Fprintf(out, "%-*s- [%s](./%s/%s.md)\n", 2*len(linkPath)+2, "", t.GetName(), pathStr, t.GetName())
+	}
+	for _, f := range mod.Functions {
+		fmt.Fprintf(out, "%-*s- [%s](./%s/%s.md)\n", 2*len(linkPath)+2, "", f.GetName(), pathStr, f.GetName())
+	}
+}
+
+func (f *MdBookFormatter) writeToml(p *doc.Package, dir string, t *template.Template) error {
+	tomlPath := path.Join(dir, "book.toml")
+
+	b := strings.Builder{}
+	if err := t.ExecuteTemplate(&b, "book.toml", p); err != nil {
+		return err
+	}
+	if err := os.WriteFile(tomlPath, []byte(b.String()), 0666); err != nil {
+		return err
+	}
+	return nil
+}
