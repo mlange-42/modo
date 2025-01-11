@@ -2,7 +2,7 @@
 
 [Mojo](https://www.modular.com/mojo) documentation generator.
 
-Generates markdown for static site generators (SSGs) from `mojo doc` JSON output.
+Generates Markdown for static site generators (SSGs) from `mojo doc` JSON output.
 
 **! Early work in progress !**
 

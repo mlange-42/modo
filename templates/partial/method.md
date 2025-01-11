@@ -1,6 +1,5 @@
-Mojo function
-
-# {{.GetName}}
+{{define "method" -}}
+### {{.GetName}}
 
 {{if .Overloads}}
 {{range .Overloads}}
@@ -9,3 +8,4 @@ Mojo function
 {{else}}
 {{template "overload" .}}
 {{end}}
+{{- end}}

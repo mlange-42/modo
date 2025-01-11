@@ -13,6 +13,7 @@ type Docs struct {
 type Package struct {
 	Kind
 	Name
+	Path
 	Description string
 	Summary     string
 	Modules     []*Module
@@ -22,6 +23,7 @@ type Package struct {
 type Module struct {
 	Kind
 	Name
+	Path
 	Summary     string
 	Description string
 	Aliases     []*Alias
@@ -42,6 +44,7 @@ type Alias struct {
 type Struct struct {
 	Kind
 	Name
+	Path
 	Description  string
 	Summary      string
 	Aliases      []*Alias
@@ -58,6 +61,7 @@ type Struct struct {
 type Function struct {
 	Kind
 	Name
+	Path
 	Description          string
 	Summary              string
 	Args                 []*Arg
@@ -87,6 +91,7 @@ type Field struct {
 type Trait struct {
 	Kind
 	Name
+	Path
 	Description  string
 	Summary      string
 	Fields       []*Field
@@ -132,6 +137,15 @@ type Kinded interface {
 	GetKind() string
 }
 
+type Named interface {
+	GetName() string
+}
+
+type Pathed interface {
+	GetPath() string
+	SetPath(p string)
+}
+
 type Kind struct {
 	Kind string
 }
@@ -144,10 +158,6 @@ func (k *Kind) GetKind() string {
 	return k.Kind
 }
 
-type Named interface {
-	GetName() string
-}
-
 type Name struct {
 	Name string
 }
@@ -158,4 +168,16 @@ func NewName(name string) Name {
 
 func (k *Name) GetName() string {
 	return k.Name
+}
+
+type Path struct {
+	Path string
+}
+
+func (p *Path) GetPath() string {
+	return p.Path
+}
+
+func (p *Path) SetPath(path string) {
+	p.Path = path
 }

@@ -2,6 +2,7 @@ package modo
 
 import (
 	"embed"
+	"io/fs"
 	"log"
 	"os"
 	"path"
@@ -9,7 +10,7 @@ import (
 	"text/template"
 )
 
-//go:embed templates/*.md
+//go:embed templates/*.md templates/**/*.md
 var templates embed.FS
 var t *template.Template
 
@@ -31,17 +32,12 @@ func Render(data Kinded) (string, error) {
 }
 
 func RenderPackage(p *Package, dir string) error {
-	if err := mkDirs(dir); err != nil {
-		return err
-	}
-	text, err := Render(p)
-	if err != nil {
-		return err
-	}
 	pkgPath := path.Join(dir, p.GetName())
-	if err := os.WriteFile(pkgPath+".md", []byte(text), 0666); err != nil {
+	if err := mkDirs(pkgPath); err != nil {
 		return err
 	}
+	p.SetPath(pkgPath)
+	pkgFile := path.Join(pkgPath, "_index.md")
 
 	for _, pkg := range p.Packages {
 		if err := RenderPackage(pkg, pkgPath); err != nil {
@@ -50,26 +46,29 @@ func RenderPackage(p *Package, dir string) error {
 	}
 
 	for _, mod := range p.Modules {
-		modPath := path.Join(dir, mod.GetName())
+		modPath := path.Join(pkgPath, mod.GetName())
 		if err := renderModule(mod, modPath); err != nil {
 			return err
 		}
+	}
+
+	text, err := Render(p)
+	if err != nil {
+		return err
+	}
+	if err := os.WriteFile(pkgFile, []byte(text), 0666); err != nil {
+		return err
 	}
 
 	return nil
 }
 
 func renderModule(mod *Module, dir string) error {
-	text, err := Render(mod)
-	if err != nil {
-		return err
-	}
-	if err := os.WriteFile(dir+".md", []byte(text), 0666); err != nil {
-		return err
-	}
 	if err := mkDirs(dir); err != nil {
 		return err
 	}
+	mod.SetPath(dir)
+	modFile := path.Join(dir, "_index.md")
 
 	if err := renderList(mod.Structs, dir); err != nil {
 		return err
@@ -81,20 +80,30 @@ func renderModule(mod *Module, dir string) error {
 		return err
 	}
 
+	text, err := Render(mod)
+	if err != nil {
+		return err
+	}
+	if err := os.WriteFile(modFile, []byte(text), 0666); err != nil {
+		return err
+	}
+
 	return nil
 }
 
 func renderList[T interface {
 	Named
 	Kinded
+	Pathed
 }](list []T, dir string) error {
 	for _, elem := range list {
 		text, err := Render(elem)
 		if err != nil {
 			return err
 		}
-		strPath := path.Join(dir, elem.GetName()+".md")
-		if err := os.WriteFile(strPath, []byte(text), 0666); err != nil {
+		strPath := path.Join(dir, elem.GetName())
+		elem.SetPath(strPath)
+		if err := os.WriteFile(strPath+".md", []byte(text), 0666); err != nil {
 			return err
 		}
 	}
@@ -102,18 +111,33 @@ func renderList[T interface {
 }
 
 func loadTemplates() (*template.Template, error) {
-	return template.New("all").ParseFS(
-		templates,
-		"templates/package.md",
-		"templates/module.md",
-		"templates/struct.md",
-		"templates/trait.md",
-		"templates/function.md",
-	)
+	allTemplates, err := findTemplates()
+	if err != nil {
+		return nil, err
+	}
+	return template.New("all").ParseFS(templates, allTemplates...)
+}
+
+func findTemplates() ([]string, error) {
+	allTemplates := []string{}
+	err := fs.WalkDir(templates, ".",
+		func(path string, info os.DirEntry, err error) error {
+			if err != nil {
+				return err
+			}
+			if !info.IsDir() && strings.HasSuffix(path, ".md") {
+				allTemplates = append(allTemplates, path)
+			}
+			return nil
+		})
+	if err != nil {
+		return nil, err
+	}
+	return allTemplates, nil
 }
 
 func mkDirs(path string) error {
-	if err := os.Mkdir(path, os.ModePerm); err != nil && !os.IsExist(err) {
+	if err := os.MkdirAll(path, os.ModePerm); err != nil && !os.IsExist(err) {
 		return err
 	}
 	return nil

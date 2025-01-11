@@ -1,6 +1,6 @@
 Mojo struct
 
-# {{.Name}}
+# {{.GetName}}
 
 ```mojo
 {{.Signature}}
@@ -12,3 +12,8 @@ Mojo struct
 {{if .Description}}{{.Description}}
 
 {{end -}}
+{{template "parameters" .}}
+{{template "aliases" .}}
+{{template "fields" .}}
+{{template "parentTraits" .}}
+{{template "methods" .}}

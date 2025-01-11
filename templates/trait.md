@@ -1,6 +1,6 @@
 Mojo trait
 
-# {{.Name}}
+# {{.GetName}}
 
 {{if .Summary}}{{.Summary}}
 
@@ -8,3 +8,6 @@ Mojo trait
 {{if .Description}}{{.Description}}
 
 {{end -}}
+{{template "fields" .}}
+{{template "parentTraits" .}}
+{{template "methods" .}}
