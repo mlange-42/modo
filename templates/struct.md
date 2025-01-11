@@ -16,3 +16,4 @@ Mojo struct
 {{template "aliases" .}}
 {{template "fields" .}}
 {{template "parentTraits" .}}
+{{template "methods" .}}
