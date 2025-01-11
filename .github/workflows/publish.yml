@@ -24,10 +24,22 @@ jobs:
           source /home/runner/.bash_profile
           cd mojo
           magic install --locked
-          cd ..
       - name: Generate JSON docs
         run: |
           source /home/runner/.bash_profile
           cd mojo
           magic run mojo doc -o ../stdlib.json stdlib/src
-          cd ..
+      - name: Show folder content
+        run: |
+          ls
+      - name: Checkout Modo
+        uses: actions/checkout@v3
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.23.x'
+      - name: Install dependencies
+        run: go get .
+      - name: Create Markdown
+        run: |
+          go run ./cmd/modo out -I stdlib.json --mdbook
