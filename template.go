@@ -13,7 +13,7 @@ import (
 	"github.com/mlange-24/modo/format"
 )
 
-//go:embed templates/*.md templates/**/*.md
+//go:embed templates/* templates/**/*
 var templates embed.FS
 var t *template.Template
 
@@ -61,6 +61,12 @@ func RenderPackage(p *doc.Package, dir string, renderFormat format.Format, root 
 	}
 	if err := os.WriteFile(pkgFile, []byte(text), 0666); err != nil {
 		return err
+	}
+
+	if root {
+		if err := format.GetFormatter(renderFormat).WriteAuxiliary(p, dir, t); err != nil {
+			return err
+		}
 	}
 
 	return nil
