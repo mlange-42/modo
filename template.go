@@ -2,6 +2,7 @@ package modo
 
 import (
 	"embed"
+	"io/fs"
 	"log"
 	"os"
 	"path"
@@ -110,19 +111,29 @@ func renderList[T interface {
 }
 
 func loadTemplates() (*template.Template, error) {
-	return template.New("all").ParseFS(
-		templates,
-		"templates/package.md",
-		"templates/module.md",
-		"templates/struct.md",
-		"templates/trait.md",
-		"templates/function.md",
-		"templates/partial/aliases.md",
-		"templates/partial/structs.md",
-		"templates/partial/traits.md",
-		"templates/partial/functions.md",
-		"templates/partial/parentTraits.md",
-	)
+	allTemplates, err := findTemplates()
+	if err != nil {
+		return nil, err
+	}
+	return template.New("all").ParseFS(templates, allTemplates...)
+}
+
+func findTemplates() ([]string, error) {
+	allTemplates := []string{}
+	err := fs.WalkDir(templates, ".",
+		func(path string, info os.DirEntry, err error) error {
+			if err != nil {
+				return err
+			}
+			if !info.IsDir() && strings.HasSuffix(path, ".md") {
+				allTemplates = append(allTemplates, path)
+			}
+			return nil
+		})
+	if err != nil {
+		return nil, err
+	}
+	return allTemplates, nil
 }
 
 func mkDirs(path string) error {
