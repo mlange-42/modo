@@ -1,6 +1,6 @@
 Mojo function
 
-# {{.Name}}
+# {{.GetName}}
 
 ```mojo
 {{.Signature}}

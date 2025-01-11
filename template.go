@@ -31,15 +31,16 @@ func Render(data Kinded) (string, error) {
 }
 
 func RenderPackage(p *Package, dir string) error {
-	if err := mkDirs(dir); err != nil {
+	pkgPath := path.Join(dir, p.GetName())
+	if err := mkDirs(pkgPath); err != nil {
 		return err
 	}
 	text, err := Render(p)
 	if err != nil {
 		return err
 	}
-	pkgPath := path.Join(dir, p.GetName())
-	if err := os.WriteFile(pkgPath+".md", []byte(text), 0666); err != nil {
+	pkgFile := path.Join(pkgPath, "_index.md")
+	if err := os.WriteFile(pkgFile, []byte(text), 0666); err != nil {
 		return err
 	}
 
@@ -50,7 +51,7 @@ func RenderPackage(p *Package, dir string) error {
 	}
 
 	for _, mod := range p.Modules {
-		modPath := path.Join(dir, mod.GetName())
+		modPath := path.Join(pkgPath, mod.GetName())
 		if err := renderModule(mod, modPath); err != nil {
 			return err
 		}
@@ -64,10 +65,11 @@ func renderModule(mod *Module, dir string) error {
 	if err != nil {
 		return err
 	}
-	if err := os.WriteFile(dir+".md", []byte(text), 0666); err != nil {
+	if err := mkDirs(dir); err != nil {
 		return err
 	}
-	if err := mkDirs(dir); err != nil {
+	modFile := path.Join(dir, "_index.md")
+	if err := os.WriteFile(modFile, []byte(text), 0666); err != nil {
 		return err
 	}
 
@@ -113,7 +115,7 @@ func loadTemplates() (*template.Template, error) {
 }
 
 func mkDirs(path string) error {
-	if err := os.Mkdir(path, os.ModePerm); err != nil && !os.IsExist(err) {
+	if err := os.MkdirAll(path, os.ModePerm); err != nil && !os.IsExist(err) {
 		return err
 	}
 	return nil

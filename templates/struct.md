@@ -1,6 +1,6 @@
 Mojo struct
 
-# {{.Name}}
+# {{.GetName}}
 
 ```mojo
 {{.Signature}}
