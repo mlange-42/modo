@@ -23,8 +23,8 @@ jobs:
         run: |
           cd mojo
           source /home/runner/.bash_profile
-          magic shell
+          magic install --locked
       - name: Generate JSON docs
         run: |
-          run mojo doc -o ../stdlib.json stdlib/src
+          mojo run mojo doc -o ../stdlib.json stdlib/src
           cd ..
