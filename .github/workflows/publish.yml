@@ -26,5 +26,5 @@ jobs:
           magic install --locked
       - name: Generate JSON docs
         run: |
-          mojo run mojo doc -o ../stdlib.json stdlib/src
+          magic run mojo doc -o ../stdlib.json stdlib/src
           cd ..
