@@ -42,4 +42,21 @@ jobs:
           ls
       - name: Create Markdown
         run: |
-          go run ./cmd/modo out -I stdlib.json --mdbook
+          go run ./cmd/modo markdown -I stdlib.json --mdbook
+      - name: Download mdBook
+        run: |
+          mkdir bin
+          curl -sSL https://github.com/rust-lang/mdBook/releases/download/v0.4.43/mdbook-v0.4.43-x86_64-unknown-linux-gnu.tar.gz | tar -xz --directory=bin
+      - name: Run mdBook
+        run: |
+          bin/mdbook build markdown --dest-dir ../public
+      - name: Archive Markdown artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: markdown
+          path: markdown
+      - name: Archive HTML artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: public
+          path: public
