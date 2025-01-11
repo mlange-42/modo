@@ -8,6 +8,9 @@ import (
 	"path"
 	"strings"
 	"text/template"
+
+	"github.com/mlange-24/modo/doc"
+	"github.com/mlange-24/modo/format"
 )
 
 //go:embed templates/*.md templates/**/*.md
@@ -22,7 +25,7 @@ func init() {
 	}
 }
 
-func Render(data Kinded) (string, error) {
+func Render(data doc.Kinded) (string, error) {
 	b := strings.Builder{}
 	err := t.ExecuteTemplate(&b, data.GetKind()+".md", data)
 	if err != nil {
@@ -31,7 +34,7 @@ func Render(data Kinded) (string, error) {
 	return b.String(), nil
 }
 
-func RenderPackage(p *Package, dir string) error {
+func RenderPackage(p *doc.Package, dir string, renderFormat format.Format, root bool) error {
 	pkgPath := path.Join(dir, p.GetName())
 	if err := mkDirs(pkgPath); err != nil {
 		return err
@@ -40,7 +43,7 @@ func RenderPackage(p *Package, dir string) error {
 	pkgFile := path.Join(pkgPath, "_index.md")
 
 	for _, pkg := range p.Packages {
-		if err := RenderPackage(pkg, pkgPath); err != nil {
+		if err := RenderPackage(pkg, pkgPath, renderFormat, false); err != nil {
 			return err
 		}
 	}
@@ -63,7 +66,7 @@ func RenderPackage(p *Package, dir string) error {
 	return nil
 }
 
-func renderModule(mod *Module, dir string) error {
+func renderModule(mod *doc.Module, dir string) error {
 	if err := mkDirs(dir); err != nil {
 		return err
 	}
@@ -92,9 +95,9 @@ func renderModule(mod *Module, dir string) error {
 }
 
 func renderList[T interface {
-	Named
-	Kinded
-	Pathed
+	doc.Named
+	doc.Kinded
+	doc.Pathed
 }](list []T, dir string) error {
 	for _, elem := range list {
 		text, err := Render(elem)

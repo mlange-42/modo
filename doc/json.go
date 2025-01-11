@@ -1,4 +1,4 @@
-package modo
+package doc
 
 import (
 	"bytes"
