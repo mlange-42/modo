@@ -9,7 +9,7 @@ import (
 	"text/template"
 )
 
-//go:embed templates/*.md
+//go:embed templates/*.md templates/**/*.md
 var templates embed.FS
 var t *template.Template
 
@@ -117,6 +117,11 @@ func loadTemplates() (*template.Template, error) {
 		"templates/struct.md",
 		"templates/trait.md",
 		"templates/function.md",
+		"templates/partial/aliases.md",
+		"templates/partial/structs.md",
+		"templates/partial/traits.md",
+		"templates/partial/functions.md",
+		"templates/partial/parentTraits.md",
 	)
 }
 
