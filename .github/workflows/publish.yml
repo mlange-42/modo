@@ -21,12 +21,13 @@ jobs:
           git clone https://github.com/modularml/mojo.git --depth=1
       - name: Install mojo and dependencies
         run: |
-          cd mojo
           source /home/runner/.bash_profile
+          cd mojo
           magic install --locked
-          magic run mojo doc -o ../stdlib.json stdlib/src
+          cd ..
       - name: Generate JSON docs
         run: |
           source /home/runner/.bash_profile
+          cd mojo
           magic run mojo doc -o ../stdlib.json stdlib/src
           cd ..
