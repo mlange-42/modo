@@ -76,8 +76,14 @@ func (f *MdBookFormatter) renderModule(mod *doc.Module, linkPath []string, out *
 	pathStr := path.Join(newPath...)
 	fmt.Fprintf(out, "%-*s- [%s](./%s/_index.md)\n", 2*len(linkPath), "", mod.GetName(), pathStr)
 
-	for _, s := range mod.Functions {
+	for _, s := range mod.Structs {
 		fmt.Fprintf(out, "%-*s- [%s](./%s/%s.md)\n", 2*len(linkPath)+2, "", s.GetName(), pathStr, s.GetName())
+	}
+	for _, t := range mod.Traits {
+		fmt.Fprintf(out, "%-*s- [%s](./%s/%s.md)\n", 2*len(linkPath)+2, "", t.GetName(), pathStr, t.GetName())
+	}
+	for _, f := range mod.Functions {
+		fmt.Fprintf(out, "%-*s- [%s](./%s/%s.md)\n", 2*len(linkPath)+2, "", f.GetName(), pathStr, f.GetName())
 	}
 }
 

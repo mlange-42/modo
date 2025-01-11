@@ -3,7 +3,8 @@ Mojo struct
 # {{.GetName}}
 
 ```mojo
-{{.Signature}}
+{{if .Convention}}@{{.Convention}}{{end}}
+{{if .Signature}}{{.Signature}}{{else}}{{.GetName}}{{end}}
 ```
 
 {{if .Summary}}{{.Summary}}

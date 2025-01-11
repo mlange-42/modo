@@ -2,11 +2,11 @@
 
 {{.Summary}}
 
-{{if .Modules}}## Modules
+{{if .Modules}}# Modules
 
 {{.Modules}}
 {{- end}}
-{{if .Packages}}## Packages
+{{if .Packages}}# Packages
 
 {{.Packages}}
 {{- end}}
