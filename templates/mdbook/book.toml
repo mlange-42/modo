@@ -1,0 +1,17 @@
+[book]
+authors = ["unknown"]
+language = "en"
+multilingual = false
+src = "{{.GetName}}"
+title = "{{.GetName}}"
+
+[build]
+build-dir = "public"
+
+[output.html.search]
+limit-results = 15
+teaser-word-count = 50
+use-boolean-and = true
+
+[output.html.fold]
+enable = true

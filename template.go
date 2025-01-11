@@ -134,7 +134,7 @@ func findTemplates() ([]string, error) {
 			if err != nil {
 				return err
 			}
-			if !info.IsDir() && strings.HasSuffix(path, ".md") {
+			if !info.IsDir() {
 				allTemplates = append(allTemplates, path)
 			}
 			return nil

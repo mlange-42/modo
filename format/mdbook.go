@@ -16,6 +16,9 @@ func (f *MdBookFormatter) WriteAuxiliary(p *doc.Package, dir string, t *template
 	if err := f.writeSummary(p, dir, t); err != nil {
 		return err
 	}
+	if err := f.writeToml(p, dir, t); err != nil {
+		return err
+	}
 	return nil
 }
 
@@ -26,11 +29,11 @@ type summary struct {
 }
 
 func (f *MdBookFormatter) writeSummary(p *doc.Package, dir string, t *template.Template) error {
-	summaryPath := path.Join(dir, "SUMMARY.md")
+	summaryPath := path.Join(dir, p.GetName(), "SUMMARY.md")
 
 	s := summary{}
 
-	s.Summary = fmt.Sprintf("[%s](./%s/_index.md)", p.GetName(), p.GetName())
+	s.Summary = fmt.Sprintf("[%s](./_index.md)", p.GetName())
 
 	pkgs := strings.Builder{}
 	for _, p := range p.Packages {
@@ -70,5 +73,23 @@ func (f *MdBookFormatter) renderPackage(pkg *doc.Package, linkPath []string, out
 func (f *MdBookFormatter) renderModule(mod *doc.Module, linkPath []string, out *strings.Builder) {
 	newPath := append([]string{}, linkPath...)
 	newPath = append(newPath, mod.GetName())
-	fmt.Fprintf(out, "%-*s- [%s](./%s/_index.md)\n", 2*len(linkPath), "", mod.GetName(), path.Join(newPath...))
+	pathStr := path.Join(newPath...)
+	fmt.Fprintf(out, "%-*s- [%s](./%s/_index.md)\n", 2*len(linkPath), "", mod.GetName(), pathStr)
+
+	for _, s := range mod.Functions {
+		fmt.Fprintf(out, "%-*s- [%s](./%s/%s.md)\n", 2*len(linkPath)+2, "", s.GetName(), pathStr, s.GetName())
+	}
+}
+
+func (f *MdBookFormatter) writeToml(p *doc.Package, dir string, t *template.Template) error {
+	tomlPath := path.Join(dir, "book.toml")
+
+	b := strings.Builder{}
+	if err := t.ExecuteTemplate(&b, "book.toml", p); err != nil {
+		return err
+	}
+	if err := os.WriteFile(tomlPath, []byte(b.String()), 0666); err != nil {
+		return err
+	}
+	return nil
 }
