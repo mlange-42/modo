@@ -11,12 +11,12 @@ Mojo package
 {{if .Modules}}## Modules
 
 {{range .Modules -}}
- - {{.Name}}{{if .Summary}}: {{.Summary}}{{end}}
+ - `{{.Name}}`{{if .Summary}}: {{.Summary}}{{end}}
 {{end -}}
 {{end}}
 {{if .Packages}}## Packages
 
 {{range .Packages -}}
- - {{.Name}}{{if .Summary}}: {{.Summary}}{{end}}
+ - `{{.Name}}`{{if .Summary}}: {{.Summary}}{{end}}
 {{end -}}
 {{end}}
