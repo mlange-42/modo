@@ -12,5 +12,7 @@ Mojo struct
 {{if .Description}}{{.Description}}
 
 {{end -}}
-{{template "parentTraits" .}}
+{{template "parameters" .}}
 {{template "aliases" .}}
+{{template "fields" .}}
+{{template "parentTraits" .}}
