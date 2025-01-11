@@ -21,7 +21,7 @@ func init() {
 	}
 }
 
-func Render(data Kinder) (string, error) {
+func Render(data Kinded) (string, error) {
 	b := strings.Builder{}
 	err := t.ExecuteTemplate(&b, data.GetKind()+".md", data)
 	if err != nil {
@@ -38,7 +38,7 @@ func RenderPackage(p *Package, dir string) error {
 	if err != nil {
 		return err
 	}
-	pkgPath := path.Join(dir, p.Name)
+	pkgPath := path.Join(dir, p.GetName())
 	if err := os.WriteFile(pkgPath+".md", []byte(text), 0666); err != nil {
 		return err
 	}
@@ -50,19 +50,54 @@ func RenderPackage(p *Package, dir string) error {
 	}
 
 	for _, mod := range p.Modules {
-		text, err := Render(mod)
-		if err != nil {
-			return err
-		}
-		modPath := path.Join(dir, mod.Name)
-		if err := os.WriteFile(modPath+".md", []byte(text), 0666); err != nil {
-			return err
-		}
-		if err := mkDirs(modPath); err != nil {
+		modPath := path.Join(dir, mod.GetName())
+		if err := renderModule(mod, modPath); err != nil {
 			return err
 		}
 	}
 
+	return nil
+}
+
+func renderModule(mod *Module, dir string) error {
+	text, err := Render(mod)
+	if err != nil {
+		return err
+	}
+	if err := os.WriteFile(dir+".md", []byte(text), 0666); err != nil {
+		return err
+	}
+	if err := mkDirs(dir); err != nil {
+		return err
+	}
+
+	if err := renderList(mod.Structs, dir); err != nil {
+		return err
+	}
+	if err := renderList(mod.Traits, dir); err != nil {
+		return err
+	}
+	if err := renderList(mod.Functions, dir); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func renderList[T interface {
+	Named
+	Kinded
+}](list []T, dir string) error {
+	for _, elem := range list {
+		text, err := Render(elem)
+		if err != nil {
+			return err
+		}
+		strPath := path.Join(dir, elem.GetName()+".md")
+		if err := os.WriteFile(strPath, []byte(text), 0666); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -71,6 +106,9 @@ func loadTemplates() (*template.Template, error) {
 		templates,
 		"templates/package.md",
 		"templates/module.md",
+		"templates/struct.md",
+		"templates/trait.md",
+		"templates/function.md",
 	)
 }
 

@@ -10,16 +10,16 @@ import (
 func TestTemplatePackage(t *testing.T) {
 	pkg := modo.Package{
 		Kind:        modo.NewKind("package"),
-		Name:        "Modo",
+		Name:        modo.NewName("Modo"),
 		Summary:     "Mojo documentation generator",
 		Description: "Package description",
 		Modules: []*modo.Module{
 			{
-				Name:    "mod1",
+				Name:    modo.NewName("mod1"),
 				Summary: "Mod1 summary",
 			},
 			{
-				Name:    "mod2",
+				Name:    modo.NewName("mod2"),
 				Summary: "Mod2 summary",
 			},
 		},
@@ -36,17 +36,17 @@ func TestTemplatePackage(t *testing.T) {
 func TestTemplateModule(t *testing.T) {
 	mod := modo.Module{
 		Kind:        modo.NewKind("module"),
-		Name:        "modo",
+		Name:        modo.NewName("modo"),
 		Description: "",
 		Summary:     "a test module",
 		Aliases:     []*modo.Alias{},
 		Structs: []*modo.Struct{
 			{
-				Name:    "TestStruct2",
+				Name:    modo.NewName("TestStruct2"),
 				Summary: "Struct summary...",
 			},
 			{
-				Name:    "TestStruct",
+				Name:    modo.NewName("TestStruct"),
 				Summary: "Struct summary 2...",
 			},
 		},

@@ -5,22 +5,6 @@ import (
 	"encoding/json"
 )
 
-type Kinder interface {
-	GetKind() string
-}
-
-type Kind struct {
-	Kind string
-}
-
-func NewKind(kind string) Kind {
-	return Kind{Kind: kind}
-}
-
-func (k *Kind) GetKind() string {
-	return k.Kind
-}
-
 type Docs struct {
 	Decl    Package
 	Version string
@@ -28,7 +12,7 @@ type Docs struct {
 
 type Package struct {
 	Kind
-	Name        string
+	Name
 	Description string
 	Summary     string
 	Modules     []*Module
@@ -37,7 +21,7 @@ type Package struct {
 
 type Module struct {
 	Kind
-	Name        string
+	Name
 	Summary     string
 	Description string
 	Aliases     []*Alias
@@ -48,7 +32,7 @@ type Module struct {
 
 type Alias struct {
 	Kind
-	Name        string
+	Name
 	Description string
 	Summary     string
 	Value       string
@@ -57,7 +41,7 @@ type Alias struct {
 
 type Struct struct {
 	Kind
-	Name         string
+	Name
 	Description  string
 	Summary      string
 	Aliases      []*Alias
@@ -73,7 +57,7 @@ type Struct struct {
 
 type Function struct {
 	Kind
-	Name                 string
+	Name
 	Description          string
 	Summary              string
 	Args                 []*Arg
@@ -94,7 +78,7 @@ type Function struct {
 
 type Field struct {
 	Kind
-	Name        string
+	Name
 	Description string
 	Summary     string
 	Type        string
@@ -102,7 +86,7 @@ type Field struct {
 
 type Trait struct {
 	Kind
-	Name         string
+	Name
 	Description  string
 	Summary      string
 	Fields       []*Field
@@ -113,7 +97,7 @@ type Trait struct {
 
 type Arg struct {
 	Kind
-	Name        string
+	Name
 	Description string
 	Convention  string
 	Type        string
@@ -123,7 +107,7 @@ type Arg struct {
 
 type Parameter struct {
 	Kind
-	Name        string
+	Name
 	Description string
 	Type        string
 	PassingKind string
@@ -142,4 +126,36 @@ func FromJson(data []byte) (*Docs, error) {
 	}
 
 	return &docs, nil
+}
+
+type Kinded interface {
+	GetKind() string
+}
+
+type Kind struct {
+	Kind string
+}
+
+func NewKind(kind string) Kind {
+	return Kind{Kind: kind}
+}
+
+func (k *Kind) GetKind() string {
+	return k.Kind
+}
+
+type Named interface {
+	GetName() string
+}
+
+type Name struct {
+	Name string
+}
+
+func NewName(name string) Name {
+	return Name{Name: name}
+}
+
+func (k *Name) GetName() string {
+	return k.Name
 }

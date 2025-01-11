@@ -1,4 +1,4 @@
-Mojo struct
+Mojo function
 
 # {{.Name}}
 

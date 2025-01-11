@@ -1,10 +1,6 @@
-Mojo struct
+Mojo trait
 
 # {{.Name}}
-
-```mojo
-{{.Signature}}
-```
 
 {{if .Summary}}{{.Summary}}
 
