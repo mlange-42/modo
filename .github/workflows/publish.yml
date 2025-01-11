@@ -9,7 +9,7 @@ on:
 jobs:
 
   publish:
-    name: Run tests
+    name: Generate and publish docs
     runs-on: ubuntu-latest
     steps:    
       - name: Install magic CLI
@@ -26,5 +26,5 @@ jobs:
           magic install
       - name: Generate JSON docs
         run: |
-          mojo doc -o ../stdlib.json stdlib/src
+          magic run mojo doc -o ../stdlib.json stdlib/src
           cd ..
