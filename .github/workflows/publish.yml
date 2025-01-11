@@ -1,0 +1,21 @@
+name: Publish
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+
+jobs:
+
+  publish:
+    name: Run tests
+    runs-on: ubuntu-latest
+    steps:    
+      - name: Install magic CLI
+        run: |
+          curl -ssL https://magic.modular.com | bash
+          source /home/runner/.bash_profile
+      - name: Clone stdlib
+        run: |
+          git clone https://github.com/modularml/mojo.git --depth=1
