@@ -2,6 +2,7 @@ name: Publish
 
 env:
   MDBOOK_VERSION: v0.4.43
+  STDLIB_VERSION: max/v24.6.0
 
 on:
   push:
@@ -30,7 +31,8 @@ jobs:
           source /home/runner/.bash_profile
       - name: Clone stdlib
         run: |
-          git clone https://github.com/modularml/mojo.git --depth=1
+          git clone https://github.com/modularml/mojo.git
+          git switch ${{STDLIB_VERSION}}
       - name: Install mojo and dependencies
         run: |
           source /home/runner/.bash_profile
