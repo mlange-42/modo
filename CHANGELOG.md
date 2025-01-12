@@ -1,3 +1,9 @@
+## [[unpublished]](https://github.com/mlange-42/modo/compare/v0.1.1...main)
+
+### Other
+
+* Remove numbering from navigation entries (#16)
+
 ## [[v0.1.1]](https://github.com/mlange-42/modo/compare/v0.1.0...v0.1.1)
 
 ### Documentation

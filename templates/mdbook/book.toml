@@ -8,6 +8,9 @@ title = "{{.GetName}}"
 [build]
 build-dir = "public"
 
+[output.html]
+no-section-label = true
+
 [output.html.search]
 limit-results = 15
 teaser-word-count = 50
