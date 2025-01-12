@@ -4,6 +4,8 @@ env:
   STDLIB_VERSION: max/v24.6.0
 
 on:
+  schedule:
+    - cron: "0 0 * * *"
   push:
     branches:
     - main
