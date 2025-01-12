@@ -8,7 +8,9 @@ import (
 	"unicode"
 )
 
-const capitalFileMarker = "_"
+const capitalFileMarker = "-"
+
+var CaseSensitiveSystem = true
 
 type Docs struct {
 	Decl    *Package
@@ -179,26 +181,30 @@ func createSignature(s *Struct) string {
 
 	prevKind := ""
 	for i, par := range s.Parameters {
+		written := false
 		if par.PassingKind == "kw" && prevKind != par.PassingKind {
 			if i > 0 {
 				b.WriteString(", ")
 			}
 			b.WriteString("*")
+			written = true
 		}
-		if i > 0 {
+		if prevKind == "inferred" && par.PassingKind != prevKind {
+			b.WriteString(", //")
+			written = true
+		}
+		if prevKind == "pos" && par.PassingKind != prevKind {
+			b.WriteString(", /")
+			written = true
+		}
+
+		if i > 0 || written {
 			b.WriteString(", ")
 		}
 
 		b.WriteString(fmt.Sprintf("%s: %s", par.GetName(), par.Type))
 		if len(par.Default) > 0 {
 			b.WriteString(fmt.Sprintf(" = %s", par.Default))
-		}
-
-		if prevKind == "inferred" && par.PassingKind != prevKind {
-			b.WriteString(", //")
-		}
-		if prevKind == "pos" && par.PassingKind != prevKind {
-			b.WriteString(", /")
 		}
 
 		prevKind = par.PassingKind
@@ -254,6 +260,9 @@ func (k *Name) GetName() string {
 }
 
 func (k *Name) GetFileName() string {
+	if CaseSensitiveSystem {
+		return k.Name
+	}
 	if isCap(k.Name) {
 		return k.Name + capitalFileMarker
 	}

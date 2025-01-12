@@ -18,6 +18,11 @@ var formatters = []Formatter{
 	&MdBookFormatter{},
 }
 
+type Config struct {
+	Format          Format
+	CaseInsensitive bool
+}
+
 func GetFormatter(f Format) Formatter {
 	return formatters[f]
 }
