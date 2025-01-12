@@ -43,7 +43,6 @@ func RenderPackage(p *document.Package, dir string, rFormat format.Format, root 
 	if err := mkDirs(pkgPath); err != nil {
 		return err
 	}
-	p.SetPath(pkgPath)
 
 	pkgFile := strings.Builder{}
 	if err := t.ExecuteTemplate(&pkgFile, "package_path.md", pkgPath); err != nil {
@@ -84,7 +83,6 @@ func renderModule(mod *document.Module, dir string) error {
 	if err := mkDirs(dir); err != nil {
 		return err
 	}
-	mod.SetPath(dir)
 
 	modFile := strings.Builder{}
 	if err := t.ExecuteTemplate(&modFile, "module_path.md", dir); err != nil {
@@ -115,7 +113,6 @@ func renderModule(mod *document.Module, dir string) error {
 func renderList[T interface {
 	document.Named
 	document.Kinded
-	document.Pathed
 }](list []T, dir string) error {
 	for _, elem := range list {
 		text, err := Render(elem)
@@ -129,7 +126,6 @@ func renderList[T interface {
 			return err
 		}
 
-		elem.SetPath(memberPath)
 		if err := os.WriteFile(memberFile.String(), []byte(text), 0666); err != nil {
 			return err
 		}
