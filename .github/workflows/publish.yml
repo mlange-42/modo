@@ -41,7 +41,7 @@ jobs:
           magic run mojo doc -o ../stdlib.json stdlib/src
       - name: Create Markdown
         run: |
-          go run ./cmd/modo markdown -I stdlib.json --mdbook
+          go run ./cmd/modo markdown -i stdlib.json --mdbook
 
       - name: Download mdBook
         run: |
