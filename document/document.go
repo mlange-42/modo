@@ -8,7 +8,7 @@ import (
 	"unicode"
 )
 
-const capitalFileMarker = "_"
+const capitalFileMarker = "-"
 
 type Docs struct {
 	Decl    *Package
