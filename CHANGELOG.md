@@ -1,9 +1,9 @@
 ## [[unpublished]](https://github.com/mlange-42/modo/compare/v0.1.1...main)
 
-### Other
+### Formats
 
 * Removes numbering from navigation entries (#16)
-* Renames package `doc` to `document` (#17)
+* Method headings use inline code style (#18)
 
 ## [[v0.1.1]](https://github.com/mlange-42/modo/compare/v0.1.0...v0.1.1)
 
