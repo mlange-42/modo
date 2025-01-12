@@ -1,6 +1,6 @@
 Mojo struct
 
-# {{.GetName}}
+# `{{.GetName}}`
 
 ```mojo
 {{if .Convention}}@{{.Convention}}{{end}}
