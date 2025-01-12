@@ -32,6 +32,7 @@ jobs:
       - name: Clone stdlib
         run: |
           git clone https://github.com/modularml/mojo.git
+          git fetch --tags
           git checkout ${{env.STDLIB_VERSION}}
       - name: Install mojo and dependencies
         run: |
