@@ -28,8 +28,8 @@ func TestCleanup(t *testing.T) {
 	doc := Docs{
 		Decl: &Package{
 			Modules: []*Module{
-				{Name: NewName("__init__")},
-				{Name: NewName("modname")},
+				{MemberName: NewName("__init__")},
+				{MemberName: NewName("modname")},
 			},
 		},
 	}
@@ -40,39 +40,39 @@ func TestCleanup(t *testing.T) {
 
 func TestCreateSignature(t *testing.T) {
 	s := Struct{
-		Name: NewName("Struct"),
+		MemberName: NewName("Struct"),
 		Parameters: []*Parameter{
-			{Name: NewName("A"), Type: "TypeA", PassingKind: "inferred"},
-			{Name: NewName("B"), Type: "TypeB", PassingKind: "pos"},
-			{Name: NewName("C"), Type: "TypeC", PassingKind: "pos_or_kw"},
-			{Name: NewName("D"), Type: "TypeD", PassingKind: "kw"},
+			{MemberName: NewName("A"), Type: "TypeA", PassingKind: "inferred"},
+			{MemberName: NewName("B"), Type: "TypeB", PassingKind: "pos"},
+			{MemberName: NewName("C"), Type: "TypeC", PassingKind: "pos_or_kw"},
+			{MemberName: NewName("D"), Type: "TypeD", PassingKind: "kw"},
 		},
 	}
 
 	assert.Equal(t, "struct Struct[A: TypeA, //, B: TypeB, /, C: TypeC, *, D: TypeD]", createSignature(&s))
 
 	s = Struct{
-		Name: NewName("Struct"),
+		MemberName: NewName("Struct"),
 		Parameters: []*Parameter{
-			{Name: NewName("A"), Type: "TypeA", PassingKind: "inferred"},
+			{MemberName: NewName("A"), Type: "TypeA", PassingKind: "inferred"},
 		},
 	}
 
 	assert.Equal(t, "struct Struct[A: TypeA, //]", createSignature(&s))
 
 	s = Struct{
-		Name: NewName("Struct"),
+		MemberName: NewName("Struct"),
 		Parameters: []*Parameter{
-			{Name: NewName("B"), Type: "TypeB", PassingKind: "pos"},
+			{MemberName: NewName("B"), Type: "TypeB", PassingKind: "pos"},
 		},
 	}
 
 	assert.Equal(t, "struct Struct[B: TypeB, /]", createSignature(&s))
 
 	s = Struct{
-		Name: NewName("Struct"),
+		MemberName: NewName("Struct"),
 		Parameters: []*Parameter{
-			{Name: NewName("D"), Type: "TypeD", PassingKind: "kw"},
+			{MemberName: NewName("D"), Type: "TypeD", PassingKind: "kw"},
 		},
 	}
 

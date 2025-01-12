@@ -1,6 +1,6 @@
 Mojo module
 
-# `{{.GetName}}`
+# `{{.Name}}`
 
 {{if .Summary}}{{.Summary}}
 

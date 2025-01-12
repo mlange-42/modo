@@ -2,7 +2,7 @@
 {{if .Args}}**Args:**
 
 {{range .Args -}}
- - **{{.GetName}}** (`{{.Type}}`){{if .Description}}: {{.Description}}{{end}}
+ - **{{.Name}}** (`{{.Type}}`){{if .Description}}: {{.Description}}{{end}}
 {{end -}}
 {{end}}
 {{- end}}

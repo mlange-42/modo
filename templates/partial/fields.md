@@ -2,7 +2,7 @@
 {{if .Fields}}## Fields
 
 {{range .Fields -}}
- - **{{.GetName}}** (`{{.Type}}`){{if .Summary}}: {{.Summary}}{{end}}
+ - **{{.Name}}** (`{{.Type}}`){{if .Summary}}: {{.Summary}}{{end}}
 {{end -}}
 {{end}}
 {{- end}}

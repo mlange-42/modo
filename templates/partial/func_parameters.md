@@ -2,7 +2,7 @@
 {{if .Parameters}}**Parameters:**
 
 {{range .Parameters -}}
- - **{{.GetName}}** (`{{.Type}}`){{if .Description}}: {{.Description}}{{end}}
+ - **{{.Name}}** (`{{.Type}}`){{if .Description}}: {{.Description}}{{end}}
 {{end -}}
 {{end}}
 {{- end}}

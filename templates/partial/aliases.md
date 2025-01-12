@@ -2,7 +2,7 @@
 {{if .Aliases}}## Aliases
 
 {{range .Aliases -}}
- - `{{.GetName}} = {{.Value}}`{{if .Summary}}: {{.Summary}}{{end}}
+ - `{{.Name}} = {{.Value}}`{{if .Summary}}: {{.Summary}}{{end}}
 {{end -}}
 {{end}}
 {{- end}}
