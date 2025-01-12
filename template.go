@@ -34,7 +34,7 @@ func Render(data document.Kinded) (string, error) {
 	return b.String(), nil
 }
 
-func RenderPackage(p *document.Package, dir string, renderFormat format.Format, root bool) error {
+func RenderPackage(p *document.Package, dir string, rFormat format.Format, root bool) error {
 	pkgPath := path.Join(dir, p.GetFileName())
 	if err := mkDirs(pkgPath); err != nil {
 		return err
@@ -43,7 +43,7 @@ func RenderPackage(p *document.Package, dir string, renderFormat format.Format, 
 	pkgFile := path.Join(pkgPath, "_index.md")
 
 	for _, pkg := range p.Packages {
-		if err := RenderPackage(pkg, pkgPath, renderFormat, false); err != nil {
+		if err := RenderPackage(pkg, pkgPath, rFormat, false); err != nil {
 			return err
 		}
 	}
@@ -64,7 +64,7 @@ func RenderPackage(p *document.Package, dir string, renderFormat format.Format, 
 	}
 
 	if root {
-		if err := format.GetFormatter(renderFormat).WriteAuxiliary(p, dir, t); err != nil {
+		if err := format.GetFormatter(rFormat).WriteAuxiliary(p, dir, t); err != nil {
 			return err
 		}
 	}

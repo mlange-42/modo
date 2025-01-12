@@ -1,5 +1,9 @@
 ## [[unpublished]](https://github.com/mlange-42/modo/compare/v0.1.1...main)
 
+### Features
+
+* Adds CLI flag `--case-insensitive` to append hyphen `-` at the end of capitalized file names, as fix for case-insensitive systems (#20, #21)
+
 ### Formats
 
 * Removes numbering from navigation entries (#16)
@@ -8,7 +12,6 @@
 ### Bugfixes
 
 * Generates struct signatures if not present due to seemingly `modo doc` bug (#20)
-* Adds hyphen `-` at the end of capitalized file names as fix for case-insensitive systems (#20)
 
 ## [[v0.1.1]](https://github.com/mlange-42/modo/compare/v0.1.0...v0.1.1)
 

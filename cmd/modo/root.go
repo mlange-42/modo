@@ -19,9 +19,10 @@ type renderFormats struct {
 func rootCommand() *cobra.Command {
 	var file string
 	var formats renderFormats
+	var caseInsensitive bool
 
 	root := &cobra.Command{
-		Use:   "modo <OUT>",
+		Use:   "modo OUT-PATH",
 		Short: "Mojo documentation generator",
 		Long:  ``,
 		Args:  cobra.ExactArgs(1),
@@ -43,6 +44,9 @@ func rootCommand() *cobra.Command {
 			}
 
 			rFormat := getFormat(&formats)
+			if caseInsensitive {
+				document.CaseSensitiveSystem = false
+			}
 
 			err = modo.RenderPackage(docs.Decl, outDir, rFormat, true)
 			if err != nil {
@@ -54,7 +58,8 @@ func rootCommand() *cobra.Command {
 	}
 
 	root.Flags().StringVarP(&file, "input", "i", "", "File to read. Reads from STDIN if not specified.")
-	root.Flags().BoolVar(&formats.mdBook, "mdbook", false, "Write in mdBook format.")
+	root.Flags().BoolVar(&formats.mdBook, "mdbook", false, "Writes in mdBook format.")
+	root.Flags().BoolVar(&caseInsensitive, "case-insensitive", false, "Build for systems that are not case-sensitive regarding file names.\nAppends hyphen (-) to capitalized file names.")
 
 	root.MarkFlagsMutuallyExclusive("mdbook")
 
