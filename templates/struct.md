@@ -1,10 +1,10 @@
 Mojo struct
 
-# `{{.GetName}}`
+# `{{.Name}}`
 
 ```mojo
 {{if .Convention}}@{{.Convention}}{{end}}
-{{if .Signature}}{{.Signature}}{{else}}{{.GetName}}{{end}}
+{{if .Signature}}{{.Signature}}{{else}}{{.Name}}{{end}}
 ```
 
 {{if .Summary}}{{.Summary}}

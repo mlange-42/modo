@@ -1,6 +1,6 @@
 Mojo function
 
-# `{{.GetName}}`
+# `{{.Name}}`
 
 {{if .Overloads}}
 {{range .Overloads}}

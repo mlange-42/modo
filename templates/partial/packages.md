@@ -2,7 +2,7 @@
 {{if .Packages}}## Packages
 
 {{range .Packages -}}
- - [`{{.GetName}}`]({{.GetFileName}}/_index.md){{if .Summary}}: {{.Summary}}{{end}}
+ - [`{{.Name}}`]({{.GetFileName}}/_index.md){{if .Summary}}: {{.Summary}}{{end}}
 {{end -}}
 {{end}}
 {{- end}}

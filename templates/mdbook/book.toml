@@ -2,8 +2,8 @@
 authors = ["unknown"]
 language = "en"
 multilingual = false
-src = "{{.GetName}}"
-title = "{{.GetName}}"
+src = "{{.Name}}"
+title = "{{.Name}}"
 
 [build]
 build-dir = "public"

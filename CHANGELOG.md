@@ -14,6 +14,10 @@
 
 * Generates struct signatures if not present due to seemingly `modo doc` bug (#20)
 
+### Other
+
+* Simplifies templates to use `.Name` instead of `.GetName` (#24)
+
 ## [[v0.1.1]](https://github.com/mlange-42/modo/compare/v0.1.0...v0.1.1)
 
 ### Documentation

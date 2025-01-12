@@ -18,8 +18,8 @@ type Docs struct {
 }
 
 type Package struct {
-	Kind
-	Name
+	MemberKind
+	MemberName
 	Description string
 	Summary     string
 	Modules     []*Module
@@ -27,8 +27,8 @@ type Package struct {
 }
 
 type Module struct {
-	Kind
-	Name
+	MemberKind
+	MemberName
 	Summary     string
 	Description string
 	Aliases     []*Alias
@@ -38,8 +38,8 @@ type Module struct {
 }
 
 type Alias struct {
-	Kind
-	Name
+	MemberKind
+	MemberName
 	Description string
 	Summary     string
 	Value       string
@@ -47,8 +47,8 @@ type Alias struct {
 }
 
 type Struct struct {
-	Kind
-	Name
+	MemberKind
+	MemberName
 	Description  string
 	Summary      string
 	Aliases      []*Alias
@@ -63,8 +63,8 @@ type Struct struct {
 }
 
 type Function struct {
-	Kind
-	Name
+	MemberKind
+	MemberName
 	Description          string
 	Summary              string
 	Args                 []*Arg
@@ -84,16 +84,16 @@ type Function struct {
 }
 
 type Field struct {
-	Kind
-	Name
+	MemberKind
+	MemberName
 	Description string
 	Summary     string
 	Type        string
 }
 
 type Trait struct {
-	Kind
-	Name
+	MemberKind
+	MemberName
 	Description  string
 	Summary      string
 	Fields       []*Field
@@ -103,8 +103,8 @@ type Trait struct {
 }
 
 type Arg struct {
-	Kind
-	Name
+	MemberKind
+	MemberName
 	Description string
 	Convention  string
 	Type        string
@@ -113,8 +113,8 @@ type Arg struct {
 }
 
 type Parameter struct {
-	Kind
-	Name
+	MemberKind
+	MemberName
 	Description string
 	Type        string
 	PassingKind string
@@ -225,31 +225,31 @@ type Named interface {
 	GetFileName() string
 }
 
-type Kind struct {
+type MemberKind struct {
 	Kind string
 }
 
-func NewKind(kind string) Kind {
-	return Kind{Kind: kind}
+func NewKind(kind string) MemberKind {
+	return MemberKind{Kind: kind}
 }
 
-func (k *Kind) GetKind() string {
+func (k *MemberKind) GetKind() string {
 	return k.Kind
 }
 
-type Name struct {
+type MemberName struct {
 	Name string
 }
 
-func NewName(name string) Name {
-	return Name{Name: name}
+func NewName(name string) MemberName {
+	return MemberName{Name: name}
 }
 
-func (k *Name) GetName() string {
+func (k *MemberName) GetName() string {
 	return k.Name
 }
 
-func (k *Name) GetFileName() string {
+func (k *MemberName) GetFileName() string {
 	if CaseSensitiveSystem {
 		return k.Name
 	}

@@ -11,18 +11,18 @@ import (
 
 func TestTemplatePackage(tt *testing.T) {
 	pkg := document.Package{
-		Kind:        document.NewKind("package"),
-		Name:        document.NewName("Modo"),
+		MemberKind:  document.NewKind("package"),
+		MemberName:  document.NewName("Modo"),
 		Summary:     "Mojo documentation generator",
 		Description: "Package description",
 		Modules: []*document.Module{
 			{
-				Name:    document.NewName("mod1"),
-				Summary: "Mod1 summary",
+				MemberName: document.NewName("mod1"),
+				Summary:    "Mod1 summary",
 			},
 			{
-				Name:    document.NewName("mod2"),
-				Summary: "Mod2 summary",
+				MemberName: document.NewName("mod2"),
+				Summary:    "Mod2 summary",
 			},
 		},
 		Packages: []*document.Package{},
@@ -37,19 +37,19 @@ func TestTemplatePackage(tt *testing.T) {
 
 func TestTemplateModule(tt *testing.T) {
 	mod := document.Module{
-		Kind:        document.NewKind("module"),
-		Name:        document.NewName("modo"),
+		MemberKind:  document.NewKind("module"),
+		MemberName:  document.NewName("modo"),
 		Description: "",
 		Summary:     "a test module",
 		Aliases:     []*document.Alias{},
 		Structs: []*document.Struct{
 			{
-				Name:    document.NewName("TestStruct2"),
-				Summary: "Struct summary...",
+				MemberName: document.NewName("TestStruct2"),
+				Summary:    "Struct summary...",
 			},
 			{
-				Name:    document.NewName("TestStruct"),
-				Summary: "Struct summary 2...",
+				MemberName: document.NewName("TestStruct"),
+				Summary:    "Struct summary 2...",
 			},
 		},
 		Traits:    []*document.Trait{},

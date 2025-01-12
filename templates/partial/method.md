@@ -1,5 +1,5 @@
 {{define "method" -}}
-### `{{.GetName}}`
+### `{{.Name}}`
 
 {{if .Overloads}}
 {{range .Overloads}}

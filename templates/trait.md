@@ -1,6 +1,6 @@
 Mojo trait
 
-# `{{.GetName}}`
+# `{{.Name}}`
 
 {{if .Summary}}{{.Summary}}
 
