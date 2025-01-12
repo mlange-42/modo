@@ -9,7 +9,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/mlange-42/modo/doc"
+	"github.com/mlange-42/modo/document"
 	"github.com/mlange-42/modo/format"
 )
 
@@ -25,7 +25,7 @@ func init() {
 	}
 }
 
-func Render(data doc.Kinded) (string, error) {
+func Render(data document.Kinded) (string, error) {
 	b := strings.Builder{}
 	err := t.ExecuteTemplate(&b, data.GetKind()+".md", data)
 	if err != nil {
@@ -34,7 +34,7 @@ func Render(data doc.Kinded) (string, error) {
 	return b.String(), nil
 }
 
-func RenderPackage(p *doc.Package, dir string, renderFormat format.Format, root bool) error {
+func RenderPackage(p *document.Package, dir string, renderFormat format.Format, root bool) error {
 	pkgPath := path.Join(dir, p.GetName())
 	if err := mkDirs(pkgPath); err != nil {
 		return err
@@ -72,7 +72,7 @@ func RenderPackage(p *doc.Package, dir string, renderFormat format.Format, root 
 	return nil
 }
 
-func renderModule(mod *doc.Module, dir string) error {
+func renderModule(mod *document.Module, dir string) error {
 	if err := mkDirs(dir); err != nil {
 		return err
 	}
@@ -101,9 +101,9 @@ func renderModule(mod *doc.Module, dir string) error {
 }
 
 func renderList[T interface {
-	doc.Named
-	doc.Kinded
-	doc.Pathed
+	document.Named
+	document.Kinded
+	document.Pathed
 }](list []T, dir string) error {
 	for _, elem := range list {
 		text, err := Render(elem)
