@@ -44,7 +44,7 @@ func rootCommand() *cobra.Command {
 
 			rFormat := getFormat(&formats)
 
-			err = modo.RenderPackage(&docs.Decl, outDir, rFormat, true)
+			err = modo.RenderPackage(docs.Decl, outDir, rFormat, true)
 			if err != nil {
 				log.Fatal(err)
 			}
