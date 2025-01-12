@@ -1,0 +1,118 @@
+name: Test Release
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+    branches:
+    - main
+
+jobs:
+  build-linux:
+    name: Linux build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get tag
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+        shell: bash
+      - uses: actions/checkout@v3
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.22.x'
+      - name: Install dependencies
+        run: |
+          go get ./...
+      - name: Build
+        run: GOOS=linux GOARCH=amd64 go build ./cmd/modo -ldflags="-s -w" .
+      - name: Compress binaries
+        run: |
+          tar -czf modo.tar.gz modo
+        shell: bash
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: modo-linux-amd64.tar.gz
+          path: modo.tar.gz
+
+  build-windows:
+    name: Windows build
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get tag
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+        shell: bash
+      - uses: actions/checkout@v3
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.22.x'
+      - name: Install dependencies
+        run: |
+          go get ./...
+      - name: Build
+        run: GOOS=windows GOARCH=amd64 go build ./cmd/modo -ldflags="-s -w" .
+      - name: Compress binaries
+        run: |
+          zip -r modo.zip modo.exe
+        shell: bash
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: modo-windows-amd64.zip
+          path: modo.zip
+
+  build-macos-arm64:
+    name: MacOS arm64 build
+    runs-on: macos-latest
+    steps:
+      - name: Get tag
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+        shell: bash
+      - uses: actions/checkout@v3
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.22.x'
+      - name: Install dependencies
+        run: |
+          go get ./...
+      - name: Build
+        run: GOOS=darwin GOARCH=arm64 go build ./cmd/modo -ldflags="-s -w" .
+      - name: Compress binaries
+        run: |
+          zip -r modo.zip modo
+        shell: bash
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: modo-macos-arm64.zip
+          path: modo.zip
+
+  build-macos-amd64:
+    name: MacOS amd64 build
+    runs-on: macos-latest
+    steps:
+      - name: Get tag
+        run: echo "RELEASE_VERSION=${GITHUB_REF#refs/*/}" >> $GITHUB_ENV
+        shell: bash
+      - uses: actions/checkout@v3
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.22.x'
+      - name: Install dependencies
+        run: |
+          go get ./...
+      - name: Build
+        run: GOOS=darwin GOARCH=amd64 go build ./cmd/modo -ldflags="-s -w" .
+      - name: Compress binaries
+        run: |
+          zip -r modo.zip modo
+        shell: bash
+      - name: Archive artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: modo-macos-amd64.zip
+          path: modo.zip
