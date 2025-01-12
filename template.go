@@ -35,7 +35,7 @@ func Render(data document.Kinded) (string, error) {
 }
 
 func RenderPackage(p *document.Package, dir string, renderFormat format.Format, root bool) error {
-	pkgPath := path.Join(dir, p.GetName())
+	pkgPath := path.Join(dir, p.GetFileName())
 	if err := mkDirs(pkgPath); err != nil {
 		return err
 	}
@@ -49,7 +49,7 @@ func RenderPackage(p *document.Package, dir string, renderFormat format.Format, 
 	}
 
 	for _, mod := range p.Modules {
-		modPath := path.Join(pkgPath, mod.GetName())
+		modPath := path.Join(pkgPath, mod.GetFileName())
 		if err := renderModule(mod, modPath); err != nil {
 			return err
 		}
@@ -110,7 +110,7 @@ func renderList[T interface {
 		if err != nil {
 			return err
 		}
-		strPath := path.Join(dir, elem.GetName())
+		strPath := path.Join(dir, elem.GetFileName())
 		elem.SetPath(strPath)
 		if err := os.WriteFile(strPath+".md", []byte(text), 0666); err != nil {
 			return err

@@ -29,7 +29,7 @@ type summary struct {
 }
 
 func (f *MdBookFormatter) writeSummary(p *document.Package, dir string, t *template.Template) error {
-	summaryPath := path.Join(dir, p.GetName(), "SUMMARY.md")
+	summaryPath := path.Join(dir, p.GetFileName(), "SUMMARY.md")
 
 	s := summary{}
 
@@ -60,7 +60,7 @@ func (f *MdBookFormatter) writeSummary(p *document.Package, dir string, t *templ
 
 func (f *MdBookFormatter) renderPackage(pkg *document.Package, linkPath []string, out *strings.Builder) {
 	newPath := append([]string{}, linkPath...)
-	newPath = append(newPath, pkg.GetName())
+	newPath = append(newPath, pkg.GetFileName())
 	fmt.Fprintf(out, "%-*s- [`%s`](./%s/_index.md))\n", 2*len(linkPath), "", pkg.GetName(), path.Join(newPath...))
 	for _, p := range pkg.Packages {
 		f.renderPackage(p, newPath, out)
@@ -72,18 +72,18 @@ func (f *MdBookFormatter) renderPackage(pkg *document.Package, linkPath []string
 
 func (f *MdBookFormatter) renderModule(mod *document.Module, linkPath []string, out *strings.Builder) {
 	newPath := append([]string{}, linkPath...)
-	newPath = append(newPath, mod.GetName())
+	newPath = append(newPath, mod.GetFileName())
 	pathStr := path.Join(newPath...)
 	fmt.Fprintf(out, "%-*s- [`%s`](./%s/_index.md)\n", 2*len(linkPath), "", mod.GetName(), pathStr)
 
 	for _, s := range mod.Structs {
-		fmt.Fprintf(out, "%-*s- [`%s`](./%s/%s.md)\n", 2*len(linkPath)+2, "", s.GetName(), pathStr, s.GetName())
+		fmt.Fprintf(out, "%-*s- [`%s`](./%s/%s.md)\n", 2*len(linkPath)+2, "", s.GetName(), pathStr, s.GetFileName())
 	}
 	for _, t := range mod.Traits {
-		fmt.Fprintf(out, "%-*s- [`%s`](./%s/%s.md)\n", 2*len(linkPath)+2, "", t.GetName(), pathStr, t.GetName())
+		fmt.Fprintf(out, "%-*s- [`%s`](./%s/%s.md)\n", 2*len(linkPath)+2, "", t.GetName(), pathStr, t.GetFileName())
 	}
 	for _, f := range mod.Functions {
-		fmt.Fprintf(out, "%-*s- [`%s`](./%s/%s.md)\n", 2*len(linkPath)+2, "", f.GetName(), pathStr, f.GetName())
+		fmt.Fprintf(out, "%-*s- [`%s`](./%s/%s.md)\n", 2*len(linkPath)+2, "", f.GetName(), pathStr, f.GetFileName())
 	}
 }
 

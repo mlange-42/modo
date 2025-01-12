@@ -5,6 +5,11 @@
 * Removes numbering from navigation entries (#16)
 * Navigation, top-level headings and method headings use inline code style (#18, #19)
 
+### Bugfixes
+
+* Generates struct signatures if not present due to seemingly `modo doc` bug (#20)
+* Add underscore at the end of capitalized file names as fix for case-insensitive systems (#20)
+
 ## [[v0.1.1]](https://github.com/mlange-42/modo/compare/v0.1.0...v0.1.1)
 
 ### Documentation
