@@ -3,7 +3,7 @@
 ### Formats
 
 * Removes numbering from navigation entries (#16)
-* Top-level headings and method headings use inline code style (#18, #19)
+* Navigation, top-level headings and method headings use inline code style (#18, #19)
 
 ## [[v0.1.1]](https://github.com/mlange-42/modo/compare/v0.1.0...v0.1.1)
 

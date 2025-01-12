@@ -33,7 +33,7 @@ func (f *MdBookFormatter) writeSummary(p *document.Package, dir string, t *templ
 
 	s := summary{}
 
-	s.Summary = fmt.Sprintf("[%s](./_index.md)", p.GetName())
+	s.Summary = fmt.Sprintf("[`%s`](./_index.md)", p.GetName())
 
 	pkgs := strings.Builder{}
 	for _, p := range p.Packages {
@@ -61,7 +61,7 @@ func (f *MdBookFormatter) writeSummary(p *document.Package, dir string, t *templ
 func (f *MdBookFormatter) renderPackage(pkg *document.Package, linkPath []string, out *strings.Builder) {
 	newPath := append([]string{}, linkPath...)
 	newPath = append(newPath, pkg.GetName())
-	fmt.Fprintf(out, "%-*s- [%s](./%s/_index.md))\n", 2*len(linkPath), "", pkg.GetName(), path.Join(newPath...))
+	fmt.Fprintf(out, "%-*s- [`%s`](./%s/_index.md))\n", 2*len(linkPath), "", pkg.GetName(), path.Join(newPath...))
 	for _, p := range pkg.Packages {
 		f.renderPackage(p, newPath, out)
 	}
@@ -74,16 +74,16 @@ func (f *MdBookFormatter) renderModule(mod *document.Module, linkPath []string, 
 	newPath := append([]string{}, linkPath...)
 	newPath = append(newPath, mod.GetName())
 	pathStr := path.Join(newPath...)
-	fmt.Fprintf(out, "%-*s- [%s](./%s/_index.md)\n", 2*len(linkPath), "", mod.GetName(), pathStr)
+	fmt.Fprintf(out, "%-*s- [`%s`](./%s/_index.md)\n", 2*len(linkPath), "", mod.GetName(), pathStr)
 
 	for _, s := range mod.Structs {
-		fmt.Fprintf(out, "%-*s- [%s](./%s/%s.md)\n", 2*len(linkPath)+2, "", s.GetName(), pathStr, s.GetName())
+		fmt.Fprintf(out, "%-*s- [`%s`](./%s/%s.md)\n", 2*len(linkPath)+2, "", s.GetName(), pathStr, s.GetName())
 	}
 	for _, t := range mod.Traits {
-		fmt.Fprintf(out, "%-*s- [%s](./%s/%s.md)\n", 2*len(linkPath)+2, "", t.GetName(), pathStr, t.GetName())
+		fmt.Fprintf(out, "%-*s- [`%s`](./%s/%s.md)\n", 2*len(linkPath)+2, "", t.GetName(), pathStr, t.GetName())
 	}
 	for _, f := range mod.Functions {
-		fmt.Fprintf(out, "%-*s- [%s](./%s/%s.md)\n", 2*len(linkPath)+2, "", f.GetName(), pathStr, f.GetName())
+		fmt.Fprintf(out, "%-*s- [`%s`](./%s/%s.md)\n", 2*len(linkPath)+2, "", f.GetName(), pathStr, f.GetName())
 	}
 }
 
