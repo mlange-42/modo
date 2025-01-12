@@ -7,7 +7,7 @@ import (
 	"os"
 
 	"github.com/mlange-42/modo"
-	"github.com/mlange-42/modo/doc"
+	"github.com/mlange-42/modo/document"
 	"github.com/mlange-42/modo/format"
 	"github.com/spf13/cobra"
 )
@@ -37,7 +37,7 @@ func rootCommand() *cobra.Command {
 				return err
 			}
 
-			docs, err := doc.FromJson(data)
+			docs, err := document.FromJson(data)
 			if err != nil {
 				log.Fatal(err)
 			}

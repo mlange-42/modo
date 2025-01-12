@@ -7,12 +7,12 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/mlange-42/modo/doc"
+	"github.com/mlange-42/modo/document"
 )
 
 type MdBookFormatter struct{}
 
-func (f *MdBookFormatter) WriteAuxiliary(p *doc.Package, dir string, t *template.Template) error {
+func (f *MdBookFormatter) WriteAuxiliary(p *document.Package, dir string, t *template.Template) error {
 	if err := f.writeSummary(p, dir, t); err != nil {
 		return err
 	}
@@ -28,7 +28,7 @@ type summary struct {
 	Modules  string
 }
 
-func (f *MdBookFormatter) writeSummary(p *doc.Package, dir string, t *template.Template) error {
+func (f *MdBookFormatter) writeSummary(p *document.Package, dir string, t *template.Template) error {
 	summaryPath := path.Join(dir, p.GetName(), "SUMMARY.md")
 
 	s := summary{}
@@ -58,7 +58,7 @@ func (f *MdBookFormatter) writeSummary(p *doc.Package, dir string, t *template.T
 	return nil
 }
 
-func (f *MdBookFormatter) renderPackage(pkg *doc.Package, linkPath []string, out *strings.Builder) {
+func (f *MdBookFormatter) renderPackage(pkg *document.Package, linkPath []string, out *strings.Builder) {
 	newPath := append([]string{}, linkPath...)
 	newPath = append(newPath, pkg.GetName())
 	fmt.Fprintf(out, "%-*s- [%s](./%s/_index.md))\n", 2*len(linkPath), "", pkg.GetName(), path.Join(newPath...))
@@ -70,7 +70,7 @@ func (f *MdBookFormatter) renderPackage(pkg *doc.Package, linkPath []string, out
 	}
 }
 
-func (f *MdBookFormatter) renderModule(mod *doc.Module, linkPath []string, out *strings.Builder) {
+func (f *MdBookFormatter) renderModule(mod *document.Module, linkPath []string, out *strings.Builder) {
 	newPath := append([]string{}, linkPath...)
 	newPath = append(newPath, mod.GetName())
 	pathStr := path.Join(newPath...)
@@ -87,7 +87,7 @@ func (f *MdBookFormatter) renderModule(mod *doc.Module, linkPath []string, out *
 	}
 }
 
-func (f *MdBookFormatter) writeToml(p *doc.Package, dir string, t *template.Template) error {
+func (f *MdBookFormatter) writeToml(p *document.Package, dir string, t *template.Template) error {
 	tomlPath := path.Join(dir, "book.toml")
 
 	b := strings.Builder{}

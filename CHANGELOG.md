@@ -2,7 +2,8 @@
 
 ### Other
 
-* Remove numbering from navigation entries (#16)
+* Removes numbering from navigation entries (#16)
+* Renames package `doc` to `document` (#17)
 
 ## [[v0.1.1]](https://github.com/mlange-42/modo/compare/v0.1.0...v0.1.1)
 

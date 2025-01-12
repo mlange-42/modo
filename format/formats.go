@@ -3,7 +3,7 @@ package format
 import (
 	"text/template"
 
-	"github.com/mlange-42/modo/doc"
+	"github.com/mlange-42/modo/document"
 )
 
 type Format uint8
@@ -23,5 +23,5 @@ func GetFormatter(f Format) Formatter {
 }
 
 type Formatter interface {
-	WriteAuxiliary(p *doc.Package, dir string, t *template.Template) error
+	WriteAuxiliary(p *document.Package, dir string, t *template.Template) error
 }
