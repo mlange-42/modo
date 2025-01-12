@@ -1,19 +1,19 @@
-name: Publish
+name: Test stdlib stable
 
 env:
-  MDBOOK_VERSION: v0.4.43
   STDLIB_VERSION: max/v24.6.0
 
 on:
+  schedule:
+    - cron: "0 0 * * *"
   push:
     branches:
     - main
   pull_request:
 
 jobs:
-
-  publish:
-    name: Generate and publish docs
+  test_stdlib:
+    name: Test stdlib stable
     runs-on: ubuntu-latest
     steps:
       - name: Checkout Modo
@@ -49,30 +49,8 @@ jobs:
         run: |
           go run ./cmd/modo markdown -i stdlib.json --mdbook
 
-      - name: Download mdBook
-        run: |
-          mkdir bin
-          curl -sSL https://github.com/rust-lang/mdBook/releases/download/${{env.MDBOOK_VERSION}}/mdbook-${{env.MDBOOK_VERSION}}-x86_64-unknown-linux-gnu.tar.gz | tar -xz --directory=bin
-      - name: Run mdBook
-        run: |
-          bin/mdbook build markdown --dest-dir ../public
-
       - name: Archive Markdown artifacts
         uses: actions/upload-artifact@v4
         with:
-          name: markdown
+          name: markdown-stable
           path: markdown
-      - name: Archive HTML artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: public
-          path: public
-
-      - name: Deploy to GitHub Pages
-        if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
-        uses: crazy-max/ghaction-github-pages@v4
-        with:
-          target_branch: gh-pages
-          build_dir: public
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
