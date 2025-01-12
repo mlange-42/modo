@@ -1,0 +1,54 @@
+name: Test stdlib stable
+
+env:
+  STDLIB_VERSION: max/v24.6.0
+
+on:
+  push:
+    branches:
+    - main
+  pull_request:
+
+jobs:
+  test_stdlib:
+    name: Test stdlib stable
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout Modo
+        uses: actions/checkout@v3
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.23.x'
+      - name: Install dependencies
+        run: go get .
+
+      - name: Install magic CLI
+        run: |
+          curl -ssL https://magic.modular.com | bash
+          source /home/runner/.bash_profile
+      - name: Clone stdlib
+        run: |
+          git clone https://github.com/modularml/mojo.git
+          cd mojo
+          git checkout ${{env.STDLIB_VERSION}}
+      - name: Install mojo and dependencies
+        run: |
+          source /home/runner/.bash_profile
+          cd mojo
+          magic install --locked
+
+      - name: Generate JSON docs
+        run: |
+          source /home/runner/.bash_profile
+          cd mojo
+          magic run mojo doc -o ../stdlib.json stdlib/src
+      - name: Create Markdown
+        run: |
+          go run ./cmd/modo markdown -i stdlib.json --mdbook
+
+      - name: Archive Markdown artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: markdown
+          path: markdown

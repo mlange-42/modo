@@ -1,4 +1,7 @@
-name: Test Mojo stdlib
+name: Test stdlib stable
+
+env:
+  STDLIB_VERSION: nightly
 
 on:
   push:
@@ -8,11 +11,8 @@ on:
 
 jobs:
   test_stdlib:
-    name: Test stdlib
+    name: Test stdlib stable
     runs-on: ubuntu-latest
-    strategy:
-      matrix:
-        version: [nightly, max/v24.6.0]
     steps:
       - name: Checkout Modo
         uses: actions/checkout@v3
@@ -31,7 +31,7 @@ jobs:
         run: |
           git clone https://github.com/modularml/mojo.git
           cd mojo
-          git checkout ${{ matrix.version }}
+          git checkout ${{env.STDLIB_VERSION}}
       - name: Install mojo and dependencies
         run: |
           source /home/runner/.bash_profile
