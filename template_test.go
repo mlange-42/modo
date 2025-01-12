@@ -1,14 +1,15 @@
-package modo_test
+package modo
 
 import (
 	"fmt"
+	"strings"
 	"testing"
 
-	"github.com/mlange-42/modo"
 	"github.com/mlange-42/modo/document"
+	"github.com/stretchr/testify/assert"
 )
 
-func TestTemplatePackage(t *testing.T) {
+func TestTemplatePackage(tt *testing.T) {
 	pkg := document.Package{
 		Kind:        document.NewKind("package"),
 		Name:        document.NewName("Modo"),
@@ -27,14 +28,14 @@ func TestTemplatePackage(t *testing.T) {
 		Packages: []*document.Package{},
 	}
 
-	text, err := modo.Render(&pkg)
+	text, err := Render(&pkg)
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println(text)
 }
 
-func TestTemplateModule(t *testing.T) {
+func TestTemplateModule(tt *testing.T) {
 	mod := document.Module{
 		Kind:        document.NewKind("module"),
 		Name:        document.NewName("modo"),
@@ -55,9 +56,26 @@ func TestTemplateModule(t *testing.T) {
 		Functions: []*document.Function{},
 	}
 
-	text, err := modo.Render(&mod)
+	text, err := Render(&mod)
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println(text)
+}
+
+func TestPaths(tt *testing.T) {
+	p := strings.Builder{}
+	err := t.ExecuteTemplate(&p, "package_path.md", "a/b/c")
+	assert.Nil(tt, err)
+	assert.Equal(tt, "a/b/c/_index.md", p.String())
+
+	p = strings.Builder{}
+	err = t.ExecuteTemplate(&p, "module_path.md", "a/b/c")
+	assert.Nil(tt, err)
+	assert.Equal(tt, "a/b/c/_index.md", p.String())
+
+	p = strings.Builder{}
+	err = t.ExecuteTemplate(&p, "member_path.md", "a/b/c")
+	assert.Nil(tt, err)
+	assert.Equal(tt, "a/b/c.md", p.String())
 }
