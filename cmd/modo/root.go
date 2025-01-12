@@ -53,7 +53,7 @@ func rootCommand() *cobra.Command {
 		},
 	}
 
-	root.Flags().StringVarP(&file, "input", "I", "", "File to read. Reads from STDIN if not specified.")
+	root.Flags().StringVarP(&file, "input", "i", "", "File to read. Reads from STDIN if not specified.")
 	root.Flags().BoolVar(&formats.mdBook, "mdbook", false, "Write in mdBook format.")
 
 	root.MarkFlagsMutuallyExclusive("mdbook")
