@@ -3,10 +3,15 @@ package document
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
+	"strings"
+	"unicode"
 )
 
+const capitalFileMarker = "_"
+
 type Docs struct {
-	Decl    Package
+	Decl    *Package
 	Version string
 }
 
@@ -130,7 +135,84 @@ func FromJson(data []byte) (*Docs, error) {
 		return nil, err
 	}
 
+	cleanup(&docs)
+
 	return &docs, nil
+}
+
+func cleanup(doc *Docs) {
+	cleanupPackage(doc.Decl)
+}
+
+func cleanupPackage(p *Package) {
+	for _, pp := range p.Packages {
+		cleanupPackage(pp)
+	}
+	newModules := make([]*Module, 0, len(p.Modules))
+	for _, m := range p.Modules {
+		cleanupModule(m)
+		if m.GetName() != "__init__" {
+			newModules = append(newModules, m)
+		}
+	}
+	p.Modules = newModules
+}
+
+func cleanupModule(m *Module) {
+	for _, s := range m.Structs {
+		if s.Signature == "" {
+			s.Signature = createSignature(s)
+		}
+	}
+}
+
+func createSignature(s *Struct) string {
+	b := strings.Builder{}
+	b.WriteString("struct ")
+	b.WriteString(s.GetName())
+
+	if len(s.Parameters) == 0 {
+		return b.String()
+	}
+
+	b.WriteString("[")
+
+	prevKind := ""
+	for i, par := range s.Parameters {
+		if par.PassingKind == "kw" && prevKind != par.PassingKind {
+			if i > 0 {
+				b.WriteString(", ")
+			}
+			b.WriteString("*")
+		}
+		if i > 0 {
+			b.WriteString(", ")
+		}
+
+		b.WriteString(fmt.Sprintf("%s: %s", par.GetName(), par.Type))
+		if len(par.Default) > 0 {
+			b.WriteString(fmt.Sprintf(" = %s", par.Default))
+		}
+
+		if prevKind == "inferred" && par.PassingKind != prevKind {
+			b.WriteString(", //")
+		}
+		if prevKind == "pos" && par.PassingKind != prevKind {
+			b.WriteString(", /")
+		}
+
+		prevKind = par.PassingKind
+	}
+	if prevKind == "inferred" {
+		b.WriteString(", //")
+	}
+	if prevKind == "pos" {
+		b.WriteString(", /")
+	}
+
+	b.WriteString("]")
+
+	return b.String()
 }
 
 type Kinded interface {
@@ -139,6 +221,7 @@ type Kinded interface {
 
 type Named interface {
 	GetName() string
+	GetFileName() string
 }
 
 type Pathed interface {
@@ -170,6 +253,13 @@ func (k *Name) GetName() string {
 	return k.Name
 }
 
+func (k *Name) GetFileName() string {
+	if isCap(k.Name) {
+		return k.Name + capitalFileMarker
+	}
+	return k.Name
+}
+
 type Path struct {
 	Path string
 }
@@ -180,4 +270,12 @@ func (p *Path) GetPath() string {
 
 func (p *Path) SetPath(path string) {
 	p.Path = path
+}
+
+func isCap(s string) bool {
+	if len(s) == 0 {
+		return false
+	}
+	firstRune := []rune(s)[0]
+	return unicode.IsUpper(firstRune)
 }
