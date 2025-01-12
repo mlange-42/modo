@@ -43,17 +43,25 @@ func (f *MdBookFormatter) writeSummary(p *document.Package, dir string, t *templ
 func (f *MdBookFormatter) renderSummary(p *document.Package, t *template.Template) (string, error) {
 	s := summary{}
 
-	s.Summary = fmt.Sprintf("[`%s`](./_index.md)", p.GetName())
+	pkgFile := strings.Builder{}
+	if err := t.ExecuteTemplate(&pkgFile, "package_path.md", ""); err != nil {
+		return "", err
+	}
+	s.Summary = fmt.Sprintf("[`%s`](%s)", p.GetName(), pkgFile.String())
 
 	pkgs := strings.Builder{}
 	for _, p := range p.Packages {
-		f.renderPackage(p, []string{}, &pkgs)
+		if err := f.renderPackage(p, t, []string{}, &pkgs); err != nil {
+			return "", err
+		}
 	}
 	s.Packages = pkgs.String()
 
 	mods := strings.Builder{}
 	for _, m := range p.Modules {
-		f.renderModule(m, []string{}, &mods)
+		if err := f.renderModule(m, t, []string{}, &mods); err != nil {
+			return "", err
+		}
 	}
 	s.Modules = mods.String()
 
@@ -65,33 +73,73 @@ func (f *MdBookFormatter) renderSummary(p *document.Package, t *template.Templat
 	return b.String(), nil
 }
 
-func (f *MdBookFormatter) renderPackage(pkg *document.Package, linkPath []string, out *strings.Builder) {
+func (f *MdBookFormatter) renderPackage(pkg *document.Package, t *template.Template, linkPath []string, out *strings.Builder) error {
 	newPath := append([]string{}, linkPath...)
 	newPath = append(newPath, pkg.GetFileName())
-	fmt.Fprintf(out, "%-*s- [`%s`](./%s/_index.md))\n", 2*len(linkPath), "", pkg.GetName(), path.Join(newPath...))
+
+	pkgFile := strings.Builder{}
+	if err := t.ExecuteTemplate(&pkgFile, "package_path.md", path.Join(newPath...)); err != nil {
+		return err
+	}
+
+	fmt.Fprintf(out, "%-*s- [`%s`](%s))\n", 2*len(linkPath), "", pkg.GetName(), pkgFile.String())
 	for _, p := range pkg.Packages {
-		f.renderPackage(p, newPath, out)
+		if err := f.renderPackage(p, t, newPath, out); err != nil {
+			return err
+		}
 	}
 	for _, m := range pkg.Modules {
-		f.renderModule(m, newPath, out)
+		if err := f.renderModule(m, t, newPath, out); err != nil {
+			return err
+		}
 	}
+	return nil
 }
 
-func (f *MdBookFormatter) renderModule(mod *document.Module, linkPath []string, out *strings.Builder) {
+func (f *MdBookFormatter) renderModule(mod *document.Module, t *template.Template, linkPath []string, out *strings.Builder) error {
 	newPath := append([]string{}, linkPath...)
 	newPath = append(newPath, mod.GetFileName())
+
 	pathStr := path.Join(newPath...)
-	fmt.Fprintf(out, "%-*s- [`%s`](./%s/_index.md)\n", 2*len(linkPath), "", mod.GetName(), pathStr)
+
+	pkgFile := strings.Builder{}
+	if err := t.ExecuteTemplate(&pkgFile, "module_path.md", pathStr); err != nil {
+		return err
+	}
+
+	fmt.Fprintf(out, "%-*s- [`%s`](%s)\n", 2*len(linkPath), "", mod.GetName(), pkgFile.String())
 
 	for _, s := range mod.Structs {
-		fmt.Fprintf(out, "%-*s- [`%s`](./%s/%s.md)\n", 2*len(linkPath)+2, "", s.GetName(), pathStr, s.GetFileName())
+		memPath, err := memberPath(t, pathStr, s.GetFileName())
+		if err != nil {
+			return err
+		}
+		fmt.Fprintf(out, "%-*s- [`%s`](%s)\n", 2*len(linkPath)+2, "", s.GetName(), memPath)
 	}
-	for _, t := range mod.Traits {
-		fmt.Fprintf(out, "%-*s- [`%s`](./%s/%s.md)\n", 2*len(linkPath)+2, "", t.GetName(), pathStr, t.GetFileName())
+	for _, tr := range mod.Traits {
+		memPath, err := memberPath(t, pathStr, tr.GetFileName())
+		if err != nil {
+			return err
+		}
+		fmt.Fprintf(out, "%-*s- [`%s`](%s)\n", 2*len(linkPath)+2, "", tr.GetName(), memPath)
 	}
 	for _, f := range mod.Functions {
-		fmt.Fprintf(out, "%-*s- [`%s`](./%s/%s.md)\n", 2*len(linkPath)+2, "", f.GetName(), pathStr, f.GetFileName())
+		memPath, err := memberPath(t, pathStr, f.GetFileName())
+		if err != nil {
+			return err
+		}
+		fmt.Fprintf(out, "%-*s- [`%s`](%s)\n", 2*len(linkPath)+2, "", f.GetName(), memPath)
 	}
+	return nil
+}
+
+func memberPath(t *template.Template, p string, fn string) (string, error) {
+	pathStr := path.Join(p, fn)
+	b := strings.Builder{}
+	if err := t.ExecuteTemplate(&b, "member_path.md", pathStr); err != nil {
+		return "", err
+	}
+	return b.String(), nil
 }
 
 func (f *MdBookFormatter) writeToml(p *document.Package, dir string, t *template.Template) error {
