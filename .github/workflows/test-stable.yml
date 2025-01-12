@@ -1,4 +1,4 @@
-name: stdlib stable
+name: Test stdlib stable
 
 env:
   STDLIB_VERSION: max/v24.6.0

@@ -1,4 +1,4 @@
-name: stdlib stable
+name: Test stdlib nightly
 
 env:
   STDLIB_VERSION: nightly
