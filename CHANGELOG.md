@@ -3,6 +3,7 @@
 ### Features
 
 * Adds CLI flag `--case-insensitive` to append hyphen `-` at the end of capitalized file names, as fix for case-insensitive systems (#20, #21)
+* Uses templates to generate package, module and member paths (#22)
 
 ### Formats
 

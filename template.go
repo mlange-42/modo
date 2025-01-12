@@ -17,6 +17,10 @@ import (
 var templates embed.FS
 var t *template.Template
 
+var functions = template.FuncMap{
+	"pathJoin": path.Join,
+}
+
 func init() {
 	var err error
 	t, err = loadTemplates()
@@ -40,7 +44,11 @@ func RenderPackage(p *document.Package, dir string, rFormat format.Format, root 
 		return err
 	}
 	p.SetPath(pkgPath)
-	pkgFile := path.Join(pkgPath, "_index.md")
+
+	pkgFile := strings.Builder{}
+	if err := t.ExecuteTemplate(&pkgFile, "package_path.md", pkgPath); err != nil {
+		return err
+	}
 
 	for _, pkg := range p.Packages {
 		if err := RenderPackage(pkg, pkgPath, rFormat, false); err != nil {
@@ -59,7 +67,7 @@ func RenderPackage(p *document.Package, dir string, rFormat format.Format, root 
 	if err != nil {
 		return err
 	}
-	if err := os.WriteFile(pkgFile, []byte(text), 0666); err != nil {
+	if err := os.WriteFile(pkgFile.String(), []byte(text), 0666); err != nil {
 		return err
 	}
 
@@ -77,7 +85,11 @@ func renderModule(mod *document.Module, dir string) error {
 		return err
 	}
 	mod.SetPath(dir)
-	modFile := path.Join(dir, "_index.md")
+
+	modFile := strings.Builder{}
+	if err := t.ExecuteTemplate(&modFile, "module_path.md", dir); err != nil {
+		return err
+	}
 
 	if err := renderList(mod.Structs, dir); err != nil {
 		return err
@@ -93,7 +105,7 @@ func renderModule(mod *document.Module, dir string) error {
 	if err != nil {
 		return err
 	}
-	if err := os.WriteFile(modFile, []byte(text), 0666); err != nil {
+	if err := os.WriteFile(modFile.String(), []byte(text), 0666); err != nil {
 		return err
 	}
 
@@ -110,9 +122,15 @@ func renderList[T interface {
 		if err != nil {
 			return err
 		}
-		strPath := path.Join(dir, elem.GetFileName())
-		elem.SetPath(strPath)
-		if err := os.WriteFile(strPath+".md", []byte(text), 0666); err != nil {
+		memberPath := path.Join(dir, elem.GetFileName())
+
+		memberFile := strings.Builder{}
+		if err := t.ExecuteTemplate(&memberFile, "member_path.md", memberPath); err != nil {
+			return err
+		}
+
+		elem.SetPath(memberPath)
+		if err := os.WriteFile(memberFile.String(), []byte(text), 0666); err != nil {
 			return err
 		}
 	}
@@ -124,7 +142,11 @@ func loadTemplates() (*template.Template, error) {
 	if err != nil {
 		return nil, err
 	}
-	return template.New("all").ParseFS(templates, allTemplates...)
+	templ, err := template.New("all").Funcs(functions).ParseFS(templates, allTemplates...)
+	if err != nil {
+		return nil, err
+	}
+	return templ, nil
 }
 
 func findTemplates() ([]string, error) {
