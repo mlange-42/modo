@@ -19,8 +19,8 @@ mojo doc <src-path> | modo <out-dir>
 Alternatively, use a file:
 
 ```
-mojo doc <src-path> -o myPkg.json
-modo <out-dir> -i my-myPkg.json
+mojo doc <src-path> -o docs.json
+modo <out-dir> -i docs.json
 ```
 
 Command line help:
@@ -47,6 +47,6 @@ with flag `--mdbook`.
 Modo's output folder can be used to render a book instantly:
 
 ```
-modo my-docs -i my-myPkg.json --mdbook
-mdbook serve my-docs --open
+modo docs-out -i docs.json --mdbook
+mdbook serve docs-out --open
 ```
