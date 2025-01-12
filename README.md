@@ -14,6 +14,16 @@ Generates Markdown for static site generators (SSGs) from `mojo doc` JSON output
 
 **! Early work in progress !**
 
+## Installation
+
+Pre-compiled binaries for Linux, Windows and MacOS are available in the
+[Releases](https://github.com/mlange-42/modo/releases).
+
+> Alternatively, install using [Go](https://go.dev):
+> ```shell
+> go install github.com/mlange-42/modo/cmd/modo@latest
+> ```
+
 ## Usage
 
 Pipe `mojo doc` to Modo:

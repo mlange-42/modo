@@ -7,7 +7,7 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/mlange-24/modo/doc"
+	"github.com/mlange-42/modo/doc"
 )
 
 type MdBookFormatter struct{}
