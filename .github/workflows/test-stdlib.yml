@@ -15,7 +15,7 @@ jobs:
     runs-on: ubuntu-latest
     strategy:
       matrix:
-        version: [nightly, $STDLIB_VERSION]
+        version: [nightly, ${{STDLIB_VERSION}}]
     steps:
       - name: Checkout Modo
         uses: actions/checkout@v3
