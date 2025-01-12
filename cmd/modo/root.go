@@ -6,9 +6,9 @@ import (
 	"log"
 	"os"
 
-	"github.com/mlange-24/modo"
-	"github.com/mlange-24/modo/doc"
-	"github.com/mlange-24/modo/format"
+	"github.com/mlange-42/modo"
+	"github.com/mlange-42/modo/doc"
+	"github.com/mlange-42/modo/format"
 	"github.com/spf13/cobra"
 )
 

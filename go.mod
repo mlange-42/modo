@@ -1,4 +1,4 @@
-module github.com/mlange-24/modo
+module github.com/mlange-42/modo
 
 go 1.23.0
 

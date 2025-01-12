@@ -9,8 +9,8 @@ import (
 	"strings"
 	"text/template"
 
-	"github.com/mlange-24/modo/doc"
-	"github.com/mlange-24/modo/format"
+	"github.com/mlange-42/modo/doc"
+	"github.com/mlange-42/modo/format"
 )
 
 //go:embed templates/* templates/**/*

@@ -3,7 +3,7 @@ package doc_test
 import (
 	"testing"
 
-	"github.com/mlange-24/modo/doc"
+	"github.com/mlange-42/modo/doc"
 	"github.com/stretchr/testify/assert"
 )
 

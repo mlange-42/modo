@@ -3,7 +3,7 @@ package format
 import (
 	"text/template"
 
-	"github.com/mlange-24/modo/doc"
+	"github.com/mlange-42/modo/doc"
 )
 
 type PlainFormatter struct{}
