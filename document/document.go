@@ -207,7 +207,7 @@ func createSignature(s *Struct) string {
 		b.WriteString(", //")
 	}
 	if prevKind == "pos" {
-		b.WriteString(", //")
+		b.WriteString(", /")
 	}
 
 	b.WriteString("]")
