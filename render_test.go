@@ -9,7 +9,7 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestTemplatePackage(tt *testing.T) {
+func TestRenderPackage(tt *testing.T) {
 	pkg := document.Package{
 		MemberKind:  document.NewKind("package"),
 		MemberName:  document.NewName("Modo"),
@@ -35,7 +35,7 @@ func TestTemplatePackage(tt *testing.T) {
 	fmt.Println(text)
 }
 
-func TestTemplateModule(tt *testing.T) {
+func TestRenderModule(tt *testing.T) {
 	mod := document.Module{
 		MemberKind:  document.NewKind("module"),
 		MemberName:  document.NewName("modo"),

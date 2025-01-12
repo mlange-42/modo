@@ -1,4 +1,4 @@
-## [[unpublished]](https://github.com/mlange-42/modo/compare/v0.1.1...main)
+## [[v0.2.0]](https://github.com/mlange-42/modo/compare/v0.1.1...v0.2.0)
 
 ### Features
 
