@@ -29,8 +29,18 @@ type summary struct {
 }
 
 func (f *MdBookFormatter) writeSummary(p *document.Package, dir string, t *template.Template) error {
+	summary, err := f.renderSummary(p, t)
+	if err != nil {
+		return err
+	}
 	summaryPath := path.Join(dir, p.GetFileName(), "SUMMARY.md")
+	if err := os.WriteFile(summaryPath, []byte(summary), 0666); err != nil {
+		return err
+	}
+	return nil
+}
 
+func (f *MdBookFormatter) renderSummary(p *document.Package, t *template.Template) (string, error) {
 	s := summary{}
 
 	s.Summary = fmt.Sprintf("[`%s`](./_index.md)", p.GetName())
@@ -49,13 +59,10 @@ func (f *MdBookFormatter) writeSummary(p *document.Package, dir string, t *templ
 
 	b := strings.Builder{}
 	if err := t.ExecuteTemplate(&b, "mdbook_summary.md", &s); err != nil {
-		return err
+		return "", err
 	}
 
-	if err := os.WriteFile(summaryPath, []byte(b.String()), 0666); err != nil {
-		return err
-	}
-	return nil
+	return b.String(), nil
 }
 
 func (f *MdBookFormatter) renderPackage(pkg *document.Package, linkPath []string, out *strings.Builder) {
@@ -88,14 +95,21 @@ func (f *MdBookFormatter) renderModule(mod *document.Module, linkPath []string, 
 }
 
 func (f *MdBookFormatter) writeToml(p *document.Package, dir string, t *template.Template) error {
-	tomlPath := path.Join(dir, "book.toml")
-
-	b := strings.Builder{}
-	if err := t.ExecuteTemplate(&b, "book.toml", p); err != nil {
+	toml, err := f.renderToml(p, t)
+	if err != nil {
 		return err
 	}
-	if err := os.WriteFile(tomlPath, []byte(b.String()), 0666); err != nil {
+	tomlPath := path.Join(dir, "book.toml")
+	if err := os.WriteFile(tomlPath, []byte(toml), 0666); err != nil {
 		return err
 	}
 	return nil
+}
+
+func (f *MdBookFormatter) renderToml(p *document.Package, t *template.Template) (string, error) {
+	b := strings.Builder{}
+	if err := t.ExecuteTemplate(&b, "book.toml", p); err != nil {
+		return "", err
+	}
+	return b.String(), nil
 }
