@@ -40,7 +40,7 @@ func TestReplaceLinks(t *testing.T) {
 	out, err := replaceLinks(text, elems, 2, lookup, templ)
 	assert.Nil(t, err)
 
-	assert.Equal(t, "A [Struct](Struct.md), a [Struct.member](Struct.md#member), a [Trait](../Trait.md), a [q.func](q/func.md), abs [stdlib.Trait](../Trait.md). And a [Markdown](link).", out)
+	assert.Equal(t, "A [`Struct`](Struct.md), a [`Struct.member`](Struct.md#member), a [`Trait`](../Trait.md), a [`q.func`](q/func.md), abs [`stdlib.Trait`](../Trait.md). And a [Markdown](link).", out)
 }
 
 func TestToRelLink(t *testing.T) {
@@ -57,7 +57,7 @@ func TestToRelLink(t *testing.T) {
 
 	_, text, link, ok := toLink("..q.Struct3", elems, 2, lookup)
 	assert.True(t, ok)
-	assert.Equal(t, "q.Struct3", text)
+	assert.Equal(t, "`q.Struct3`", text)
 	assert.Equal(t, []string{"..", "q", "Struct"}, link)
 
 	_, _, link, ok = toLink(".Struct2", elems, 2, lookup)
@@ -74,7 +74,7 @@ func TestToRelLink(t *testing.T) {
 
 	_, text, link, ok = toLink(".q.func", elems, 2, lookup)
 	assert.True(t, ok)
-	assert.Equal(t, "q.func", text)
+	assert.Equal(t, "`q.func`", text)
 	assert.Equal(t, []string{"q", "func"}, link)
 }
 
@@ -112,6 +112,6 @@ func TestToAbsLink(t *testing.T) {
 
 	_, text, link, ok = toLink("stdlib.p.q.func", elems, 2, lookup)
 	assert.True(t, ok)
-	assert.Equal(t, "stdlib.p.q.func", text)
+	assert.Equal(t, "`stdlib.p.q.func`", text)
 	assert.Equal(t, []string{"q", "func"}, link)
 }

@@ -304,6 +304,8 @@ func toLink(link string, elems []string, modElems int, lookup map[string]elemPat
 	}
 	if len(linkParts) > 1 {
 		text = linkParts[1]
+	} else {
+		text = fmt.Sprintf("`%s`", text)
 	}
 	return
 }
