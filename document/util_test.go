@@ -1,6 +1,7 @@
 package document
 
 import (
+	"fmt"
 	"path"
 	"testing"
 	"text/template"
@@ -25,12 +26,14 @@ func TestFindLinks(t *testing.T) {
 }
 
 func TestReplaceLinks(t *testing.T) {
-	text := "A [Struct] and a [Struct.member]. And a [Markdown](link)."
+	text := "A [Struct], a [Struct.member], a [.Trait], a [q.func]. And a [Markdown](link)."
 	lookup := map[string]elemPath{
-		"stdlib.Struct":        {Elements: []string{"stdlib", "Struct"}, Kind: "member"},
-		"stdlib.Struct.member": {Elements: []string{"stdlib", "Struct", "#member"}, Kind: "member"},
+		"stdlib.Trait":           {Elements: []string{"stdlib", "Trait"}, Kind: "member"},
+		"stdlib.p.Struct":        {Elements: []string{"stdlib", "p", "Struct"}, Kind: "member"},
+		"stdlib.p.Struct.member": {Elements: []string{"stdlib", "p", "Struct", "#member"}, Kind: "member"},
+		"stdlib.p.q.func":        {Elements: []string{"stdlib", "p", "q", "func"}, Kind: "member"},
 	}
-	elems := []string{"stdlib"}
+	elems := []string{"stdlib", "p"}
 	templ := template.New("all").Funcs(template.FuncMap{"pathJoin": path.Join})
 	templ, err := templ.Parse(`{{define "member_path.md"}}{{.}}.md{{end}}`)
 	assert.Nil(t, err)
@@ -38,5 +41,6 @@ func TestReplaceLinks(t *testing.T) {
 	out, err := replaceLinks(text, elems, lookup, templ)
 	assert.Nil(t, err)
 
-	assert.Equal(t, "A [Struct](Struct.md) and a [Struct.member](Struct.md#member). And a [Markdown](link).", out)
+	fmt.Println(out)
+	assert.Equal(t, "A [Struct](Struct.md), a [Struct.member](Struct.md#member), a [Trait](../Trait.md), a [q.func](q/func.md). And a [Markdown](link).", out)
 }

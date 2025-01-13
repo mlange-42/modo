@@ -147,31 +147,49 @@ func replaceLinks(text string, elems []string, lookup map[string]elemPath, t *te
 	for i := len(indices) - 2; i >= 0; i -= 2 {
 		start, end := indices[i], indices[i+1]
 		link := text[start+1 : end-1]
+
+		dots := 0
+		pathPrefix := []string{}
+		for strings.HasPrefix(link[dots:], ".") {
+			dots++
+			pathPrefix = append(pathPrefix, "..")
+		}
+		if dots > len(elems) {
+			log.Printf("Too many leading dots in cross ref: %s", link)
+			continue
+		}
+
 		var fullLink string
-		if len(elems) == 0 {
-			fullLink = link
+		linkText := link[dots:]
+		subElems := elems[:len(elems)-dots]
+		if len(subElems) == 0 {
+			fullLink = link[dots:]
 		} else {
-			fullLink = strings.Join(elems, ".") + "." + link
+			fullLink = strings.Join(subElems, ".") + "." + linkText
 		}
 		elemPath, ok := lookup[fullLink]
 		if !ok {
 			log.Printf("Can't resolve cross ref: %s (%s)", link, fullLink)
 			continue
 		}
+
+		pathPrefixStr := path.Join(pathPrefix...)
 		pathStr := strings.Builder{}
 		if strings.HasPrefix(elemPath.Elements[len(elemPath.Elements)-1], "#") {
-			err := t.ExecuteTemplate(&pathStr, elemPath.Kind+"_path.md", path.Join(elemPath.Elements[len(elems):len(elemPath.Elements)-1]...))
+			fullPath := path.Join(pathPrefixStr, path.Join(elemPath.Elements[len(subElems):len(elemPath.Elements)-1]...))
+			err := t.ExecuteTemplate(&pathStr, elemPath.Kind+"_path.md", fullPath)
 			if err != nil {
 				return "", err
 			}
 			pathStr.WriteString(elemPath.Elements[len(elemPath.Elements)-1])
 		} else {
-			err := t.ExecuteTemplate(&pathStr, elemPath.Kind+"_path.md", path.Join(elemPath.Elements[len(elems):]...))
+			fullPath := path.Join(pathPrefixStr, path.Join(elemPath.Elements[len(subElems):]...))
+			err := t.ExecuteTemplate(&pathStr, elemPath.Kind+"_path.md", fullPath)
 			if err != nil {
 				return "", err
 			}
 		}
-		text = fmt.Sprintf("%s[%s](%s)%s", text[:start], link, pathStr.String(), text[end:])
+		text = fmt.Sprintf("%s[%s](%s)%s", text[:start], linkText, pathStr.String(), text[end:])
 	}
 	return text, nil
 }
