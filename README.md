@@ -8,9 +8,8 @@
 [![GitHub](https://img.shields.io/badge/github-repo-blue?logo=github)](https://github.com/mlange-42/modo)
 [![MIT license](https://img.shields.io/badge/MIT-brightgreen?label=license)](https://github.com/mlange-42/modo/blob/main/LICENSE)
 
-[Mojo](https://www.modular.com/mojo) documentation generator.
-
-Generates Markdown for static site generators (SSGs) from `mojo doc` JSON output.
+Modo is a documentation generator (DocGen) for the [Mojo](https://www.modular.com/mojo) programming language.
+It generates Markdown for static site generators (SSGs) from `mojo doc` JSON output.
 
 [This example](https://mlange-42.github.io/modo/) shows the Mojo [stdlib](https://github.com/modularml/mojo) processed with Modo and rendered with [mdBook](https://github.com/rust-lang/mdBook).
 
