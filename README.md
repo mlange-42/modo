@@ -72,3 +72,23 @@ mdbook serve docs-out --open
 ### Hugo
 
 Not yet implemented.
+
+## Cross-referencing
+
+Mojo supports cross-refs within the documentation of a project.
+Absolute as well as relative references are supported.
+Relative references follow Mojo's import syntax, with a leading dot denoting the current module, and further dots navigating upwards.
+
+Some examples:
+
+| Ref | Explanation |
+|-----|-------------|
+| `[pkg.mod.A]` | Absolute reference. |
+| `[.A]` | Struct `A` in the current module. |
+| `[.A.method]` | Method `method` of struct `A` in the current module. |
+| `[..mod.A]` | Struct `A` in sibling module `mod`. |
+| `[.A.method method]` | Method `method` of struct `A`, with custom text. |
+
+Leading dots are stripped from the link text if no custom text is given.
+
+Besides that, normal Markdown links can be used.
