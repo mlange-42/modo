@@ -20,6 +20,9 @@ func findLinks(text string) ([]int, error) {
 	results := re.FindAllStringSubmatchIndex(text, -1)
 	for _, r := range results {
 		if r[6] >= 0 {
+			if len(text) > r[7] && string(text[r[7]]) == "(" {
+				continue
+			}
 			links = append(links, r[6], r[7])
 		}
 	}

@@ -25,7 +25,7 @@ func TestFindLinks(t *testing.T) {
 }
 
 func TestReplaceLinks(t *testing.T) {
-	text := "A [Struct] and a [Struct.member]."
+	text := "A [Struct] and a [Struct.member]. And a [Markdown](link)."
 	lookup := map[string][]string{
 		"stdlib.Struct":        {"stdlib", "Struct"},
 		"stdlib.Struct.member": {"stdlib", "Struct", "#member"},
@@ -38,5 +38,5 @@ func TestReplaceLinks(t *testing.T) {
 	out, err := replaceLinks(text, elems, lookup, templ, "path.md")
 	assert.Nil(t, err)
 
-	assert.Equal(t, "A [Struct](Struct.md) and a [Struct.member](Struct.md#member).", out)
+	assert.Equal(t, "A [Struct](Struct.md) and a [Struct.member](Struct.md#member). And a [Markdown](link).", out)
 }
