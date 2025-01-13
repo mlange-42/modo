@@ -51,18 +51,18 @@ func collectPathsStruct(s *Struct, elems []string, pathElem []string, out map[st
 	out[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member", IsSection: false}
 
 	for _, f := range s.Parameters {
-		newElems := appendNew(elems, f.GetName())
-		newPath := appendNew(pathElem, "#Parameters")
+		newElems := appendNew(newElems, f.GetName())
+		newPath := appendNew(newPath, "#parameters")
 		out[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member", IsSection: true}
 	}
 	for _, f := range s.Fields {
-		newElems := appendNew(elems, f.GetName())
-		newPath := appendNew(pathElem, "#Fields")
+		newElems := appendNew(newElems, f.GetName())
+		newPath := appendNew(newPath, "#fields")
 		out[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member", IsSection: true}
 	}
 	for _, f := range s.Functions {
-		newElems := appendNew(elems, f.GetName())
-		newPath := appendNew(pathElem, "#"+f.GetName())
+		newElems := appendNew(newElems, f.GetName())
+		newPath := appendNew(newPath, "#"+strings.ToLower(f.GetName()))
 		out[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member", IsSection: true}
 	}
 }
@@ -73,13 +73,13 @@ func collectPathsTrait(t *Trait, elems []string, pathElem []string, out map[stri
 	out[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member", IsSection: false}
 
 	for _, f := range t.Fields {
-		newElems := appendNew(elems, f.GetName())
-		newPath := appendNew(pathElem, "#Fields")
+		newElems := appendNew(newElems, f.GetName())
+		newPath := appendNew(newPath, "#fields")
 		out[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member", IsSection: true}
 	}
 	for _, f := range t.Functions {
-		newElems := appendNew(elems, f.GetName())
-		newPath := appendNew(pathElem, "#"+f.GetName())
+		newElems := appendNew(newElems, f.GetName())
+		newPath := appendNew(newPath, "#"+strings.ToLower(f.GetName()))
 		out[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member", IsSection: true}
 	}
 }
