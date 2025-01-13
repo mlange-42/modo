@@ -38,6 +38,14 @@ func Render(data document.Kinded) (string, error) {
 	return b.String(), nil
 }
 
+func RenderDocs(docs *document.Docs, dir string, rFormat format.Format) error {
+	err := document.ProcessLinks(docs, t)
+	if err != nil {
+		return err
+	}
+	return RenderPackage(docs.Decl, dir, rFormat, true)
+}
+
 func RenderPackage(p *document.Package, dir string, rFormat format.Format, root bool) error {
 	pkgPath := path.Join(dir, p.GetFileName())
 	if err := mkDirs(pkgPath); err != nil {

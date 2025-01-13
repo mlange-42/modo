@@ -1,3 +1,9 @@
+## [[unpublished]](https://github.com/mlange-42/modo/compare/v0.2.0...main)
+
+### Features
+
+* Adds support for cross-references in docstrings (#28)
+
 ## [[v0.2.0]](https://github.com/mlange-42/modo/compare/v0.1.1...v0.2.0)
 
 ### Features
