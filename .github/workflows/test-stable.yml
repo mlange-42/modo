@@ -39,6 +39,7 @@ jobs:
           source /home/runner/.bash_profile
           cd mojo
           magic install --locked
+          mojo --version
 
       - name: Generate JSON docs
         run: |
