@@ -2,8 +2,11 @@ package document
 
 import (
 	"fmt"
+	"log"
+	"path"
 	"regexp"
 	"strings"
+	"text/template"
 )
 
 const regexString = `(?s)(?:(` + "```.*?```)|(`.*?`" + `))|(\[.*?\])`
@@ -100,10 +103,50 @@ func collectPathsTrait(t *Trait, elems []string, pathElem []string, out map[stri
 	}
 }
 
-func appendNew[T any](sl []T, elem T) []T {
-	sl2 := make([]T, len(sl)+1)
+func replaceLinks(text string, elems []string, lookup map[string][]string, t *template.Template, templ string) (string, error) {
+	indices, err := findLinks(text)
+	if err != nil {
+		return "", err
+	}
+	if len(indices) == 0 {
+		return text, nil
+	}
+	for i := len(indices) - 2; i >= 0; i -= 2 {
+		start, end := indices[i], indices[i+1]
+		link := text[start+1 : end-1]
+		var fullLink string
+		if len(elems) == 0 {
+			fullLink = link
+		} else {
+			fullLink = strings.Join(elems, ".") + "." + link
+		}
+		elemPath, ok := lookup[fullLink]
+		if !ok {
+			log.Printf("Can't resolve cross ref: %s (%s)", link, fullLink)
+			continue
+		}
+		pathStr := strings.Builder{}
+		if strings.HasPrefix(elemPath[len(elemPath)-1], "#") {
+			err := t.ExecuteTemplate(&pathStr, templ, path.Join(elemPath[len(elems):len(elemPath)-1]...))
+			if err != nil {
+				return "", err
+			}
+			pathStr.WriteString(elemPath[len(elemPath)-1])
+		} else {
+			err := t.ExecuteTemplate(&pathStr, templ, path.Join(elemPath[len(elems):]...))
+			if err != nil {
+				return "", err
+			}
+		}
+		text = fmt.Sprintf("%s[%s](%s)%s", text[:start], link, pathStr.String(), text[end:])
+	}
+	return text, nil
+}
+
+func appendNew[T any](sl []T, elems ...T) []T {
+	sl2 := make([]T, len(sl), len(sl)+len(elems))
 	copy(sl2, sl)
-	sl2[len(sl)] = elem
+	sl2 = append(sl2, elems...)
 	return sl2
 }
 

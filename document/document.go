@@ -3,7 +3,6 @@ package document
 import (
 	"bytes"
 	"encoding/json"
-	"fmt"
 	"unicode"
 )
 
@@ -133,9 +132,7 @@ func FromJson(data []byte) (*Docs, error) {
 
 	cleanup(&docs)
 	paths := collectPaths(&docs)
-	for k, v := range paths {
-		fmt.Println(k, v)
-	}
+	_ = paths
 
 	return &docs, nil
 }
