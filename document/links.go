@@ -295,11 +295,17 @@ func replaceLinks(text string, elems []string, modElems int, lookup map[string]e
 	return text, nil
 }
 
-func toLink(link string, elems []string, modElems int, lookup map[string]elemPath) (*elemPath, string, []string, bool) {
+func toLink(link string, elems []string, modElems int, lookup map[string]elemPath) (entry *elemPath, text string, parts []string, ok bool) {
+	linkParts := strings.SplitN(link, " ", 2)
 	if strings.HasPrefix(link, ".") {
-		return toRelLink(link, elems, modElems, lookup)
+		entry, text, parts, ok = toRelLink(linkParts[0], elems, modElems, lookup)
+	} else {
+		entry, text, parts, ok = toAbsLink(linkParts[0], elems, modElems, lookup)
 	}
-	return toAbsLink(link, elems, modElems, lookup)
+	if len(linkParts) > 1 {
+		text = linkParts[1]
+	}
+	return
 }
 
 func toRelLink(link string, elems []string, modElems int, lookup map[string]elemPath) (*elemPath, string, []string, bool) {
@@ -312,7 +318,7 @@ func toRelLink(link string, elems []string, modElems int, lookup map[string]elem
 		dots++
 	}
 	if dots > modElems {
-		log.Printf("Too many leading dots in cross ref: %s", link)
+		log.Printf("WARNING: Too many leading dots in cross ref '%s' in %s", link, strings.Join(elems, "."))
 		return nil, "", nil, false
 	}
 	linkText := link[dots:]
@@ -326,7 +332,7 @@ func toRelLink(link string, elems []string, modElems int, lookup map[string]elem
 
 	elemPath, ok := lookup[fullLink]
 	if !ok {
-		log.Printf("Can't resolve cross ref: %s (%s)", link, fullLink)
+		log.Printf("WARNING: Can't resolve cross ref '%s' (%s) in %s", link, fullLink, strings.Join(elems, "."))
 		return nil, "", nil, false
 	}
 
@@ -337,7 +343,7 @@ func toRelLink(link string, elems []string, modElems int, lookup map[string]elem
 func toAbsLink(link string, elems []string, modElems int, lookup map[string]elemPath) (*elemPath, string, []string, bool) {
 	elemPath, ok := lookup[link]
 	if !ok {
-		log.Printf("Can't resolve cross ref: %s", link)
+		log.Printf("WARNING: Can't resolve cross ref '%s' in %s", link, strings.Join(elems, "."))
 		return nil, "", nil, false
 	}
 	skip := 0

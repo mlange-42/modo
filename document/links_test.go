@@ -90,10 +90,13 @@ func TestToAbsLink(t *testing.T) {
 	}
 	elems := []string{"stdlib", "p", "Struct"}
 
-	_, text, link, ok := toLink("stdlib.q.Struct3", elems, 2, lookup)
+	_, text, link, ok := toLink("stdlib.q.Struct3 S3", elems, 2, lookup)
 	assert.True(t, ok)
-	assert.Equal(t, "stdlib.q.Struct3", text)
+	assert.Equal(t, "S3", text)
 	assert.Equal(t, []string{"..", "q", "Struct"}, link)
+
+	_, _, _, ok = toLink("", elems, 2, lookup)
+	assert.False(t, ok)
 
 	_, _, link, ok = toLink("stdlib.p.Struct2", elems, 2, lookup)
 	assert.True(t, ok)
