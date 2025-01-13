@@ -327,7 +327,7 @@ func toRelLink(link string, elems []string, modElems int, lookup map[string]elem
 	subElems := elems[:modElems-(dots-1)]
 	var fullLink string
 	if len(subElems) == 0 {
-		fullLink = link[dots:]
+		fullLink = linkText
 	} else {
 		fullLink = strings.Join(subElems, ".") + "." + linkText
 	}
