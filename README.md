@@ -75,7 +75,7 @@ Not yet implemented.
 
 ## Cross-referencing
 
-Mojo supports cross-refs within the documentation of a project.
+Modo supports cross-refs within the documentation of a project.
 Absolute as well as relative references are supported.
 Relative references follow Mojo's import syntax, with a leading dot denoting the current module, and further dots navigating upwards.
 
