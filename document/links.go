@@ -86,6 +86,12 @@ func processLinksModule(m *Module, elems []string, lookup map[string]elemPath, t
 			return err
 		}
 	}
+	for _, tr := range m.Traits {
+		err := processLinksTrait(tr, newElems, lookup, t)
+		if err != nil {
+			return err
+		}
+	}
 
 	return nil
 }
@@ -103,6 +109,67 @@ func processLinksStruct(s *Struct, elems []string, lookup map[string]elemPath, t
 		return err
 	}
 
+	for _, p := range s.Parameters {
+		p.Description, err = replaceLinks(p.Description, newElems, len(elems), lookup, t)
+		if err != nil {
+			return err
+		}
+	}
+	for _, f := range s.Fields {
+		f.Summary, err = replaceLinks(f.Summary, newElems, len(elems), lookup, t)
+		if err != nil {
+			return err
+		}
+		f.Description, err = replaceLinks(f.Description, newElems, len(elems), lookup, t)
+		if err != nil {
+			return err
+		}
+	}
+	for _, f := range s.Functions {
+		if err := processLinksMethod(f, elems, lookup, t); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func processLinksTrait(tr *Trait, elems []string, lookup map[string]elemPath, t *template.Template) error {
+	newElems := appendNew(elems, tr.GetName())
+
+	var err error
+	tr.Summary, err = replaceLinks(tr.Summary, newElems, len(elems), lookup, t)
+	if err != nil {
+		return err
+	}
+	tr.Description, err = replaceLinks(tr.Description, newElems, len(elems), lookup, t)
+	if err != nil {
+		return err
+	}
+
+	// TODO: add when traits support parameters
+	/*for _, p := range tr.Parameters {
+		p.Description, err = replaceLinks(p.Description, newElems, len(elems), lookup, t)
+		if err != nil {
+			return err
+		}
+	}*/
+	for _, f := range tr.Fields {
+		f.Summary, err = replaceLinks(f.Summary, newElems, len(elems), lookup, t)
+		if err != nil {
+			return err
+		}
+		f.Description, err = replaceLinks(f.Description, newElems, len(elems), lookup, t)
+		if err != nil {
+			return err
+		}
+	}
+	for _, f := range tr.Functions {
+		if err := processLinksMethod(f, elems, lookup, t); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
@@ -118,9 +185,72 @@ func processLinksFunction(f *Function, elems []string, lookup map[string]elemPat
 	if err != nil {
 		return err
 	}
+	f.ReturnsDoc, err = replaceLinks(f.ReturnsDoc, newElems, len(elems), lookup, t)
+	if err != nil {
+		return err
+	}
+	f.RaisesDoc, err = replaceLinks(f.RaisesDoc, newElems, len(elems), lookup, t)
+	if err != nil {
+		return err
+	}
+
+	for _, a := range f.Args {
+		a.Description, err = replaceLinks(a.Description, newElems, len(elems), lookup, t)
+		if err != nil {
+			return err
+		}
+	}
+	for _, p := range f.Parameters {
+		p.Description, err = replaceLinks(p.Description, newElems, len(elems), lookup, t)
+		if err != nil {
+			return err
+		}
+	}
 
 	for _, o := range f.Overloads {
 		err := processLinksFunction(o, elems, lookup, t)
+		if err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func processLinksMethod(f *Function, elems []string, lookup map[string]elemPath, t *template.Template) error {
+	var err error
+	f.Summary, err = replaceLinks(f.Summary, elems, len(elems), lookup, t)
+	if err != nil {
+		return err
+	}
+	f.Description, err = replaceLinks(f.Description, elems, len(elems), lookup, t)
+	if err != nil {
+		return err
+	}
+	f.ReturnsDoc, err = replaceLinks(f.ReturnsDoc, elems, len(elems), lookup, t)
+	if err != nil {
+		return err
+	}
+	f.RaisesDoc, err = replaceLinks(f.RaisesDoc, elems, len(elems), lookup, t)
+	if err != nil {
+		return err
+	}
+
+	for _, a := range f.Args {
+		a.Description, err = replaceLinks(a.Description, elems, len(elems), lookup, t)
+		if err != nil {
+			return err
+		}
+	}
+	for _, p := range f.Parameters {
+		p.Description, err = replaceLinks(p.Description, elems, len(elems), lookup, t)
+		if err != nil {
+			return err
+		}
+	}
+
+	for _, o := range f.Overloads {
+		err := processLinksMethod(o, elems, lookup, t)
 		if err != nil {
 			return err
 		}
@@ -161,7 +291,6 @@ func replaceLinks(text string, elems []string, modElems int, lookup map[string]e
 			pathStr.WriteString(parts[len(parts)-1])
 		}
 		text = fmt.Sprintf("%s[%s](%s)%s", text[:start], linkText, pathStr.String(), text[end:])
-		fmt.Println(link, "-->", pathStr.String())
 	}
 	return text, nil
 }
