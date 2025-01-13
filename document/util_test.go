@@ -26,16 +26,16 @@ func TestFindLinks(t *testing.T) {
 
 func TestReplaceLinks(t *testing.T) {
 	text := "A [Struct] and a [Struct.member]. And a [Markdown](link)."
-	lookup := map[string][]string{
-		"stdlib.Struct":        {"stdlib", "Struct"},
-		"stdlib.Struct.member": {"stdlib", "Struct", "#member"},
+	lookup := map[string]elemPath{
+		"stdlib.Struct":        {Elements: []string{"stdlib", "Struct"}, Kind: "member"},
+		"stdlib.Struct.member": {Elements: []string{"stdlib", "Struct", "#member"}, Kind: "member"},
 	}
 	elems := []string{"stdlib"}
 	templ := template.New("all").Funcs(template.FuncMap{"pathJoin": path.Join})
-	templ, err := templ.Parse(`{{define "path.md"}}{{.}}.md{{end}}`)
+	templ, err := templ.Parse(`{{define "member_path.md"}}{{.}}.md{{end}}`)
 	assert.Nil(t, err)
 
-	out, err := replaceLinks(text, elems, lookup, templ, "path.md")
+	out, err := replaceLinks(text, elems, lookup, templ)
 	assert.Nil(t, err)
 
 	assert.Equal(t, "A [Struct](Struct.md) and a [Struct.member](Struct.md#member). And a [Markdown](link).", out)

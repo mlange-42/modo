@@ -131,8 +131,6 @@ func FromJson(data []byte) (*Docs, error) {
 	}
 
 	cleanup(&docs)
-	paths := collectPaths(&docs)
-	_ = paths
 
 	return &docs, nil
 }

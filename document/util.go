@@ -11,6 +11,11 @@ import (
 
 const regexString = `(?s)(?:(` + "```.*?```)|(`.*?`" + `))|(\[.*?\])`
 
+type elemPath struct {
+	Elements []string
+	Kind     string
+}
+
 func findLinks(text string) ([]int, error) {
 	re, err := regexp.Compile(regexString)
 	if err != nil {
@@ -30,16 +35,41 @@ func findLinks(text string) ([]int, error) {
 	return links, nil
 }
 
-func collectPaths(doc *Docs) map[string][]string {
-	out := map[string][]string{}
+func ProcessLinks(doc *Docs, t *template.Template) error {
+	lookup := collectPaths(doc)
+	return processLinksPackage(doc.Decl, []string{}, lookup, t)
+}
+
+func processLinksPackage(p *Package, elems []string, lookup map[string]elemPath, t *template.Template) error {
+	newElems := appendNew(elems, p.GetName())
+
+	var err error
+	p.Summary, err = replaceLinks(p.Summary, newElems, lookup, t)
+	if err != nil {
+		return err
+	}
+	p.Description, err = replaceLinks(p.Summary, newElems, lookup, t)
+	if err != nil {
+		return err
+	}
+
+	for _, pkg := range p.Packages {
+		processLinksPackage(pkg, newElems, lookup, t)
+	}
+
+	return nil
+}
+
+func collectPaths(doc *Docs) map[string]elemPath {
+	out := map[string]elemPath{}
 	collectPathsPackage(doc.Decl, []string{}, []string{}, out)
 	return out
 }
 
-func collectPathsPackage(p *Package, elems []string, pathElem []string, out map[string][]string) {
+func collectPathsPackage(p *Package, elems []string, pathElem []string, out map[string]elemPath) {
 	newElems := appendNew(elems, p.GetName())
 	newPath := appendNew(pathElem, p.GetFileName())
-	out[strings.Join(newElems, ".")] = newPath
+	out[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "package"}
 
 	for _, pkg := range p.Packages {
 		collectPathsPackage(pkg, newElems, newPath, out)
@@ -49,10 +79,10 @@ func collectPathsPackage(p *Package, elems []string, pathElem []string, out map[
 	}
 }
 
-func collectPathsModule(m *Module, elems []string, pathElem []string, out map[string][]string) {
+func collectPathsModule(m *Module, elems []string, pathElem []string, out map[string]elemPath) {
 	newElems := appendNew(elems, m.GetName())
 	newPath := appendNew(pathElem, m.GetFileName())
-	out[strings.Join(newElems, ".")] = newPath
+	out[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "module"}
 
 	for _, s := range m.Structs {
 		collectPathsStruct(s, newElems, newPath, out)
@@ -63,50 +93,50 @@ func collectPathsModule(m *Module, elems []string, pathElem []string, out map[st
 	for _, f := range m.Functions {
 		newElems := appendNew(elems, f.GetName())
 		newPath := appendNew(pathElem, f.GetFileName())
-		out[strings.Join(newElems, ".")] = newPath
+		out[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member"}
 	}
 }
 
-func collectPathsStruct(s *Struct, elems []string, pathElem []string, out map[string][]string) {
+func collectPathsStruct(s *Struct, elems []string, pathElem []string, out map[string]elemPath) {
 	newElems := appendNew(elems, s.GetName())
 	newPath := appendNew(pathElem, s.GetFileName())
-	out[strings.Join(newElems, ".")] = newPath
+	out[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member"}
 
 	for _, f := range s.Parameters {
 		newElems := appendNew(elems, f.GetName())
 		newPath := appendNew(pathElem, "#Parameters")
-		out[strings.Join(newElems, ".")] = newPath
+		out[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member"}
 	}
 	for _, f := range s.Fields {
 		newElems := appendNew(elems, f.GetName())
 		newPath := appendNew(pathElem, "#Fields")
-		out[strings.Join(newElems, ".")] = newPath
+		out[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member"}
 	}
 	for _, f := range s.Functions {
 		newElems := appendNew(elems, f.GetName())
 		newPath := appendNew(pathElem, "#"+f.GetName())
-		out[strings.Join(newElems, ".")] = newPath
+		out[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member"}
 	}
 }
 
-func collectPathsTrait(t *Trait, elems []string, pathElem []string, out map[string][]string) {
+func collectPathsTrait(t *Trait, elems []string, pathElem []string, out map[string]elemPath) {
 	newElems := appendNew(elems, t.GetName())
 	newPath := appendNew(pathElem, t.GetFileName())
-	out[strings.Join(newElems, ".")] = newPath
+	out[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member"}
 
 	for _, f := range t.Fields {
 		newElems := appendNew(elems, f.GetName())
 		newPath := appendNew(pathElem, "#Fields")
-		out[strings.Join(newElems, ".")] = newPath
+		out[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member"}
 	}
 	for _, f := range t.Functions {
 		newElems := appendNew(elems, f.GetName())
 		newPath := appendNew(pathElem, "#"+f.GetName())
-		out[strings.Join(newElems, ".")] = newPath
+		out[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member"}
 	}
 }
 
-func replaceLinks(text string, elems []string, lookup map[string][]string, t *template.Template, templ string) (string, error) {
+func replaceLinks(text string, elems []string, lookup map[string]elemPath, t *template.Template) (string, error) {
 	indices, err := findLinks(text)
 	if err != nil {
 		return "", err
@@ -129,14 +159,14 @@ func replaceLinks(text string, elems []string, lookup map[string][]string, t *te
 			continue
 		}
 		pathStr := strings.Builder{}
-		if strings.HasPrefix(elemPath[len(elemPath)-1], "#") {
-			err := t.ExecuteTemplate(&pathStr, templ, path.Join(elemPath[len(elems):len(elemPath)-1]...))
+		if strings.HasPrefix(elemPath.Elements[len(elemPath.Elements)-1], "#") {
+			err := t.ExecuteTemplate(&pathStr, elemPath.Kind+"_path.md", path.Join(elemPath.Elements[len(elems):len(elemPath.Elements)-1]...))
 			if err != nil {
 				return "", err
 			}
-			pathStr.WriteString(elemPath[len(elemPath)-1])
+			pathStr.WriteString(elemPath.Elements[len(elemPath.Elements)-1])
 		} else {
-			err := t.ExecuteTemplate(&pathStr, templ, path.Join(elemPath[len(elems):]...))
+			err := t.ExecuteTemplate(&pathStr, elemPath.Kind+"_path.md", path.Join(elemPath.Elements[len(elems):]...))
 			if err != nil {
 				return "", err
 			}
