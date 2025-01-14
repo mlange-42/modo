@@ -27,6 +27,25 @@ func init() {
 	}
 }
 
+func Render(docs *document.Docs, dir string, rFormat format.Format) error {
+	proc := document.NewProcessor(format.GetFormatter(rFormat))
+	err := proc.ProcessLinks(docs)
+	if err != nil {
+		return err
+	}
+
+	err = renderPackage(docs.Decl, dir, &proc)
+	if err != nil {
+		return err
+	}
+
+	if err := proc.Formatter.WriteAuxiliary(docs.Decl, dir, t); err != nil {
+		return err
+	}
+
+	return nil
+}
+
 func renderElement(data document.Kinded) (string, error) {
 	b := strings.Builder{}
 	err := t.ExecuteTemplate(&b, data.GetKind()+".md", data)
@@ -36,16 +55,7 @@ func renderElement(data document.Kinded) (string, error) {
 	return b.String(), nil
 }
 
-func RenderDocs(docs *document.Docs, dir string, rFormat format.Format) error {
-	proc := document.NewProcessor(format.GetFormatter(rFormat))
-	err := proc.ProcessLinks(docs)
-	if err != nil {
-		return err
-	}
-	return renderPackage(docs.Decl, dir, &proc, true)
-}
-
-func renderPackage(p *document.Package, dir string, proc *document.Processor, root bool) error {
+func renderPackage(p *document.Package, dir string, proc *document.Processor) error {
 	pkgPath := path.Join(dir, p.GetFileName())
 	if err := mkDirs(pkgPath); err != nil {
 		return err
@@ -57,7 +67,7 @@ func renderPackage(p *document.Package, dir string, proc *document.Processor, ro
 	}
 
 	for _, pkg := range p.Packages {
-		if err := renderPackage(pkg, pkgPath, proc, false); err != nil {
+		if err := renderPackage(pkg, pkgPath, proc); err != nil {
 			return err
 		}
 	}
@@ -75,12 +85,6 @@ func renderPackage(p *document.Package, dir string, proc *document.Processor, ro
 	}
 	if err := os.WriteFile(pkgFile, []byte(text), 0666); err != nil {
 		return err
-	}
-
-	if root {
-		if err := proc.Formatter.WriteAuxiliary(p, dir, t); err != nil {
-			return err
-		}
 	}
 
 	return nil
