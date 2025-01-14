@@ -8,35 +8,35 @@ type elemPath struct {
 	IsSection bool
 }
 
-func collectPaths(doc *Docs) map[string]elemPath {
+func (proc *Processor) collectPaths(doc *Docs) map[string]elemPath {
 	out := map[string]elemPath{}
-	collectPathsPackage(doc.Decl, []string{}, []string{}, out)
+	proc.collectPathsPackage(doc.Decl, []string{}, []string{}, out)
 	return out
 }
 
-func collectPathsPackage(p *Package, elems []string, pathElem []string, out map[string]elemPath) {
+func (proc *Processor) collectPathsPackage(p *Package, elems []string, pathElem []string, out map[string]elemPath) {
 	newElems := appendNew(elems, p.GetName())
 	newPath := appendNew(pathElem, p.GetFileName())
 	out[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "package", IsSection: false}
 
 	for _, pkg := range p.Packages {
-		collectPathsPackage(pkg, newElems, newPath, out)
+		proc.collectPathsPackage(pkg, newElems, newPath, out)
 	}
 	for _, mod := range p.Modules {
-		collectPathsModule(mod, newElems, newPath, out)
+		proc.collectPathsModule(mod, newElems, newPath, out)
 	}
 }
 
-func collectPathsModule(m *Module, elems []string, pathElem []string, out map[string]elemPath) {
+func (proc *Processor) collectPathsModule(m *Module, elems []string, pathElem []string, out map[string]elemPath) {
 	newElems := appendNew(elems, m.GetName())
 	newPath := appendNew(pathElem, m.GetFileName())
 	out[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "module", IsSection: false}
 
 	for _, s := range m.Structs {
-		collectPathsStruct(s, newElems, newPath, out)
+		proc.collectPathsStruct(s, newElems, newPath, out)
 	}
 	for _, t := range m.Traits {
-		collectPathsTrait(t, newElems, newPath, out)
+		proc.collectPathsTrait(t, newElems, newPath, out)
 	}
 	for _, f := range m.Functions {
 		newElems := appendNew(newElems, f.GetName())
@@ -45,7 +45,7 @@ func collectPathsModule(m *Module, elems []string, pathElem []string, out map[st
 	}
 }
 
-func collectPathsStruct(s *Struct, elems []string, pathElem []string, out map[string]elemPath) {
+func (proc *Processor) collectPathsStruct(s *Struct, elems []string, pathElem []string, out map[string]elemPath) {
 	newElems := appendNew(elems, s.GetName())
 	newPath := appendNew(pathElem, s.GetFileName())
 	out[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member", IsSection: false}
@@ -67,7 +67,7 @@ func collectPathsStruct(s *Struct, elems []string, pathElem []string, out map[st
 	}
 }
 
-func collectPathsTrait(t *Trait, elems []string, pathElem []string, out map[string]elemPath) {
+func (proc *Processor) collectPathsTrait(t *Trait, elems []string, pathElem []string, out map[string]elemPath) {
 	newElems := appendNew(elems, t.GetName())
 	newPath := appendNew(pathElem, t.GetFileName())
 	out[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member", IsSection: false}

@@ -27,7 +27,26 @@ func init() {
 	}
 }
 
-func Render(data document.Kinded) (string, error) {
+func Render(docs *document.Docs, dir string, rFormat format.Format) error {
+	proc := document.NewProcessor(format.GetFormatter(rFormat))
+	err := proc.ProcessLinks(docs)
+	if err != nil {
+		return err
+	}
+
+	err = renderPackage(docs.Decl, dir, &proc)
+	if err != nil {
+		return err
+	}
+
+	if err := proc.Formatter.WriteAuxiliary(docs.Decl, dir, t); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func renderElement(data document.Kinded) (string, error) {
 	b := strings.Builder{}
 	err := t.ExecuteTemplate(&b, data.GetKind()+".md", data)
 	if err != nil {
@@ -36,80 +55,66 @@ func Render(data document.Kinded) (string, error) {
 	return b.String(), nil
 }
 
-func RenderDocs(docs *document.Docs, dir string, rFormat format.Format) error {
-	err := document.ProcessLinks(docs, t)
-	if err != nil {
-		return err
-	}
-	return RenderPackage(docs.Decl, dir, rFormat, true)
-}
-
-func RenderPackage(p *document.Package, dir string, rFormat format.Format, root bool) error {
+func renderPackage(p *document.Package, dir string, proc *document.Processor) error {
 	pkgPath := path.Join(dir, p.GetFileName())
 	if err := mkDirs(pkgPath); err != nil {
 		return err
 	}
 
-	pkgFile := strings.Builder{}
-	if err := t.ExecuteTemplate(&pkgFile, "package_path.md", pkgPath); err != nil {
+	pkgFile, err := proc.Formatter.ToFilePath(pkgPath, "package")
+	if err != nil {
 		return err
 	}
 
 	for _, pkg := range p.Packages {
-		if err := RenderPackage(pkg, pkgPath, rFormat, false); err != nil {
+		if err := renderPackage(pkg, pkgPath, proc); err != nil {
 			return err
 		}
 	}
 
 	for _, mod := range p.Modules {
 		modPath := path.Join(pkgPath, mod.GetFileName())
-		if err := renderModule(mod, modPath); err != nil {
+		if err := renderModule(mod, modPath, proc); err != nil {
 			return err
 		}
 	}
 
-	text, err := Render(p)
+	text, err := renderElement(p)
 	if err != nil {
 		return err
 	}
-	if err := os.WriteFile(pkgFile.String(), []byte(text), 0666); err != nil {
+	if err := os.WriteFile(pkgFile, []byte(text), 0666); err != nil {
 		return err
-	}
-
-	if root {
-		if err := format.GetFormatter(rFormat).WriteAuxiliary(p, dir, t); err != nil {
-			return err
-		}
 	}
 
 	return nil
 }
 
-func renderModule(mod *document.Module, dir string) error {
+func renderModule(mod *document.Module, dir string, proc *document.Processor) error {
 	if err := mkDirs(dir); err != nil {
 		return err
 	}
 
-	modFile := strings.Builder{}
-	if err := t.ExecuteTemplate(&modFile, "module_path.md", dir); err != nil {
-		return err
-	}
-
-	if err := renderList(mod.Structs, dir); err != nil {
-		return err
-	}
-	if err := renderList(mod.Traits, dir); err != nil {
-		return err
-	}
-	if err := renderList(mod.Functions, dir); err != nil {
-		return err
-	}
-
-	text, err := Render(mod)
+	modFile, err := proc.Formatter.ToFilePath(dir, "module")
 	if err != nil {
 		return err
 	}
-	if err := os.WriteFile(modFile.String(), []byte(text), 0666); err != nil {
+
+	if err := renderList(mod.Structs, dir, proc); err != nil {
+		return err
+	}
+	if err := renderList(mod.Traits, dir, proc); err != nil {
+		return err
+	}
+	if err := renderList(mod.Functions, dir, proc); err != nil {
+		return err
+	}
+
+	text, err := renderElement(mod)
+	if err != nil {
+		return err
+	}
+	if err := os.WriteFile(modFile, []byte(text), 0666); err != nil {
 		return err
 	}
 
@@ -119,20 +124,20 @@ func renderModule(mod *document.Module, dir string) error {
 func renderList[T interface {
 	document.Named
 	document.Kinded
-}](list []T, dir string) error {
+}](list []T, dir string, proc *document.Processor) error {
 	for _, elem := range list {
-		text, err := Render(elem)
+		text, err := renderElement(elem)
 		if err != nil {
 			return err
 		}
 		memberPath := path.Join(dir, elem.GetFileName())
 
-		memberFile := strings.Builder{}
-		if err := t.ExecuteTemplate(&memberFile, "member_path.md", memberPath); err != nil {
+		memberFile, err := proc.Formatter.ToFilePath(memberPath, "")
+		if err != nil {
 			return err
 		}
 
-		if err := os.WriteFile(memberFile.String(), []byte(text), 0666); err != nil {
+		if err := os.WriteFile(memberFile, []byte(text), 0666); err != nil {
 			return err
 		}
 	}

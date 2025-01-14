@@ -1,1 +1,0 @@
-{{ pathJoin . "_index.md" -}}

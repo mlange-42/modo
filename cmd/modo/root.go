@@ -48,7 +48,7 @@ func rootCommand() *cobra.Command {
 				document.CaseSensitiveSystem = false
 			}
 
-			err = modo.RenderDocs(docs, outDir, rFormat)
+			err = modo.Render(docs, outDir, rFormat)
 			if err != nil {
 				log.Fatal(err)
 			}
