@@ -10,11 +10,11 @@ import (
 
 type HugoFormatter struct{}
 
-const hugoFrontMatter = `---
-type: page
-title: %s
-summary: %s
----
+const hugoFrontMatter = `+++
+type = "page"
+title = "%s"
+summary = """%s"""
++++
 
 %s
 `
@@ -35,5 +35,5 @@ func (f *HugoFormatter) ToFilePath(p string, kind string) (string, error) {
 }
 
 func (f *HugoFormatter) ToLinkPath(p string, kind string) (string, error) {
-	return "./" + p, nil
+	return fmt.Sprintf("{{< ref \"%s\" >}}", p), nil
 }
