@@ -20,11 +20,11 @@ jobs:
       - name: Install dependencies
         run: go get .
       - name: Build Linux
-        run: GOOS=linux GOARCH=amd64 go build ./cmd/modo
+        run: GOOS=linux GOARCH=amd64 go build .
       - name: Build Windows
-        run: GOOS=windows GOARCH=amd64 go build ./cmd/modo
+        run: GOOS=windows GOARCH=amd64 go build .
       - name: Build MacOS
-        run: GOOS=darwin GOARCH=amd64 go build ./cmd/modo
+        run: GOOS=darwin GOARCH=amd64 go build .
 
   test:
     name: Run tests

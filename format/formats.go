@@ -1,6 +1,10 @@
 package format
 
-import "github.com/mlange-42/modo/document"
+import (
+	"fmt"
+
+	"github.com/mlange-42/modo/document"
+)
 
 type Format uint8
 
@@ -10,9 +14,12 @@ const (
 	Hugo
 )
 
-func GetFormat(f string) (Format, bool) {
+func GetFormat(f string) (Format, error) {
 	fm, ok := formats[f]
-	return fm, ok
+	if !ok {
+		return Plain, fmt.Errorf("unknown format '%s'. See flag --format", f)
+	}
+	return fm, nil
 }
 
 var formats = map[string]Format{

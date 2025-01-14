@@ -1,11 +1,10 @@
-package modo
+package format
 
 import (
 	"fmt"
 	"testing"
 
 	"github.com/mlange-42/modo/document"
-	"github.com/mlange-42/modo/format"
 	"github.com/stretchr/testify/assert"
 )
 
@@ -28,7 +27,7 @@ func TestRenderPackage(tt *testing.T) {
 		Packages: []*document.Package{},
 	}
 
-	form := format.PlainFormatter{}
+	form := PlainFormatter{}
 	templ, err := loadTemplates(&form)
 	assert.Nil(tt, err)
 
@@ -61,7 +60,7 @@ func TestRenderModule(tt *testing.T) {
 		Functions: []*document.Function{},
 	}
 
-	form := format.PlainFormatter{}
+	form := PlainFormatter{}
 	templ, err := loadTemplates(&form)
 	assert.Nil(tt, err)
 

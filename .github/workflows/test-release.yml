@@ -25,7 +25,7 @@ jobs:
         run: |
           go get ./...
       - name: Build
-        run: GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" ./cmd/modo
+        run: GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" .
       - name: Compress binaries
         run: |
           tar -czf modo.tar.gz modo
@@ -52,7 +52,7 @@ jobs:
         run: |
           go get ./...
       - name: Build
-        run: GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" ./cmd/modo
+        run: GOOS=windows GOARCH=amd64 go build -ldflags="-s -w" .
       - name: Compress binaries
         run: |
           zip -r modo.zip modo.exe
@@ -79,7 +79,7 @@ jobs:
         run: |
           go get ./...
       - name: Build
-        run: GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" ./cmd/modo
+        run: GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" .
       - name: Compress binaries
         run: |
           zip -r modo.zip modo
@@ -106,7 +106,7 @@ jobs:
         run: |
           go get ./...
       - name: Build
-        run: GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" ./cmd/modo
+        run: GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" .
       - name: Compress binaries
         run: |
           zip -r modo.zip modo

@@ -8,6 +8,10 @@
 
 * Adds support to export for [Hugo](https://gohugo.io/) (#36)
 
+### Other
+
+* Move the binary package to the module root, simplifying the install path (#39)
+
 ## [[v0.3.0]](https://github.com/mlange-42/modo/compare/v0.2.0...v0.3.0)
 
 ### Features

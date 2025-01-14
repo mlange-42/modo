@@ -48,7 +48,7 @@ jobs:
           magic run mojo doc -o ../stdlib.json stdlib/src
       - name: Create Markdown
         run: |
-          go run ./cmd/modo markdown -i stdlib.json --format=mdbook
+          go run . markdown -i stdlib.json --format=mdbook
 
       - name: Archive Markdown artifacts
         uses: actions/upload-artifact@v4

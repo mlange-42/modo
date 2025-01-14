@@ -3,13 +3,19 @@ package main
 import (
 	"fmt"
 	"io"
+	"log"
 	"os"
 
-	"github.com/mlange-42/modo"
 	"github.com/mlange-42/modo/document"
 	"github.com/mlange-42/modo/format"
 	"github.com/spf13/cobra"
 )
+
+func main() {
+	if err := rootCommand().Execute(); err != nil {
+		log.Fatal(err)
+	}
+}
 
 func rootCommand() *cobra.Command {
 	var file string
@@ -38,7 +44,7 @@ func rootCommand() *cobra.Command {
 				return err
 			}
 
-			rFormat, err := getFormat(renderFormat)
+			rFormat, err := format.GetFormat(renderFormat)
 			if err != nil {
 				return err
 			}
@@ -46,7 +52,7 @@ func rootCommand() *cobra.Command {
 				document.CaseSensitiveSystem = false
 			}
 
-			err = modo.Render(docs, outDir, rFormat)
+			err = format.Render(docs, outDir, rFormat)
 			if err != nil {
 				return err
 			}
@@ -70,12 +76,4 @@ func read(file string) ([]byte, error) {
 	} else {
 		return os.ReadFile(file)
 	}
-}
-
-func getFormat(f string) (format.Format, error) {
-	fm, ok := format.GetFormat(f)
-	if !ok {
-		return format.Plain, fmt.Errorf("unknown format '%s'. See flag --format", f)
-	}
-	return fm, nil
 }
