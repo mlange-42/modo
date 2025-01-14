@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"io"
-	"log"
 	"os"
 
 	"github.com/mlange-42/modo"
@@ -12,14 +11,9 @@ import (
 	"github.com/spf13/cobra"
 )
 
-type renderFormats struct {
-	mdBook bool
-	hugo   bool
-}
-
 func rootCommand() *cobra.Command {
 	var file string
-	var formats renderFormats
+	var renderFormat string
 	var caseInsensitive bool
 
 	root := &cobra.Command{
@@ -41,17 +35,20 @@ func rootCommand() *cobra.Command {
 
 			docs, err := document.FromJson(data)
 			if err != nil {
-				log.Fatal(err)
+				return err
 			}
 
-			rFormat := getFormat(&formats)
+			rFormat, err := getFormat(renderFormat)
+			if err != nil {
+				return err
+			}
 			if caseInsensitive {
 				document.CaseSensitiveSystem = false
 			}
 
 			err = modo.Render(docs, outDir, rFormat)
 			if err != nil {
-				log.Fatal(err)
+				return err
 			}
 
 			return nil
@@ -59,11 +56,10 @@ func rootCommand() *cobra.Command {
 	}
 
 	root.Flags().StringVarP(&file, "input", "i", "", "File to read. Reads from STDIN if not specified.")
-	root.Flags().BoolVar(&formats.mdBook, "mdbook", false, "Writes in mdBook format.")
-	root.Flags().BoolVar(&formats.hugo, "hugo", false, "Writes in Hugo format.")
+	root.Flags().StringVarP(&renderFormat, "format", "f", "plain", "Output format. One of (plain|mdbook|hugo).")
 	root.Flags().BoolVar(&caseInsensitive, "case-insensitive", false, "Build for systems that are not case-sensitive regarding file names.\nAppends hyphen (-) to capitalized file names.")
 
-	root.MarkFlagsMutuallyExclusive("mdbook", "hugo")
+	root.Flags().SortFlags = false
 
 	return root
 }
@@ -76,12 +72,10 @@ func read(file string) ([]byte, error) {
 	}
 }
 
-func getFormat(f *renderFormats) format.Format {
-	if f.mdBook {
-		return format.MdBook
+func getFormat(f string) (format.Format, error) {
+	fm, ok := format.GetFormat(f)
+	if !ok {
+		return format.Plain, fmt.Errorf("unknown format '%s'. See flag --format", f)
 	}
-	if f.hugo {
-		return format.Hugo
-	}
-	return format.Plain
+	return fm, nil
 }
