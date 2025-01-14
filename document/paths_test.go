@@ -82,7 +82,8 @@ func TestCollectPaths(t *testing.T) {
 		},
 	}
 
-	p := collectPaths(&docs)
+	proc := NewProcessor(nil)
+	p := proc.collectPaths(&docs)
 	assert.Equal(t, 11, len(p))
 
 	tests := []struct {
