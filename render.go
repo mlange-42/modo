@@ -13,7 +13,7 @@ import (
 	"github.com/mlange-42/modo/format"
 )
 
-//go:embed templates/* templates/**/*
+//go:embed assets/templates/* assets/templates/**/*
 var templates embed.FS
 var t *template.Template
 
