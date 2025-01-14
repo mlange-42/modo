@@ -129,7 +129,7 @@ func renderList[T interface {
 		}
 		memberPath := path.Join(dir, elem.GetFileName())
 
-		memberFile, err := proc.Formatter.ToFilePath(memberPath, "")
+		memberFile, err := proc.Formatter.ToFilePath(memberPath, elem.GetKind())
 		if err != nil {
 			return err
 		}
