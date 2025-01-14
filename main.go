@@ -17,10 +17,15 @@ func main() {
 	}
 }
 
+type args struct {
+	file            string
+	renderFormat    string
+	caseInsensitive bool
+	outDir          string
+}
+
 func rootCommand() *cobra.Command {
-	var file string
-	var renderFormat string
-	var caseInsensitive bool
+	var cliArgs args
 
 	root := &cobra.Command{
 		Use:   "modo OUT-PATH",
@@ -28,46 +33,49 @@ func rootCommand() *cobra.Command {
 		Long:  ``,
 		Args:  cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
-			outDir := args[0]
-
-			if outDir == "" {
-				return fmt.Errorf("no output path given")
-			}
-
-			data, err := read(file)
-			if err != nil {
-				return err
-			}
-
-			docs, err := document.FromJson(data)
-			if err != nil {
-				return err
-			}
-
-			rFormat, err := format.GetFormat(renderFormat)
-			if err != nil {
-				return err
-			}
-			if caseInsensitive {
-				document.CaseSensitiveSystem = false
-			}
-
-			err = format.Render(docs, outDir, rFormat)
-			if err != nil {
-				return err
-			}
-
-			return nil
+			cliArgs.outDir = args[0]
+			return run(&cliArgs)
 		},
 	}
 
-	root.Flags().StringVarP(&file, "input", "i", "", "File to read. Reads from STDIN if not specified.")
-	root.Flags().StringVarP(&renderFormat, "format", "f", "plain", "Output format. One of (plain|mdbook|hugo).")
-	root.Flags().BoolVar(&caseInsensitive, "case-insensitive", false, "Build for systems that are not case-sensitive regarding file names.\nAppends hyphen (-) to capitalized file names.")
+	root.Flags().StringVarP(&cliArgs.file, "input", "i", "", "File to read. Reads from STDIN if not specified.")
+	root.Flags().StringVarP(&cliArgs.renderFormat, "format", "f", "plain", "Output format. One of (plain|mdbook|hugo).")
+	root.Flags().BoolVar(&cliArgs.caseInsensitive, "case-insensitive", false, "Build for systems that are not case-sensitive regarding file names.\nAppends hyphen (-) to capitalized file names.")
 
 	root.Flags().SortFlags = false
 
 	return root
+}
+
+func run(args *args) error {
+	if args.outDir == "" {
+		return fmt.Errorf("no output path given")
+	}
+
+	data, err := read(args.file)
+	if err != nil {
+		return err
+	}
+
+	docs, err := document.FromJson(data)
+	if err != nil {
+		return err
+	}
+
+	rFormat, err := format.GetFormat(args.renderFormat)
+	if err != nil {
+		return err
+	}
+	if args.caseInsensitive {
+		document.CaseSensitiveSystem = false
+	}
+
+	err = format.Render(docs, args.outDir, rFormat)
+	if err != nil {
+		return err
+	}
+
+	return nil
 }
 
 func read(file string) ([]byte, error) {
