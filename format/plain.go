@@ -9,6 +9,10 @@ import (
 
 type PlainFormatter struct{}
 
+func (f *PlainFormatter) ProcessMarkdown(name, summary, text string) (string, error) {
+	return text, nil
+}
+
 func (f *PlainFormatter) WriteAuxiliary(p *document.Package, dir string, t *template.Template) error {
 	return nil
 }

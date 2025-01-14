@@ -2,7 +2,7 @@
 {{if .Structs}}## Structs
 
 {{range .Structs -}}
- - [`{{.Name}}`]({{.GetFileName}}.md){{if .Summary}}: {{.Summary}}{{end}}
+ - [`{{.Name}}`]({{toLink .GetFileName "struct"}}){{if .Summary}}: {{.Summary}}{{end}}
 {{end -}}
 {{end}}
 {{- end}}

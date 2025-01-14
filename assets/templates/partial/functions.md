@@ -2,7 +2,7 @@
 {{if .Functions}}## Functions
 
 {{range .Functions -}}
- - [`{{.Name}}`]({{.GetFileName}}.md){{if .Summary}}: {{.Summary}}{{end}}
+ - [`{{.Name}}`]({{toLink .GetFileName "function"}}){{if .Summary}}: {{.Summary}}{{end}}
 {{end -}}
 {{end}}
 {{- end}}

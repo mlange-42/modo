@@ -18,8 +18,8 @@ type Docs struct {
 type Package struct {
 	MemberKind
 	MemberName
+	MemberSummary
 	Description string
-	Summary     string
 	Modules     []*Module
 	Packages    []*Package
 }
@@ -27,7 +27,7 @@ type Package struct {
 type Module struct {
 	MemberKind
 	MemberName
-	Summary     string
+	MemberSummary
 	Description string
 	Aliases     []*Alias
 	Functions   []*Function
@@ -38,8 +38,8 @@ type Module struct {
 type Alias struct {
 	MemberKind
 	MemberName
+	MemberSummary
 	Description string
-	Summary     string
 	Value       string
 	Deprecated  string
 }
@@ -47,8 +47,8 @@ type Alias struct {
 type Struct struct {
 	MemberKind
 	MemberName
+	MemberSummary
 	Description  string
-	Summary      string
 	Aliases      []*Alias
 	Constraints  string
 	Convention   string
@@ -63,8 +63,8 @@ type Struct struct {
 type Function struct {
 	MemberKind
 	MemberName
+	MemberSummary
 	Description          string
-	Summary              string
 	Args                 []*Arg
 	Overloads            []*Function
 	Async                bool
@@ -84,16 +84,16 @@ type Function struct {
 type Field struct {
 	MemberKind
 	MemberName
+	MemberSummary
 	Description string
-	Summary     string
 	Type        string
 }
 
 type Trait struct {
 	MemberKind
 	MemberName
+	MemberSummary
 	Description  string
-	Summary      string
 	Fields       []*Field
 	Functions    []*Function
 	ParentTraits []string
@@ -144,6 +144,10 @@ type Named interface {
 	GetFileName() string
 }
 
+type Summarized interface {
+	GetSummary() string
+}
+
 type MemberKind struct {
 	Kind string
 }
@@ -176,6 +180,18 @@ func (k *MemberName) GetFileName() string {
 		return k.Name + capitalFileMarker
 	}
 	return k.Name
+}
+
+type MemberSummary struct {
+	Summary string
+}
+
+func NewSummary(summary string) MemberSummary {
+	return MemberSummary{Summary: summary}
+}
+
+func (k *MemberSummary) GetSummary() string {
+	return k.Summary
 }
 
 func isCap(s string) bool {

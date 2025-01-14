@@ -7,11 +7,13 @@ type Format uint8
 const (
 	Plain Format = iota
 	MdBook
+	Hugo
 )
 
 var formatters = []document.Formatter{
 	&PlainFormatter{},
 	&MdBookFormatter{},
+	&HugoFormatter{},
 }
 
 type Config struct {

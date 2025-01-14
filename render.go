@@ -2,7 +2,6 @@ package modo
 
 import (
 	"io/fs"
-	"log"
 	"os"
 	"path"
 	"strings"
@@ -13,23 +12,14 @@ import (
 	"github.com/mlange-42/modo/format"
 )
 
-var t *template.Template
-
-var functions = template.FuncMap{
-	"pathJoin": path.Join,
-}
-
-func init() {
-	var err error
-	t, err = loadTemplates()
-	if err != nil {
-		log.Fatal(err)
-	}
-}
-
 func Render(docs *document.Docs, dir string, rFormat format.Format) error {
-	proc := document.NewProcessor(format.GetFormatter(rFormat))
-	err := proc.ProcessLinks(docs)
+	formatter := format.GetFormatter(rFormat)
+	t, err := loadTemplates(formatter)
+	if err != nil {
+		return err
+	}
+	proc := document.NewProcessor(formatter, t)
+	err = proc.ProcessLinks(docs)
 	if err != nil {
 		return err
 	}
@@ -46,13 +36,20 @@ func Render(docs *document.Docs, dir string, rFormat format.Format) error {
 	return nil
 }
 
-func renderElement(data document.Kinded) (string, error) {
+func renderElement(data interface {
+	document.Named
+	document.Kinded
+}, proc *document.Processor) (string, error) {
 	b := strings.Builder{}
-	err := t.ExecuteTemplate(&b, data.GetKind()+".md", data)
+	err := proc.Template.ExecuteTemplate(&b, data.GetKind()+".md", data)
 	if err != nil {
 		return "", err
 	}
-	return b.String(), nil
+	var summary string
+	if d, ok := data.(document.Summarized); ok {
+		summary = d.GetSummary()
+	}
+	return proc.Formatter.ProcessMarkdown(data.GetName(), summary, b.String())
 }
 
 func renderPackage(p *document.Package, dir string, proc *document.Processor) error {
@@ -79,7 +76,7 @@ func renderPackage(p *document.Package, dir string, proc *document.Processor) er
 		}
 	}
 
-	text, err := renderElement(p)
+	text, err := renderElement(p, proc)
 	if err != nil {
 		return err
 	}
@@ -110,7 +107,7 @@ func renderModule(mod *document.Module, dir string, proc *document.Processor) er
 		return err
 	}
 
-	text, err := renderElement(mod)
+	text, err := renderElement(mod, proc)
 	if err != nil {
 		return err
 	}
@@ -126,7 +123,7 @@ func renderList[T interface {
 	document.Kinded
 }](list []T, dir string, proc *document.Processor) error {
 	for _, elem := range list {
-		text, err := renderElement(elem)
+		text, err := renderElement(elem, proc)
 		if err != nil {
 			return err
 		}
@@ -144,12 +141,14 @@ func renderList[T interface {
 	return nil
 }
 
-func loadTemplates() (*template.Template, error) {
+func loadTemplates(f document.Formatter) (*template.Template, error) {
 	allTemplates, err := findTemplates()
 	if err != nil {
 		return nil, err
 	}
-	templ, err := template.New("all").Funcs(functions).ParseFS(assets.Templates, allTemplates...)
+	templ, err := template.New("all").Funcs(template.FuncMap{
+		"toLink": f.ToLinkPath,
+	}).ParseFS(assets.Templates, allTemplates...)
 	if err != nil {
 		return nil, err
 	}
