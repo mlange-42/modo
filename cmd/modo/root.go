@@ -14,6 +14,7 @@ import (
 
 type renderFormats struct {
 	mdBook bool
+	hugo   bool
 }
 
 func rootCommand() *cobra.Command {
@@ -59,9 +60,10 @@ func rootCommand() *cobra.Command {
 
 	root.Flags().StringVarP(&file, "input", "i", "", "File to read. Reads from STDIN if not specified.")
 	root.Flags().BoolVar(&formats.mdBook, "mdbook", false, "Writes in mdBook format.")
+	root.Flags().BoolVar(&formats.hugo, "hugo", false, "Writes in Hugo format.")
 	root.Flags().BoolVar(&caseInsensitive, "case-insensitive", false, "Build for systems that are not case-sensitive regarding file names.\nAppends hyphen (-) to capitalized file names.")
 
-	root.MarkFlagsMutuallyExclusive("mdbook")
+	root.MarkFlagsMutuallyExclusive("mdbook", "hugo")
 
 	return root
 }
@@ -77,6 +79,9 @@ func read(file string) ([]byte, error) {
 func getFormat(f *renderFormats) format.Format {
 	if f.mdBook {
 		return format.MdBook
+	}
+	if f.hugo {
+		return format.Hugo
 	}
 	return format.Plain
 }

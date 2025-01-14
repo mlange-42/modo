@@ -10,6 +10,10 @@ import (
 
 type TestFormatter struct{}
 
+func (f *TestFormatter) ProcessMarkdown(name, summary, text string) (string, error) {
+	return text, nil
+}
+
 func (f *TestFormatter) WriteAuxiliary(p *Package, dir string, t *template.Template) error {
 	return nil
 }
@@ -51,7 +55,7 @@ func TestReplaceLinks(t *testing.T) {
 	}
 	elems := []string{"stdlib", "p", "Struct"}
 
-	proc := NewProcessor(&TestFormatter{})
+	proc := NewProcessor(&TestFormatter{}, nil)
 	out, err := proc.replaceLinks(text, elems, 2, lookup)
 	assert.Nil(t, err)
 

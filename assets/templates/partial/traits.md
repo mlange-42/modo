@@ -2,7 +2,7 @@
 {{if .Traits}}## Traits
 
 {{range .Traits -}}
- - [`{{.Name}}`]({{.GetFileName}}.md){{if .Summary}}: {{.Summary}}{{end}}
+ - [`{{.Name}}`]({{toLink .GetFileName "trait"}}){{if .Summary}}: {{.Summary}}{{end}}
 {{end -}}
 {{end}}
 {{- end}}

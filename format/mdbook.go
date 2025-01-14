@@ -14,6 +14,10 @@ import (
 
 type MdBookFormatter struct{}
 
+func (f *MdBookFormatter) ProcessMarkdown(name, summary, text string) (string, error) {
+	return text, nil
+}
+
 func (f *MdBookFormatter) WriteAuxiliary(p *document.Package, dir string, t *template.Template) error {
 	if err := f.writeSummary(p, dir, t); err != nil {
 		return err
