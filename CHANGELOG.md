@@ -1,5 +1,9 @@
 ## [[unpublished]](https://github.com/mlange-42/modo/compare/v0.3.0...main)
 
+### Breaking changes
+
+* Replaces format flags `--mdbook` and `--hugo` by `--format=(plain|mdbook|hugo)` (#37)
+
 ### Features
 
 * Adds support to export for [Hugo](https://gohugo.io/) (#36)

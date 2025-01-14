@@ -50,7 +50,7 @@ modo -h
 
 Modo emits Markdown files.
 These files need to be processed further to generate an HTML site that can be served on GitHub pages (or elsewhere).
-Modo supports different formats to make this step easier:
+Modo supports different formats to make this step easier, via the flag `--format`:
 
 ### Plain Markdown
 
@@ -60,24 +60,24 @@ This is Modo's default output format.
 ### mdBook
 
 Markdown files as well as auxiliary files for [mdBook](https://github.com/rust-lang/mdBook),
-with flag `--mdbook`.
+with `--format=mdbook`.
 Modo's output folder can be used by mdBook without any further steps:
 
 ```
-modo docs-out -i docs.json --mdbook
+modo docs-out -i docs.json --format=mdbook
 mdbook serve docs-out --open
 ```
 
 ### Hugo
 
 Markdown files with front matter and cross-references for [Hugo](https://gohugo.io/),
-with flag `--hugo`.
+with flag `--format=hugo`.
 
 You should first set up a Hugo project in a sub-folder of your repository.
 Then, run Modo with the Hugo `content` folder as output path:
 
 ```
-modo <hugo-project>/content -i docs.json --hugo
+modo <hugo-project>/content -i docs.json --format=hugo
 ```
 
 Further, in your `hugo.toml`, add `disablePathToLower = true` to the main section

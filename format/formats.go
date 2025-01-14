@@ -10,6 +10,18 @@ const (
 	Hugo
 )
 
+func GetFormat(f string) (Format, bool) {
+	fm, ok := formats[f]
+	return fm, ok
+}
+
+var formats = map[string]Format{
+	"":       Plain,
+	"plain":  Plain,
+	"mdbook": MdBook,
+	"hugo":   Hugo,
+}
+
 var formatters = []document.Formatter{
 	&PlainFormatter{},
 	&MdBookFormatter{},
