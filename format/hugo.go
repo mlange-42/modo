@@ -11,7 +11,7 @@ import (
 type HugoFormatter struct{}
 
 const hugoFrontMatter = `+++
-type = "page"
+type = "docs"
 title = "%s"
 summary = """%s"""
 +++

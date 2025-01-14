@@ -70,7 +70,20 @@ mdbook serve docs-out --open
 
 ### Hugo
 
-Not yet implemented.
+Markdown files with front matter and cross-references for [Hugo](https://gohugo.io/),
+with flag `--hugo`.
+
+You should first set up a Hugo project in a sub-folder of your repository.
+Then, run Modo with the Hugo `content` folder as output path:
+
+```
+modo <hugo-project>/content -i docs.json --hugo
+```
+
+Further, in your `hugo.toml`, add `disablePathToLower = true` to the main section
+to prevent lower case members (like functions) and upper case members (like structs)
+overwrite each other.
+Alternatively, run Modo with switch `--case-insensitive`.
 
 ## Cross-referencing
 
