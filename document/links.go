@@ -6,7 +6,6 @@ import (
 	"path"
 	"regexp"
 	"strings"
-	"text/template"
 )
 
 const regexString = `(?s)(?:(` + "```.*?```)|(`.*?`" + `))|(\[.*?\])`
@@ -30,64 +29,64 @@ func findLinks(text string) ([]int, error) {
 	return links, nil
 }
 
-func ProcessLinks(doc *Docs, t *template.Template) error {
+func (proc *Processor) ProcessLinks(doc *Docs) error {
 	lookup := collectPaths(doc)
 	//for k, v := range lookup {
 	//	fmt.Println(k, v.Elements)
 	//}
-	return processLinksPackage(doc.Decl, []string{}, lookup, t)
+	return proc.processLinksPackage(doc.Decl, []string{}, lookup)
 }
 
-func processLinksPackage(p *Package, elems []string, lookup map[string]elemPath, t *template.Template) error {
+func (proc *Processor) processLinksPackage(p *Package, elems []string, lookup map[string]elemPath) error {
 	newElems := appendNew(elems, p.GetName())
 
 	var err error
-	p.Summary, err = replaceLinks(p.Summary, newElems, len(newElems), lookup, t)
+	p.Summary, err = proc.replaceLinks(p.Summary, newElems, len(newElems), lookup)
 	if err != nil {
 		return err
 	}
-	p.Description, err = replaceLinks(p.Description, newElems, len(newElems), lookup, t)
+	p.Description, err = proc.replaceLinks(p.Description, newElems, len(newElems), lookup)
 	if err != nil {
 		return err
 	}
 
 	for _, pkg := range p.Packages {
-		processLinksPackage(pkg, newElems, lookup, t)
+		proc.processLinksPackage(pkg, newElems, lookup)
 	}
 	for _, mod := range p.Modules {
-		processLinksModule(mod, newElems, lookup, t)
+		proc.processLinksModule(mod, newElems, lookup)
 	}
 
 	return nil
 }
 
-func processLinksModule(m *Module, elems []string, lookup map[string]elemPath, t *template.Template) error {
+func (proc *Processor) processLinksModule(m *Module, elems []string, lookup map[string]elemPath) error {
 	newElems := appendNew(elems, m.GetName())
 
 	var err error
-	m.Summary, err = replaceLinks(m.Summary, newElems, len(newElems), lookup, t)
+	m.Summary, err = proc.replaceLinks(m.Summary, newElems, len(newElems), lookup)
 	if err != nil {
 		return err
 	}
-	m.Description, err = replaceLinks(m.Description, newElems, len(newElems), lookup, t)
+	m.Description, err = proc.replaceLinks(m.Description, newElems, len(newElems), lookup)
 	if err != nil {
 		return err
 	}
 
 	for _, f := range m.Functions {
-		err := processLinksFunction(f, newElems, lookup, t)
+		err := proc.processLinksFunction(f, newElems, lookup)
 		if err != nil {
 			return err
 		}
 	}
 	for _, s := range m.Structs {
-		err := processLinksStruct(s, newElems, lookup, t)
+		err := proc.processLinksStruct(s, newElems, lookup)
 		if err != nil {
 			return err
 		}
 	}
 	for _, tr := range m.Traits {
-		err := processLinksTrait(tr, newElems, lookup, t)
+		err := proc.processLinksTrait(tr, newElems, lookup)
 		if err != nil {
 			return err
 		}
@@ -96,37 +95,37 @@ func processLinksModule(m *Module, elems []string, lookup map[string]elemPath, t
 	return nil
 }
 
-func processLinksStruct(s *Struct, elems []string, lookup map[string]elemPath, t *template.Template) error {
+func (proc *Processor) processLinksStruct(s *Struct, elems []string, lookup map[string]elemPath) error {
 	newElems := appendNew(elems, s.GetName())
 
 	var err error
-	s.Summary, err = replaceLinks(s.Summary, newElems, len(elems), lookup, t)
+	s.Summary, err = proc.replaceLinks(s.Summary, newElems, len(elems), lookup)
 	if err != nil {
 		return err
 	}
-	s.Description, err = replaceLinks(s.Description, newElems, len(elems), lookup, t)
+	s.Description, err = proc.replaceLinks(s.Description, newElems, len(elems), lookup)
 	if err != nil {
 		return err
 	}
 
 	for _, p := range s.Parameters {
-		p.Description, err = replaceLinks(p.Description, newElems, len(elems), lookup, t)
+		p.Description, err = proc.replaceLinks(p.Description, newElems, len(elems), lookup)
 		if err != nil {
 			return err
 		}
 	}
 	for _, f := range s.Fields {
-		f.Summary, err = replaceLinks(f.Summary, newElems, len(elems), lookup, t)
+		f.Summary, err = proc.replaceLinks(f.Summary, newElems, len(elems), lookup)
 		if err != nil {
 			return err
 		}
-		f.Description, err = replaceLinks(f.Description, newElems, len(elems), lookup, t)
+		f.Description, err = proc.replaceLinks(f.Description, newElems, len(elems), lookup)
 		if err != nil {
 			return err
 		}
 	}
 	for _, f := range s.Functions {
-		if err := processLinksMethod(f, elems, lookup, t); err != nil {
+		if err := proc.processLinksMethod(f, elems, lookup); err != nil {
 			return err
 		}
 	}
@@ -134,15 +133,15 @@ func processLinksStruct(s *Struct, elems []string, lookup map[string]elemPath, t
 	return nil
 }
 
-func processLinksTrait(tr *Trait, elems []string, lookup map[string]elemPath, t *template.Template) error {
+func (proc *Processor) processLinksTrait(tr *Trait, elems []string, lookup map[string]elemPath) error {
 	newElems := appendNew(elems, tr.GetName())
 
 	var err error
-	tr.Summary, err = replaceLinks(tr.Summary, newElems, len(elems), lookup, t)
+	tr.Summary, err = proc.replaceLinks(tr.Summary, newElems, len(elems), lookup)
 	if err != nil {
 		return err
 	}
-	tr.Description, err = replaceLinks(tr.Description, newElems, len(elems), lookup, t)
+	tr.Description, err = proc.replaceLinks(tr.Description, newElems, len(elems), lookup)
 	if err != nil {
 		return err
 	}
@@ -155,17 +154,17 @@ func processLinksTrait(tr *Trait, elems []string, lookup map[string]elemPath, t 
 		}
 	}*/
 	for _, f := range tr.Fields {
-		f.Summary, err = replaceLinks(f.Summary, newElems, len(elems), lookup, t)
+		f.Summary, err = proc.replaceLinks(f.Summary, newElems, len(elems), lookup)
 		if err != nil {
 			return err
 		}
-		f.Description, err = replaceLinks(f.Description, newElems, len(elems), lookup, t)
+		f.Description, err = proc.replaceLinks(f.Description, newElems, len(elems), lookup)
 		if err != nil {
 			return err
 		}
 	}
 	for _, f := range tr.Functions {
-		if err := processLinksMethod(f, elems, lookup, t); err != nil {
+		if err := proc.processLinksMethod(f, elems, lookup); err != nil {
 			return err
 		}
 	}
@@ -173,42 +172,42 @@ func processLinksTrait(tr *Trait, elems []string, lookup map[string]elemPath, t 
 	return nil
 }
 
-func processLinksFunction(f *Function, elems []string, lookup map[string]elemPath, t *template.Template) error {
+func (proc *Processor) processLinksFunction(f *Function, elems []string, lookup map[string]elemPath) error {
 	newElems := appendNew(elems, f.GetName())
 
 	var err error
-	f.Summary, err = replaceLinks(f.Summary, newElems, len(elems), lookup, t)
+	f.Summary, err = proc.replaceLinks(f.Summary, newElems, len(elems), lookup)
 	if err != nil {
 		return err
 	}
-	f.Description, err = replaceLinks(f.Description, newElems, len(elems), lookup, t)
+	f.Description, err = proc.replaceLinks(f.Description, newElems, len(elems), lookup)
 	if err != nil {
 		return err
 	}
-	f.ReturnsDoc, err = replaceLinks(f.ReturnsDoc, newElems, len(elems), lookup, t)
+	f.ReturnsDoc, err = proc.replaceLinks(f.ReturnsDoc, newElems, len(elems), lookup)
 	if err != nil {
 		return err
 	}
-	f.RaisesDoc, err = replaceLinks(f.RaisesDoc, newElems, len(elems), lookup, t)
+	f.RaisesDoc, err = proc.replaceLinks(f.RaisesDoc, newElems, len(elems), lookup)
 	if err != nil {
 		return err
 	}
 
 	for _, a := range f.Args {
-		a.Description, err = replaceLinks(a.Description, newElems, len(elems), lookup, t)
+		a.Description, err = proc.replaceLinks(a.Description, newElems, len(elems), lookup)
 		if err != nil {
 			return err
 		}
 	}
 	for _, p := range f.Parameters {
-		p.Description, err = replaceLinks(p.Description, newElems, len(elems), lookup, t)
+		p.Description, err = proc.replaceLinks(p.Description, newElems, len(elems), lookup)
 		if err != nil {
 			return err
 		}
 	}
 
 	for _, o := range f.Overloads {
-		err := processLinksFunction(o, elems, lookup, t)
+		err := proc.processLinksFunction(o, elems, lookup)
 		if err != nil {
 			return err
 		}
@@ -217,40 +216,40 @@ func processLinksFunction(f *Function, elems []string, lookup map[string]elemPat
 	return nil
 }
 
-func processLinksMethod(f *Function, elems []string, lookup map[string]elemPath, t *template.Template) error {
+func (proc *Processor) processLinksMethod(f *Function, elems []string, lookup map[string]elemPath) error {
 	var err error
-	f.Summary, err = replaceLinks(f.Summary, elems, len(elems), lookup, t)
+	f.Summary, err = proc.replaceLinks(f.Summary, elems, len(elems), lookup)
 	if err != nil {
 		return err
 	}
-	f.Description, err = replaceLinks(f.Description, elems, len(elems), lookup, t)
+	f.Description, err = proc.replaceLinks(f.Description, elems, len(elems), lookup)
 	if err != nil {
 		return err
 	}
-	f.ReturnsDoc, err = replaceLinks(f.ReturnsDoc, elems, len(elems), lookup, t)
+	f.ReturnsDoc, err = proc.replaceLinks(f.ReturnsDoc, elems, len(elems), lookup)
 	if err != nil {
 		return err
 	}
-	f.RaisesDoc, err = replaceLinks(f.RaisesDoc, elems, len(elems), lookup, t)
+	f.RaisesDoc, err = proc.replaceLinks(f.RaisesDoc, elems, len(elems), lookup)
 	if err != nil {
 		return err
 	}
 
 	for _, a := range f.Args {
-		a.Description, err = replaceLinks(a.Description, elems, len(elems), lookup, t)
+		a.Description, err = proc.replaceLinks(a.Description, elems, len(elems), lookup)
 		if err != nil {
 			return err
 		}
 	}
 	for _, p := range f.Parameters {
-		p.Description, err = replaceLinks(p.Description, elems, len(elems), lookup, t)
+		p.Description, err = proc.replaceLinks(p.Description, elems, len(elems), lookup)
 		if err != nil {
 			return err
 		}
 	}
 
 	for _, o := range f.Overloads {
-		err := processLinksMethod(o, elems, lookup, t)
+		err := proc.processLinksMethod(o, elems, lookup)
 		if err != nil {
 			return err
 		}
@@ -259,7 +258,7 @@ func processLinksMethod(f *Function, elems []string, lookup map[string]elemPath,
 	return nil
 }
 
-func replaceLinks(text string, elems []string, modElems int, lookup map[string]elemPath, t *template.Template) (string, error) {
+func (proc *Processor) replaceLinks(text string, elems []string, modElems int, lookup map[string]elemPath) (string, error) {
 	indices, err := findLinks(text)
 	if err != nil {
 		return "", err
@@ -283,7 +282,7 @@ func replaceLinks(text string, elems []string, modElems int, lookup map[string]e
 			basePath = path.Join(parts...)
 		}
 		pathStr := strings.Builder{}
-		err := t.ExecuteTemplate(&pathStr, entry.Kind+"_path.md", basePath)
+		err := proc.t.ExecuteTemplate(&pathStr, entry.Kind+"_path.md", basePath)
 		if err != nil {
 			return "", err
 		}

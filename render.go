@@ -37,7 +37,8 @@ func Render(data document.Kinded) (string, error) {
 }
 
 func RenderDocs(docs *document.Docs, dir string, rFormat format.Format) error {
-	err := document.ProcessLinks(docs, t)
+	proc := document.NewProcessor(t)
+	err := proc.ProcessLinks(docs)
 	if err != nil {
 		return err
 	}

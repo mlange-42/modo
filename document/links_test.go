@@ -37,7 +37,8 @@ func TestReplaceLinks(t *testing.T) {
 	templ, err := templ.Parse(`{{define "member_path.md"}}{{.}}.md{{end}}`)
 	assert.Nil(t, err)
 
-	out, err := replaceLinks(text, elems, 2, lookup, templ)
+	proc := NewProcessor(templ)
+	out, err := proc.replaceLinks(text, elems, 2, lookup)
 	assert.Nil(t, err)
 
 	assert.Equal(t, "A [`Struct`](Struct.md), a [`Struct.member`](Struct.md#member), a [`Trait`](../Trait.md), a [`q.func`](q/func.md), abs [`stdlib.Trait`](../Trait.md). And a [Markdown](link).", out)
