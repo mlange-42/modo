@@ -22,7 +22,7 @@ Pre-compiled binaries for Linux, Windows and MacOS are available in the
 
 > Alternatively, install using [Go](https://go.dev):
 > ```shell
-> go install github.com/mlange-42/modo/cmd/modo@latest
+> go install github.com/mlange-42/modo@latest
 > ```
 
 ## Usage

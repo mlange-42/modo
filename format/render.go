@@ -1,4 +1,4 @@
-package modo
+package format
 
 import (
 	"io/fs"
@@ -9,11 +9,10 @@ import (
 
 	"github.com/mlange-42/modo/assets"
 	"github.com/mlange-42/modo/document"
-	"github.com/mlange-42/modo/format"
 )
 
-func Render(docs *document.Docs, dir string, rFormat format.Format) error {
-	formatter := format.GetFormatter(rFormat)
+func Render(docs *document.Docs, dir string, rFormat Format) error {
+	formatter := GetFormatter(rFormat)
 	t, err := loadTemplates(formatter)
 	if err != nil {
 		return err
