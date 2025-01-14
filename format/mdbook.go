@@ -27,6 +27,17 @@ func (f *MdBookFormatter) WriteAuxiliary(p *document.Package, dir string, t *tem
 	return nil
 }
 
+func (f *MdBookFormatter) ToFilePath(p string, kind string) (string, error) {
+	if kind == "package" || kind == "module" {
+		return path.Join(p, "_index.md"), nil
+	}
+	return p + ".md", nil
+}
+
+func (f *MdBookFormatter) ToLinkPath(p string, kind string) (string, error) {
+	return f.ToFilePath(p, kind)
+}
+
 type summary struct {
 	Summary  string
 	Packages string
@@ -48,11 +59,11 @@ func (f *MdBookFormatter) writeSummary(p *document.Package, dir string, t *templ
 func (f *MdBookFormatter) renderSummary(p *document.Package, t *template.Template) (string, error) {
 	s := summary{}
 
-	pkgFile := strings.Builder{}
-	if err := t.ExecuteTemplate(&pkgFile, "package_path.md", ""); err != nil {
+	pkgFile, err := f.ToLinkPath("", "package")
+	if err != nil {
 		return "", err
 	}
-	s.Summary = fmt.Sprintf("[`%s`](%s)", p.GetName(), pkgFile.String())
+	s.Summary = fmt.Sprintf("[`%s`](%s)", p.GetName(), pkgFile)
 
 	pkgs := strings.Builder{}
 	for _, p := range p.Packages {
@@ -64,7 +75,7 @@ func (f *MdBookFormatter) renderSummary(p *document.Package, t *template.Templat
 
 	mods := strings.Builder{}
 	for _, m := range p.Modules {
-		if err := f.renderModule(m, t, []string{}, &mods); err != nil {
+		if err := f.renderModule(m, []string{}, &mods); err != nil {
 			return "", err
 		}
 	}
@@ -82,69 +93,60 @@ func (f *MdBookFormatter) renderPackage(pkg *document.Package, t *template.Templ
 	newPath := append([]string{}, linkPath...)
 	newPath = append(newPath, pkg.GetFileName())
 
-	pkgFile := strings.Builder{}
-	if err := t.ExecuteTemplate(&pkgFile, "package_path.md", path.Join(newPath...)); err != nil {
+	pkgFile, err := f.ToLinkPath(path.Join(newPath...), "package")
+	if err != nil {
 		return err
 	}
 
-	fmt.Fprintf(out, "%-*s- [`%s`](%s))\n", 2*len(linkPath), "", pkg.GetName(), pkgFile.String())
+	fmt.Fprintf(out, "%-*s- [`%s`](%s))\n", 2*len(linkPath), "", pkg.GetName(), pkgFile)
 	for _, p := range pkg.Packages {
 		if err := f.renderPackage(p, t, newPath, out); err != nil {
 			return err
 		}
 	}
 	for _, m := range pkg.Modules {
-		if err := f.renderModule(m, t, newPath, out); err != nil {
+		if err := f.renderModule(m, newPath, out); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func (f *MdBookFormatter) renderModule(mod *document.Module, t *template.Template, linkPath []string, out *strings.Builder) error {
+func (f *MdBookFormatter) renderModule(mod *document.Module, linkPath []string, out *strings.Builder) error {
 	newPath := append([]string{}, linkPath...)
 	newPath = append(newPath, mod.GetFileName())
 
 	pathStr := path.Join(newPath...)
 
-	pkgFile := strings.Builder{}
-	if err := t.ExecuteTemplate(&pkgFile, "module_path.md", pathStr); err != nil {
+	modFile, err := f.ToLinkPath(pathStr, "module")
+	if err != nil {
 		return err
 	}
 
-	fmt.Fprintf(out, "%-*s- [`%s`](%s)\n", 2*len(linkPath), "", mod.GetName(), pkgFile.String())
+	fmt.Fprintf(out, "%-*s- [`%s`](%s)\n", 2*len(linkPath), "", mod.GetName(), modFile)
 
 	for _, s := range mod.Structs {
-		memPath, err := memberPath(t, pathStr, s.GetFileName())
+		memPath, err := f.ToLinkPath(path.Join(pathStr, s.GetFileName(), ""), "")
 		if err != nil {
 			return err
 		}
 		fmt.Fprintf(out, "%-*s- [`%s`](%s)\n", 2*len(linkPath)+2, "", s.GetName(), memPath)
 	}
 	for _, tr := range mod.Traits {
-		memPath, err := memberPath(t, pathStr, tr.GetFileName())
+		memPath, err := f.ToLinkPath(path.Join(pathStr, tr.GetFileName(), ""), "")
 		if err != nil {
 			return err
 		}
 		fmt.Fprintf(out, "%-*s- [`%s`](%s)\n", 2*len(linkPath)+2, "", tr.GetName(), memPath)
 	}
-	for _, f := range mod.Functions {
-		memPath, err := memberPath(t, pathStr, f.GetFileName())
+	for _, ff := range mod.Functions {
+		memPath, err := f.ToLinkPath(path.Join(pathStr, ff.GetFileName(), ""), "")
 		if err != nil {
 			return err
 		}
-		fmt.Fprintf(out, "%-*s- [`%s`](%s)\n", 2*len(linkPath)+2, "", f.GetName(), memPath)
+		fmt.Fprintf(out, "%-*s- [`%s`](%s)\n", 2*len(linkPath)+2, "", ff.GetName(), memPath)
 	}
 	return nil
-}
-
-func memberPath(t *template.Template, p string, fn string) (string, error) {
-	pathStr := path.Join(p, fn)
-	b := strings.Builder{}
-	if err := t.ExecuteTemplate(&b, "member_path.md", pathStr); err != nil {
-		return "", err
-	}
-	return b.String(), nil
 }
 
 func (f *MdBookFormatter) writeToml(p *document.Package, dir string, t *template.Template) error {

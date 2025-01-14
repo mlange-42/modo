@@ -8,6 +8,23 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
+type TestFormatter struct{}
+
+func (f *TestFormatter) WriteAuxiliary(p *Package, dir string, t *template.Template) error {
+	return nil
+}
+
+func (f *TestFormatter) ToFilePath(p string, kind string) (string, error) {
+	if kind == "package" || kind == "module" {
+		return path.Join(p, "_index.md"), nil
+	}
+	return p + ".md", nil
+}
+
+func (f *TestFormatter) ToLinkPath(p string, kind string) (string, error) {
+	return f.ToFilePath(p, kind)
+}
+
 func TestFindLinks(t *testing.T) {
 	text := "⌘a [link1].\n" +
 		"a `[link2] in inline` code\n" +
@@ -33,11 +50,8 @@ func TestReplaceLinks(t *testing.T) {
 		"stdlib.p.q.func":        {Elements: []string{"stdlib", "p", "q", "func"}, Kind: "member"},
 	}
 	elems := []string{"stdlib", "p", "Struct"}
-	templ := template.New("all").Funcs(template.FuncMap{"pathJoin": path.Join})
-	templ, err := templ.Parse(`{{define "member_path.md"}}{{.}}.md{{end}}`)
-	assert.Nil(t, err)
 
-	proc := NewProcessor(templ)
+	proc := NewProcessor(&TestFormatter{})
 	out, err := proc.replaceLinks(text, elems, 2, lookup)
 	assert.Nil(t, err)
 

@@ -281,15 +281,14 @@ func (proc *Processor) replaceLinks(text string, elems []string, modElems int, l
 		} else {
 			basePath = path.Join(parts...)
 		}
-		pathStr := strings.Builder{}
-		err := proc.t.ExecuteTemplate(&pathStr, entry.Kind+"_path.md", basePath)
+		pathStr, err := proc.Formatter.ToLinkPath(basePath, entry.Kind)
 		if err != nil {
 			return "", err
 		}
 		if entry.IsSection {
-			pathStr.WriteString(parts[len(parts)-1])
+			pathStr += parts[len(parts)-1]
 		}
-		text = fmt.Sprintf("%s[%s](%s)%s", text[:start], linkText, pathStr.String(), text[end:])
+		text = fmt.Sprintf("%s[%s](%s)%s", text[:start], linkText, pathStr, text[end:])
 	}
 	return text, nil
 }

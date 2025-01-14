@@ -2,11 +2,9 @@ package modo
 
 import (
 	"fmt"
-	"strings"
 	"testing"
 
 	"github.com/mlange-42/modo/document"
-	"github.com/stretchr/testify/assert"
 )
 
 func TestRenderPackage(tt *testing.T) {
@@ -28,7 +26,7 @@ func TestRenderPackage(tt *testing.T) {
 		Packages: []*document.Package{},
 	}
 
-	text, err := Render(&pkg)
+	text, err := renderElement(&pkg)
 	if err != nil {
 		panic(err)
 	}
@@ -56,26 +54,9 @@ func TestRenderModule(tt *testing.T) {
 		Functions: []*document.Function{},
 	}
 
-	text, err := Render(&mod)
+	text, err := renderElement(&mod)
 	if err != nil {
 		panic(err)
 	}
 	fmt.Println(text)
-}
-
-func TestPaths(tt *testing.T) {
-	p := strings.Builder{}
-	err := t.ExecuteTemplate(&p, "package_path.md", "a/b/c")
-	assert.Nil(tt, err)
-	assert.Equal(tt, "a/b/c/_index.md", p.String())
-
-	p = strings.Builder{}
-	err = t.ExecuteTemplate(&p, "module_path.md", "a/b/c")
-	assert.Nil(tt, err)
-	assert.Equal(tt, "a/b/c/_index.md", p.String())
-
-	p = strings.Builder{}
-	err = t.ExecuteTemplate(&p, "member_path.md", "a/b/c")
-	assert.Nil(tt, err)
-	assert.Equal(tt, "a/b/c.md", p.String())
 }

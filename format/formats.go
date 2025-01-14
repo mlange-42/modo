@@ -1,10 +1,6 @@
 package format
 
-import (
-	"text/template"
-
-	"github.com/mlange-42/modo/document"
-)
+import "github.com/mlange-42/modo/document"
 
 type Format uint8
 
@@ -13,7 +9,7 @@ const (
 	MdBook
 )
 
-var formatters = []Formatter{
+var formatters = []document.Formatter{
 	&PlainFormatter{},
 	&MdBookFormatter{},
 }
@@ -23,10 +19,6 @@ type Config struct {
 	CaseInsensitive bool
 }
 
-func GetFormatter(f Format) Formatter {
+func GetFormatter(f Format) document.Formatter {
 	return formatters[f]
-}
-
-type Formatter interface {
-	WriteAuxiliary(p *document.Package, dir string, t *template.Template) error
 }

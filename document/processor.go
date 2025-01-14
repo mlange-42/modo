@@ -1,13 +1,11 @@
 package document
 
-import "text/template"
-
 type Processor struct {
-	t *template.Template
+	Formatter Formatter
 }
 
-func NewProcessor(t *template.Template) Processor {
+func NewProcessor(f Formatter) Processor {
 	return Processor{
-		t: t,
+		Formatter: f,
 	}
 }
