@@ -13,7 +13,7 @@ type HugoFormatter struct{}
 const hugoFrontMatter = `+++
 type = "docs"
 title = "%s"
-summary = """%s"""
+#summary = """%s"""
 +++
 
 %s
