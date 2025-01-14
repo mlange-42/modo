@@ -4,6 +4,10 @@
 
 * Adds support for cross-references in docstrings (#28, #30)
 
+### Formats
+
+* Adds CSS to mdBook output to enable text wrapping in code blocks (#33)
+
 ## [[v0.2.0]](https://github.com/mlange-42/modo/compare/v0.1.1...v0.2.0)
 
 ### Features

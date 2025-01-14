@@ -2,11 +2,13 @@ package format
 
 import (
 	"fmt"
+	"io/fs"
 	"os"
 	"path"
 	"strings"
 	"text/template"
 
+	"github.com/mlange-42/modo/assets"
 	"github.com/mlange-42/modo/document"
 )
 
@@ -17,6 +19,9 @@ func (f *MdBookFormatter) WriteAuxiliary(p *document.Package, dir string, t *tem
 		return err
 	}
 	if err := f.writeToml(p, dir, t); err != nil {
+		return err
+	}
+	if err := f.writeCss(dir); err != nil {
 		return err
 	}
 	return nil
@@ -160,4 +165,19 @@ func (f *MdBookFormatter) renderToml(p *document.Package, t *template.Template) 
 		return "", err
 	}
 	return b.String(), nil
+}
+
+func (f *MdBookFormatter) writeCss(dir string) error {
+	cssDir := path.Join(dir, "css")
+	if err := os.MkdirAll(cssDir, os.ModePerm); err != nil && !os.IsExist(err) {
+		return err
+	}
+	css, err := fs.ReadFile(assets.CSS, "css/mdbook.css")
+	if err != nil {
+		return err
+	}
+	if err := os.WriteFile(path.Join(cssDir, "custom.css"), css, 0666); err != nil {
+		return err
+	}
+	return nil
 }

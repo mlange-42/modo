@@ -1,7 +1,6 @@
 package modo
 
 import (
-	"embed"
 	"io/fs"
 	"log"
 	"os"
@@ -9,12 +8,11 @@ import (
 	"strings"
 	"text/template"
 
+	"github.com/mlange-42/modo/assets"
 	"github.com/mlange-42/modo/document"
 	"github.com/mlange-42/modo/format"
 )
 
-//go:embed assets/templates/* assets/templates/**/*
-var templates embed.FS
 var t *template.Template
 
 var functions = template.FuncMap{
@@ -146,7 +144,7 @@ func loadTemplates() (*template.Template, error) {
 	if err != nil {
 		return nil, err
 	}
-	templ, err := template.New("all").Funcs(functions).ParseFS(templates, allTemplates...)
+	templ, err := template.New("all").Funcs(functions).ParseFS(assets.Templates, allTemplates...)
 	if err != nil {
 		return nil, err
 	}
@@ -155,7 +153,7 @@ func loadTemplates() (*template.Template, error) {
 
 func findTemplates() ([]string, error) {
 	allTemplates := []string{}
-	err := fs.WalkDir(templates, ".",
+	err := fs.WalkDir(assets.Templates, ".",
 		func(path string, info os.DirEntry, err error) error {
 			if err != nil {
 				return err

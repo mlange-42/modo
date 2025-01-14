@@ -10,6 +10,7 @@ build-dir = "public"
 
 [output.html]
 no-section-label = true
+additional-css = ["css/custom.css"]
 
 [output.html.search]
 limit-results = 15
