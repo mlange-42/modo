@@ -59,15 +59,6 @@ func renderPackage(p *document.Package, dir string, proc *document.Processor) er
 	}
 }
 
-type members struct {
-	Members []member
-}
-
-type member struct {
-	Include bool
-	RelPath []string
-}
-
 func renderPackageExports(p *document.Package, dir string, proc *document.Processor, parentMembers *member) error {
 	selfIncluded, toCrawl := collectExportMembers(parentMembers)
 	collectExportsPackage(p, toCrawl)
@@ -118,6 +109,15 @@ func renderPackageExports(p *document.Package, dir string, proc *document.Proces
 	}
 
 	return nil
+}
+
+type members struct {
+	Members []member
+}
+
+type member struct {
+	Include bool
+	RelPath []string
 }
 
 func collectExportMembers(parentMember *member) (selfIncluded bool, toCrawl map[string]*members) {
