@@ -1,4 +1,4 @@
-## [[unpublished]](https://github.com/mlange-42/modo/compare/v0.3.0...main)
+## [[v0.4.0]](https://github.com/mlange-42/modo/compare/v0.3.0...v0.4.0)
 
 ### Breaking changes
 
@@ -10,7 +10,7 @@
 
 ### Other
 
-* Move the binary package to the module root, simplifying the install path (#39)
+* Moves the binary package to the module root, simplifying the install path (#39)
 
 ## [[v0.3.0]](https://github.com/mlange-42/modo/compare/v0.2.0...v0.3.0)
 
