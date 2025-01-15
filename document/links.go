@@ -270,7 +270,7 @@ func (proc *Processor) replaceLinks(text string, elems []string, modElems int, l
 		start, end := indices[i], indices[i+1]
 		link := text[start+1 : end-1]
 
-		entry, linkText, parts, ok := toLink(link, elems, modElems, lookup)
+		entry, linkText, parts, ok := toLink(link, elems, modElems, lookup, proc.ShortLinks)
 		if !ok {
 			continue
 		}
@@ -293,16 +293,27 @@ func (proc *Processor) replaceLinks(text string, elems []string, modElems int, l
 	return text, nil
 }
 
-func toLink(link string, elems []string, modElems int, lookup map[string]elemPath) (entry *elemPath, text string, parts []string, ok bool) {
+func toLink(link string, elems []string, modElems int, lookup map[string]elemPath, shorten bool) (entry *elemPath, text string, parts []string, ok bool) {
 	linkParts := strings.SplitN(link, " ", 2)
 	if strings.HasPrefix(link, ".") {
 		entry, text, parts, ok = toRelLink(linkParts[0], elems, modElems, lookup)
 	} else {
 		entry, text, parts, ok = toAbsLink(linkParts[0], elems, modElems, lookup)
 	}
+	if !ok {
+		return
+	}
 	if len(linkParts) > 1 {
 		text = linkParts[1]
 	} else {
+		if shorten {
+			textParts := strings.Split(text, ".")
+			if entry.IsSection {
+				text = strings.Join(textParts[len(textParts)-2:], ".")
+			} else {
+				text = textParts[len(textParts)-1]
+			}
+		}
 		text = fmt.Sprintf("`%s`", text)
 	}
 	return
@@ -337,7 +348,7 @@ func toRelLink(link string, elems []string, modElems int, lookup map[string]elem
 	}
 
 	fullPath = append(fullPath, elemPath.Elements[len(subElems):]...)
-	return &elemPath, link[dots:], fullPath, true
+	return &elemPath, linkText, fullPath, true
 }
 
 func toAbsLink(link string, elems []string, modElems int, lookup map[string]elemPath) (*elemPath, string, []string, bool) {
