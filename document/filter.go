@@ -38,7 +38,9 @@ func (proc *Processor) filterPackage(src, rootOut *Package) {
 func (proc *Processor) collectPackageExports(src, rootOut *Package, rootMembers *members) {
 	selfIncluded, toCrawl := collectExportMembers(rootMembers)
 	if selfIncluded {
-		rootOut.Packages = append(rootOut.Packages, src)
+		newPkg := src.copyEmpty()
+		proc.filterPackage(src, newPkg)
+		rootOut.Packages = append(rootOut.Packages, newPkg)
 	}
 
 	for _, mod := range src.Modules {

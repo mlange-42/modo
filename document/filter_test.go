@@ -71,13 +71,18 @@ func TestFilterPackages(t *testing.T) {
 	}
 
 	docs.Decl.Description = `Package pkg
-
 Exports:
  - mod1.Struct1
  - mod1.func
  - mod2
+ - subpkg
  - subpkg.mod3
  - subpkg.mod3.Struct3
+`
+
+	docs.Decl.Packages[0].Description = `Package subpkg
+Exports:
+ - mod3.Struct3
 `
 	proc := NewProcessor(&docs, nil, nil, true, true)
 	proc.collectExports(proc.Docs.Decl, nil)
@@ -96,4 +101,9 @@ Exports:
 	assert.Equal(t, 2, len(eDocs.Modules))
 	assert.Equal(t, "mod2", eDocs.Modules[0].Name)
 	assert.Equal(t, "mod3", eDocs.Modules[1].Name)
+
+	assert.Equal(t, 1, len(eDocs.Packages))
+	assert.Equal(t, "subpkg", eDocs.Packages[0].Name)
+	assert.Equal(t, 1, len(eDocs.Packages[0].Structs))
+	assert.Equal(t, "Struct3", eDocs.Packages[0].Structs[0].Name)
 }
