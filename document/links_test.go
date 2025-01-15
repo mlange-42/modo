@@ -54,7 +54,7 @@ func TestReplaceLinks(t *testing.T) {
 	}
 	elems := []string{"stdlib", "p", "Struct"}
 
-	proc := NewProcessor(&TestFormatter{}, nil, false, false)
+	proc := NewProcessor(nil, &TestFormatter{}, nil, false, false)
 	out, err := proc.replaceLinks(text, elems, 2, lookup)
 	assert.Nil(t, err)
 

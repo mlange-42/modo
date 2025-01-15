@@ -29,13 +29,13 @@ func findLinks(text string) ([]int, error) {
 	return links, nil
 }
 
-func (proc *Processor) ProcessLinks(doc *Docs) error {
-	proc.collectExports(doc.Decl, nil)
-	lookup := proc.collectPaths(doc)
+func (proc *Processor) ProcessLinks() error {
+	proc.collectExports(proc.Docs.Decl, nil)
+	lookup := proc.collectPaths()
 	//for k, v := range lookup {
 	//	fmt.Println(k, v.Elements)
 	//}
-	return proc.processLinksPackage(doc.Decl, []string{}, lookup)
+	return proc.processLinksPackage(proc.Docs.Decl, []string{}, lookup)
 }
 
 func (proc *Processor) processLinksPackage(p *Package, elems []string, lookup map[string]elemPath) error {

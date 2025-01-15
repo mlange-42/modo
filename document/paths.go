@@ -8,9 +8,9 @@ type elemPath struct {
 	IsSection bool
 }
 
-func (proc *Processor) collectPaths(doc *Docs) map[string]elemPath {
+func (proc *Processor) collectPaths() map[string]elemPath {
 	out := map[string]elemPath{}
-	proc.collectPathsPackage(doc.Decl, []string{}, []string{}, out)
+	proc.collectPathsPackage(proc.Docs.Decl, []string{}, []string{}, out)
 	return out
 }
 

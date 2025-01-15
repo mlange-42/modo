@@ -9,13 +9,16 @@ type Processor struct {
 	Formatter  Formatter
 	UseExports bool
 	ShortLinks bool
+	Docs       *Docs
+	ExportDocs *Docs
 }
 
-func NewProcessor(f Formatter, t *template.Template, useExports bool, shortLinks bool) Processor {
+func NewProcessor(docs *Docs, f Formatter, t *template.Template, useExports bool, shortLinks bool) Processor {
 	return Processor{
 		Template:   t,
 		Formatter:  f,
 		UseExports: useExports,
 		ShortLinks: shortLinks,
+		Docs:       docs,
 	}
 }
