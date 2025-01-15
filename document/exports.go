@@ -8,6 +8,13 @@ import (
 const exportsMarker = "Exports:"
 const exportsPrefix = "- "
 
+func (proc *Processor) collectExports(p *Package) {
+	for _, pkg := range p.Packages {
+		proc.collectExports(pkg)
+	}
+	p.Exports = proc.parseExports(p.Description)
+}
+
 func (proc *Processor) parseExports(pkgDocs string) []string {
 	scanner := bufio.NewScanner(strings.NewReader(pkgDocs))
 

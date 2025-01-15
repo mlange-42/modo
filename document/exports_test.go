@@ -23,7 +23,7 @@ Exports:
 
 Text
 `
-	proc := NewProcessor(nil, nil, false)
+	proc := NewProcessor(nil, nil, false, false)
 	exports := proc.parseExports(text)
 
 	assert.Equal(t, []string{"mod.Struct", "mod.Trait", "mod.func", "mod.submod"}, exports)

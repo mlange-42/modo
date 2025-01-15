@@ -30,6 +30,9 @@ func findLinks(text string) ([]int, error) {
 }
 
 func (proc *Processor) ProcessLinks(doc *Docs) error {
+	if proc.UseExports {
+		proc.collectExports(doc.Decl)
+	}
 	lookup := proc.collectPaths(doc)
 	//for k, v := range lookup {
 	//	fmt.Println(k, v.Elements)

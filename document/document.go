@@ -22,6 +22,7 @@ type Package struct {
 	Description string
 	Modules     []*Module
 	Packages    []*Package
+	Exports     []string // Additional field for package re-exports
 }
 
 type Module struct {
