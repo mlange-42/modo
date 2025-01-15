@@ -24,12 +24,12 @@ Exports:
 Text
 `
 	proc := NewProcessor(nil, nil, false, false)
-	exports := proc.parseExports(text, "pkg")
+	exports := proc.parseExports(text, []string{"pkg"})
 
 	assert.Equal(t, []PackageExport{
-		{Short: "mod.Struct", Long: "pkg.mod.Struct"},
-		{Short: "mod.Trait", Long: "pkg.mod.Trait"},
-		{Short: "mod.func", Long: "pkg.mod.func"},
-		{Short: "mod.submod", Long: "pkg.mod.submod"},
+		{Short: []string{"mod", "Struct"}, Long: []string{"pkg", "mod", "Struct"}},
+		{Short: []string{"mod", "Trait"}, Long: []string{"pkg", "mod", "Trait"}},
+		{Short: []string{"mod", "func"}, Long: []string{"pkg", "mod", "func"}},
+		{Short: []string{"mod", "submod"}, Long: []string{"pkg", "mod", "submod"}},
 	}, exports)
 }
