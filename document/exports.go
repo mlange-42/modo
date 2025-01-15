@@ -8,17 +8,37 @@ import (
 const exportsMarker = "Exports:"
 const exportsPrefix = "- "
 
-func (proc *Processor) collectExports(p *Package) {
-	for _, pkg := range p.Packages {
-		proc.collectExports(pkg)
-	}
-	p.Exports = proc.parseExports(p.Description)
+type PackageExport struct {
+	Short string
+	Long  string
 }
 
-func (proc *Processor) parseExports(pkgDocs string) []string {
+func (proc *Processor) collectExports(p *Package, elems []string) {
+	newElems := appendNew(elems, p.Name)
+	for _, pkg := range p.Packages {
+		proc.collectExports(pkg, newElems)
+	}
+
+	basePath := strings.Join(newElems, ".")
+	if proc.UseExports {
+		p.Exports = proc.parseExports(p.Description, basePath)
+		return
+	}
+
+	p.Exports = make([]PackageExport, 0, len(p.Packages)+len(p.Modules))
+	for _, pkg := range p.Packages {
+		p.Exports = append(p.Exports, PackageExport{Short: pkg.Name, Long: basePath + "." + pkg.Name})
+	}
+	for _, mod := range p.Modules {
+		p.Exports = append(p.Exports, PackageExport{Short: mod.Name, Long: basePath + "." + mod.Name})
+	}
+
+}
+
+func (proc *Processor) parseExports(pkgDocs string, basePath string) []PackageExport {
 	scanner := bufio.NewScanner(strings.NewReader(pkgDocs))
 
-	exports := []string{}
+	exports := []PackageExport{}
 	isExport := false
 	exportIndex := 0
 	for scanner.Scan() {
@@ -31,7 +51,8 @@ func (proc *Processor) parseExports(pkgDocs string) []string {
 				isExport = false
 				continue
 			}
-			exports = append(exports, line[len(exportsPrefix):])
+			short := line[len(exportsPrefix):]
+			exports = append(exports, PackageExport{Short: short, Long: basePath + "." + short})
 			exportIndex++
 		} else {
 			if line == exportsMarker {
