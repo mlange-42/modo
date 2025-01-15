@@ -55,7 +55,7 @@ func TestReplaceLinks(t *testing.T) {
 	}
 	elems := []string{"stdlib", "p", "Struct"}
 
-	proc := NewProcessor(&TestFormatter{}, nil)
+	proc := NewProcessor(&TestFormatter{}, nil, false)
 	out, err := proc.replaceLinks(text, elems, 2, lookup)
 	assert.Nil(t, err)
 
@@ -74,26 +74,31 @@ func TestToRelLink(t *testing.T) {
 	}
 	elems := []string{"stdlib", "p", "Struct"}
 
-	_, text, link, ok := toLink("..q.Struct3", elems, 2, lookup)
+	_, text, link, ok := toLink("..q.Struct3", elems, 2, lookup, false)
 	assert.True(t, ok)
 	assert.Equal(t, "`q.Struct3`", text)
 	assert.Equal(t, []string{"..", "q", "Struct"}, link)
 
-	_, _, link, ok = toLink(".Struct2", elems, 2, lookup)
+	_, _, link, ok = toLink(".Struct2", elems, 2, lookup, false)
 	assert.True(t, ok)
 	assert.Equal(t, []string{"Struct2"}, link)
 
-	_, _, link, ok = toLink(".Struct.member", elems, 2, lookup)
+	_, _, link, ok = toLink(".Struct.member", elems, 2, lookup, false)
 	assert.True(t, ok)
 	assert.Equal(t, []string{"Struct", "#member"}, link)
 
-	_, _, link, ok = toLink("..Trait", elems, 2, lookup)
+	_, _, link, ok = toLink("..Trait", elems, 2, lookup, false)
 	assert.True(t, ok)
 	assert.Equal(t, []string{"..", "Trait"}, link)
 
-	_, text, link, ok = toLink(".q.func", elems, 2, lookup)
+	_, text, link, ok = toLink(".q.func", elems, 2, lookup, false)
 	assert.True(t, ok)
 	assert.Equal(t, "`q.func`", text)
+	assert.Equal(t, []string{"q", "func"}, link)
+
+	_, text, link, ok = toLink(".q.func", elems, 2, lookup, true)
+	assert.True(t, ok)
+	assert.Equal(t, "`func`", text)
 	assert.Equal(t, []string{"q", "func"}, link)
 }
 
@@ -109,28 +114,38 @@ func TestToAbsLink(t *testing.T) {
 	}
 	elems := []string{"stdlib", "p", "Struct"}
 
-	_, text, link, ok := toLink("stdlib.q.Struct3 S3", elems, 2, lookup)
+	_, text, link, ok := toLink("stdlib.q.Struct3 S3", elems, 2, lookup, false)
 	assert.True(t, ok)
 	assert.Equal(t, "S3", text)
-	assert.Equal(t, []string{"..", "q", "Struct"}, link)
+	assert.Equal(t, []string{"..", "q", "Struct"}, link, false)
 
-	_, _, _, ok = toLink("", elems, 2, lookup)
+	_, _, _, ok = toLink("", elems, 2, lookup, false)
 	assert.False(t, ok)
 
-	_, _, link, ok = toLink("stdlib.p.Struct2", elems, 2, lookup)
+	_, _, link, ok = toLink("stdlib.p.Struct2", elems, 2, lookup, false)
 	assert.True(t, ok)
 	assert.Equal(t, []string{"Struct2"}, link)
 
-	_, _, link, ok = toLink("stdlib.p.Struct.member", elems, 2, lookup)
+	_, _, link, ok = toLink("stdlib.p.Struct.member", elems, 2, lookup, false)
 	assert.True(t, ok)
 	assert.Equal(t, []string{"Struct", "#member"}, link)
 
-	_, _, link, ok = toLink("stdlib.Trait", elems, 2, lookup)
+	_, text, link, ok = toLink("stdlib.p.Struct.member", elems, 2, lookup, true)
+	assert.True(t, ok)
+	assert.Equal(t, "`Struct.member`", text)
+	assert.Equal(t, []string{"Struct", "#member"}, link)
+
+	_, _, link, ok = toLink("stdlib.Trait", elems, 2, lookup, false)
 	assert.True(t, ok)
 	assert.Equal(t, []string{"..", "Trait"}, link)
 
-	_, text, link, ok = toLink("stdlib.p.q.func", elems, 2, lookup)
+	_, text, link, ok = toLink("stdlib.p.q.func", elems, 2, lookup, false)
 	assert.True(t, ok)
 	assert.Equal(t, "`stdlib.p.q.func`", text)
+	assert.Equal(t, []string{"q", "func"}, link)
+
+	_, text, link, ok = toLink("stdlib.p.q.func", elems, 2, lookup, true)
+	assert.True(t, ok)
+	assert.Equal(t, "`func`", text)
 	assert.Equal(t, []string{"q", "func"}, link)
 }

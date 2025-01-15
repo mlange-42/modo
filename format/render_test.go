@@ -31,7 +31,7 @@ func TestRenderPackage(tt *testing.T) {
 	templ, err := loadTemplates(&form)
 	assert.Nil(tt, err)
 
-	proc := document.NewProcessor(&form, templ)
+	proc := document.NewProcessor(&form, templ, false)
 
 	text, err := renderElement(&pkg, &proc)
 	assert.Nil(tt, err)
@@ -64,7 +64,7 @@ func TestRenderModule(tt *testing.T) {
 	templ, err := loadTemplates(&form)
 	assert.Nil(tt, err)
 
-	proc := document.NewProcessor(&form, templ)
+	proc := document.NewProcessor(&form, templ, false)
 
 	text, err := renderElement(&mod, &proc)
 	if err != nil {

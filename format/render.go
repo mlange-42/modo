@@ -11,13 +11,13 @@ import (
 	"github.com/mlange-42/modo/document"
 )
 
-func Render(docs *document.Docs, dir string, rFormat Format) error {
+func Render(docs *document.Docs, dir string, rFormat Format, shortLinks bool) error {
 	formatter := GetFormatter(rFormat)
 	t, err := loadTemplates(formatter)
 	if err != nil {
 		return err
 	}
-	proc := document.NewProcessor(formatter, t)
+	proc := document.NewProcessor(formatter, t, shortLinks)
 	err = proc.ProcessLinks(docs)
 	if err != nil {
 		return err
