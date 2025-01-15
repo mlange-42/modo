@@ -83,8 +83,9 @@ func TestCollectPaths(t *testing.T) {
 	}
 
 	proc := NewProcessor(&docs, nil, nil, false, false)
-	p := proc.collectPaths()
-	assert.Equal(t, 11, len(p))
+	proc.ExportDocs = &docs
+	proc.collectPaths()
+	assert.Equal(t, 11, len(proc.linkTargets))
 
 	tests := []struct {
 		mem string
@@ -99,7 +100,7 @@ func TestCollectPaths(t *testing.T) {
 	}
 
 	for _, tt := range tests {
-		obs, ok := p[tt.mem]
+		obs, ok := proc.linkTargets[tt.mem]
 		assert.Equal(t, tt.ok, ok)
 		assert.Equal(t, tt.exp, obs.Elements)
 	}

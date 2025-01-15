@@ -8,78 +8,89 @@ type elemPath struct {
 	IsSection bool
 }
 
-func (proc *Processor) collectPaths() map[string]elemPath {
-	out := map[string]elemPath{}
-	proc.collectPathsPackage(proc.Docs.Decl, []string{}, []string{}, out)
-	return out
+func (proc *Processor) collectPaths() {
+	proc.linkTargets = map[string]elemPath{}
+	proc.collectPathsPackage(proc.ExportDocs.Decl, []string{}, []string{})
 }
 
-func (proc *Processor) collectPathsPackage(p *Package, elems []string, pathElem []string, out map[string]elemPath) {
+func (proc *Processor) collectPathsPackage(p *Package, elems []string, pathElem []string) {
 	newElems := appendNew(elems, p.GetName())
 	newPath := appendNew(pathElem, p.GetFileName())
-	out[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "package", IsSection: false}
+	proc.linkTargets[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "package", IsSection: false}
 
 	for _, pkg := range p.Packages {
-		proc.collectPathsPackage(pkg, newElems, newPath, out)
+		proc.collectPathsPackage(pkg, newElems, newPath)
 	}
 	for _, mod := range p.Modules {
-		proc.collectPathsModule(mod, newElems, newPath, out)
+		proc.collectPathsModule(mod, newElems, newPath)
+	}
+
+	for _, s := range p.Structs {
+		proc.collectPathsStruct(s, newElems, newPath)
+	}
+	for _, t := range p.Traits {
+		proc.collectPathsTrait(t, newElems, newPath)
+	}
+	for _, f := range p.Functions {
+		newElems := appendNew(newElems, f.GetName())
+		newPath := appendNew(newPath, f.GetFileName())
+		proc.linkTargets[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member", IsSection: false}
 	}
 }
 
-func (proc *Processor) collectPathsModule(m *Module, elems []string, pathElem []string, out map[string]elemPath) {
+func (proc *Processor) collectPathsModule(m *Module, elems []string, pathElem []string) {
 	newElems := appendNew(elems, m.GetName())
 	newPath := appendNew(pathElem, m.GetFileName())
-	out[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "module", IsSection: false}
+	proc.linkTargets[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "module", IsSection: false}
 
 	for _, s := range m.Structs {
-		proc.collectPathsStruct(s, newElems, newPath, out)
+		proc.collectPathsStruct(s, newElems, newPath)
 	}
 	for _, t := range m.Traits {
-		proc.collectPathsTrait(t, newElems, newPath, out)
+		proc.collectPathsTrait(t, newElems, newPath)
 	}
 	for _, f := range m.Functions {
 		newElems := appendNew(newElems, f.GetName())
 		newPath := appendNew(newPath, f.GetFileName())
-		out[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member", IsSection: false}
+		proc.linkTargets[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member", IsSection: false}
 	}
 }
 
-func (proc *Processor) collectPathsStruct(s *Struct, elems []string, pathElem []string, out map[string]elemPath) {
+func (proc *Processor) collectPathsStruct(s *Struct, elems []string, pathElem []string) {
 	newElems := appendNew(elems, s.GetName())
 	newPath := appendNew(pathElem, s.GetFileName())
-	out[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member", IsSection: false}
+	proc.linkTargets[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member", IsSection: false}
 
 	for _, f := range s.Parameters {
 		newElems := appendNew(newElems, f.GetName())
 		newPath := appendNew(newPath, "#parameters")
-		out[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member", IsSection: true}
+		proc.linkTargets[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member", IsSection: true}
 	}
 	for _, f := range s.Fields {
 		newElems := appendNew(newElems, f.GetName())
 		newPath := appendNew(newPath, "#fields")
-		out[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member", IsSection: true}
+		proc.linkTargets[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member", IsSection: true}
 	}
 	for _, f := range s.Functions {
 		newElems := appendNew(newElems, f.GetName())
 		newPath := appendNew(newPath, "#"+strings.ToLower(f.GetName()))
-		out[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member", IsSection: true}
+		proc.linkTargets[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member", IsSection: true}
 	}
 }
 
-func (proc *Processor) collectPathsTrait(t *Trait, elems []string, pathElem []string, out map[string]elemPath) {
+func (proc *Processor) collectPathsTrait(t *Trait, elems []string, pathElem []string) {
 	newElems := appendNew(elems, t.GetName())
 	newPath := appendNew(pathElem, t.GetFileName())
-	out[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member", IsSection: false}
+	proc.linkTargets[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member", IsSection: false}
 
 	for _, f := range t.Fields {
 		newElems := appendNew(newElems, f.GetName())
 		newPath := appendNew(newPath, "#fields")
-		out[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member", IsSection: true}
+		proc.linkTargets[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member", IsSection: true}
 	}
 	for _, f := range t.Functions {
 		newElems := appendNew(newElems, f.GetName())
 		newPath := appendNew(newPath, "#"+strings.ToLower(f.GetName()))
-		out[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member", IsSection: true}
+		proc.linkTargets[strings.Join(newElems, ".")] = elemPath{Elements: newPath, Kind: "member", IsSection: true}
 	}
 }

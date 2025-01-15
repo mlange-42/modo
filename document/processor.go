@@ -5,12 +5,13 @@ import (
 )
 
 type Processor struct {
-	Template   *template.Template
-	Formatter  Formatter
-	UseExports bool
-	ShortLinks bool
-	Docs       *Docs
-	ExportDocs *Docs
+	Template    *template.Template
+	Formatter   Formatter
+	UseExports  bool
+	ShortLinks  bool
+	Docs        *Docs
+	ExportDocs  *Docs
+	linkTargets map[string]elemPath
 }
 
 func NewProcessor(docs *Docs, f Formatter, t *template.Template, useExports bool, shortLinks bool) Processor {
