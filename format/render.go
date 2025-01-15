@@ -23,12 +23,12 @@ func Render(docs *document.Docs, dir string, rFormat Format, useExports bool, sh
 		return err
 	}
 
-	err = renderPackage(docs.Decl, dir, &proc)
+	err = renderPackage(proc.ExportDocs.Decl, dir, &proc)
 	if err != nil {
 		return err
 	}
 
-	if err := proc.Formatter.WriteAuxiliary(docs.Decl, dir, &proc); err != nil {
+	if err := proc.Formatter.WriteAuxiliary(proc.ExportDocs.Decl, dir, &proc); err != nil {
 		return err
 	}
 
@@ -52,114 +52,6 @@ func renderElement(data interface {
 }
 
 func renderPackage(p *document.Package, dir string, proc *document.Processor) error {
-	if proc.UseExports {
-		return renderPackageExports(p, dir, proc, &member{Include: true})
-	} else {
-		return renderPackageNoExports(p, dir, proc)
-	}
-}
-
-func renderPackageExports(p *document.Package, dir string, proc *document.Processor, parentMembers *member) error {
-	selfIncluded, toCrawl := collectExportMembers(parentMembers)
-	collectExportsPackage(p, toCrawl)
-
-	var pkgPath, pkgFile string
-	if selfIncluded {
-		pkgPath = path.Join(dir, p.GetFileName())
-		if err := mkDirs(pkgPath); err != nil {
-			return err
-		}
-		var err error
-		pkgFile, err = proc.Formatter.ToFilePath(pkgPath, "package")
-		if err != nil {
-			return err
-		}
-	} else {
-		pkgPath = dir
-	}
-
-	for _, pkg := range p.Packages {
-		if mems, ok := toCrawl[pkg.Name]; ok {
-			for _, m := range mems.Members {
-				if err := renderPackageExports(pkg, pkgPath, proc, &m); err != nil {
-					return err
-				}
-			}
-		}
-	}
-
-	for _, mod := range p.Modules {
-		if mems, ok := toCrawl[mod.Name]; ok {
-			for _, m := range mems.Members {
-				if err := renderModuleExports(mod, pkgPath, proc, &m); err != nil {
-					return err
-				}
-			}
-		}
-	}
-
-	if selfIncluded {
-		text, err := renderElement(p, proc)
-		if err != nil {
-			return err
-		}
-		if err := os.WriteFile(pkgFile, []byte(text), 0666); err != nil {
-			return err
-		}
-	}
-
-	return nil
-}
-
-type members struct {
-	Members []member
-}
-
-type member struct {
-	Include bool
-	RelPath []string
-}
-
-func collectExportMembers(parentMember *member) (selfIncluded bool, toCrawl map[string]*members) {
-	selfIncluded = false
-	toCrawl = map[string]*members{}
-
-	if parentMember.Include {
-		selfIncluded = true
-		return
-	}
-	var newMember member
-	if len(parentMember.RelPath) == 1 {
-		newMember = member{Include: true}
-	} else {
-		newMember = member{RelPath: parentMember.RelPath[1:]}
-	}
-	if members, ok := toCrawl[parentMember.RelPath[0]]; ok {
-		members.Members = append(members.Members, newMember)
-		return
-	}
-	toCrawl[parentMember.RelPath[0]] = &members{Members: []member{newMember}}
-
-	return
-}
-
-func collectExportsPackage(p *document.Package, out map[string]*members) {
-	for _, ex := range p.Exports {
-		var newMember member
-		if len(ex.Short) == 1 {
-			newMember = member{Include: true}
-		} else {
-			newMember = member{RelPath: ex.Short[1:]}
-		}
-		if members, ok := out[ex.Short[0]]; ok {
-			members.Members = append(members.Members, newMember)
-			continue
-		}
-		out[ex.Short[0]] = &members{Members: []member{newMember}}
-	}
-}
-
-func renderPackageNoExports(p *document.Package, dir string, proc *document.Processor) error {
 	pkgPath := path.Join(dir, p.GetFileName())
 	if err := mkDirs(pkgPath); err != nil {
 		return err
@@ -171,16 +63,26 @@ func renderPackageNoExports(p *document.Package, dir string, proc *document.Proc
 	}
 
 	for _, pkg := range p.Packages {
-		if err := renderPackageNoExports(pkg, pkgPath, proc); err != nil {
+		if err := renderPackage(pkg, pkgPath, proc); err != nil {
 			return err
 		}
 	}
 
 	for _, mod := range p.Modules {
 		modPath := path.Join(pkgPath, mod.GetFileName())
-		if err := renderModuleNoExports(mod, modPath, proc); err != nil {
+		if err := renderModule(mod, modPath, proc); err != nil {
 			return err
 		}
+	}
+
+	if err := renderList(p.Structs, pkgPath, proc); err != nil {
+		return err
+	}
+	if err := renderList(p.Traits, pkgPath, proc); err != nil {
+		return err
+	}
+	if err := renderList(p.Functions, pkgPath, proc); err != nil {
+		return err
 	}
 
 	text, err := renderElement(p, proc)
@@ -194,29 +96,7 @@ func renderPackageNoExports(p *document.Package, dir string, proc *document.Proc
 	return nil
 }
 
-func renderModuleExports(mod *document.Module, dir string, proc *document.Processor, parentMember *member) error {
-	selfIncluded, _ := collectExportMembers(parentMember)
-
-	if selfIncluded {
-		return renderModuleNoExports(mod, dir, proc)
-	}
-
-	modPath := dir
-
-	if err := renderList(mod.Structs, modPath, proc); err != nil {
-		return err
-	}
-	if err := renderList(mod.Traits, modPath, proc); err != nil {
-		return err
-	}
-	if err := renderList(mod.Functions, modPath, proc); err != nil {
-		return err
-	}
-
-	return nil
-}
-
-func renderModuleNoExports(mod *document.Module, dir string, proc *document.Processor) error {
+func renderModule(mod *document.Module, dir string, proc *document.Processor) error {
 	modPath := path.Join(dir, mod.GetFileName())
 	if err := mkDirs(modPath); err != nil {
 		return err
