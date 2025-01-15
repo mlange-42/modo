@@ -23,6 +23,19 @@ type Package struct {
 	Modules     []*Module
 	Packages    []*Package
 	Exports     []*PackageExport // Additional field for package re-exports
+	Functions   []*Function      // Additional field for package re-exports
+	Structs     []*Struct        // Additional field for package re-exports
+	Traits      []*Trait         // Additional field for package re-exports
+}
+
+func (p *Package) copyEmpty() *Package {
+	return &Package{
+		MemberName:    NewName(p.Name),
+		MemberKind:    NewKind(p.Kind),
+		MemberSummary: NewSummary(p.Summary),
+		Description:   p.Description,
+		Exports:       p.Exports,
+	}
 }
 
 type Module struct {
