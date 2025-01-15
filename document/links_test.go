@@ -3,7 +3,6 @@ package document
 import (
 	"path"
 	"testing"
-	"text/template"
 
 	"github.com/stretchr/testify/assert"
 )
@@ -14,7 +13,7 @@ func (f *TestFormatter) ProcessMarkdown(name, summary, text string) (string, err
 	return text, nil
 }
 
-func (f *TestFormatter) WriteAuxiliary(p *Package, dir string, t *template.Template) error {
+func (f *TestFormatter) WriteAuxiliary(p *Package, dir string, proc *Processor) error {
 	return nil
 }
 

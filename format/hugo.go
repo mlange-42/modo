@@ -3,7 +3,6 @@ package format
 import (
 	"fmt"
 	"path"
-	"text/template"
 
 	"github.com/mlange-42/modo/document"
 )
@@ -23,7 +22,7 @@ func (f *HugoFormatter) ProcessMarkdown(name, summary, text string) (string, err
 	return fmt.Sprintf(hugoFrontMatter, name, summary, text), nil
 }
 
-func (f *HugoFormatter) WriteAuxiliary(p *document.Package, dir string, t *template.Template) error {
+func (f *HugoFormatter) WriteAuxiliary(p *document.Package, dir string, proc *document.Processor) error {
 	return nil
 }
 

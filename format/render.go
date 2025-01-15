@@ -28,7 +28,7 @@ func Render(docs *document.Docs, dir string, rFormat Format, useExports bool, sh
 		return err
 	}
 
-	if err := proc.Formatter.WriteAuxiliary(docs.Decl, dir, t); err != nil {
+	if err := proc.Formatter.WriteAuxiliary(docs.Decl, dir, &proc); err != nil {
 		return err
 	}
 
@@ -70,19 +70,7 @@ type member struct {
 
 func renderPackageExports(p *document.Package, dir string, proc *document.Processor, parentMembers *member) error {
 	selfIncluded, toCrawl := collectExportMembers(parentMembers)
-	for _, ex := range p.Exports {
-		var newMember member
-		if len(ex.Short) == 1 {
-			newMember = member{Include: true}
-		} else {
-			newMember = member{RelPath: ex.Short[1:]}
-		}
-		if members, ok := toCrawl[ex.Short[0]]; ok {
-			members.Members = append(members.Members, newMember)
-			continue
-		}
-		toCrawl[ex.Short[0]] = &members{Members: []member{newMember}}
-	}
+	collectExportsPackage(p, toCrawl)
 
 	var pkgPath, pkgFile string
 	if selfIncluded {
@@ -153,6 +141,22 @@ func collectExportMembers(parentMember *member) (selfIncluded bool, toCrawl map[
 	toCrawl[parentMember.RelPath[0]] = &members{Members: []member{newMember}}
 
 	return
+}
+
+func collectExportsPackage(p *document.Package, out map[string]*members) {
+	for _, ex := range p.Exports {
+		var newMember member
+		if len(ex.Short) == 1 {
+			newMember = member{Include: true}
+		} else {
+			newMember = member{RelPath: ex.Short[1:]}
+		}
+		if members, ok := out[ex.Short[0]]; ok {
+			members.Members = append(members.Members, newMember)
+			continue
+		}
+		out[ex.Short[0]] = &members{Members: []member{newMember}}
+	}
 }
 
 func renderPackageNoExports(p *document.Package, dir string, proc *document.Processor) error {
