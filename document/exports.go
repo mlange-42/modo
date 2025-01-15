@@ -24,20 +24,20 @@ func (proc *Processor) collectExports(p *Package, elems []string) {
 		return
 	}
 
-	p.Exports = make([]PackageExport, 0, len(p.Packages)+len(p.Modules))
+	p.Exports = make([]*PackageExport, 0, len(p.Packages)+len(p.Modules))
 	for _, pkg := range p.Packages {
-		p.Exports = append(p.Exports, PackageExport{Short: []string{pkg.Name}, Long: appendNew(newElems, pkg.Name)})
+		p.Exports = append(p.Exports, &PackageExport{Short: []string{pkg.Name}, Long: appendNew(newElems, pkg.Name)})
 	}
 	for _, mod := range p.Modules {
-		p.Exports = append(p.Exports, PackageExport{Short: []string{mod.Name}, Long: appendNew(newElems, mod.Name)})
+		p.Exports = append(p.Exports, &PackageExport{Short: []string{mod.Name}, Long: appendNew(newElems, mod.Name)})
 	}
 
 }
 
-func (proc *Processor) parseExports(pkgDocs string, basePath []string) []PackageExport {
+func (proc *Processor) parseExports(pkgDocs string, basePath []string) []*PackageExport {
 	scanner := bufio.NewScanner(strings.NewReader(pkgDocs))
 
-	exports := []PackageExport{}
+	exports := []*PackageExport{}
 	isExport := false
 	exportIndex := 0
 	for scanner.Scan() {
@@ -52,7 +52,7 @@ func (proc *Processor) parseExports(pkgDocs string, basePath []string) []Package
 			}
 			short := line[len(exportsPrefix):]
 			parts := strings.Split(short, ".")
-			exports = append(exports, PackageExport{Short: parts, Long: appendNew(basePath, parts...)})
+			exports = append(exports, &PackageExport{Short: parts, Long: appendNew(basePath, parts...)})
 			exportIndex++
 		} else {
 			if line == exportsMarker {
