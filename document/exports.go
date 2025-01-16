@@ -20,7 +20,7 @@ func (proc *Processor) collectExports(p *Package, elems []string) {
 	}
 
 	if proc.UseExports {
-		p.Exports = proc.parseExports(p.Description, newElems)
+		p.Exports, p.Description = proc.parseExports(p.Description, newElems, true)
 		return
 	}
 
@@ -33,19 +33,23 @@ func (proc *Processor) collectExports(p *Package, elems []string) {
 	}
 }
 
-func (proc *Processor) parseExports(pkgDocs string, basePath []string) []*PackageExport {
+func (proc *Processor) parseExports(pkgDocs string, basePath []string, remove bool) ([]*PackageExport, string) {
 	scanner := bufio.NewScanner(strings.NewReader(pkgDocs))
 
+	outText := strings.Builder{}
 	exports := []*PackageExport{}
 	isExport := false
 	exportIndex := 0
 	for scanner.Scan() {
-		line := strings.TrimSpace(scanner.Text())
+		origLine := scanner.Text()
+		line := strings.TrimSpace(origLine)
 		if isExport {
 			if exportIndex == 0 && line == "" {
 				continue
 			}
 			if !strings.HasPrefix(line, exportsPrefix) {
+				outText.WriteString(line)
+				outText.WriteRune('\n')
 				isExport = false
 				continue
 			}
@@ -57,11 +61,17 @@ func (proc *Processor) parseExports(pkgDocs string, basePath []string) []*Packag
 			if line == exportsMarker {
 				isExport = true
 				exportIndex = 0
+				continue
 			}
+			outText.WriteString(line)
+			outText.WriteRune('\n')
 		}
 	}
 	if err := scanner.Err(); err != nil {
 		panic(err)
 	}
-	return exports
+	if remove {
+		return exports, outText.String()
+	}
+	return exports, pkgDocs
 }
