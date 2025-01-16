@@ -1,6 +1,15 @@
-/*.json
+# build output
 /modo
 /modo.exe
+
+# coverage report
 /coverage.out
+
+# test files
+/*.json
+/*.yaml
+/*.yml
+
+# test directories
 /out/
 /test/

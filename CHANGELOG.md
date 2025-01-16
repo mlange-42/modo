@@ -3,6 +3,7 @@
 ### Features
 
 * Implements output customization by (partial) template overwrites (#48)
+* Adds support for YAML input, particularly for shorter test files (#49)
 
 ### Bugfixes
 

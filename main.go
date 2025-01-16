@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"io"
 	"os"
+	"strings"
 
 	"github.com/mlange-42/modo/document"
 	"github.com/mlange-42/modo/format"
@@ -68,12 +69,7 @@ func run(args *args) error {
 		return fmt.Errorf("no output path given")
 	}
 
-	data, err := read(args.file)
-	if err != nil {
-		return err
-	}
-
-	docs, err := document.FromJson(data)
+	docs, err := readDocs(args.file)
 	if err != nil {
 		return err
 	}
@@ -92,6 +88,19 @@ func run(args *args) error {
 	}
 
 	return nil
+}
+
+func readDocs(file string) (*document.Docs, error) {
+	data, err := read(file)
+	if err != nil {
+		return nil, err
+	}
+
+	if strings.HasSuffix(file, ".yaml") || strings.HasSuffix(file, ".yml") {
+		return document.FromYaml(data)
+	}
+
+	return document.FromJson(data)
 }
 
 func read(file string) ([]byte, error) {
