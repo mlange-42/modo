@@ -10,12 +10,14 @@ import (
 func createFilterTestDocs() *Docs {
 	return &Docs{
 		Decl: &Package{
-			MemberKind: NewKind("package"),
-			MemberName: NewName("pkg"),
+			MemberKind:        NewKind("package"),
+			MemberName:        NewName("pkg"),
+			MemberDescription: NewDescription(""),
 			Packages: []*Package{
 				{
-					MemberKind: NewKind("package"),
-					MemberName: NewName("subpkg"),
+					MemberKind:        NewKind("package"),
+					MemberName:        NewName("subpkg"),
+					MemberDescription: NewDescription(""),
 					Modules: []*Module{
 						{
 							MemberKind: NewKind("module"),
