@@ -13,7 +13,11 @@ It generates Markdown for static site generators (SSGs) from `mojo doc` JSON out
 
 [This example](https://mlange-42.github.io/modo/) shows the Mojo [stdlib](https://github.com/modularml/mojo) processed with Modo and rendered with [mdBook](https://github.com/rust-lang/mdBook).
 
-**! Early work in progress !**
+## Features
+
+* Generates API docs websites for [Hugo](#hugo), [mdBook](#mdbook) or just [plain](#plain-markdown) Markdown.
+* Resolves and renders [cross-references](#cross-referencing).
+* Optionally structures docs according to [package re-exports](#package-re-exports).
 
 ## Installation
 
@@ -104,3 +108,37 @@ Some examples:
 Leading dots are stripped from the link text if no custom text is given.
 
 Besides that, normal Markdown links can be used.
+
+## Package re-exports
+
+In mojo, package-level re-exports (or rather, imports) can be used
+to flatten the structure of a package and shorten import paths for users.
+
+Modo can structure documentation output according to re-exports using the flag `--exports`.
+However, as we don't look at the actual code but just `mojo doc` JSON,
+these re-exports must be documented in an `Exports:` section in the package docstring.
+
+In a package's `__init__.mojo`, document re-exports like this:
+
+```python
+"""
+Package creatures demonstrates Modo re-exports.
+
+Exports:
+ - animals.vertebrates.Cat
+ - animals.vertebrates.Dog
+ - plants.vascular
+ - fungi
+"""
+from .animals.vertebrates import Cat, Dog
+from .plants import vascular
+```
+
+> Note that `Exports:` should not be the first line of the docstring, as it is considered the summary and is not processed.
+
+When processed with `--exports`, only exported members are included in the documentation.
+Re-exports are processed recursively.
+This means that sub-packages need an `Exports:` section too if they are re-exported directly,
+like `fungi` in the example.
+For exporting members from a sub-package (like `Cat` and `Doc`), the sub-package `Exports:` are ignored.
+Re-exported modules (like `plants.vascular`) are included completely.
