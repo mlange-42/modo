@@ -2,6 +2,7 @@ package format
 
 import (
 	"fmt"
+	"io"
 	"io/fs"
 	"os"
 	"path"
@@ -18,11 +19,11 @@ func (f *MdBookFormatter) ProcessMarkdown(name, summary, text string) (string, e
 	return text, nil
 }
 
-func (f *MdBookFormatter) WriteAuxiliary(p *document.Package, dir string, t *template.Template) error {
-	if err := f.writeSummary(p, dir, t); err != nil {
+func (f *MdBookFormatter) WriteAuxiliary(p *document.Package, dir string, proc *document.Processor) error {
+	if err := f.writeSummary(p, dir, proc); err != nil {
 		return err
 	}
-	if err := f.writeToml(p, dir, t); err != nil {
+	if err := f.writeToml(p, dir, proc.Template); err != nil {
 		return err
 	}
 	if err := f.writeCss(dir); err != nil {
@@ -43,13 +44,16 @@ func (f *MdBookFormatter) ToLinkPath(p string, kind string) (string, error) {
 }
 
 type summary struct {
-	Summary  string
-	Packages string
-	Modules  string
+	Summary   string
+	Packages  string
+	Modules   string
+	Structs   string
+	Traits    string
+	Functions string
 }
 
-func (f *MdBookFormatter) writeSummary(p *document.Package, dir string, t *template.Template) error {
-	summary, err := f.renderSummary(p, t)
+func (f *MdBookFormatter) writeSummary(p *document.Package, dir string, proc *document.Processor) error {
+	summary, err := f.renderSummary(p, proc)
 	if err != nil {
 		return err
 	}
@@ -60,7 +64,7 @@ func (f *MdBookFormatter) writeSummary(p *document.Package, dir string, t *templ
 	return nil
 }
 
-func (f *MdBookFormatter) renderSummary(p *document.Package, t *template.Template) (string, error) {
+func (f *MdBookFormatter) renderSummary(p *document.Package, proc *document.Processor) (string, error) {
 	s := summary{}
 
 	pkgFile, err := f.ToLinkPath("", "package")
@@ -71,7 +75,7 @@ func (f *MdBookFormatter) renderSummary(p *document.Package, t *template.Templat
 
 	pkgs := strings.Builder{}
 	for _, p := range p.Packages {
-		if err := f.renderPackage(p, t, []string{}, &pkgs); err != nil {
+		if err := f.renderPackage(p, proc.Template, nil, &pkgs); err != nil {
 			return "", err
 		}
 	}
@@ -79,14 +83,36 @@ func (f *MdBookFormatter) renderSummary(p *document.Package, t *template.Templat
 
 	mods := strings.Builder{}
 	for _, m := range p.Modules {
-		if err := f.renderModule(m, []string{}, &mods); err != nil {
+		if err := f.renderModule(m, nil, &mods); err != nil {
 			return "", err
 		}
 	}
 	s.Modules = mods.String()
 
+	elems := strings.Builder{}
+	for _, elem := range p.Structs {
+		if err := f.renderModuleMember(elem, "", 0, &elems); err != nil {
+			return "", err
+		}
+	}
+	s.Structs = elems.String()
+	elems = strings.Builder{}
+	for _, elem := range p.Traits {
+		if err := f.renderModuleMember(elem, "", 0, &elems); err != nil {
+			return "", err
+		}
+	}
+	s.Traits = elems.String()
+	elems = strings.Builder{}
+	for _, elem := range p.Functions {
+		if err := f.renderModuleMember(elem, "", 0, &elems); err != nil {
+			return "", err
+		}
+	}
+	s.Functions = elems.String()
+
 	b := strings.Builder{}
-	if err := t.ExecuteTemplate(&b, "mdbook_summary.md", &s); err != nil {
+	if err := proc.Template.ExecuteTemplate(&b, "mdbook_summary.md", &s); err != nil {
 		return "", err
 	}
 
@@ -113,6 +139,25 @@ func (f *MdBookFormatter) renderPackage(pkg *document.Package, t *template.Templ
 			return err
 		}
 	}
+
+	pathStr := path.Join(newPath...)
+	childDepth := 2*(len(newPath)-1) + 2
+	for _, elem := range pkg.Structs {
+		if err := f.renderModuleMember(elem, pathStr, childDepth, out); err != nil {
+			return err
+		}
+	}
+	for _, elem := range pkg.Traits {
+		if err := f.renderModuleMember(elem, pathStr, childDepth, out); err != nil {
+			return err
+		}
+	}
+	for _, elem := range pkg.Functions {
+		if err := f.renderModuleMember(elem, pathStr, childDepth, out); err != nil {
+			return err
+		}
+	}
+
 	return nil
 }
 
@@ -126,30 +171,33 @@ func (f *MdBookFormatter) renderModule(mod *document.Module, linkPath []string, 
 	if err != nil {
 		return err
 	}
+	fmt.Fprintf(out, "%-*s- [`%s`](%s)\n", 2*(len(newPath)-1), "", mod.GetName(), modFile)
 
-	fmt.Fprintf(out, "%-*s- [`%s`](%s)\n", 2*len(linkPath), "", mod.GetName(), modFile)
+	childDepth := 2*(len(newPath)-1) + 2
+	for _, elem := range mod.Structs {
+		if err := f.renderModuleMember(elem, pathStr, childDepth, out); err != nil {
+			return err
+		}
+	}
+	for _, elem := range mod.Traits {
+		if err := f.renderModuleMember(elem, pathStr, childDepth, out); err != nil {
+			return err
+		}
+	}
+	for _, elem := range mod.Functions {
+		if err := f.renderModuleMember(elem, pathStr, childDepth, out); err != nil {
+			return err
+		}
+	}
+	return nil
+}
 
-	for _, s := range mod.Structs {
-		memPath, err := f.ToLinkPath(path.Join(pathStr, s.GetFileName(), ""), "")
-		if err != nil {
-			return err
-		}
-		fmt.Fprintf(out, "%-*s- [`%s`](%s)\n", 2*len(linkPath)+2, "", s.GetName(), memPath)
+func (f *MdBookFormatter) renderModuleMember(mem document.Named, pathStr string, depth int, out io.Writer) error {
+	memPath, err := f.ToLinkPath(path.Join(pathStr, mem.GetFileName(), ""), "")
+	if err != nil {
+		return err
 	}
-	for _, tr := range mod.Traits {
-		memPath, err := f.ToLinkPath(path.Join(pathStr, tr.GetFileName(), ""), "")
-		if err != nil {
-			return err
-		}
-		fmt.Fprintf(out, "%-*s- [`%s`](%s)\n", 2*len(linkPath)+2, "", tr.GetName(), memPath)
-	}
-	for _, ff := range mod.Functions {
-		memPath, err := f.ToLinkPath(path.Join(pathStr, ff.GetFileName(), ""), "")
-		if err != nil {
-			return err
-		}
-		fmt.Fprintf(out, "%-*s- [`%s`](%s)\n", 2*len(linkPath)+2, "", ff.GetName(), memPath)
-	}
+	fmt.Fprintf(out, "%-*s- [`%s`](%s)\n", depth, "", mem.GetName(), memPath)
 	return nil
 }
 

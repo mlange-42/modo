@@ -8,5 +8,8 @@ Mojo package
 {{if .Description}}{{.Description}}
 
 {{end -}}
+{{template "structs" .}}
+{{template "traits" .}}
+{{template "functions" .}}
 {{template "modules" .}}
 {{template "packages" .}}

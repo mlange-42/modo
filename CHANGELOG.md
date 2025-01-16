@@ -3,6 +3,7 @@
 ### Features
 
 * Adds CLI flag `--short-links` to strip packages and modules from link labels (#41)
+* Supports re-structuring doc output according to package re-exports (#42)
 
 ## [[v0.4.0]](https://github.com/mlange-42/modo/compare/v0.3.0...v0.4.0)
 

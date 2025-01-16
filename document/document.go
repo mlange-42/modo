@@ -18,10 +18,24 @@ type Docs struct {
 type Package struct {
 	MemberKind
 	MemberName
-	MemberSummary
-	Description string
-	Modules     []*Module
-	Packages    []*Package
+	*MemberSummary
+	*MemberDescription
+	Modules   []*Module
+	Packages  []*Package
+	Exports   []*PackageExport // Additional field for package re-exports
+	Functions []*Function      // Additional field for package re-exports
+	Structs   []*Struct        // Additional field for package re-exports
+	Traits    []*Trait         // Additional field for package re-exports
+}
+
+func (p *Package) linkedCopy() *Package {
+	return &Package{
+		MemberName:        NewName(p.Name),
+		MemberKind:        NewKind(p.Kind),
+		MemberSummary:     p.MemberSummary,
+		MemberDescription: p.MemberDescription,
+		Exports:           p.Exports,
+	}
 }
 
 type Module struct {
@@ -186,12 +200,24 @@ type MemberSummary struct {
 	Summary string
 }
 
-func NewSummary(summary string) MemberSummary {
-	return MemberSummary{Summary: summary}
+func NewSummary(summary string) *MemberSummary {
+	return &MemberSummary{Summary: summary}
 }
 
 func (k *MemberSummary) GetSummary() string {
 	return k.Summary
+}
+
+type MemberDescription struct {
+	Description string
+}
+
+func NewDescription(description string) *MemberDescription {
+	return &MemberDescription{Description: description}
+}
+
+func (k *MemberDescription) GetDescription() string {
+	return k.Description
 }
 
 func isCap(s string) bool {

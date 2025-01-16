@@ -11,24 +11,24 @@ import (
 	"github.com/mlange-42/modo/document"
 )
 
-func Render(docs *document.Docs, dir string, rFormat Format, shortLinks bool) error {
+func Render(docs *document.Docs, dir string, rFormat Format, useExports bool, shortLinks bool) error {
 	formatter := GetFormatter(rFormat)
 	t, err := loadTemplates(formatter)
 	if err != nil {
 		return err
 	}
-	proc := document.NewProcessor(formatter, t, shortLinks)
-	err = proc.ProcessLinks(docs)
+	proc := document.NewProcessor(docs, formatter, t, useExports, shortLinks)
+	err = proc.ProcessLinks()
 	if err != nil {
 		return err
 	}
 
-	err = renderPackage(docs.Decl, dir, &proc)
+	err = renderPackage(proc.ExportDocs.Decl, dir, &proc)
 	if err != nil {
 		return err
 	}
 
-	if err := proc.Formatter.WriteAuxiliary(docs.Decl, dir, t); err != nil {
+	if err := proc.Formatter.WriteAuxiliary(proc.ExportDocs.Decl, dir, &proc); err != nil {
 		return err
 	}
 
@@ -69,10 +69,19 @@ func renderPackage(p *document.Package, dir string, proc *document.Processor) er
 	}
 
 	for _, mod := range p.Modules {
-		modPath := path.Join(pkgPath, mod.GetFileName())
-		if err := renderModule(mod, modPath, proc); err != nil {
+		if err := renderModule(mod, pkgPath, proc); err != nil {
 			return err
 		}
+	}
+
+	if err := renderList(p.Structs, pkgPath, proc); err != nil {
+		return err
+	}
+	if err := renderList(p.Traits, pkgPath, proc); err != nil {
+		return err
+	}
+	if err := renderList(p.Functions, pkgPath, proc); err != nil {
+		return err
 	}
 
 	text, err := renderElement(p, proc)
@@ -87,22 +96,23 @@ func renderPackage(p *document.Package, dir string, proc *document.Processor) er
 }
 
 func renderModule(mod *document.Module, dir string, proc *document.Processor) error {
-	if err := mkDirs(dir); err != nil {
+	modPath := path.Join(dir, mod.GetFileName())
+	if err := mkDirs(modPath); err != nil {
 		return err
 	}
 
-	modFile, err := proc.Formatter.ToFilePath(dir, "module")
+	modFile, err := proc.Formatter.ToFilePath(modPath, "module")
 	if err != nil {
 		return err
 	}
 
-	if err := renderList(mod.Structs, dir, proc); err != nil {
+	if err := renderList(mod.Structs, modPath, proc); err != nil {
 		return err
 	}
-	if err := renderList(mod.Traits, dir, proc); err != nil {
+	if err := renderList(mod.Traits, modPath, proc); err != nil {
 		return err
 	}
-	if err := renderList(mod.Functions, dir, proc); err != nil {
+	if err := renderList(mod.Functions, modPath, proc); err != nil {
 		return err
 	}
 

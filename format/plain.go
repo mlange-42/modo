@@ -2,7 +2,6 @@ package format
 
 import (
 	"path"
-	"text/template"
 
 	"github.com/mlange-42/modo/document"
 )
@@ -13,7 +12,7 @@ func (f *PlainFormatter) ProcessMarkdown(name, summary, text string) (string, er
 	return text, nil
 }
 
-func (f *PlainFormatter) WriteAuxiliary(p *document.Package, dir string, t *template.Template) error {
+func (f *PlainFormatter) WriteAuxiliary(p *document.Package, dir string, proc *document.Processor) error {
 	return nil
 }
 
