@@ -18,11 +18,7 @@ func Render(docs *document.Docs, dir string, rFormat Format, useExports bool, sh
 		return err
 	}
 	proc := document.NewProcessor(docs, formatter, t, useExports, shortLinks)
-	err = proc.ProcessLinks(true)
-	if err != nil {
-		return err
-	}
-	err = proc.ProcessLinks(false)
+	err = proc.ProcessLinks()
 	if err != nil {
 		return err
 	}
@@ -73,8 +69,7 @@ func renderPackage(p *document.Package, dir string, proc *document.Processor) er
 	}
 
 	for _, mod := range p.Modules {
-		modPath := path.Join(pkgPath, mod.GetFileName())
-		if err := renderModule(mod, modPath, proc); err != nil {
+		if err := renderModule(mod, pkgPath, proc); err != nil {
 			return err
 		}
 	}

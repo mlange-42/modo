@@ -31,7 +31,6 @@ func (proc *Processor) collectExports(p *Package, elems []string) {
 	for _, mod := range p.Modules {
 		p.Exports = append(p.Exports, &PackageExport{Short: []string{mod.Name}, Long: appendNew(newElems, mod.Name)})
 	}
-
 }
 
 func (proc *Processor) parseExports(pkgDocs string, basePath []string) []*PackageExport {

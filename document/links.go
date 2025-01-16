@@ -29,21 +29,22 @@ func findLinks(text string) ([]int, error) {
 	return links, nil
 }
 
-func (proc *Processor) ProcessLinks(firstPass bool) error {
+func (proc *Processor) ProcessLinks() error {
 	proc.filterPackages()
 	proc.collectPaths()
 
-	var err error
-	if firstPass {
-		err = proc.processLinksPackage(proc.Docs.Decl, []string{}, true)
-	} else {
-		err = proc.processLinksPackage(proc.ExportDocs.Decl, []string{}, false)
+	if !proc.UseExports {
+		for k := range proc.linkTargets {
+			proc.linkExports[k] = k
+		}
 	}
-	/*for k, v := range proc.linkExports {
-		fmt.Println(k, "\n       ", v)
-		fmt.Println("         ", proc.linkTargets[v])
-	}*/
-	return err
+	if err := proc.processLinksPackage(proc.Docs.Decl, []string{}, true); err != nil {
+		return err
+	}
+	if err := proc.processLinksPackage(proc.ExportDocs.Decl, []string{}, false); err != nil {
+		return err
+	}
+	return nil
 }
 
 func (proc *Processor) processLinksPackage(p *Package, elems []string, firstPass bool) error {
@@ -352,7 +353,7 @@ func (proc *Processor) replaceLinksFirstPass(text string, elems []string, modEle
 
 func placeholderToLink(link string, elems []string, modElems int, lookup map[string]elemPath, shorten bool) (entry *elemPath, text string, parts []string, ok bool) {
 	linkParts := strings.SplitN(link, " ", 2)
-	entry, text, parts, ok = toAbsLink(linkParts[0], elems, modElems, lookup)
+	entry, text, parts, ok = placeholderToAbsLink(linkParts[0], elems, modElems, lookup)
 	if !ok {
 		return
 	}
@@ -372,7 +373,7 @@ func placeholderToLink(link string, elems []string, modElems int, lookup map[str
 	return
 }
 
-func toAbsLink(link string, elems []string, modElems int, lookup map[string]elemPath) (*elemPath, string, []string, bool) {
+func placeholderToAbsLink(link string, elems []string, modElems int, lookup map[string]elemPath) (*elemPath, string, []string, bool) {
 	elemPath, ok := lookup[link]
 	if !ok {
 		log.Printf("WARNING: Can't resolve cross ref '%s' in %s", link, strings.Join(elems, "."))
