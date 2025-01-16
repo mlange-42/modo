@@ -30,7 +30,10 @@ func findLinks(text string) ([]int, error) {
 }
 
 func (proc *Processor) ProcessLinks() error {
-	proc.filterPackages()
+	err := proc.filterPackages()
+	if err != nil {
+		return err
+	}
 	proc.collectPaths()
 
 	if !proc.UseExports {

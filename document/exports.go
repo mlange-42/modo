@@ -13,15 +13,23 @@ type PackageExport struct {
 	Long  []string
 }
 
-func (proc *Processor) collectExports(p *Package, elems []string) {
+func (proc *Processor) collectExports(p *Package, elems []string) bool {
+	anyExports := false
+
 	newElems := appendNew(elems, p.Name)
 	for _, pkg := range p.Packages {
-		proc.collectExports(pkg, newElems)
+		if anyHere := proc.collectExports(pkg, newElems); anyHere {
+			anyExports = true
+		}
 	}
 
 	if proc.UseExports {
-		p.Exports, p.Description = proc.parseExports(p.Description, newElems, true)
-		return
+		var anyHere bool
+		p.Exports, p.Description, anyHere = proc.parseExports(p.Description, newElems, true)
+		if anyHere {
+			anyExports = true
+		}
+		return anyExports
 	}
 
 	p.Exports = make([]*PackageExport, 0, len(p.Packages)+len(p.Modules))
@@ -31,13 +39,16 @@ func (proc *Processor) collectExports(p *Package, elems []string) {
 	for _, mod := range p.Modules {
 		p.Exports = append(p.Exports, &PackageExport{Short: []string{mod.Name}, Long: appendNew(newElems, mod.Name)})
 	}
+
+	return anyExports
 }
 
-func (proc *Processor) parseExports(pkgDocs string, basePath []string, remove bool) ([]*PackageExport, string) {
+func (proc *Processor) parseExports(pkgDocs string, basePath []string, remove bool) ([]*PackageExport, string, bool) {
 	scanner := bufio.NewScanner(strings.NewReader(pkgDocs))
 
 	outText := strings.Builder{}
 	exports := []*PackageExport{}
+	anyExports := false
 	isExport := false
 	exportIndex := 0
 	for scanner.Scan() {
@@ -56,6 +67,7 @@ func (proc *Processor) parseExports(pkgDocs string, basePath []string, remove bo
 			short := line[len(exportsPrefix):]
 			parts := strings.Split(short, ".")
 			exports = append(exports, &PackageExport{Short: parts, Long: appendNew(basePath, parts...)})
+			anyExports = true
 			exportIndex++
 		} else {
 			if line == exportsMarker {
@@ -71,7 +83,7 @@ func (proc *Processor) parseExports(pkgDocs string, basePath []string, remove bo
 		panic(err)
 	}
 	if remove {
-		return exports, outText.String()
+		return exports, outText.String(), anyExports
 	}
-	return exports, pkgDocs
+	return exports, pkgDocs, anyExports
 }
