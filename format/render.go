@@ -18,7 +18,11 @@ func Render(docs *document.Docs, dir string, rFormat Format, useExports bool, sh
 		return err
 	}
 	proc := document.NewProcessor(docs, formatter, t, useExports, shortLinks)
-	err = proc.ProcessLinks()
+	err = proc.ProcessLinks(true)
+	if err != nil {
+		return err
+	}
+	err = proc.ProcessLinks(false)
 	if err != nil {
 		return err
 	}
