@@ -18,6 +18,7 @@ It generates Markdown for static site generators (SSGs) from `mojo doc` JSON out
 * Generates [Mojo](https://www.modular.com/mojo) API docs for [Hugo](#hugo), [mdBook](#mdbook) or just [plain](#plain-markdown) Markdown.
 * Provides a simple syntax for code [cross-references](#cross-references).
 * Optionally structures API docs according to [package re-exports](#package-re-exports).
+* Customizable output through [user templates](#templates).
 
 ## Installation
 
@@ -147,6 +148,15 @@ Re-exported modules (like `plants.vascular`) are fully included with all members
 
 [Cross-references](#cross-references) should still use the original structure of the package.
 They are automatically transformed to match the altered structure.
+
+## Templates
+
+Modo relies heavily on templating.
+With flag `--templates`, a custom templates folder can be specified to (partially) overwrite the embedded templates.
+Simply use the same files names, and alter the content.
+Embedded templates that can be overwritten can be found in folder [assets/templates](assets/templates).
+
+Besides changing the page layout, this feature can be used to alter the [Hugo](#hugo) front matter, or to adapt the [mdBook](#mdbook) configuration file.
 
 ## Packages using Modo
 

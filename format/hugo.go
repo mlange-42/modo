@@ -3,23 +3,22 @@ package format
 import (
 	"fmt"
 	"path"
+	"strings"
 
 	"github.com/mlange-42/modo/document"
 )
 
 type HugoFormatter struct{}
 
-const hugoFrontMatter = `+++
-type = "docs"
-title = "%s"
-#summary = """%s"""
-+++
-
-%s
-`
-
-func (f *HugoFormatter) ProcessMarkdown(name, summary, text string) (string, error) {
-	return fmt.Sprintf(hugoFrontMatter, name, summary, text), nil
+func (f *HugoFormatter) ProcessMarkdown(element any, text string, proc *document.Processor) (string, error) {
+	b := strings.Builder{}
+	err := proc.Template.ExecuteTemplate(&b, "hugo_front_matter.md", element)
+	if err != nil {
+		return "", err
+	}
+	b.WriteRune('\n')
+	b.WriteString(text)
+	return b.String(), nil
 }
 
 func (f *HugoFormatter) WriteAuxiliary(p *document.Package, dir string, proc *document.Processor) error {

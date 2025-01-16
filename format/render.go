@@ -4,6 +4,7 @@ import (
 	"io/fs"
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
 	"text/template"
 
@@ -11,9 +12,9 @@ import (
 	"github.com/mlange-42/modo/document"
 )
 
-func Render(docs *document.Docs, dir string, rFormat Format, useExports bool, shortLinks bool) error {
+func Render(docs *document.Docs, dir string, templateDirs []string, rFormat Format, useExports bool, shortLinks bool) error {
 	formatter := GetFormatter(rFormat)
-	t, err := loadTemplates(formatter)
+	t, err := loadTemplates(formatter, templateDirs...)
 	if err != nil {
 		return err
 	}
@@ -39,11 +40,7 @@ func renderElement(data interface {
 	if err != nil {
 		return "", err
 	}
-	var summary string
-	if d, ok := data.(document.Summarized); ok {
-		summary = d.GetSummary()
-	}
-	return proc.Formatter.ProcessMarkdown(data.GetName(), summary, b.String())
+	return proc.Formatter.ProcessMarkdown(data, b.String(), proc)
 }
 
 func renderPackage(p *document.Package, dir []string, proc *document.Processor) error {
@@ -130,8 +127,8 @@ func renderList[T interface {
 	return nil
 }
 
-func loadTemplates(f document.Formatter) (*template.Template, error) {
-	allTemplates, err := findTemplates()
+func loadTemplates(f document.Formatter, additional ...string) (*template.Template, error) {
+	allTemplates, err := findTemplatesFS()
 	if err != nil {
 		return nil, err
 	}
@@ -141,12 +138,40 @@ func loadTemplates(f document.Formatter) (*template.Template, error) {
 	if err != nil {
 		return nil, err
 	}
+	for _, dir := range additional {
+		moreTemplates, err := findTemplates(dir)
+		if err != nil {
+			return nil, err
+		}
+		templ, err = templ.ParseFiles(moreTemplates...)
+		if err != nil {
+			return nil, err
+		}
+	}
 	return templ, nil
 }
 
-func findTemplates() ([]string, error) {
+func findTemplatesFS() ([]string, error) {
 	allTemplates := []string{}
 	err := fs.WalkDir(assets.Templates, ".",
+		func(path string, info os.DirEntry, err error) error {
+			if err != nil {
+				return err
+			}
+			if !info.IsDir() {
+				allTemplates = append(allTemplates, path)
+			}
+			return nil
+		})
+	if err != nil {
+		return nil, err
+	}
+	return allTemplates, nil
+}
+
+func findTemplates(dir string) ([]string, error) {
+	allTemplates := []string{}
+	err := filepath.WalkDir(dir,
 		func(path string, info os.DirEntry, err error) error {
 			if err != nil {
 				return err
