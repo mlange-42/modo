@@ -309,7 +309,7 @@ func (proc *Processor) replaceRefsByPlaceholders(text string, elems []string, mo
 		start, end := indices[i], indices[i+1]
 		link := text[start+1 : end-1]
 
-		content, ok := refToPlaceholder(link, elems, modElems, proc.linkExports)
+		content, ok := proc.refToPlaceholder(link, elems, modElems)
 		if !ok {
 			continue
 		}
@@ -330,7 +330,7 @@ func (proc *Processor) replacePlaceholdersByLinks(text string, elems []string, m
 		start, end := indices[i], indices[i+1]
 		link := text[start+1 : end-1]
 
-		entry, linkText, parts, ok := placeholderToLink(link, elems, modElems, proc.linkTargets, proc.ShortLinks)
+		entry, linkText, parts, ok := proc.placeholderToLink(link, elems, modElems, proc.ShortLinks)
 		if !ok {
 			continue
 		}
@@ -354,9 +354,9 @@ func (proc *Processor) replacePlaceholdersByLinks(text string, elems []string, m
 	return text, nil
 }
 
-func placeholderToLink(link string, elems []string, modElems int, lookup map[string]elemPath, shorten bool) (entry *elemPath, text string, parts []string, ok bool) {
+func (proc *Processor) placeholderToLink(link string, elems []string, modElems int, shorten bool) (entry *elemPath, text string, parts []string, ok bool) {
 	linkParts := strings.SplitN(link, " ", 2)
-	entry, text, parts, ok = placeholderToAbsLink(linkParts[0], elems, modElems, lookup)
+	entry, text, parts, ok = proc.placeholderToAbsLink(linkParts[0], elems, modElems)
 	if !ok {
 		return
 	}
@@ -376,8 +376,8 @@ func placeholderToLink(link string, elems []string, modElems int, lookup map[str
 	return
 }
 
-func placeholderToAbsLink(link string, elems []string, modElems int, lookup map[string]elemPath) (*elemPath, string, []string, bool) {
-	elemPath, ok := lookup[link]
+func (proc *Processor) placeholderToAbsLink(link string, elems []string, modElems int) (*elemPath, string, []string, bool) {
+	elemPath, ok := proc.linkTargets[link]
 	if !ok {
 		log.Printf("WARNING: Can't resolve cross ref '%s' in %s", link, strings.Join(elems, "."))
 		return nil, "", nil, false
@@ -401,15 +401,15 @@ func placeholderToAbsLink(link string, elems []string, modElems int, lookup map[
 	return &elemPath, link, fullPath, true
 }
 
-func refToPlaceholder(link string, elems []string, modElems int, lookup map[string]string) (string, bool) {
+func (proc *Processor) refToPlaceholder(link string, elems []string, modElems int) (string, bool) {
 	linkParts := strings.SplitN(link, " ", 2)
 
 	var placeholder string
 	var ok bool
 	if strings.HasPrefix(link, ".") {
-		placeholder, ok = refToPlaceholderRel(linkParts[0], elems, modElems, lookup)
+		placeholder, ok = proc.refToPlaceholderRel(linkParts[0], elems, modElems)
 	} else {
-		placeholder, ok = refToPlaceholderAbs(linkParts[0], elems, lookup)
+		placeholder, ok = proc.refToPlaceholderAbs(linkParts[0], elems)
 	}
 	if !ok {
 		return "", false
@@ -421,7 +421,7 @@ func refToPlaceholder(link string, elems []string, modElems int, lookup map[stri
 	}
 }
 
-func refToPlaceholderRel(link string, elems []string, modElems int, lookup map[string]string) (string, bool) {
+func (proc *Processor) refToPlaceholderRel(link string, elems []string, modElems int) (string, bool) {
 	dots := 0
 	for strings.HasPrefix(link[dots:], ".") {
 		dots++
@@ -439,7 +439,7 @@ func refToPlaceholderRel(link string, elems []string, modElems int, lookup map[s
 		fullLink = strings.Join(subElems, ".") + "." + linkText
 	}
 
-	placeholder, ok := lookup[fullLink]
+	placeholder, ok := proc.linkExports[fullLink]
 	if !ok {
 		log.Printf("WARNING: Can't resolve cross ref '%s' (%s) in %s", link, fullLink, strings.Join(elems, "."))
 		return "", false
@@ -447,8 +447,8 @@ func refToPlaceholderRel(link string, elems []string, modElems int, lookup map[s
 	return placeholder, true
 }
 
-func refToPlaceholderAbs(link string, elems []string, lookup map[string]string) (string, bool) {
-	placeholder, ok := lookup[link]
+func (proc *Processor) refToPlaceholderAbs(link string, elems []string) (string, bool) {
+	placeholder, ok := proc.linkExports[link]
 	if !ok {
 		log.Printf("WARNING: Can't resolve cross ref '%s' in %s", link, strings.Join(elems, "."))
 		return "", false
