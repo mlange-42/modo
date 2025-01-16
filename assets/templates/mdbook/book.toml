@@ -9,13 +9,16 @@ title = "{{.Name}}"
 build-dir = "public"
 
 [output.html]
+# remove section numbering from navigation menu
 no-section-label = true
+# css for word wrap in code blocks
 additional-css = ["css/custom.css"]
+
+# folded navigation menu
+[output.html.fold]
+enable = true
 
 [output.html.search]
 limit-results = 15
 teaser-word-count = 50
 use-boolean-and = true
-
-[output.html.fold]
-enable = true
