@@ -15,9 +15,9 @@ It generates Markdown for static site generators (SSGs) from `mojo doc` JSON out
 
 ## Features
 
-* Generates API docs websites for [Hugo](#hugo), [mdBook](#mdbook) or just [plain](#plain-markdown) Markdown.
-* Resolves and renders [cross-references](#cross-referencing).
-* Optionally structures docs according to [package re-exports](#package-re-exports).
+* Generates [Mojo](https://www.modular.com/mojo) API docs for [Hugo](#hugo), [mdBook](#mdbook) or just [plain](#plain-markdown) Markdown.
+* Provides a simple syntax for code [cross-references](#cross-references).
+* Optionally structures API docs according to [package re-exports](#package-re-exports).
 
 ## Installation
 
@@ -89,7 +89,7 @@ to prevent lower case members (like functions) and upper case members (like stru
 overwrite each other.
 Alternatively, run Modo with switch `--case-insensitive`.
 
-## Cross-referencing
+## Cross-references
 
 Modo supports cross-refs within the documentation of a project.
 Absolute as well as relative references are supported.
@@ -142,7 +142,8 @@ Re-exports are processed recursively.
 This means that sub-packages need an `Exports:` section too if they are re-exported directly,
 like `fungi` in the example.
 For exporting members from a sub-package (like `Cat` and `Doc`), the sub-package `Exports:` are ignored.
-Re-exported modules (like `plants.vascular`) are included completely.
 
-[Cross-references](#cross-referencing) should still use the original structure of the package.
+Re-exported modules (like `plants.vascular`) are fully included with all members.
+
+[Cross-references](#cross-references) should still use the original structure of the package.
 They are automatically transformed to match the altered structure.
