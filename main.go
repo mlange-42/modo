@@ -24,6 +24,7 @@ type args struct {
 	useExports      bool
 	shortLinks      bool
 	outDir          string
+	templateDirs    []string
 }
 
 func rootCommand() *cobra.Command {
@@ -53,8 +54,11 @@ Usage:
 	root.Flags().BoolVarP(&cliArgs.useExports, "exports", "e", false, "Process according to 'Exports:' sections in packages.")
 	root.Flags().BoolVar(&cliArgs.shortLinks, "short-links", false, "Render shortened link labels, stripping packages and modules.")
 	root.Flags().BoolVar(&cliArgs.caseInsensitive, "case-insensitive", false, "Build for systems that are not case-sensitive regarding file names.\nAppends hyphen (-) to capitalized file names.")
+	root.Flags().StringSliceVarP(&cliArgs.templateDirs, "templates", "t", []string{}, "Optional directories with templates for (partial) overwrite.\nSee folder assets/templates in the repository.")
 
 	root.Flags().SortFlags = false
+	root.MarkFlagFilename("input", "json")
+	root.MarkFlagDirname("templates")
 
 	return root
 }
@@ -82,7 +86,7 @@ func run(args *args) error {
 		document.CaseSensitiveSystem = false
 	}
 
-	err = format.Render(docs, args.outDir, rFormat, args.useExports, args.shortLinks)
+	err = format.Render(docs, args.outDir, args.templateDirs, rFormat, args.useExports, args.shortLinks)
 	if err != nil {
 		return err
 	}
