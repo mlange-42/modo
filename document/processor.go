@@ -12,6 +12,7 @@ type Processor struct {
 	Docs        *Docs
 	ExportDocs  *Docs
 	linkTargets map[string]elemPath
+	linkExports map[string]string
 }
 
 func NewProcessor(docs *Docs, f Formatter, t *template.Template, useExports bool, shortLinks bool) Processor {

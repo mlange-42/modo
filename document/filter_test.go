@@ -1,13 +1,14 @@
 package document
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
 )
 
-func TestFilterPackages(t *testing.T) {
-	docs := Docs{
+func createFilterTestDocs() *Docs {
+	return &Docs{
 		Decl: &Package{
 			MemberKind: NewKind("package"),
 			MemberName: NewName("pkg"),
@@ -69,6 +70,10 @@ func TestFilterPackages(t *testing.T) {
 			},
 		},
 	}
+}
+
+func TestFilterPackages(t *testing.T) {
+	docs := createFilterTestDocs()
 
 	docs.Decl.Description = `Package pkg
 Exports:
@@ -84,7 +89,7 @@ Exports:
 Exports:
  - mod3.Struct3
 `
-	proc := NewProcessor(&docs, nil, nil, true, true)
+	proc := NewProcessor(docs, nil, nil, true, true)
 	proc.collectExports(proc.Docs.Decl, nil)
 	proc.filterPackages()
 	eDocs := proc.ExportDocs.Decl
@@ -106,4 +111,31 @@ Exports:
 	assert.Equal(t, "subpkg", eDocs.Packages[0].Name)
 	assert.Equal(t, 1, len(eDocs.Packages[0].Structs))
 	assert.Equal(t, "Struct3", eDocs.Packages[0].Structs[0].Name)
+}
+
+func TestFilterPackagesLinks(t *testing.T) {
+	docs := createFilterTestDocs()
+
+	docs.Decl.Description = `Package pkg
+Exports:
+ - mod1.Struct1
+ - mod1.func
+ - mod2
+ - subpkg
+ - subpkg.mod3
+ - subpkg.mod3.Struct3
+`
+
+	docs.Decl.Packages[0].Description = `Package subpkg
+Exports:
+ - mod3.Struct3
+`
+
+	proc := NewProcessor(docs, nil, nil, true, true)
+	proc.collectExports(proc.Docs.Decl, nil)
+	proc.filterPackages()
+
+	for k, v := range proc.linkExports {
+		fmt.Println(k, v)
+	}
 }
