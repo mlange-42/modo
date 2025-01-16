@@ -18,20 +18,15 @@ func Render(docs *document.Docs, dir string, rFormat Format, useExports bool, sh
 		return err
 	}
 	proc := document.NewProcessor(docs, formatter, t, useExports, shortLinks)
-	err = proc.ProcessLinks()
-	if err != nil {
+	if err := proc.PrepareDocs(); err != nil {
 		return err
 	}
-
-	err = renderPackage(proc.ExportDocs.Decl, dir, &proc)
-	if err != nil {
+	if err := renderPackage(proc.ExportDocs.Decl, dir, &proc); err != nil {
 		return err
 	}
-
 	if err := proc.Formatter.WriteAuxiliary(proc.ExportDocs.Decl, dir, &proc); err != nil {
 		return err
 	}
-
 	return nil
 }
 
