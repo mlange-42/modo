@@ -31,19 +31,26 @@ func rootCommand() *cobra.Command {
 
 	root := &cobra.Command{
 		Use:   "modo OUT-PATH",
-		Short: "Mojo documentation generator",
-		Long:  ``,
-		Args:  cobra.ExactArgs(1),
+		Short: "Modo -- DocGen for Mojo.",
+		Long: `Modo -- DocGen for Mojo.
+
+Modo generates Markdown for static site generators (SSGs) from 'mojo doc' JSON output.
+
+Usage:
+  modo docs -i docs.json        # from a file
+  mojo doc ./src | modo docs    # from 'mojo doc'
+`,
+		Args: cobra.ExactArgs(1),
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliArgs.outDir = args[0]
 			return run(&cliArgs)
 		},
 	}
 
-	root.Flags().StringVarP(&cliArgs.file, "input", "i", "", "File to read. Reads from STDIN if not specified.")
+	root.Flags().StringVarP(&cliArgs.file, "input", "i", "", "'mojo doc' JSON file to process. Reads from STDIN if not specified.")
 	root.Flags().StringVarP(&cliArgs.renderFormat, "format", "f", "plain", "Output format. One of (plain|mdbook|hugo).")
-	root.Flags().BoolVarP(&cliArgs.useExports, "exports", "e", false, "Process according to 'Exports:' directives in packages.")
-	root.Flags().BoolVar(&cliArgs.shortLinks, "short-links", false, "Renders shortened link labels, stripping packages and modules.")
+	root.Flags().BoolVarP(&cliArgs.useExports, "exports", "e", false, "Process according to 'Exports:' sections in packages.")
+	root.Flags().BoolVar(&cliArgs.shortLinks, "short-links", false, "Render shortened link labels, stripping packages and modules.")
 	root.Flags().BoolVar(&cliArgs.caseInsensitive, "case-insensitive", false, "Build for systems that are not case-sensitive regarding file names.\nAppends hyphen (-) to capitalized file names.")
 
 	root.Flags().SortFlags = false
