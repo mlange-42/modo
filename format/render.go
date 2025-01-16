@@ -79,7 +79,7 @@ func renderPackage(p *document.Package, dir []string, proc *document.Processor) 
 	if err != nil {
 		return err
 	}
-	if err := linkAndWrite(text, newDir, "package", proc); err != nil {
+	if err := linkAndWrite(text, newDir, len(newDir), "package", proc); err != nil {
 		return err
 	}
 
@@ -106,7 +106,7 @@ func renderModule(mod *document.Module, dir []string, proc *document.Processor) 
 	if err != nil {
 		return err
 	}
-	if err := linkAndWrite(text, newDir, "module", proc); err != nil {
+	if err := linkAndWrite(text, newDir, len(newDir), "module", proc); err != nil {
 		return err
 	}
 
@@ -123,7 +123,7 @@ func renderList[T interface {
 		if err != nil {
 			return err
 		}
-		if err := linkAndWrite(text, newDir, elem.GetKind(), proc); err != nil {
+		if err := linkAndWrite(text, newDir, len(dir), elem.GetKind(), proc); err != nil {
 			return err
 		}
 	}
@@ -162,8 +162,11 @@ func findTemplates() ([]string, error) {
 	return allTemplates, nil
 }
 
-func linkAndWrite(text string, dir []string, kind string, proc *document.Processor) error {
-	// TODO: process links
+func linkAndWrite(text string, dir []string, modElems int, kind string, proc *document.Processor) error {
+	text, err := proc.ReplacePlaceholders(text, dir[1:], modElems-1)
+	if err != nil {
+		return err
+	}
 	outFile, err := proc.Formatter.ToFilePath(path.Join(dir...), kind)
 	if err != nil {
 		return err

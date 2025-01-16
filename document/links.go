@@ -300,7 +300,7 @@ func (proc *Processor) replaceRefs(text string, elems []string, modElems int, fi
 	if firstPass {
 		return proc.replaceRefsByPlaceholders(text, elems, modElems)
 	}
-	return proc.replacePlaceholdersByLinks(text, elems, modElems)
+	return proc.ReplacePlaceholders(text, elems, modElems)
 }
 
 func (proc *Processor) replaceRefsByPlaceholders(text string, elems []string, modElems int) (string, error) {
@@ -324,7 +324,7 @@ func (proc *Processor) replaceRefsByPlaceholders(text string, elems []string, mo
 	return text, nil
 }
 
-func (proc *Processor) replacePlaceholdersByLinks(text string, elems []string, modElems int) (string, error) {
+func (proc *Processor) ReplacePlaceholders(text string, elems []string, modElems int) (string, error) {
 	indices, err := findLinks(text)
 	if err != nil {
 		return "", err

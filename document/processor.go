@@ -43,9 +43,9 @@ func (proc *Processor) PrepareDocs() error {
 		return err
 	}
 	proc.unlinkData()
-	if err := proc.processLinksPackage(proc.ExportDocs.Decl, []string{}, false); err != nil {
+	/*if err := proc.processLinksPackage(proc.ExportDocs.Decl, []string{}, false); err != nil {
 		return err
-	}
+	}*/
 	return nil
 }
 
