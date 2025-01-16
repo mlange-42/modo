@@ -29,40 +29,40 @@ func findLinks(text string) ([]int, error) {
 	return links, nil
 }
 
-func (proc *Processor) processLinksPackage(p *Package, elems []string, firstPass bool) error {
-	newElems := appendNew(elems, p.GetName())
+func (proc *Processor) processLinksPackage(p *Package, elems []string) error {
+	newElems := AppendNew(elems, p.GetName())
 
 	var err error
-	p.Summary, err = proc.replaceRefs(p.Summary, newElems, len(newElems), firstPass)
+	p.Summary, err = proc.replaceRefs(p.Summary, newElems, len(newElems))
 	if err != nil {
 		return err
 	}
-	p.Description, err = proc.replaceRefs(p.Description, newElems, len(newElems), firstPass)
+	p.Description, err = proc.replaceRefs(p.Description, newElems, len(newElems))
 	if err != nil {
 		return err
 	}
 
 	for _, pkg := range p.Packages {
-		proc.processLinksPackage(pkg, newElems, firstPass)
+		proc.processLinksPackage(pkg, newElems)
 	}
 	for _, mod := range p.Modules {
-		proc.processLinksModule(mod, newElems, firstPass)
+		proc.processLinksModule(mod, newElems)
 	}
 
 	for _, f := range p.Functions {
-		err := proc.processLinksFunction(f, newElems, firstPass)
+		err := proc.processLinksFunction(f, newElems)
 		if err != nil {
 			return err
 		}
 	}
 	for _, s := range p.Structs {
-		err := proc.processLinksStruct(s, newElems, firstPass)
+		err := proc.processLinksStruct(s, newElems)
 		if err != nil {
 			return err
 		}
 	}
 	for _, tr := range p.Traits {
-		err := proc.processLinksTrait(tr, newElems, firstPass)
+		err := proc.processLinksTrait(tr, newElems)
 		if err != nil {
 			return err
 		}
@@ -71,39 +71,39 @@ func (proc *Processor) processLinksPackage(p *Package, elems []string, firstPass
 	return nil
 }
 
-func (proc *Processor) processLinksModule(m *Module, elems []string, firstPass bool) error {
-	newElems := appendNew(elems, m.GetName())
+func (proc *Processor) processLinksModule(m *Module, elems []string) error {
+	newElems := AppendNew(elems, m.GetName())
 
 	var err error
-	m.Summary, err = proc.replaceRefs(m.Summary, newElems, len(newElems), firstPass)
+	m.Summary, err = proc.replaceRefs(m.Summary, newElems, len(newElems))
 	if err != nil {
 		return err
 	}
-	m.Description, err = proc.replaceRefs(m.Description, newElems, len(newElems), firstPass)
+	m.Description, err = proc.replaceRefs(m.Description, newElems, len(newElems))
 	if err != nil {
 		return err
 	}
 
 	for _, a := range m.Aliases {
-		err := proc.processLinksAlias(a, newElems, firstPass)
+		err := proc.processLinksAlias(a, newElems)
 		if err != nil {
 			return err
 		}
 	}
 	for _, f := range m.Functions {
-		err := proc.processLinksFunction(f, newElems, firstPass)
+		err := proc.processLinksFunction(f, newElems)
 		if err != nil {
 			return err
 		}
 	}
 	for _, s := range m.Structs {
-		err := proc.processLinksStruct(s, newElems, firstPass)
+		err := proc.processLinksStruct(s, newElems)
 		if err != nil {
 			return err
 		}
 	}
 	for _, tr := range m.Traits {
-		err := proc.processLinksTrait(tr, newElems, firstPass)
+		err := proc.processLinksTrait(tr, newElems)
 		if err != nil {
 			return err
 		}
@@ -112,43 +112,43 @@ func (proc *Processor) processLinksModule(m *Module, elems []string, firstPass b
 	return nil
 }
 
-func (proc *Processor) processLinksStruct(s *Struct, elems []string, firstPass bool) error {
-	newElems := appendNew(elems, s.GetName())
+func (proc *Processor) processLinksStruct(s *Struct, elems []string) error {
+	newElems := AppendNew(elems, s.GetName())
 
 	var err error
-	s.Summary, err = proc.replaceRefs(s.Summary, newElems, len(elems), firstPass)
+	s.Summary, err = proc.replaceRefs(s.Summary, newElems, len(elems))
 	if err != nil {
 		return err
 	}
-	s.Description, err = proc.replaceRefs(s.Description, newElems, len(elems), firstPass)
+	s.Description, err = proc.replaceRefs(s.Description, newElems, len(elems))
 	if err != nil {
 		return err
 	}
 
 	for _, a := range s.Aliases {
-		a.Description, err = proc.replaceRefs(a.Description, newElems, len(elems), firstPass)
+		a.Description, err = proc.replaceRefs(a.Description, newElems, len(elems))
 		if err != nil {
 			return err
 		}
 	}
 	for _, p := range s.Parameters {
-		p.Description, err = proc.replaceRefs(p.Description, newElems, len(elems), firstPass)
+		p.Description, err = proc.replaceRefs(p.Description, newElems, len(elems))
 		if err != nil {
 			return err
 		}
 	}
 	for _, f := range s.Fields {
-		f.Summary, err = proc.replaceRefs(f.Summary, newElems, len(elems), firstPass)
+		f.Summary, err = proc.replaceRefs(f.Summary, newElems, len(elems))
 		if err != nil {
 			return err
 		}
-		f.Description, err = proc.replaceRefs(f.Description, newElems, len(elems), firstPass)
+		f.Description, err = proc.replaceRefs(f.Description, newElems, len(elems))
 		if err != nil {
 			return err
 		}
 	}
 	for _, f := range s.Functions {
-		if err := proc.processLinksMethod(f, elems, firstPass); err != nil {
+		if err := proc.processLinksMethod(f, elems); err != nil {
 			return err
 		}
 	}
@@ -156,15 +156,15 @@ func (proc *Processor) processLinksStruct(s *Struct, elems []string, firstPass b
 	return nil
 }
 
-func (proc *Processor) processLinksTrait(tr *Trait, elems []string, firstPass bool) error {
-	newElems := appendNew(elems, tr.GetName())
+func (proc *Processor) processLinksTrait(tr *Trait, elems []string) error {
+	newElems := AppendNew(elems, tr.GetName())
 
 	var err error
-	tr.Summary, err = proc.replaceRefs(tr.Summary, newElems, len(elems), firstPass)
+	tr.Summary, err = proc.replaceRefs(tr.Summary, newElems, len(elems))
 	if err != nil {
 		return err
 	}
-	tr.Description, err = proc.replaceRefs(tr.Description, newElems, len(elems), firstPass)
+	tr.Description, err = proc.replaceRefs(tr.Description, newElems, len(elems))
 	if err != nil {
 		return err
 	}
@@ -177,17 +177,17 @@ func (proc *Processor) processLinksTrait(tr *Trait, elems []string, firstPass bo
 		}
 	}*/
 	for _, f := range tr.Fields {
-		f.Summary, err = proc.replaceRefs(f.Summary, newElems, len(elems), firstPass)
+		f.Summary, err = proc.replaceRefs(f.Summary, newElems, len(elems))
 		if err != nil {
 			return err
 		}
-		f.Description, err = proc.replaceRefs(f.Description, newElems, len(elems), firstPass)
+		f.Description, err = proc.replaceRefs(f.Description, newElems, len(elems))
 		if err != nil {
 			return err
 		}
 	}
 	for _, f := range tr.Functions {
-		if err := proc.processLinksMethod(f, elems, firstPass); err != nil {
+		if err := proc.processLinksMethod(f, elems); err != nil {
 			return err
 		}
 	}
@@ -195,42 +195,42 @@ func (proc *Processor) processLinksTrait(tr *Trait, elems []string, firstPass bo
 	return nil
 }
 
-func (proc *Processor) processLinksFunction(f *Function, elems []string, firstPass bool) error {
-	newElems := appendNew(elems, f.GetName())
+func (proc *Processor) processLinksFunction(f *Function, elems []string) error {
+	newElems := AppendNew(elems, f.GetName())
 
 	var err error
-	f.Summary, err = proc.replaceRefs(f.Summary, newElems, len(elems), firstPass)
+	f.Summary, err = proc.replaceRefs(f.Summary, newElems, len(elems))
 	if err != nil {
 		return err
 	}
-	f.Description, err = proc.replaceRefs(f.Description, newElems, len(elems), firstPass)
+	f.Description, err = proc.replaceRefs(f.Description, newElems, len(elems))
 	if err != nil {
 		return err
 	}
-	f.ReturnsDoc, err = proc.replaceRefs(f.ReturnsDoc, newElems, len(elems), firstPass)
+	f.ReturnsDoc, err = proc.replaceRefs(f.ReturnsDoc, newElems, len(elems))
 	if err != nil {
 		return err
 	}
-	f.RaisesDoc, err = proc.replaceRefs(f.RaisesDoc, newElems, len(elems), firstPass)
+	f.RaisesDoc, err = proc.replaceRefs(f.RaisesDoc, newElems, len(elems))
 	if err != nil {
 		return err
 	}
 
 	for _, a := range f.Args {
-		a.Description, err = proc.replaceRefs(a.Description, newElems, len(elems), firstPass)
+		a.Description, err = proc.replaceRefs(a.Description, newElems, len(elems))
 		if err != nil {
 			return err
 		}
 	}
 	for _, p := range f.Parameters {
-		p.Description, err = proc.replaceRefs(p.Description, newElems, len(elems), firstPass)
+		p.Description, err = proc.replaceRefs(p.Description, newElems, len(elems))
 		if err != nil {
 			return err
 		}
 	}
 
 	for _, o := range f.Overloads {
-		err := proc.processLinksFunction(o, elems, firstPass)
+		err := proc.processLinksFunction(o, elems)
 		if err != nil {
 			return err
 		}
@@ -239,55 +239,55 @@ func (proc *Processor) processLinksFunction(f *Function, elems []string, firstPa
 	return nil
 }
 
-func (proc *Processor) processLinksAlias(a *Alias, elems []string, firstPass bool) error {
-	newElems := appendNew(elems, a.GetName())
+func (proc *Processor) processLinksAlias(a *Alias, elems []string) error {
+	newElems := AppendNew(elems, a.GetName())
 
 	var err error
-	a.Summary, err = proc.replaceRefs(a.Summary, newElems, len(elems), firstPass)
+	a.Summary, err = proc.replaceRefs(a.Summary, newElems, len(elems))
 	if err != nil {
 		return err
 	}
-	a.Description, err = proc.replaceRefs(a.Description, newElems, len(elems), firstPass)
+	a.Description, err = proc.replaceRefs(a.Description, newElems, len(elems))
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func (proc *Processor) processLinksMethod(f *Function, elems []string, firstPass bool) error {
+func (proc *Processor) processLinksMethod(f *Function, elems []string) error {
 	var err error
-	f.Summary, err = proc.replaceRefs(f.Summary, elems, len(elems), firstPass)
+	f.Summary, err = proc.replaceRefs(f.Summary, elems, len(elems))
 	if err != nil {
 		return err
 	}
-	f.Description, err = proc.replaceRefs(f.Description, elems, len(elems), firstPass)
+	f.Description, err = proc.replaceRefs(f.Description, elems, len(elems))
 	if err != nil {
 		return err
 	}
-	f.ReturnsDoc, err = proc.replaceRefs(f.ReturnsDoc, elems, len(elems), firstPass)
+	f.ReturnsDoc, err = proc.replaceRefs(f.ReturnsDoc, elems, len(elems))
 	if err != nil {
 		return err
 	}
-	f.RaisesDoc, err = proc.replaceRefs(f.RaisesDoc, elems, len(elems), firstPass)
+	f.RaisesDoc, err = proc.replaceRefs(f.RaisesDoc, elems, len(elems))
 	if err != nil {
 		return err
 	}
 
 	for _, a := range f.Args {
-		a.Description, err = proc.replaceRefs(a.Description, elems, len(elems), firstPass)
+		a.Description, err = proc.replaceRefs(a.Description, elems, len(elems))
 		if err != nil {
 			return err
 		}
 	}
 	for _, p := range f.Parameters {
-		p.Description, err = proc.replaceRefs(p.Description, elems, len(elems), firstPass)
+		p.Description, err = proc.replaceRefs(p.Description, elems, len(elems))
 		if err != nil {
 			return err
 		}
 	}
 
 	for _, o := range f.Overloads {
-		err := proc.processLinksMethod(o, elems, firstPass)
+		err := proc.processLinksMethod(o, elems)
 		if err != nil {
 			return err
 		}
@@ -296,14 +296,7 @@ func (proc *Processor) processLinksMethod(f *Function, elems []string, firstPass
 	return nil
 }
 
-func (proc *Processor) replaceRefs(text string, elems []string, modElems int, firstPass bool) (string, error) {
-	if firstPass {
-		return proc.replaceRefsByPlaceholders(text, elems, modElems)
-	}
-	return proc.replacePlaceholdersByLinks(text, elems, modElems)
-}
-
-func (proc *Processor) replaceRefsByPlaceholders(text string, elems []string, modElems int) (string, error) {
+func (proc *Processor) replaceRefs(text string, elems []string, modElems int) (string, error) {
 	indices, err := findLinks(text)
 	if err != nil {
 		return "", err
@@ -324,7 +317,7 @@ func (proc *Processor) replaceRefsByPlaceholders(text string, elems []string, mo
 	return text, nil
 }
 
-func (proc *Processor) replacePlaceholdersByLinks(text string, elems []string, modElems int) (string, error) {
+func (proc *Processor) ReplacePlaceholders(text string, elems []string, modElems int) (string, error) {
 	indices, err := findLinks(text)
 	if err != nil {
 		return "", err

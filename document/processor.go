@@ -39,11 +39,7 @@ func (proc *Processor) PrepareDocs() error {
 			proc.linkExports[k] = k
 		}
 	}
-	if err := proc.processLinksPackage(proc.Docs.Decl, []string{}, true); err != nil {
-		return err
-	}
-	proc.unlinkData()
-	if err := proc.processLinksPackage(proc.ExportDocs.Decl, []string{}, false); err != nil {
+	if err := proc.processLinksPackage(proc.Docs.Decl, []string{}); err != nil {
 		return err
 	}
 	return nil

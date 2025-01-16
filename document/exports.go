@@ -16,7 +16,7 @@ type PackageExport struct {
 func (proc *Processor) collectExports(p *Package, elems []string) bool {
 	anyExports := false
 
-	newElems := appendNew(elems, p.Name)
+	newElems := AppendNew(elems, p.Name)
 	for _, pkg := range p.Packages {
 		if anyHere := proc.collectExports(pkg, newElems); anyHere {
 			anyExports = true
@@ -34,10 +34,10 @@ func (proc *Processor) collectExports(p *Package, elems []string) bool {
 
 	p.Exports = make([]*PackageExport, 0, len(p.Packages)+len(p.Modules))
 	for _, pkg := range p.Packages {
-		p.Exports = append(p.Exports, &PackageExport{Short: []string{pkg.Name}, Long: appendNew(newElems, pkg.Name)})
+		p.Exports = append(p.Exports, &PackageExport{Short: []string{pkg.Name}, Long: AppendNew(newElems, pkg.Name)})
 	}
 	for _, mod := range p.Modules {
-		p.Exports = append(p.Exports, &PackageExport{Short: []string{mod.Name}, Long: appendNew(newElems, mod.Name)})
+		p.Exports = append(p.Exports, &PackageExport{Short: []string{mod.Name}, Long: AppendNew(newElems, mod.Name)})
 	}
 
 	return anyExports
@@ -66,7 +66,7 @@ func (proc *Processor) parseExports(pkgDocs string, basePath []string, remove bo
 			}
 			short := line[len(exportsPrefix):]
 			parts := strings.Split(short, ".")
-			exports = append(exports, &PackageExport{Short: parts, Long: appendNew(basePath, parts...)})
+			exports = append(exports, &PackageExport{Short: parts, Long: AppendNew(basePath, parts...)})
 			anyExports = true
 			exportIndex++
 		} else {
