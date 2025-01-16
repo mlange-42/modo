@@ -1,5 +1,9 @@
 ## Unpublished
 
+### Features
+
+* Implements output customization by (partial) template overwrites (#48)
+
 ### Bugfixes
 
 * Fixes overwritten cross-refs in case of multiple re-exports of the same member (#46)
