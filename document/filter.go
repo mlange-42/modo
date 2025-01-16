@@ -2,7 +2,6 @@ package document
 
 import (
 	"fmt"
-	"strings"
 )
 
 func (proc *Processor) filterPackages() error {
@@ -59,7 +58,7 @@ func (proc *Processor) collectPackageExports(src, rootOut *Package, oldPath, new
 
 		tempOldPath := appendNew(oldPath, src.Name)
 		tempNewPath := appendNew(newPath, src.Name)
-		proc.linkExports[strings.Join(tempOldPath, ".")] = strings.Join(tempNewPath, ".")
+		proc.addLinkExport(tempOldPath, tempNewPath)
 	}
 	oldPath = appendNew(oldPath, src.Name)
 
@@ -94,7 +93,7 @@ func (proc *Processor) collectModuleExports(src *Module, rootOut *Package, oldPa
 		rootOut.Modules = append(rootOut.Modules, src)
 
 		tempNewPath := appendNew(newPath, src.Name)
-		proc.linkExports[strings.Join(oldPath, ".")] = strings.Join(tempNewPath, ".")
+		proc.addLinkExport(oldPath, tempNewPath)
 	}
 
 	for _, elem := range src.Structs {
