@@ -24,6 +24,27 @@ func TestFromJson(t *testing.T) {
 	assert.NotNil(t, docs)
 }
 
+func TestFromYaml(t *testing.T) {
+	data := `
+decl:
+  name: modo
+  kind: package
+  modules:
+    - name: mod
+      kind: module
+      structs:
+        - name: Struct
+          kind: struct
+version: 0.1.0
+`
+
+	docs, err := FromYaml([]byte(data))
+	assert.Nil(t, err)
+	assert.NotNil(t, docs)
+
+	assert.Equal(t, "Struct", docs.Decl.Modules[0].Structs[0].Name)
+}
+
 func TestCleanup(t *testing.T) {
 	doc := Docs{
 		Decl: &Package{

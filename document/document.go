@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"unicode"
+
+	"gopkg.in/yaml.v3"
 )
 
 const capitalFileMarker = "-"
@@ -16,16 +18,16 @@ type Docs struct {
 }
 
 type Package struct {
-	MemberKind
-	MemberName
-	*MemberSummary
-	*MemberDescription
-	Modules   []*Module
-	Packages  []*Package
-	Exports   []*PackageExport // Additional field for package re-exports
-	Functions []*Function      // Additional field for package re-exports
-	Structs   []*Struct        // Additional field for package re-exports
-	Traits    []*Trait         // Additional field for package re-exports
+	MemberKind         `yaml:",inline"`
+	MemberName         `yaml:",inline"`
+	*MemberSummary     `yaml:",inline"`
+	*MemberDescription `yaml:",inline"`
+	Modules            []*Module
+	Packages           []*Package
+	Exports            []*PackageExport // Additional field for package re-exports
+	Functions          []*Function      // Additional field for package re-exports
+	Structs            []*Struct        // Additional field for package re-exports
+	Traits             []*Trait         // Additional field for package re-exports
 }
 
 func (p *Package) linkedCopy() *Package {
@@ -39,45 +41,45 @@ func (p *Package) linkedCopy() *Package {
 }
 
 type Module struct {
-	MemberKind
-	MemberName
-	MemberSummary
-	Description string
-	Aliases     []*Alias
-	Functions   []*Function
-	Structs     []*Struct
-	Traits      []*Trait
+	MemberKind    `yaml:",inline"`
+	MemberName    `yaml:",inline"`
+	MemberSummary `yaml:",inline"`
+	Description   string
+	Aliases       []*Alias
+	Functions     []*Function
+	Structs       []*Struct
+	Traits        []*Trait
 }
 
 type Alias struct {
-	MemberKind
-	MemberName
-	MemberSummary
-	Description string
-	Value       string
-	Deprecated  string
+	MemberKind    `yaml:",inline"`
+	MemberName    `yaml:",inline"`
+	MemberSummary `yaml:",inline"`
+	Description   string
+	Value         string
+	Deprecated    string
 }
 
 type Struct struct {
-	MemberKind
-	MemberName
-	MemberSummary
-	Description  string
-	Aliases      []*Alias
-	Constraints  string
-	Convention   string
-	Deprecated   string
-	Fields       []*Field
-	Functions    []*Function
-	Parameters   []*Parameter
-	ParentTraits []string
-	Signature    string
+	MemberKind    `yaml:",inline"`
+	MemberName    `yaml:",inline"`
+	MemberSummary `yaml:",inline"`
+	Description   string
+	Aliases       []*Alias
+	Constraints   string
+	Convention    string
+	Deprecated    string
+	Fields        []*Field
+	Functions     []*Function
+	Parameters    []*Parameter
+	ParentTraits  []string
+	Signature     string
 }
 
 type Function struct {
-	MemberKind
-	MemberName
-	MemberSummary
+	MemberKind           `yaml:",inline"`
+	MemberName           `yaml:",inline"`
+	MemberSummary        `yaml:",inline"`
 	Description          string
 	Args                 []*Arg
 	Overloads            []*Function
@@ -96,27 +98,27 @@ type Function struct {
 }
 
 type Field struct {
-	MemberKind
-	MemberName
-	MemberSummary
-	Description string
-	Type        string
+	MemberKind    `yaml:",inline"`
+	MemberName    `yaml:",inline"`
+	MemberSummary `yaml:",inline"`
+	Description   string
+	Type          string
 }
 
 type Trait struct {
-	MemberKind
-	MemberName
-	MemberSummary
-	Description  string
-	Fields       []*Field
-	Functions    []*Function
-	ParentTraits []string
-	Deprecated   string
+	MemberKind    `yaml:",inline"`
+	MemberName    `yaml:",inline"`
+	MemberSummary `yaml:",inline"`
+	Description   string
+	Fields        []*Field
+	Functions     []*Function
+	ParentTraits  []string
+	Deprecated    string
 }
 
 type Arg struct {
-	MemberKind
-	MemberName
+	MemberKind  `yaml:",inline"`
+	MemberName  `yaml:",inline"`
 	Description string
 	Convention  string
 	Type        string
@@ -125,8 +127,8 @@ type Arg struct {
 }
 
 type Parameter struct {
-	MemberKind
-	MemberName
+	MemberKind  `yaml:",inline"`
+	MemberName  `yaml:",inline"`
 	Description string
 	Type        string
 	PassingKind string
@@ -137,6 +139,22 @@ func FromJson(data []byte) (*Docs, error) {
 	reader := bytes.NewReader(data)
 	dec := json.NewDecoder(reader)
 	dec.DisallowUnknownFields()
+
+	var docs Docs
+
+	if err := dec.Decode(&docs); err != nil {
+		return nil, err
+	}
+
+	cleanup(&docs)
+
+	return &docs, nil
+}
+
+func FromYaml(data []byte) (*Docs, error) {
+	reader := bytes.NewReader(data)
+	dec := yaml.NewDecoder(reader)
+	dec.KnownFields(true)
 
 	var docs Docs
 
