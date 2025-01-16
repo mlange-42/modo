@@ -33,10 +33,10 @@ func (proc *Processor) ProcessLinks() error {
 	proc.filterPackages()
 	proc.collectPaths()
 	err := proc.processLinksPackage(proc.Docs.Decl, []string{})
-	for k, v := range proc.linkExports {
+	/*for k, v := range proc.linkExports {
 		fmt.Println(k, "\n       ", v)
 		fmt.Println("         ", proc.linkTargets[v])
-	}
+	}*/
 	return err
 }
 
@@ -44,11 +44,11 @@ func (proc *Processor) processLinksPackage(p *Package, elems []string) error {
 	newElems := appendNew(elems, p.GetName())
 
 	var err error
-	p.Summary, err = proc.replaceLinks(p.Summary, newElems, len(newElems), proc.getLinkPath)
+	p.Summary, err = proc.replaceLinks(p.Summary, newElems, len(newElems))
 	if err != nil {
 		return err
 	}
-	p.Description, err = proc.replaceLinks(p.Description, newElems, len(newElems), proc.getLinkPath)
+	p.Description, err = proc.replaceLinks(p.Description, newElems, len(newElems))
 	if err != nil {
 		return err
 	}
@@ -86,11 +86,11 @@ func (proc *Processor) processLinksModule(m *Module, elems []string) error {
 	newElems := appendNew(elems, m.GetName())
 
 	var err error
-	m.Summary, err = proc.replaceLinks(m.Summary, newElems, len(newElems), proc.getLinkPath)
+	m.Summary, err = proc.replaceLinks(m.Summary, newElems, len(newElems))
 	if err != nil {
 		return err
 	}
-	m.Description, err = proc.replaceLinks(m.Description, newElems, len(newElems), proc.getLinkPath)
+	m.Description, err = proc.replaceLinks(m.Description, newElems, len(newElems))
 	if err != nil {
 		return err
 	}
@@ -121,27 +121,27 @@ func (proc *Processor) processLinksStruct(s *Struct, elems []string) error {
 	newElems := appendNew(elems, s.GetName())
 
 	var err error
-	s.Summary, err = proc.replaceLinks(s.Summary, newElems, len(elems), proc.getLinkPath)
+	s.Summary, err = proc.replaceLinks(s.Summary, newElems, len(elems))
 	if err != nil {
 		return err
 	}
-	s.Description, err = proc.replaceLinks(s.Description, newElems, len(elems), proc.getLinkPath)
+	s.Description, err = proc.replaceLinks(s.Description, newElems, len(elems))
 	if err != nil {
 		return err
 	}
 
 	for _, p := range s.Parameters {
-		p.Description, err = proc.replaceLinks(p.Description, newElems, len(elems), proc.getLinkPath)
+		p.Description, err = proc.replaceLinks(p.Description, newElems, len(elems))
 		if err != nil {
 			return err
 		}
 	}
 	for _, f := range s.Fields {
-		f.Summary, err = proc.replaceLinks(f.Summary, newElems, len(elems), proc.getLinkPath)
+		f.Summary, err = proc.replaceLinks(f.Summary, newElems, len(elems))
 		if err != nil {
 			return err
 		}
-		f.Description, err = proc.replaceLinks(f.Description, newElems, len(elems), proc.getLinkPath)
+		f.Description, err = proc.replaceLinks(f.Description, newElems, len(elems))
 		if err != nil {
 			return err
 		}
@@ -159,11 +159,11 @@ func (proc *Processor) processLinksTrait(tr *Trait, elems []string) error {
 	newElems := appendNew(elems, tr.GetName())
 
 	var err error
-	tr.Summary, err = proc.replaceLinks(tr.Summary, newElems, len(elems), proc.getLinkPath)
+	tr.Summary, err = proc.replaceLinks(tr.Summary, newElems, len(elems))
 	if err != nil {
 		return err
 	}
-	tr.Description, err = proc.replaceLinks(tr.Description, newElems, len(elems), proc.getLinkPath)
+	tr.Description, err = proc.replaceLinks(tr.Description, newElems, len(elems))
 	if err != nil {
 		return err
 	}
@@ -176,11 +176,11 @@ func (proc *Processor) processLinksTrait(tr *Trait, elems []string) error {
 		}
 	}*/
 	for _, f := range tr.Fields {
-		f.Summary, err = proc.replaceLinks(f.Summary, newElems, len(elems), proc.getLinkPath)
+		f.Summary, err = proc.replaceLinks(f.Summary, newElems, len(elems))
 		if err != nil {
 			return err
 		}
-		f.Description, err = proc.replaceLinks(f.Description, newElems, len(elems), proc.getLinkPath)
+		f.Description, err = proc.replaceLinks(f.Description, newElems, len(elems))
 		if err != nil {
 			return err
 		}
@@ -198,31 +198,31 @@ func (proc *Processor) processLinksFunction(f *Function, elems []string) error {
 	newElems := appendNew(elems, f.GetName())
 
 	var err error
-	f.Summary, err = proc.replaceLinks(f.Summary, newElems, len(elems), proc.getLinkPath)
+	f.Summary, err = proc.replaceLinks(f.Summary, newElems, len(elems))
 	if err != nil {
 		return err
 	}
-	f.Description, err = proc.replaceLinks(f.Description, newElems, len(elems), proc.getLinkPath)
+	f.Description, err = proc.replaceLinks(f.Description, newElems, len(elems))
 	if err != nil {
 		return err
 	}
-	f.ReturnsDoc, err = proc.replaceLinks(f.ReturnsDoc, newElems, len(elems), proc.getLinkPath)
+	f.ReturnsDoc, err = proc.replaceLinks(f.ReturnsDoc, newElems, len(elems))
 	if err != nil {
 		return err
 	}
-	f.RaisesDoc, err = proc.replaceLinks(f.RaisesDoc, newElems, len(elems), proc.getLinkPath)
+	f.RaisesDoc, err = proc.replaceLinks(f.RaisesDoc, newElems, len(elems))
 	if err != nil {
 		return err
 	}
 
 	for _, a := range f.Args {
-		a.Description, err = proc.replaceLinks(a.Description, newElems, len(elems), proc.getLinkPath)
+		a.Description, err = proc.replaceLinks(a.Description, newElems, len(elems))
 		if err != nil {
 			return err
 		}
 	}
 	for _, p := range f.Parameters {
-		p.Description, err = proc.replaceLinks(p.Description, newElems, len(elems), proc.getLinkPath)
+		p.Description, err = proc.replaceLinks(p.Description, newElems, len(elems))
 		if err != nil {
 			return err
 		}
@@ -240,31 +240,31 @@ func (proc *Processor) processLinksFunction(f *Function, elems []string) error {
 
 func (proc *Processor) processLinksMethod(f *Function, elems []string) error {
 	var err error
-	f.Summary, err = proc.replaceLinks(f.Summary, elems, len(elems), proc.getLinkPath)
+	f.Summary, err = proc.replaceLinks(f.Summary, elems, len(elems))
 	if err != nil {
 		return err
 	}
-	f.Description, err = proc.replaceLinks(f.Description, elems, len(elems), proc.getLinkPath)
+	f.Description, err = proc.replaceLinks(f.Description, elems, len(elems))
 	if err != nil {
 		return err
 	}
-	f.ReturnsDoc, err = proc.replaceLinks(f.ReturnsDoc, elems, len(elems), proc.getLinkPath)
+	f.ReturnsDoc, err = proc.replaceLinks(f.ReturnsDoc, elems, len(elems))
 	if err != nil {
 		return err
 	}
-	f.RaisesDoc, err = proc.replaceLinks(f.RaisesDoc, elems, len(elems), proc.getLinkPath)
+	f.RaisesDoc, err = proc.replaceLinks(f.RaisesDoc, elems, len(elems))
 	if err != nil {
 		return err
 	}
 
 	for _, a := range f.Args {
-		a.Description, err = proc.replaceLinks(a.Description, elems, len(elems), proc.getLinkPath)
+		a.Description, err = proc.replaceLinks(a.Description, elems, len(elems))
 		if err != nil {
 			return err
 		}
 	}
 	for _, p := range f.Parameters {
-		p.Description, err = proc.replaceLinks(p.Description, elems, len(elems), proc.getLinkPath)
+		p.Description, err = proc.replaceLinks(p.Description, elems, len(elems))
 		if err != nil {
 			return err
 		}
@@ -280,7 +280,7 @@ func (proc *Processor) processLinksMethod(f *Function, elems []string) error {
 	return nil
 }
 
-func (proc *Processor) replaceLinks(text string, elems []string, modElems int, lookup func(string) (elemPath, bool)) (string, error) {
+func (proc *Processor) replaceLinks(text string, elems []string, modElems int) (string, error) {
 	indices, err := findLinks(text)
 	if err != nil {
 		return "", err
@@ -292,7 +292,7 @@ func (proc *Processor) replaceLinks(text string, elems []string, modElems int, l
 		start, end := indices[i], indices[i+1]
 		link := text[start+1 : end-1]
 
-		entry, linkText, parts, ok := toLink(link, elems, modElems, lookup, proc.ShortLinks)
+		entry, linkText, parts, ok := toLink(link, elems, modElems, proc.getLinkPath, proc.ShortLinks)
 		if !ok {
 			continue
 		}
@@ -303,6 +303,7 @@ func (proc *Processor) replaceLinks(text string, elems []string, modElems int, l
 		} else {
 			basePath = path.Join(parts...)
 		}
+
 		pathStr, err := proc.Formatter.ToLinkPath(basePath, entry.Kind)
 		if err != nil {
 			return "", err
@@ -368,7 +369,10 @@ func toRelLink(link string, elems []string, modElems int, lookup func(string) (e
 		log.Printf("WARNING: Can't resolve cross ref '%s' (%s) in %s", link, fullLink, strings.Join(elems, "."))
 		return nil, "", nil, false
 	}
-
+	fmt.Println(fullPath, fullLink)
+	fmt.Println("    ", elemPath.Elements, subElems, elems)
+	fmt.Println("        ", append(fullPath, elemPath.Elements[len(subElems):]...))
+	// TODO: bug somewhere here
 	fullPath = append(fullPath, elemPath.Elements[len(subElems):]...)
 	return &elemPath, linkText, fullPath, true
 }

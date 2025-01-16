@@ -55,7 +55,8 @@ func TestReplaceLinks(t *testing.T) {
 	elems := []string{"stdlib", "p", "Struct"}
 
 	proc := NewProcessor(nil, &TestFormatter{}, nil, false, false)
-	out, err := proc.replaceLinks(text, elems, 2, mapLookup(lookup))
+	proc.linkTargets = lookup
+	out, err := proc.replaceLinks(text, elems, 2)
 	assert.Nil(t, err)
 
 	assert.Equal(t, "A [`Struct`](Struct.md), a [`Struct.member`](Struct.md#member), a [`Trait`](../Trait.md), a [`q.func`](q/func.md), abs [`stdlib.Trait`](../Trait.md). And a [Markdown](link).", out)
