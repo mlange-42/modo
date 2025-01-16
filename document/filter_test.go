@@ -92,7 +92,9 @@ Exports:
  - mod3.Struct3
 `
 	proc := NewProcessor(docs, nil, nil, true, true)
-	proc.filterPackages()
+	err := proc.filterPackages()
+	assert.Nil(t, err)
+
 	eDocs := proc.ExportDocs.Decl
 
 	assert.Equal(t, 2, len(eDocs.Structs))
@@ -133,7 +135,8 @@ Exports:
 `
 
 	proc := NewProcessor(docs, nil, nil, true, true)
-	proc.filterPackages()
+	err := proc.filterPackages()
+	assert.Nil(t, err)
 
 	for k, v := range proc.linkExports {
 		fmt.Println(k, v)

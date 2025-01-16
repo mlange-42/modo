@@ -3,7 +3,6 @@ package main
 import (
 	"fmt"
 	"io"
-	"log"
 	"os"
 
 	"github.com/mlange-42/modo/document"
@@ -13,7 +12,8 @@ import (
 
 func main() {
 	if err := rootCommand().Execute(); err != nil {
-		log.Fatal(err)
+		fmt.Println("Use 'modo --help' for help.")
+		os.Exit(1)
 	}
 }
 
@@ -40,7 +40,8 @@ Usage:
   modo docs -i docs.json        # from a file
   mojo doc ./src | modo docs    # from 'mojo doc'
 `,
-		Args: cobra.ExactArgs(1),
+		Args:         cobra.ExactArgs(1),
+		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliArgs.outDir = args[0]
 			return run(&cliArgs)

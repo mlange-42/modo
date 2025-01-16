@@ -24,7 +24,9 @@ Exports:
 Text
 `
 	proc := NewProcessor(nil, nil, nil, false, false)
-	exports, newText := proc.parseExports(text, []string{"pkg"}, true)
+	exports, newText, anyExp := proc.parseExports(text, []string{"pkg"}, true)
+
+	assert.True(t, anyExp)
 
 	assert.Equal(t, []*PackageExport{
 		{Short: []string{"mod", "Struct"}, Long: []string{"pkg", "mod", "Struct"}},

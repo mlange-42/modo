@@ -1,19 +1,24 @@
 package document
 
 import (
+	"fmt"
 	"strings"
 )
 
-func (proc *Processor) filterPackages() {
+func (proc *Processor) filterPackages() error {
 	proc.linkExports = map[string]string{}
-	proc.collectExports(proc.Docs.Decl, nil)
+	anyExports := proc.collectExports(proc.Docs.Decl, nil)
 
 	if !proc.UseExports {
 		proc.ExportDocs = &Docs{
 			Version: proc.Docs.Version,
 			Decl:    proc.Docs.Decl,
 		}
-		return
+		return nil
+	}
+
+	if !anyExports {
+		return fmt.Errorf("no package re-exports found. Given flag '--exports', there will be no output.\n       Add exports or run without flag '--exports'")
 	}
 
 	proc.ExportDocs = &Docs{
@@ -21,6 +26,7 @@ func (proc *Processor) filterPackages() {
 		Decl:    proc.Docs.Decl.linkedCopy(),
 	}
 	proc.filterPackage(proc.Docs.Decl, proc.ExportDocs.Decl, nil, nil)
+	return nil
 }
 
 func (proc *Processor) filterPackage(src, rootOut *Package, oldPath, newPath []string) {
