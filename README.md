@@ -105,9 +105,10 @@ Some examples:
 | `[..mod.A]` | Struct `A` in sibling module `mod`. |
 | `[.A.method method]` | Method `method` of struct `A`, with custom text. |
 
-Leading dots are stripped from the link text if no custom text is given.
+Leading dots are stripped from the link text if no custom text is given, so `.mod.Type` becomes `mod.Type`.
+With flag `--short-links`, modules are also stripped, so `.mod.Type` becomes just `Type`.
 
-Besides that, normal Markdown links can be used.
+Besides cross-references, normal Markdown links can be used in doc-strings.
 
 ## Package re-exports
 
@@ -142,3 +143,6 @@ This means that sub-packages need an `Exports:` section too if they are re-expor
 like `fungi` in the example.
 For exporting members from a sub-package (like `Cat` and `Doc`), the sub-package `Exports:` are ignored.
 Re-exported modules (like `plants.vascular`) are included completely.
+
+[Cross-references](#cross-referencing) should still use the original structure of the package.
+They are automatically transformed to match the altered structure.
