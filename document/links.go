@@ -33,10 +33,10 @@ func (proc *Processor) ProcessLinks() error {
 	proc.filterPackages()
 	proc.collectPaths()
 	err := proc.processLinksPackage(proc.Docs.Decl, []string{})
-	/*for k, v := range proc.linkExports {
+	for k, v := range proc.linkExports {
 		fmt.Println(k, "\n       ", v)
 		fmt.Println("         ", proc.linkTargets[v])
-	}*/
+	}
 	return err
 }
 

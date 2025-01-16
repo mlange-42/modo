@@ -18,7 +18,7 @@ func (proc *Processor) filterPackages() {
 
 	proc.ExportDocs = &Docs{
 		Version: proc.Docs.Version,
-		Decl:    proc.Docs.Decl.copyEmpty(),
+		Decl:    proc.Docs.Decl.linkedCopy(),
 	}
 	proc.filterPackage(proc.Docs.Decl, proc.ExportDocs.Decl, nil, nil)
 }
@@ -47,7 +47,7 @@ func (proc *Processor) collectPackageExports(src, rootOut *Package, oldPath, new
 	selfIncluded, toCrawl := collectExportMembers(rootMembers)
 
 	if selfIncluded {
-		newPkg := src.copyEmpty()
+		newPkg := src.linkedCopy()
 		proc.filterPackage(src, newPkg, oldPath, newPath)
 		rootOut.Packages = append(rootOut.Packages, newPkg)
 
