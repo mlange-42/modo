@@ -156,6 +156,8 @@ With flag `--templates`, a custom templates folder can be specified to (partiall
 Simply use the same files names, and alter the content.
 Embedded templates that can be overwritten can be found in folder [assets/templates](assets/templates).
 
+Besides changing the page layout, this feature can be used to alter the [Hugo](#hugo) front matter, or to adapt the [mdBook](#mdbook) configuration file.
+
 ## Packages using Modo
 
 - [Larecs](https://github.com/samufi/larecs) -- a performance-centred archetype-based ECS ([docs](https://samufi.github.io/larecs/)).
