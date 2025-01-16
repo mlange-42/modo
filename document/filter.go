@@ -1,7 +1,6 @@
 package document
 
 import (
-	"fmt"
 	"strings"
 )
 
@@ -27,8 +26,6 @@ func (proc *Processor) filterPackages() {
 func (proc *Processor) filterPackage(src, rootOut *Package, oldPath, newPath []string) {
 	rootExports := map[string]*members{}
 	collectExportsPackage(src, rootExports)
-
-	fmt.Println("Filtering", src.Name, oldPath, newPath)
 
 	oldPath = appendNew(oldPath, src.Name)
 	newPath = appendNew(newPath, src.Name)
@@ -118,22 +115,22 @@ func (proc *Processor) collectExportsStruct(s *Struct, oldPath []string, newPath
 	oldPath = appendNew(oldPath, s.Name)
 	newPath = appendNew(newPath, s.Name)
 
-	proc.linkExports[strings.Join(oldPath, ".")] = strings.Join(newPath, ".")
+	proc.addLinkExport(oldPath, newPath)
 
 	for _, elem := range s.Parameters {
-		oldPath = appendNew(oldPath, elem.Name)
-		newPath = appendNew(newPath, elem.Name)
-		proc.linkExports[strings.Join(oldPath, ".")] = strings.Join(newPath, ".")
+		oldPath := appendNew(oldPath, elem.Name)
+		newPath := appendNew(newPath, elem.Name)
+		proc.addLinkExport(oldPath, newPath)
 	}
 	for _, elem := range s.Fields {
-		oldPath = appendNew(oldPath, elem.Name)
-		newPath = appendNew(newPath, elem.Name)
-		proc.linkExports[strings.Join(oldPath, ".")] = strings.Join(newPath, ".")
+		oldPath := appendNew(oldPath, elem.Name)
+		newPath := appendNew(newPath, elem.Name)
+		proc.addLinkExport(oldPath, newPath)
 	}
 	for _, elem := range s.Functions {
-		oldPath = appendNew(oldPath, elem.Name)
-		newPath = appendNew(newPath, elem.Name)
-		proc.linkExports[strings.Join(oldPath, ".")] = strings.Join(newPath, ".")
+		oldPath := appendNew(oldPath, elem.Name)
+		newPath := appendNew(newPath, elem.Name)
+		proc.addLinkExport(oldPath, newPath)
 	}
 }
 
@@ -141,17 +138,17 @@ func (proc *Processor) collectExportsTrait(s *Trait, oldPath []string, newPath [
 	oldPath = appendNew(oldPath, s.Name)
 	newPath = appendNew(newPath, s.Name)
 
-	proc.linkExports[strings.Join(oldPath, ".")] = strings.Join(newPath, ".")
+	proc.addLinkExport(oldPath, newPath)
 
 	for _, elem := range s.Fields {
-		oldPath = appendNew(oldPath, elem.Name)
-		newPath = appendNew(newPath, elem.Name)
-		proc.linkExports[strings.Join(oldPath, ".")] = strings.Join(newPath, ".")
+		oldPath := appendNew(oldPath, elem.Name)
+		newPath := appendNew(newPath, elem.Name)
+		proc.addLinkExport(oldPath, newPath)
 	}
 	for _, elem := range s.Functions {
-		oldPath = appendNew(oldPath, elem.Name)
-		newPath = appendNew(newPath, elem.Name)
-		proc.linkExports[strings.Join(oldPath, ".")] = strings.Join(newPath, ".")
+		oldPath := appendNew(oldPath, elem.Name)
+		newPath := appendNew(newPath, elem.Name)
+		proc.addLinkExport(oldPath, newPath)
 	}
 }
 
@@ -159,7 +156,7 @@ func (proc *Processor) collectExportsFunction(s *Function, oldPath []string, new
 	oldPath = appendNew(oldPath, s.Name)
 	newPath = appendNew(newPath, s.Name)
 
-	proc.linkExports[strings.Join(oldPath, ".")] = strings.Join(newPath, ".")
+	proc.addLinkExport(oldPath, newPath)
 }
 
 type members struct {

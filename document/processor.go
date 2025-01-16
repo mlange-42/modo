@@ -1,6 +1,8 @@
 package document
 
 import (
+	"log"
+	"strings"
 	"text/template"
 )
 
@@ -23,4 +25,29 @@ func NewProcessor(docs *Docs, f Formatter, t *template.Template, useExports bool
 		ShortLinks: shortLinks,
 		Docs:       docs,
 	}
+}
+
+func (proc *Processor) getLinkPath(link string) (elemPath, bool) {
+	newLink := link
+
+	if proc.UseExports {
+		var ok bool
+		newLink, ok = proc.linkExports[link]
+		if !ok {
+			log.Printf("link export lookup failed for %s", link)
+			return elemPath{}, false
+		}
+	}
+
+	elem, ok := proc.linkTargets[newLink]
+	if !ok {
+		log.Printf("link target lookup failed for %s (%s)", newLink, link)
+		return elemPath{}, false
+	}
+
+	return elem, true
+}
+
+func (proc *Processor) addLinkExport(oldPath, newPath []string) {
+	proc.linkExports[strings.Join(oldPath, ".")] = strings.Join(newPath, ".")
 }
