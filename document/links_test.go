@@ -10,7 +10,7 @@ import (
 
 type TestFormatter struct{}
 
-func (f *TestFormatter) ProcessMarkdown(name, summary, text string) (string, error) {
+func (f *TestFormatter) ProcessMarkdown(element any, text string, proc *Processor) (string, error) {
 	return text, nil
 }
 

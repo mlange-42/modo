@@ -39,11 +39,7 @@ func renderElement(data interface {
 	if err != nil {
 		return "", err
 	}
-	var summary string
-	if d, ok := data.(document.Summarized); ok {
-		summary = d.GetSummary()
-	}
-	return proc.Formatter.ProcessMarkdown(data.GetName(), summary, b.String())
+	return proc.Formatter.ProcessMarkdown(data, b.String(), proc)
 }
 
 func renderPackage(p *document.Package, dir []string, proc *document.Processor) error {

@@ -8,7 +8,7 @@ import (
 
 type PlainFormatter struct{}
 
-func (f *PlainFormatter) ProcessMarkdown(name, summary, text string) (string, error) {
+func (f *PlainFormatter) ProcessMarkdown(element any, text string, proc *document.Processor) (string, error) {
 	return text, nil
 }
 
