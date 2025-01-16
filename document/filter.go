@@ -4,6 +4,9 @@ import (
 	"fmt"
 )
 
+// Filters and re-structures docs for package re-exports.
+//
+// Also collects a lookup, mapping from original to altered cross-refs.
 func (proc *Processor) filterPackages() error {
 	proc.linkExports = map[string]string{}
 	anyExports := proc.collectExports(proc.Docs.Decl, nil)
@@ -32,8 +35,8 @@ func (proc *Processor) filterPackage(src, rootOut *Package, oldPath, newPath []s
 	rootExports := map[string]*members{}
 	collectExportsPackage(src, rootExports)
 
-	oldPath = appendNew(oldPath, src.Name)
-	newPath = appendNew(newPath, src.Name)
+	oldPath = AppendNew(oldPath, src.Name)
+	newPath = AppendNew(newPath, src.Name)
 
 	for _, mod := range src.Modules {
 		if mems, ok := rootExports[mod.Name]; ok {
@@ -56,11 +59,11 @@ func (proc *Processor) collectPackageExports(src, rootOut *Package, oldPath, new
 		proc.filterPackage(src, newPkg, oldPath, newPath)
 		rootOut.Packages = append(rootOut.Packages, newPkg)
 
-		tempOldPath := appendNew(oldPath, src.Name)
-		tempNewPath := appendNew(newPath, src.Name)
+		tempOldPath := AppendNew(oldPath, src.Name)
+		tempNewPath := AppendNew(newPath, src.Name)
 		proc.addLinkExport(tempOldPath, tempNewPath)
 	}
-	oldPath = appendNew(oldPath, src.Name)
+	oldPath = AppendNew(oldPath, src.Name)
 
 	for _, mod := range src.Modules {
 		if mems, ok := toCrawl[mod.Name]; ok {
@@ -88,11 +91,11 @@ func (proc *Processor) collectPackageExports(src, rootOut *Package, oldPath, new
 func (proc *Processor) collectModuleExports(src *Module, rootOut *Package, oldPath, newPath []string, rootMembers *members) {
 	selfIncluded, toCrawl := collectExportMembers(rootMembers)
 
-	oldPath = appendNew(oldPath, src.Name)
+	oldPath = AppendNew(oldPath, src.Name)
 	if selfIncluded {
 		rootOut.Modules = append(rootOut.Modules, src)
 
-		tempNewPath := appendNew(newPath, src.Name)
+		tempNewPath := AppendNew(newPath, src.Name)
 		proc.addLinkExport(oldPath, tempNewPath)
 	}
 
@@ -117,49 +120,49 @@ func (proc *Processor) collectModuleExports(src *Module, rootOut *Package, oldPa
 }
 
 func (proc *Processor) collectExportsStruct(s *Struct, oldPath []string, newPath []string) {
-	oldPath = appendNew(oldPath, s.Name)
-	newPath = appendNew(newPath, s.Name)
+	oldPath = AppendNew(oldPath, s.Name)
+	newPath = AppendNew(newPath, s.Name)
 
 	proc.addLinkExport(oldPath, newPath)
 
 	for _, elem := range s.Parameters {
-		oldPath := appendNew(oldPath, elem.Name)
-		newPath := appendNew(newPath, elem.Name)
+		oldPath := AppendNew(oldPath, elem.Name)
+		newPath := AppendNew(newPath, elem.Name)
 		proc.addLinkExport(oldPath, newPath)
 	}
 	for _, elem := range s.Fields {
-		oldPath := appendNew(oldPath, elem.Name)
-		newPath := appendNew(newPath, elem.Name)
+		oldPath := AppendNew(oldPath, elem.Name)
+		newPath := AppendNew(newPath, elem.Name)
 		proc.addLinkExport(oldPath, newPath)
 	}
 	for _, elem := range s.Functions {
-		oldPath := appendNew(oldPath, elem.Name)
-		newPath := appendNew(newPath, elem.Name)
+		oldPath := AppendNew(oldPath, elem.Name)
+		newPath := AppendNew(newPath, elem.Name)
 		proc.addLinkExport(oldPath, newPath)
 	}
 }
 
 func (proc *Processor) collectExportsTrait(s *Trait, oldPath []string, newPath []string) {
-	oldPath = appendNew(oldPath, s.Name)
-	newPath = appendNew(newPath, s.Name)
+	oldPath = AppendNew(oldPath, s.Name)
+	newPath = AppendNew(newPath, s.Name)
 
 	proc.addLinkExport(oldPath, newPath)
 
 	for _, elem := range s.Fields {
-		oldPath := appendNew(oldPath, elem.Name)
-		newPath := appendNew(newPath, elem.Name)
+		oldPath := AppendNew(oldPath, elem.Name)
+		newPath := AppendNew(newPath, elem.Name)
 		proc.addLinkExport(oldPath, newPath)
 	}
 	for _, elem := range s.Functions {
-		oldPath := appendNew(oldPath, elem.Name)
-		newPath := appendNew(newPath, elem.Name)
+		oldPath := AppendNew(oldPath, elem.Name)
+		newPath := AppendNew(newPath, elem.Name)
 		proc.addLinkExport(oldPath, newPath)
 	}
 }
 
 func (proc *Processor) collectExportsFunction(s *Function, oldPath []string, newPath []string) {
-	oldPath = appendNew(oldPath, s.Name)
-	newPath = appendNew(newPath, s.Name)
+	oldPath = AppendNew(oldPath, s.Name)
+	newPath = AppendNew(newPath, s.Name)
 
 	proc.addLinkExport(oldPath, newPath)
 }

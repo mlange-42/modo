@@ -30,7 +30,7 @@ func findLinks(text string) ([]int, error) {
 }
 
 func (proc *Processor) processLinksPackage(p *Package, elems []string, firstPass bool) error {
-	newElems := appendNew(elems, p.GetName())
+	newElems := AppendNew(elems, p.GetName())
 
 	var err error
 	p.Summary, err = proc.replaceRefs(p.Summary, newElems, len(newElems), firstPass)
@@ -72,7 +72,7 @@ func (proc *Processor) processLinksPackage(p *Package, elems []string, firstPass
 }
 
 func (proc *Processor) processLinksModule(m *Module, elems []string, firstPass bool) error {
-	newElems := appendNew(elems, m.GetName())
+	newElems := AppendNew(elems, m.GetName())
 
 	var err error
 	m.Summary, err = proc.replaceRefs(m.Summary, newElems, len(newElems), firstPass)
@@ -113,7 +113,7 @@ func (proc *Processor) processLinksModule(m *Module, elems []string, firstPass b
 }
 
 func (proc *Processor) processLinksStruct(s *Struct, elems []string, firstPass bool) error {
-	newElems := appendNew(elems, s.GetName())
+	newElems := AppendNew(elems, s.GetName())
 
 	var err error
 	s.Summary, err = proc.replaceRefs(s.Summary, newElems, len(elems), firstPass)
@@ -157,7 +157,7 @@ func (proc *Processor) processLinksStruct(s *Struct, elems []string, firstPass b
 }
 
 func (proc *Processor) processLinksTrait(tr *Trait, elems []string, firstPass bool) error {
-	newElems := appendNew(elems, tr.GetName())
+	newElems := AppendNew(elems, tr.GetName())
 
 	var err error
 	tr.Summary, err = proc.replaceRefs(tr.Summary, newElems, len(elems), firstPass)
@@ -196,7 +196,7 @@ func (proc *Processor) processLinksTrait(tr *Trait, elems []string, firstPass bo
 }
 
 func (proc *Processor) processLinksFunction(f *Function, elems []string, firstPass bool) error {
-	newElems := appendNew(elems, f.GetName())
+	newElems := AppendNew(elems, f.GetName())
 
 	var err error
 	f.Summary, err = proc.replaceRefs(f.Summary, newElems, len(elems), firstPass)
@@ -240,7 +240,7 @@ func (proc *Processor) processLinksFunction(f *Function, elems []string, firstPa
 }
 
 func (proc *Processor) processLinksAlias(a *Alias, elems []string, firstPass bool) error {
-	newElems := appendNew(elems, a.GetName())
+	newElems := AppendNew(elems, a.GetName())
 
 	var err error
 	a.Summary, err = proc.replaceRefs(a.Summary, newElems, len(elems), firstPass)

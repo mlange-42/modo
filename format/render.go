@@ -21,7 +21,7 @@ func Render(docs *document.Docs, dir string, rFormat Format, useExports bool, sh
 	if err := proc.PrepareDocs(); err != nil {
 		return err
 	}
-	if err := renderPackage(proc.ExportDocs.Decl, dir, &proc); err != nil {
+	if err := renderPackage(proc.ExportDocs.Decl, []string{dir}, &proc); err != nil {
 		return err
 	}
 	if err := proc.Formatter.WriteAuxiliary(proc.ExportDocs.Decl, dir, &proc); err != nil {
@@ -46,36 +46,32 @@ func renderElement(data interface {
 	return proc.Formatter.ProcessMarkdown(data.GetName(), summary, b.String())
 }
 
-func renderPackage(p *document.Package, dir string, proc *document.Processor) error {
-	pkgPath := path.Join(dir, p.GetFileName())
+func renderPackage(p *document.Package, dir []string, proc *document.Processor) error {
+	newDir := document.AppendNew(dir, p.GetFileName())
+	pkgPath := path.Join(newDir...)
 	if err := mkDirs(pkgPath); err != nil {
 		return err
 	}
 
-	pkgFile, err := proc.Formatter.ToFilePath(pkgPath, "package")
-	if err != nil {
-		return err
-	}
-
 	for _, pkg := range p.Packages {
-		if err := renderPackage(pkg, pkgPath, proc); err != nil {
+		if err := renderPackage(pkg, newDir, proc); err != nil {
 			return err
 		}
 	}
 
 	for _, mod := range p.Modules {
-		if err := renderModule(mod, pkgPath, proc); err != nil {
+		if err := renderModule(mod, newDir, proc); err != nil {
 			return err
 		}
 	}
 
-	if err := renderList(p.Structs, pkgPath, proc); err != nil {
+	if err := renderList(p.Structs, newDir, proc); err != nil {
 		return err
 	}
-	if err := renderList(p.Traits, pkgPath, proc); err != nil {
+	if err := renderList(p.Traits, newDir, proc); err != nil {
 		return err
 	}
-	if err := renderList(p.Functions, pkgPath, proc); err != nil {
+	if err := renderList(p.Functions, newDir, proc); err != nil {
 		return err
 	}
 
@@ -83,31 +79,26 @@ func renderPackage(p *document.Package, dir string, proc *document.Processor) er
 	if err != nil {
 		return err
 	}
-	if err := os.WriteFile(pkgFile, []byte(text), 0666); err != nil {
+	if err := linkAndWrite(text, newDir, "package", proc); err != nil {
 		return err
 	}
 
 	return nil
 }
 
-func renderModule(mod *document.Module, dir string, proc *document.Processor) error {
-	modPath := path.Join(dir, mod.GetFileName())
-	if err := mkDirs(modPath); err != nil {
+func renderModule(mod *document.Module, dir []string, proc *document.Processor) error {
+	newDir := document.AppendNew(dir, mod.GetFileName())
+	if err := mkDirs(path.Join(newDir...)); err != nil {
 		return err
 	}
 
-	modFile, err := proc.Formatter.ToFilePath(modPath, "module")
-	if err != nil {
+	if err := renderList(mod.Structs, newDir, proc); err != nil {
 		return err
 	}
-
-	if err := renderList(mod.Structs, modPath, proc); err != nil {
+	if err := renderList(mod.Traits, newDir, proc); err != nil {
 		return err
 	}
-	if err := renderList(mod.Traits, modPath, proc); err != nil {
-		return err
-	}
-	if err := renderList(mod.Functions, modPath, proc); err != nil {
+	if err := renderList(mod.Functions, newDir, proc); err != nil {
 		return err
 	}
 
@@ -115,7 +106,7 @@ func renderModule(mod *document.Module, dir string, proc *document.Processor) er
 	if err != nil {
 		return err
 	}
-	if err := os.WriteFile(modFile, []byte(text), 0666); err != nil {
+	if err := linkAndWrite(text, newDir, "module", proc); err != nil {
 		return err
 	}
 
@@ -125,20 +116,14 @@ func renderModule(mod *document.Module, dir string, proc *document.Processor) er
 func renderList[T interface {
 	document.Named
 	document.Kinded
-}](list []T, dir string, proc *document.Processor) error {
+}](list []T, dir []string, proc *document.Processor) error {
 	for _, elem := range list {
+		newDir := document.AppendNew(dir, elem.GetFileName())
 		text, err := renderElement(elem, proc)
 		if err != nil {
 			return err
 		}
-		memberPath := path.Join(dir, elem.GetFileName())
-
-		memberFile, err := proc.Formatter.ToFilePath(memberPath, elem.GetKind())
-		if err != nil {
-			return err
-		}
-
-		if err := os.WriteFile(memberFile, []byte(text), 0666); err != nil {
+		if err := linkAndWrite(text, newDir, elem.GetKind(), proc); err != nil {
 			return err
 		}
 	}
@@ -175,6 +160,15 @@ func findTemplates() ([]string, error) {
 		return nil, err
 	}
 	return allTemplates, nil
+}
+
+func linkAndWrite(text string, dir []string, kind string, proc *document.Processor) error {
+	// TODO: process links
+	outFile, err := proc.Formatter.ToFilePath(path.Join(dir...), kind)
+	if err != nil {
+		return err
+	}
+	return os.WriteFile(outFile, []byte(text), 0666)
 }
 
 func mkDirs(path string) error {
