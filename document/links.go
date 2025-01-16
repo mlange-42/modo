@@ -84,6 +84,12 @@ func (proc *Processor) processLinksModule(m *Module, elems []string, firstPass b
 		return err
 	}
 
+	for _, a := range m.Aliases {
+		err := proc.processLinksAlias(a, newElems, firstPass)
+		if err != nil {
+			return err
+		}
+	}
 	for _, f := range m.Functions {
 		err := proc.processLinksFunction(f, newElems, firstPass)
 		if err != nil {
@@ -119,6 +125,12 @@ func (proc *Processor) processLinksStruct(s *Struct, elems []string, firstPass b
 		return err
 	}
 
+	for _, a := range s.Aliases {
+		a.Description, err = proc.replaceRefs(a.Description, newElems, len(elems), firstPass)
+		if err != nil {
+			return err
+		}
+	}
 	for _, p := range s.Parameters {
 		p.Description, err = proc.replaceRefs(p.Description, newElems, len(elems), firstPass)
 		if err != nil {
@@ -224,6 +236,21 @@ func (proc *Processor) processLinksFunction(f *Function, elems []string, firstPa
 		}
 	}
 
+	return nil
+}
+
+func (proc *Processor) processLinksAlias(a *Alias, elems []string, firstPass bool) error {
+	newElems := appendNew(elems, a.GetName())
+
+	var err error
+	a.Summary, err = proc.replaceRefs(a.Summary, newElems, len(elems), firstPass)
+	if err != nil {
+		return err
+	}
+	a.Description, err = proc.replaceRefs(a.Description, newElems, len(elems), firstPass)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

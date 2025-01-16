@@ -1,3 +1,9 @@
+## Unpublished
+
+### Bugfixes
+
+* Fixes overwritten cross-refs in case of multiple re-exports of the same member (#46)
+
 ## [[v0.5.0]](https://github.com/mlange-42/modo/compare/v0.4.0...v0.5.0)
 
 ### Features
