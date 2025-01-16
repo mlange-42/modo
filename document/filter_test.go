@@ -92,7 +92,6 @@ Exports:
  - mod3.Struct3
 `
 	proc := NewProcessor(docs, nil, nil, true, true)
-	proc.collectExports(proc.Docs.Decl, nil)
 	proc.filterPackages()
 	eDocs := proc.ExportDocs.Decl
 
@@ -134,7 +133,6 @@ Exports:
 `
 
 	proc := NewProcessor(docs, nil, nil, true, true)
-	proc.collectExports(proc.Docs.Decl, nil)
 	proc.filterPackages()
 
 	for k, v := range proc.linkExports {
