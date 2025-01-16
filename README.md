@@ -103,10 +103,10 @@ Some examples:
 | `[.A]` | Struct `A` in the current module. |
 | `[.A.method]` | Method `method` of struct `A` in the current module. |
 | `[..mod.A]` | Struct `A` in sibling module `mod`. |
-| `[.A.method method]` | Method `method` of struct `A`, with custom text. |
+| `[.A.method link text]` | Method `method` of struct `A`, with custom text. |
 
 Leading dots are stripped from the link text if no custom text is given, so `.mod.Type` becomes `mod.Type`.
-With flag `--short-links`, modules are also stripped, so `.mod.Type` becomes just `Type`.
+With flag `--short-links`, packages and modules are also stripped, so `.mod.Type` becomes just `Type`.
 
 Besides cross-references, normal Markdown links can be used in doc-strings.
 
@@ -147,3 +147,11 @@ Re-exported modules (like `plants.vascular`) are fully included with all members
 
 [Cross-references](#cross-references) should still use the original structure of the package.
 They are automatically transformed to match the altered structure.
+
+## Packages using Modo
+
+- [Larecs](https://github.com/samufi/larecs) -- a performance-centred archetype-based ECS ([docs](https://samufi.github.io/larecs/)).
+
+## License
+
+This project is distributed under the [MIT license](./LICENSE).
