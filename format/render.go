@@ -12,20 +12,28 @@ import (
 	"github.com/mlange-42/modo/document"
 )
 
-func Render(docs *document.Docs, dir string, templateDirs []string, rFormat Format, useExports bool, shortLinks bool) error {
-	formatter := GetFormatter(rFormat)
-	t, err := loadTemplates(formatter, templateDirs...)
+type Config struct {
+	OutputDir    string
+	TemplateDirs []string
+	RenderFormat Format
+	UseExports   bool
+	ShortLinks   bool
+}
+
+func Render(docs *document.Docs, config *Config) error {
+	formatter := GetFormatter(config.RenderFormat)
+	t, err := loadTemplates(formatter, config.TemplateDirs...)
 	if err != nil {
 		return err
 	}
-	proc := document.NewProcessor(docs, formatter, t, useExports, shortLinks)
+	proc := document.NewProcessor(docs, formatter, t, config.UseExports, config.ShortLinks)
 	if err := proc.PrepareDocs(); err != nil {
 		return err
 	}
-	if err := renderPackage(proc.ExportDocs.Decl, []string{dir}, &proc); err != nil {
+	if err := renderPackage(proc.ExportDocs.Decl, []string{config.OutputDir}, &proc); err != nil {
 		return err
 	}
-	if err := proc.Formatter.WriteAuxiliary(proc.ExportDocs.Decl, dir, &proc); err != nil {
+	if err := proc.Formatter.WriteAuxiliary(proc.ExportDocs.Decl, config.OutputDir, &proc); err != nil {
 		return err
 	}
 	return nil

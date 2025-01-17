@@ -82,7 +82,13 @@ func run(args *args) error {
 		document.CaseSensitiveSystem = false
 	}
 
-	err = format.Render(docs, args.outDir, args.templateDirs, rFormat, args.useExports, args.shortLinks)
+	err = format.Render(docs, &format.Config{
+		OutputDir:    args.outDir,
+		TemplateDirs: args.templateDirs,
+		RenderFormat: rFormat,
+		UseExports:   args.useExports,
+		ShortLinks:   args.shortLinks,
+	})
 	if err != nil {
 		return err
 	}
