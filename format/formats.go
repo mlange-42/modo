@@ -12,6 +12,8 @@ const (
 	Plain Format = iota
 	MdBook
 	Hugo
+	JSON
+	YAML
 )
 
 func GetFormat(f string) (Format, error) {
@@ -27,12 +29,16 @@ var formats = map[string]Format{
 	"plain":  Plain,
 	"mdbook": MdBook,
 	"hugo":   Hugo,
+	"json":   JSON,
+	"yaml":   YAML,
 }
 
 var formatters = []document.Formatter{
 	&PlainFormatter{},
 	&MdBookFormatter{},
 	&HugoFormatter{},
+	nil,
+	nil,
 }
 
 func GetFormatter(f Format) document.Formatter {

@@ -79,11 +79,9 @@ func run(args *args) error {
 		return err
 	}
 	formatter := format.GetFormatter(rFormat)
-
-	err = document.Render(docs, &document.Config{
+	err = formatter.Render(docs, &document.Config{
 		OutputDir:     args.outDir,
 		TemplateDirs:  args.templateDirs,
-		RenderFormat:  formatter,
 		UseExports:    args.useExports,
 		ShortLinks:    args.shortLinks,
 		CaseSensitive: !args.caseInsensitive,

@@ -10,6 +10,10 @@ import (
 
 type HugoFormatter struct{}
 
+func (f *HugoFormatter) Render(docs *document.Docs, config *document.Config) error {
+	return document.Render(docs, config, f)
+}
+
 func (f *HugoFormatter) ProcessMarkdown(element any, text string, proc *document.Processor) (string, error) {
 	b := strings.Builder{}
 	err := proc.Template.ExecuteTemplate(&b, "hugo_front_matter.md", element)

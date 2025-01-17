@@ -15,6 +15,10 @@ import (
 
 type MdBookFormatter struct{}
 
+func (f *MdBookFormatter) Render(docs *document.Docs, config *document.Config) error {
+	return document.Render(docs, config, f)
+}
+
 func (f *MdBookFormatter) ProcessMarkdown(element any, text string, proc *document.Processor) (string, error) {
 	return text, nil
 }
