@@ -45,10 +45,30 @@ mojo doc <src-path> -o docs.json
 modo <out-dir> -i docs.json
 ```
 
-Command line help:
+Get help with `modo --help`:
 
 ```
-modo -h
+Modo -- DocGen for Mojo.
+
+Modo generates Markdown for static site generators (SSGs) from 'mojo doc' JSON output.
+
+Usage:
+  modo docs -i docs.json        # from a file
+  mojo doc ./src | modo docs    # from 'mojo doc'
+
+Usage:
+  modo OUT-PATH [flags]
+
+Flags:
+  -i, --input string        'mojo doc' JSON file to process. Reads from STDIN if not specified.
+  -f, --format string       Output format. One of (plain|mdbook|hugo). (default "plain")
+  -e, --exports             Process according to 'Exports:' sections in packages.
+      --short-links         Render shortened link labels, stripping packages and modules.
+      --case-insensitive    Build for systems that are not case-sensitive regarding file names.
+                            Appends hyphen (-) to capitalized file names.
+  -t, --templates strings   Optional directories with templates for (partial) overwrite.
+                            See folder assets/templates in the repository.
+  -h, --help                help for modo
 ```
 
 ## Output formats
