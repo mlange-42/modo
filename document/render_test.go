@@ -119,7 +119,7 @@ decl:
 	files := map[string]string{}
 	proc := createProcessor(t, docs, true, files)
 
-	err = renderWith(outDir, proc)
+	err = renderWith(&Config{OutputDir: outDir}, proc)
 	assert.Nil(t, err)
 }
 
@@ -173,7 +173,7 @@ decl:
 	files := map[string]string{}
 	proc := createProcessor(t, docs, false, files)
 
-	err = renderWith(outDir, proc)
+	err = renderWith(&Config{OutputDir: outDir}, proc)
 	assert.Nil(t, err)
 }
 
@@ -218,7 +218,7 @@ decl:
 	files := map[string]string{}
 	proc := createProcessor(t, docs, false, files)
 
-	err = renderWith(outDir, proc)
+	err = renderWith(&Config{OutputDir: outDir}, proc)
 	assert.Nil(t, err)
 }
 
@@ -255,7 +255,7 @@ decl:
 	files := map[string]string{}
 	proc := createProcessor(t, docs, false, files)
 
-	err = renderWith(outDir, proc)
+	err = renderWith(&Config{OutputDir: outDir}, proc)
 	assert.Nil(t, err)
 }
 

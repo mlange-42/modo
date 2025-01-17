@@ -10,7 +10,7 @@ import (
 
 const capitalFileMarker = "-"
 
-var CaseSensitiveSystem = true
+var caseSensitiveSystem = true
 
 type Docs struct {
 	Decl    *Package
@@ -205,7 +205,7 @@ func (k *MemberName) GetName() string {
 }
 
 func (k *MemberName) GetFileName() string {
-	if CaseSensitiveSystem {
+	if caseSensitiveSystem {
 		return k.Name
 	}
 	if isCap(k.Name) {
