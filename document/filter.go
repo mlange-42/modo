@@ -35,8 +35,8 @@ func (proc *Processor) filterPackage(src, rootOut *Package, oldPath, newPath []s
 	rootExports := map[string]*members{}
 	collectExportsPackage(src, rootExports)
 
-	oldPath = AppendNew(oldPath, src.Name)
-	newPath = AppendNew(newPath, src.Name)
+	oldPath = appendNew(oldPath, src.Name)
+	newPath = appendNew(newPath, src.Name)
 
 	for _, mod := range src.Modules {
 		if mems, ok := rootExports[mod.Name]; ok {
@@ -59,11 +59,11 @@ func (proc *Processor) collectPackageExports(src, rootOut *Package, oldPath, new
 		proc.filterPackage(src, newPkg, oldPath, newPath)
 		rootOut.Packages = append(rootOut.Packages, newPkg)
 
-		tempOldPath := AppendNew(oldPath, src.Name)
-		tempNewPath := AppendNew(newPath, src.Name)
+		tempOldPath := appendNew(oldPath, src.Name)
+		tempNewPath := appendNew(newPath, src.Name)
 		proc.addLinkExport(tempOldPath, tempNewPath)
 	}
-	oldPath = AppendNew(oldPath, src.Name)
+	oldPath = appendNew(oldPath, src.Name)
 
 	for _, mod := range src.Modules {
 		if mems, ok := toCrawl[mod.Name]; ok {
@@ -91,11 +91,11 @@ func (proc *Processor) collectPackageExports(src, rootOut *Package, oldPath, new
 func (proc *Processor) collectModuleExports(src *Module, rootOut *Package, oldPath, newPath []string, rootMembers *members) {
 	selfIncluded, toCrawl := collectExportMembers(rootMembers)
 
-	oldPath = AppendNew(oldPath, src.Name)
+	oldPath = appendNew(oldPath, src.Name)
 	if selfIncluded {
 		rootOut.Modules = append(rootOut.Modules, src)
 
-		tempNewPath := AppendNew(newPath, src.Name)
+		tempNewPath := appendNew(newPath, src.Name)
 		proc.addLinkExport(oldPath, tempNewPath)
 	}
 
@@ -120,8 +120,8 @@ func (proc *Processor) collectModuleExports(src *Module, rootOut *Package, oldPa
 }
 
 func (proc *Processor) collectExportsStruct(s *Struct, oldPath []string, newPath []string) {
-	oldPath = AppendNew(oldPath, s.Name)
-	newPath = AppendNew(newPath, s.Name)
+	oldPath = appendNew(oldPath, s.Name)
+	newPath = appendNew(newPath, s.Name)
 
 	proc.addLinkExport(oldPath, newPath)
 
@@ -131,8 +131,8 @@ func (proc *Processor) collectExportsStruct(s *Struct, oldPath []string, newPath
 }
 
 func (proc *Processor) collectExportsTrait(s *Trait, oldPath []string, newPath []string) {
-	oldPath = AppendNew(oldPath, s.Name)
-	newPath = AppendNew(newPath, s.Name)
+	oldPath = appendNew(oldPath, s.Name)
+	newPath = appendNew(newPath, s.Name)
 
 	proc.addLinkExport(oldPath, newPath)
 
@@ -141,16 +141,16 @@ func (proc *Processor) collectExportsTrait(s *Trait, oldPath []string, newPath [
 }
 
 func (proc *Processor) collectExportsFunction(s *Function, oldPath []string, newPath []string) {
-	oldPath = AppendNew(oldPath, s.Name)
-	newPath = AppendNew(newPath, s.Name)
+	oldPath = appendNew(oldPath, s.Name)
+	newPath = appendNew(newPath, s.Name)
 
 	proc.addLinkExport(oldPath, newPath)
 }
 
 func collectExportsList[T Named](proc *Processor, sl []T, oldPath, newPath []string) {
 	for _, elem := range sl {
-		oldPath := AppendNew(oldPath, elem.GetName())
-		newPath := AppendNew(newPath, elem.GetName())
+		oldPath := appendNew(oldPath, elem.GetName())
+		newPath := appendNew(newPath, elem.GetName())
 		proc.addLinkExport(oldPath, newPath)
 	}
 }
@@ -190,7 +190,7 @@ func collectExportMembers(parentMember *members) (selfIncluded bool, toCrawl map
 }
 
 func collectExportsPackage(p *Package, out map[string]*members) {
-	for _, ex := range p.Exports {
+	for _, ex := range p.exports {
 		var newMember member
 		if len(ex.Short) == 1 {
 			newMember = member{Include: true}

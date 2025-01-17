@@ -49,8 +49,8 @@ func TestCleanup(t *testing.T) {
 	doc := Docs{
 		Decl: &Package{
 			Modules: []*Module{
-				{MemberName: NewName("__init__")},
-				{MemberName: NewName("modname")},
+				{MemberName: newName("__init__")},
+				{MemberName: newName("modname")},
 			},
 		},
 	}
@@ -61,39 +61,39 @@ func TestCleanup(t *testing.T) {
 
 func TestCreateSignature(t *testing.T) {
 	s := Struct{
-		MemberName: NewName("Struct"),
+		MemberName: newName("Struct"),
 		Parameters: []*Parameter{
-			{MemberName: NewName("A"), Type: "TypeA", PassingKind: "inferred"},
-			{MemberName: NewName("B"), Type: "TypeB", PassingKind: "pos"},
-			{MemberName: NewName("C"), Type: "TypeC", PassingKind: "pos_or_kw"},
-			{MemberName: NewName("D"), Type: "TypeD", PassingKind: "kw"},
+			{MemberName: newName("A"), Type: "TypeA", PassingKind: "inferred"},
+			{MemberName: newName("B"), Type: "TypeB", PassingKind: "pos"},
+			{MemberName: newName("C"), Type: "TypeC", PassingKind: "pos_or_kw"},
+			{MemberName: newName("D"), Type: "TypeD", PassingKind: "kw"},
 		},
 	}
 
 	assert.Equal(t, "struct Struct[A: TypeA, //, B: TypeB, /, C: TypeC, *, D: TypeD]", createSignature(&s))
 
 	s = Struct{
-		MemberName: NewName("Struct"),
+		MemberName: newName("Struct"),
 		Parameters: []*Parameter{
-			{MemberName: NewName("A"), Type: "TypeA", PassingKind: "inferred"},
+			{MemberName: newName("A"), Type: "TypeA", PassingKind: "inferred"},
 		},
 	}
 
 	assert.Equal(t, "struct Struct[A: TypeA, //]", createSignature(&s))
 
 	s = Struct{
-		MemberName: NewName("Struct"),
+		MemberName: newName("Struct"),
 		Parameters: []*Parameter{
-			{MemberName: NewName("B"), Type: "TypeB", PassingKind: "pos"},
+			{MemberName: newName("B"), Type: "TypeB", PassingKind: "pos"},
 		},
 	}
 
 	assert.Equal(t, "struct Struct[B: TypeB, /]", createSignature(&s))
 
 	s = Struct{
-		MemberName: NewName("Struct"),
+		MemberName: newName("Struct"),
 		Parameters: []*Parameter{
-			{MemberName: NewName("D"), Type: "TypeD", PassingKind: "kw"},
+			{MemberName: newName("D"), Type: "TypeD", PassingKind: "kw"},
 		},
 	}
 

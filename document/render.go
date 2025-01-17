@@ -12,11 +12,12 @@ import (
 )
 
 type Config struct {
-	OutputDir    string
-	TemplateDirs []string
-	RenderFormat Formatter
-	UseExports   bool
-	ShortLinks   bool
+	OutputDir     string
+	TemplateDirs  []string
+	RenderFormat  Formatter
+	UseExports    bool
+	ShortLinks    bool
+	CaseSensitive bool
 }
 
 func Render(docs *Docs, config *Config) error {
@@ -25,17 +26,18 @@ func Render(docs *Docs, config *Config) error {
 		return err
 	}
 	proc := NewProcessor(docs, config.RenderFormat, t, config.UseExports, config.ShortLinks)
-	return renderWith(config.OutputDir, proc)
+	return renderWith(config, proc)
 }
 
-func renderWith(outDir string, proc *Processor) error {
+func renderWith(config *Config, proc *Processor) error {
+	caseSensitiveSystem = config.CaseSensitive
 	if err := proc.PrepareDocs(); err != nil {
 		return err
 	}
-	if err := renderPackage(proc.ExportDocs.Decl, []string{outDir}, proc); err != nil {
+	if err := renderPackage(proc.ExportDocs.Decl, []string{config.OutputDir}, proc); err != nil {
 		return err
 	}
-	if err := proc.Formatter.WriteAuxiliary(proc.ExportDocs.Decl, outDir, proc); err != nil {
+	if err := proc.Formatter.WriteAuxiliary(proc.ExportDocs.Decl, config.OutputDir, proc); err != nil {
 		return err
 	}
 	return nil
@@ -54,7 +56,7 @@ func renderElement(data interface {
 }
 
 func renderPackage(p *Package, dir []string, proc *Processor) error {
-	newDir := AppendNew(dir, p.GetFileName())
+	newDir := appendNew(dir, p.GetFileName())
 	pkgPath := path.Join(newDir...)
 	if err := mkDirs(pkgPath); err != nil {
 		return err
@@ -94,7 +96,7 @@ func renderPackage(p *Package, dir []string, proc *Processor) error {
 }
 
 func renderModule(mod *Module, dir []string, proc *Processor) error {
-	newDir := AppendNew(dir, mod.GetFileName())
+	newDir := appendNew(dir, mod.GetFileName())
 	if err := mkDirs(path.Join(newDir...)); err != nil {
 		return err
 	}
@@ -125,7 +127,7 @@ func renderList[T interface {
 	Kinded
 }](list []T, dir []string, proc *Processor) error {
 	for _, elem := range list {
-		newDir := AppendNew(dir, elem.GetFileName())
+		newDir := appendNew(dir, elem.GetFileName())
 		text, err := renderElement(elem, proc)
 		if err != nil {
 			return err

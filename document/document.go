@@ -10,7 +10,10 @@ import (
 
 const capitalFileMarker = "-"
 
-var CaseSensitiveSystem = true
+// Global variable for file case sensitivity.
+//
+// TODO: find another way to handle this, without using a global variable.
+var caseSensitiveSystem = true
 
 type Docs struct {
 	Decl    *Package
@@ -24,19 +27,19 @@ type Package struct {
 	*MemberDescription `yaml:",inline"`
 	Modules            []*Module
 	Packages           []*Package
-	Exports            []*PackageExport // Additional field for package re-exports
 	Functions          []*Function      // Additional field for package re-exports
 	Structs            []*Struct        // Additional field for package re-exports
 	Traits             []*Trait         // Additional field for package re-exports
+	exports            []*packageExport // Additional field for package re-exports
 }
 
 func (p *Package) linkedCopy() *Package {
 	return &Package{
-		MemberName:        NewName(p.Name),
-		MemberKind:        NewKind(p.Kind),
+		MemberName:        newName(p.Name),
+		MemberKind:        newKind(p.Kind),
 		MemberSummary:     p.MemberSummary,
 		MemberDescription: p.MemberDescription,
-		Exports:           p.Exports,
+		exports:           p.exports,
 	}
 }
 
@@ -184,7 +187,7 @@ type MemberKind struct {
 	Kind string
 }
 
-func NewKind(kind string) MemberKind {
+func newKind(kind string) MemberKind {
 	return MemberKind{Kind: kind}
 }
 
@@ -196,7 +199,7 @@ type MemberName struct {
 	Name string
 }
 
-func NewName(name string) MemberName {
+func newName(name string) MemberName {
 	return MemberName{Name: name}
 }
 
@@ -205,7 +208,7 @@ func (k *MemberName) GetName() string {
 }
 
 func (k *MemberName) GetFileName() string {
-	if CaseSensitiveSystem {
+	if caseSensitiveSystem {
 		return k.Name
 	}
 	if isCap(k.Name) {
@@ -218,7 +221,7 @@ type MemberSummary struct {
 	Summary string
 }
 
-func NewSummary(summary string) *MemberSummary {
+func newSummary(summary string) *MemberSummary {
 	return &MemberSummary{Summary: summary}
 }
 
@@ -230,7 +233,7 @@ type MemberDescription struct {
 	Description string
 }
 
-func NewDescription(description string) *MemberDescription {
+func newDescription(description string) *MemberDescription {
 	return &MemberDescription{Description: description}
 }
 

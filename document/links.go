@@ -14,7 +14,7 @@ const regexString = `(?s)(?:(` + "```.*?```)|(`.*?`" + `))|(\[.*?\])`
 //
 // Runs on the original docs, to packages can't have structs, traits or function yet.
 func (proc *Processor) processLinksPackage(p *Package, elems []string) error {
-	newElems := AppendNew(elems, p.GetName())
+	newElems := appendNew(elems, p.GetName())
 
 	var err error
 	p.Summary, err = proc.replaceRefs(p.Summary, newElems, len(newElems))
@@ -37,7 +37,7 @@ func (proc *Processor) processLinksPackage(p *Package, elems []string) error {
 }
 
 func (proc *Processor) processLinksModule(m *Module, elems []string) error {
-	newElems := AppendNew(elems, m.GetName())
+	newElems := appendNew(elems, m.GetName())
 
 	var err error
 	m.Summary, err = proc.replaceRefs(m.Summary, newElems, len(newElems))
@@ -78,7 +78,7 @@ func (proc *Processor) processLinksModule(m *Module, elems []string) error {
 }
 
 func (proc *Processor) processLinksStruct(s *Struct, elems []string) error {
-	newElems := AppendNew(elems, s.GetName())
+	newElems := appendNew(elems, s.GetName())
 
 	var err error
 	s.Summary, err = proc.replaceRefs(s.Summary, newElems, len(elems))
@@ -130,7 +130,7 @@ func (proc *Processor) processLinksStruct(s *Struct, elems []string) error {
 }
 
 func (proc *Processor) processLinksTrait(tr *Trait, elems []string) error {
-	newElems := AppendNew(elems, tr.GetName())
+	newElems := appendNew(elems, tr.GetName())
 
 	var err error
 	tr.Summary, err = proc.replaceRefs(tr.Summary, newElems, len(elems))
@@ -173,7 +173,7 @@ func (proc *Processor) processLinksTrait(tr *Trait, elems []string) error {
 }
 
 func (proc *Processor) processLinksFunction(f *Function, elems []string) error {
-	newElems := AppendNew(elems, f.GetName())
+	newElems := appendNew(elems, f.GetName())
 
 	var err error
 	f.Summary, err = proc.replaceRefs(f.Summary, newElems, len(elems))
@@ -221,7 +221,7 @@ func (proc *Processor) processLinksFunction(f *Function, elems []string) error {
 }
 
 func (proc *Processor) processLinksModuleAlias(a *Alias, elems []string) error {
-	newElems := AppendNew(elems, a.GetName())
+	newElems := appendNew(elems, a.GetName())
 
 	var err error
 	a.Summary, err = proc.replaceRefs(a.Summary, newElems, len(elems))
