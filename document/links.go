@@ -10,25 +10,9 @@ import (
 
 const regexString = `(?s)(?:(` + "```.*?```)|(`.*?`" + `))|(\[.*?\])`
 
-func findLinks(text string) ([]int, error) {
-	re, err := regexp.Compile(regexString)
-	if err != nil {
-		return nil, err
-	}
-	links := []int{}
-	results := re.FindAllStringSubmatchIndex(text, -1)
-	for _, r := range results {
-		if r[6] >= 0 {
-			if len(text) > r[7] && string(text[r[7]]) == "(" {
-				continue
-			}
-			links = append(links, r[6], r[7])
-		}
-	}
-
-	return links, nil
-}
-
+// Replaces cross-refs by placeholders, recursively.
+//
+// Runs on the original docs, to packages can't have structs, traits or function yet.
 func (proc *Processor) processLinksPackage(p *Package, elems []string) error {
 	newElems := AppendNew(elems, p.GetName())
 
@@ -48,26 +32,7 @@ func (proc *Processor) processLinksPackage(p *Package, elems []string) error {
 	for _, mod := range p.Modules {
 		proc.processLinksModule(mod, newElems)
 	}
-
-	for _, f := range p.Functions {
-		err := proc.processLinksFunction(f, newElems)
-		if err != nil {
-			return err
-		}
-	}
-	for _, s := range p.Structs {
-		err := proc.processLinksStruct(s, newElems)
-		if err != nil {
-			return err
-		}
-	}
-	for _, tr := range p.Traits {
-		err := proc.processLinksTrait(tr, newElems)
-		if err != nil {
-			return err
-		}
-	}
-
+	// Runs on the original docs, to packages can't have structs, traits or function yet.
 	return nil
 }
 
@@ -453,4 +418,23 @@ func (proc *Processor) refToPlaceholderAbs(link string, elems []string) (string,
 		return "", false
 	}
 	return placeholder, true
+}
+
+func findLinks(text string) ([]int, error) {
+	re, err := regexp.Compile(regexString)
+	if err != nil {
+		return nil, err
+	}
+	links := []int{}
+	results := re.FindAllStringSubmatchIndex(text, -1)
+	for _, r := range results {
+		if r[6] >= 0 {
+			if len(text) > r[7] && string(text[r[7]]) == "(" {
+				continue
+			}
+			links = append(links, r[6], r[7])
+		}
+	}
+
+	return links, nil
 }

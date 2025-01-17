@@ -1,4 +1,4 @@
-package format
+package document
 
 import (
 	"io/fs"
@@ -9,32 +9,42 @@ import (
 	"text/template"
 
 	"github.com/mlange-42/modo/assets"
-	"github.com/mlange-42/modo/document"
 )
 
-func Render(docs *document.Docs, dir string, templateDirs []string, rFormat Format, useExports bool, shortLinks bool) error {
-	formatter := GetFormatter(rFormat)
-	t, err := loadTemplates(formatter, templateDirs...)
+type Config struct {
+	OutputDir    string
+	TemplateDirs []string
+	RenderFormat Formatter
+	UseExports   bool
+	ShortLinks   bool
+}
+
+func Render(docs *Docs, config *Config) error {
+	t, err := loadTemplates(config.RenderFormat, config.TemplateDirs...)
 	if err != nil {
 		return err
 	}
-	proc := document.NewProcessor(docs, formatter, t, useExports, shortLinks)
+	proc := NewProcessor(docs, config.RenderFormat, t, config.UseExports, config.ShortLinks)
+	return renderWith(config.OutputDir, proc)
+}
+
+func renderWith(outDir string, proc *Processor) error {
 	if err := proc.PrepareDocs(); err != nil {
 		return err
 	}
-	if err := renderPackage(proc.ExportDocs.Decl, []string{dir}, &proc); err != nil {
+	if err := renderPackage(proc.ExportDocs.Decl, []string{outDir}, proc); err != nil {
 		return err
 	}
-	if err := proc.Formatter.WriteAuxiliary(proc.ExportDocs.Decl, dir, &proc); err != nil {
+	if err := proc.Formatter.WriteAuxiliary(proc.ExportDocs.Decl, outDir, proc); err != nil {
 		return err
 	}
 	return nil
 }
 
 func renderElement(data interface {
-	document.Named
-	document.Kinded
-}, proc *document.Processor) (string, error) {
+	Named
+	Kinded
+}, proc *Processor) (string, error) {
 	b := strings.Builder{}
 	err := proc.Template.ExecuteTemplate(&b, data.GetKind()+".md", data)
 	if err != nil {
@@ -43,8 +53,8 @@ func renderElement(data interface {
 	return proc.Formatter.ProcessMarkdown(data, b.String(), proc)
 }
 
-func renderPackage(p *document.Package, dir []string, proc *document.Processor) error {
-	newDir := document.AppendNew(dir, p.GetFileName())
+func renderPackage(p *Package, dir []string, proc *Processor) error {
+	newDir := AppendNew(dir, p.GetFileName())
 	pkgPath := path.Join(newDir...)
 	if err := mkDirs(pkgPath); err != nil {
 		return err
@@ -83,8 +93,8 @@ func renderPackage(p *document.Package, dir []string, proc *document.Processor) 
 	return nil
 }
 
-func renderModule(mod *document.Module, dir []string, proc *document.Processor) error {
-	newDir := document.AppendNew(dir, mod.GetFileName())
+func renderModule(mod *Module, dir []string, proc *Processor) error {
+	newDir := AppendNew(dir, mod.GetFileName())
 	if err := mkDirs(path.Join(newDir...)); err != nil {
 		return err
 	}
@@ -111,11 +121,11 @@ func renderModule(mod *document.Module, dir []string, proc *document.Processor) 
 }
 
 func renderList[T interface {
-	document.Named
-	document.Kinded
-}](list []T, dir []string, proc *document.Processor) error {
+	Named
+	Kinded
+}](list []T, dir []string, proc *Processor) error {
 	for _, elem := range list {
-		newDir := document.AppendNew(dir, elem.GetFileName())
+		newDir := AppendNew(dir, elem.GetFileName())
 		text, err := renderElement(elem, proc)
 		if err != nil {
 			return err
@@ -127,7 +137,7 @@ func renderList[T interface {
 	return nil
 }
 
-func loadTemplates(f document.Formatter, additional ...string) (*template.Template, error) {
+func loadTemplates(f Formatter, additional ...string) (*template.Template, error) {
 	allTemplates, err := findTemplatesFS()
 	if err != nil {
 		return nil, err
@@ -187,7 +197,7 @@ func findTemplates(dir string) ([]string, error) {
 	return allTemplates, nil
 }
 
-func linkAndWrite(text string, dir []string, modElems int, kind string, proc *document.Processor) error {
+func linkAndWrite(text string, dir []string, modElems int, kind string, proc *Processor) error {
 	text, err := proc.ReplacePlaceholders(text, dir[1:], modElems-1)
 	if err != nil {
 		return err
@@ -196,7 +206,7 @@ func linkAndWrite(text string, dir []string, modElems int, kind string, proc *do
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(outFile, []byte(text), 0666)
+	return proc.WriteFile(outFile, text)
 }
 
 func mkDirs(path string) error {

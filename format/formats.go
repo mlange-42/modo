@@ -35,11 +35,6 @@ var formatters = []document.Formatter{
 	&HugoFormatter{},
 }
 
-type Config struct {
-	Format          Format
-	CaseInsensitive bool
-}
-
 func GetFormatter(f Format) document.Formatter {
 	return formatters[f]
 }

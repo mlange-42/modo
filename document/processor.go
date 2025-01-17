@@ -1,6 +1,7 @@
 package document
 
 import (
+	"os"
 	"strings"
 	"text/template"
 )
@@ -14,15 +15,23 @@ type Processor struct {
 	ExportDocs  *Docs
 	linkTargets map[string]elemPath
 	linkExports map[string]string
+	writer      func(file, text string) error
 }
 
-func NewProcessor(docs *Docs, f Formatter, t *template.Template, useExports bool, shortLinks bool) Processor {
-	return Processor{
+func NewProcessor(docs *Docs, f Formatter, t *template.Template, useExports bool, shortLinks bool) *Processor {
+	return NewProcessorWithWriter(docs, f, t, useExports, shortLinks, func(file, text string) error {
+		return os.WriteFile(file, []byte(text), 0666)
+	})
+}
+
+func NewProcessorWithWriter(docs *Docs, f Formatter, t *template.Template, useExports bool, shortLinks bool, writer func(text, file string) error) *Processor {
+	return &Processor{
 		Template:   t,
 		Formatter:  f,
 		UseExports: useExports,
 		ShortLinks: shortLinks,
 		Docs:       docs,
+		writer:     writer,
 	}
 }
 
@@ -43,6 +52,10 @@ func (proc *Processor) PrepareDocs() error {
 		return err
 	}
 	return nil
+}
+
+func (proc *Processor) WriteFile(file, text string) error {
+	return proc.writer(file, text)
 }
 
 func (proc *Processor) addLinkExport(oldPath, newPath []string) {
