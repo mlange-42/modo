@@ -7,6 +7,8 @@ import (
 
 const exportsMarker = "Exports:"
 const exportsPrefix = "- "
+const codeFence3 = "```"
+const codeFence4 = "````"
 
 type packageExport struct {
 	Short []string
@@ -50,16 +52,36 @@ func (proc *Processor) parseExports(pkgDocs string, basePath []string, remove bo
 	exports := []*packageExport{}
 	anyExports := false
 	isExport := false
+	fenced3 := false
+	fenced4 := false
+
 	exportIndex := 0
 	for scanner.Scan() {
 		origLine := scanner.Text()
 		line := strings.TrimSpace(origLine)
+
+		fenced := false
+		if strings.HasPrefix(origLine, codeFence3) {
+			fenced3 = !fenced3
+			fenced = true
+		}
+		if strings.HasPrefix(origLine, codeFence4) {
+			fenced4 = !fenced4
+			fenced = true
+		}
+		if fenced || fenced3 || fenced4 {
+			isExport = false
+			outText.WriteString(origLine)
+			outText.WriteRune('\n')
+			continue
+		}
+
 		if isExport {
 			if exportIndex == 0 && line == "" {
 				continue
 			}
 			if !strings.HasPrefix(line, exportsPrefix) {
-				outText.WriteString(line)
+				outText.WriteString(origLine)
 				outText.WriteRune('\n')
 				isExport = false
 				continue
@@ -75,7 +97,7 @@ func (proc *Processor) parseExports(pkgDocs string, basePath []string, remove bo
 				exportIndex = 0
 				continue
 			}
-			outText.WriteString(line)
+			outText.WriteString(origLine)
 			outText.WriteRune('\n')
 		}
 	}
