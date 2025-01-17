@@ -1,6 +1,7 @@
 package document
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -22,6 +23,10 @@ func TestFromJson(t *testing.T) {
 	docs, err := FromJson([]byte(data))
 	assert.Nil(t, err)
 	assert.NotNil(t, docs)
+
+	outJson, err := docs.ToJson()
+	assert.Nil(t, err)
+	fmt.Println(string(outJson))
 }
 
 func TestFromYaml(t *testing.T) {
@@ -43,6 +48,10 @@ version: 0.1.0
 	assert.NotNil(t, docs)
 
 	assert.Equal(t, "Struct", docs.Decl.Modules[0].Structs[0].Name)
+
+	outYaml, err := docs.ToYaml()
+	assert.Nil(t, err)
+	fmt.Println(string(outYaml))
 }
 
 func TestCleanup(t *testing.T) {

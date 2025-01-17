@@ -10,6 +10,10 @@ import (
 
 type TestFormatter struct{}
 
+func (f *TestFormatter) Render(docs *Docs, config *Config) error {
+	return Render(docs, config, f)
+}
+
 func (f *TestFormatter) ProcessMarkdown(element any, text string, proc *Processor) (string, error) {
 	return text, nil
 }

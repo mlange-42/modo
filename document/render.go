@@ -14,18 +14,17 @@ import (
 type Config struct {
 	OutputDir     string
 	TemplateDirs  []string
-	RenderFormat  Formatter
 	UseExports    bool
 	ShortLinks    bool
 	CaseSensitive bool
 }
 
-func Render(docs *Docs, config *Config) error {
-	t, err := loadTemplates(config.RenderFormat, config.TemplateDirs...)
+func Render(docs *Docs, config *Config, form Formatter) error {
+	t, err := loadTemplates(form, config.TemplateDirs...)
 	if err != nil {
 		return err
 	}
-	proc := NewProcessor(docs, config.RenderFormat, t, config.UseExports, config.ShortLinks)
+	proc := NewProcessor(docs, form, t, config.UseExports, config.ShortLinks)
 	return renderWith(config, proc)
 }
 

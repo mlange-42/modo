@@ -36,12 +36,9 @@ func rootCommand() *cobra.Command {
 		Short: "Modo -- DocGen for Mojo.",
 		Long: `Modo -- DocGen for Mojo.
 
-Modo generates Markdown for static site generators (SSGs) from 'mojo doc' JSON output.
-
-Usage:
-  modo docs -i docs.json        # from a file
-  mojo doc ./src | modo docs    # from 'mojo doc'
-`,
+Modo generates Markdown for static site generators (SSGs) from 'mojo doc' JSON output.`,
+		Example: `  modo docs -i docs.json        # from a file
+  mojo doc ./src | modo docs    # from 'mojo doc'`,
 		Args:         cobra.ExactArgs(1),
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
@@ -79,11 +76,9 @@ func run(args *args) error {
 		return err
 	}
 	formatter := format.GetFormatter(rFormat)
-
-	err = document.Render(docs, &document.Config{
+	err = formatter.Render(docs, &document.Config{
 		OutputDir:     args.outDir,
 		TemplateDirs:  args.templateDirs,
-		RenderFormat:  formatter,
 		UseExports:    args.useExports,
 		ShortLinks:    args.shortLinks,
 		CaseSensitive: !args.caseInsensitive,

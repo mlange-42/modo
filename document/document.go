@@ -27,10 +27,10 @@ type Package struct {
 	*MemberDescription `yaml:",inline"`
 	Modules            []*Module
 	Packages           []*Package
-	Functions          []*Function      // Additional field for package re-exports
-	Structs            []*Struct        // Additional field for package re-exports
-	Traits             []*Trait         // Additional field for package re-exports
-	exports            []*packageExport // Additional field for package re-exports
+	Functions          []*Function      `yaml:",omitempty" json:",omitempty"` // Additional field for package re-exports
+	Structs            []*Struct        `yaml:",omitempty" json:",omitempty"` // Additional field for package re-exports
+	Traits             []*Trait         `yaml:",omitempty" json:",omitempty"` // Additional field for package re-exports
+	exports            []*packageExport `yaml:"-" json:"-"`                   // Additional field for package re-exports
 }
 
 func (p *Package) linkedCopy() *Package {
@@ -154,6 +154,17 @@ func FromJson(data []byte) (*Docs, error) {
 	return &docs, nil
 }
 
+func (d *Docs) ToJson() ([]byte, error) {
+	b := bytes.Buffer{}
+	enc := json.NewEncoder(&b)
+	enc.SetIndent("", "  ")
+
+	if err := enc.Encode(d); err != nil {
+		return nil, err
+	}
+	return b.Bytes(), nil
+}
+
 func FromYaml(data []byte) (*Docs, error) {
 	reader := bytes.NewReader(data)
 	dec := yaml.NewDecoder(reader)
@@ -168,6 +179,16 @@ func FromYaml(data []byte) (*Docs, error) {
 	cleanup(&docs)
 
 	return &docs, nil
+}
+
+func (d *Docs) ToYaml() ([]byte, error) {
+	b := bytes.Buffer{}
+	enc := yaml.NewEncoder(&b)
+
+	if err := enc.Encode(d); err != nil {
+		return nil, err
+	}
+	return b.Bytes(), nil
 }
 
 type Kinded interface {

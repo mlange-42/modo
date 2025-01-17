@@ -33,6 +33,8 @@ var formatters = []document.Formatter{
 	&PlainFormatter{},
 	&MdBookFormatter{},
 	&HugoFormatter{},
+	nil,
+	nil,
 }
 
 func GetFormatter(f Format) document.Formatter {
