@@ -113,7 +113,7 @@ Besides cross-references, normal Markdown links can be used in doc-strings.
 
 ## Package re-exports
 
-In mojo, package-level re-exports (or rather, imports) can be used
+In Mojo🔥, package-level re-exports (or rather, imports) can be used
 to flatten the structure of a package and shorten import paths for users.
 
 Modo🧯 can structure documentation output according to re-exports using the flag `--exports`.
