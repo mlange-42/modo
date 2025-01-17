@@ -24,10 +24,10 @@ type Package struct {
 	*MemberDescription `yaml:",inline"`
 	Modules            []*Module
 	Packages           []*Package
-	Exports            []*PackageExport // Additional field for package re-exports
 	Functions          []*Function      // Additional field for package re-exports
 	Structs            []*Struct        // Additional field for package re-exports
 	Traits             []*Trait         // Additional field for package re-exports
+	exports            []*packageExport // Additional field for package re-exports
 }
 
 func (p *Package) linkedCopy() *Package {
@@ -36,7 +36,7 @@ func (p *Package) linkedCopy() *Package {
 		MemberKind:        NewKind(p.Kind),
 		MemberSummary:     p.MemberSummary,
 		MemberDescription: p.MemberDescription,
-		Exports:           p.Exports,
+		exports:           p.exports,
 	}
 }
 

@@ -8,7 +8,7 @@ import (
 const exportsMarker = "Exports:"
 const exportsPrefix = "- "
 
-type PackageExport struct {
+type packageExport struct {
 	Short []string
 	Long  []string
 }
@@ -25,29 +25,29 @@ func (proc *Processor) collectExports(p *Package, elems []string) bool {
 
 	if proc.UseExports {
 		var anyHere bool
-		p.Exports, p.Description, anyHere = proc.parseExports(p.Description, newElems, true)
+		p.exports, p.Description, anyHere = proc.parseExports(p.Description, newElems, true)
 		if anyHere {
 			anyExports = true
 		}
 		return anyExports
 	}
 
-	p.Exports = make([]*PackageExport, 0, len(p.Packages)+len(p.Modules))
+	p.exports = make([]*packageExport, 0, len(p.Packages)+len(p.Modules))
 	for _, pkg := range p.Packages {
-		p.Exports = append(p.Exports, &PackageExport{Short: []string{pkg.Name}, Long: appendNew(newElems, pkg.Name)})
+		p.exports = append(p.exports, &packageExport{Short: []string{pkg.Name}, Long: appendNew(newElems, pkg.Name)})
 	}
 	for _, mod := range p.Modules {
-		p.Exports = append(p.Exports, &PackageExport{Short: []string{mod.Name}, Long: appendNew(newElems, mod.Name)})
+		p.exports = append(p.exports, &packageExport{Short: []string{mod.Name}, Long: appendNew(newElems, mod.Name)})
 	}
 
 	return anyExports
 }
 
-func (proc *Processor) parseExports(pkgDocs string, basePath []string, remove bool) ([]*PackageExport, string, bool) {
+func (proc *Processor) parseExports(pkgDocs string, basePath []string, remove bool) ([]*packageExport, string, bool) {
 	scanner := bufio.NewScanner(strings.NewReader(pkgDocs))
 
 	outText := strings.Builder{}
-	exports := []*PackageExport{}
+	exports := []*packageExport{}
 	anyExports := false
 	isExport := false
 	exportIndex := 0
@@ -66,7 +66,7 @@ func (proc *Processor) parseExports(pkgDocs string, basePath []string, remove bo
 			}
 			short := line[len(exportsPrefix):]
 			parts := strings.Split(short, ".")
-			exports = append(exports, &PackageExport{Short: parts, Long: appendNew(basePath, parts...)})
+			exports = append(exports, &packageExport{Short: parts, Long: appendNew(basePath, parts...)})
 			anyExports = true
 			exportIndex++
 		} else {

@@ -28,7 +28,7 @@ Text
 
 	assert.True(t, anyExp)
 
-	assert.Equal(t, []*PackageExport{
+	assert.Equal(t, []*packageExport{
 		{Short: []string{"mod", "Struct"}, Long: []string{"pkg", "mod", "Struct"}},
 		{Short: []string{"mod", "Trait"}, Long: []string{"pkg", "mod", "Trait"}},
 		{Short: []string{"mod", "func"}, Long: []string{"pkg", "mod", "func"}},

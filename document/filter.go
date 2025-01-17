@@ -190,7 +190,7 @@ func collectExportMembers(parentMember *members) (selfIncluded bool, toCrawl map
 }
 
 func collectExportsPackage(p *Package, out map[string]*members) {
-	for _, ex := range p.Exports {
+	for _, ex := range p.exports {
 		var newMember member
 		if len(ex.Short) == 1 {
 			newMember = member{Include: true}
