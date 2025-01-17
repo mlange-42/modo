@@ -21,19 +21,25 @@ type Config struct {
 }
 
 func Render(docs *document.Docs, config *Config) error {
+	return renderWithWriter(docs, config, func(file, text string) error {
+		return os.WriteFile(file, []byte(text), 0666)
+	})
+}
+
+func renderWithWriter(docs *document.Docs, config *Config, writer func(file, text string) error) error {
 	formatter := GetFormatter(config.RenderFormat)
 	t, err := loadTemplates(formatter, config.TemplateDirs...)
 	if err != nil {
 		return err
 	}
-	proc := document.NewProcessor(docs, formatter, t, config.UseExports, config.ShortLinks)
+	proc := document.NewProcessorWithWriter(docs, formatter, t, config.UseExports, config.ShortLinks, writer)
 	if err := proc.PrepareDocs(); err != nil {
 		return err
 	}
-	if err := renderPackage(proc.ExportDocs.Decl, []string{config.OutputDir}, &proc); err != nil {
+	if err := renderPackage(proc.ExportDocs.Decl, []string{config.OutputDir}, proc); err != nil {
 		return err
 	}
-	if err := proc.Formatter.WriteAuxiliary(proc.ExportDocs.Decl, config.OutputDir, &proc); err != nil {
+	if err := proc.Formatter.WriteAuxiliary(proc.ExportDocs.Decl, config.OutputDir, proc); err != nil {
 		return err
 	}
 	return nil
@@ -204,7 +210,7 @@ func linkAndWrite(text string, dir []string, modElems int, kind string, proc *do
 	if err != nil {
 		return err
 	}
-	return os.WriteFile(outFile, []byte(text), 0666)
+	return proc.WriteFile(outFile, text)
 }
 
 func mkDirs(path string) error {
