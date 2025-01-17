@@ -50,7 +50,7 @@ func (proc *Processor) processLinksModule(m *Module, elems []string) error {
 	}
 
 	for _, a := range m.Aliases {
-		err := proc.processLinksAlias(a, newElems)
+		err := proc.processLinksModuleAlias(a, newElems)
 		if err != nil {
 			return err
 		}
@@ -89,9 +89,17 @@ func (proc *Processor) processLinksStruct(s *Struct, elems []string) error {
 	if err != nil {
 		return err
 	}
+	s.Deprecated, err = proc.replaceRefs(s.Deprecated, newElems, len(elems))
+	if err != nil {
+		return err
+	}
 
 	for _, a := range s.Aliases {
 		a.Description, err = proc.replaceRefs(a.Description, newElems, len(elems))
+		if err != nil {
+			return err
+		}
+		a.Deprecated, err = proc.replaceRefs(a.Deprecated, newElems, len(elems))
 		if err != nil {
 			return err
 		}
@@ -130,6 +138,10 @@ func (proc *Processor) processLinksTrait(tr *Trait, elems []string) error {
 		return err
 	}
 	tr.Description, err = proc.replaceRefs(tr.Description, newElems, len(elems))
+	if err != nil {
+		return err
+	}
+	tr.Deprecated, err = proc.replaceRefs(tr.Deprecated, newElems, len(elems))
 	if err != nil {
 		return err
 	}
@@ -172,6 +184,10 @@ func (proc *Processor) processLinksFunction(f *Function, elems []string) error {
 	if err != nil {
 		return err
 	}
+	f.Deprecated, err = proc.replaceRefs(f.Deprecated, newElems, len(elems))
+	if err != nil {
+		return err
+	}
 	f.ReturnsDoc, err = proc.replaceRefs(f.ReturnsDoc, newElems, len(elems))
 	if err != nil {
 		return err
@@ -204,7 +220,7 @@ func (proc *Processor) processLinksFunction(f *Function, elems []string) error {
 	return nil
 }
 
-func (proc *Processor) processLinksAlias(a *Alias, elems []string) error {
+func (proc *Processor) processLinksModuleAlias(a *Alias, elems []string) error {
 	newElems := AppendNew(elems, a.GetName())
 
 	var err error
@@ -213,6 +229,10 @@ func (proc *Processor) processLinksAlias(a *Alias, elems []string) error {
 		return err
 	}
 	a.Description, err = proc.replaceRefs(a.Description, newElems, len(elems))
+	if err != nil {
+		return err
+	}
+	a.Deprecated, err = proc.replaceRefs(a.Deprecated, newElems, len(elems))
 	if err != nil {
 		return err
 	}
@@ -226,6 +246,10 @@ func (proc *Processor) processLinksMethod(f *Function, elems []string) error {
 		return err
 	}
 	f.Description, err = proc.replaceRefs(f.Description, elems, len(elems))
+	if err != nil {
+		return err
+	}
+	f.Deprecated, err = proc.replaceRefs(f.Deprecated, elems, len(elems))
 	if err != nil {
 		return err
 	}

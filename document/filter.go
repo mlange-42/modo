@@ -125,21 +125,9 @@ func (proc *Processor) collectExportsStruct(s *Struct, oldPath []string, newPath
 
 	proc.addLinkExport(oldPath, newPath)
 
-	for _, elem := range s.Parameters {
-		oldPath := AppendNew(oldPath, elem.Name)
-		newPath := AppendNew(newPath, elem.Name)
-		proc.addLinkExport(oldPath, newPath)
-	}
-	for _, elem := range s.Fields {
-		oldPath := AppendNew(oldPath, elem.Name)
-		newPath := AppendNew(newPath, elem.Name)
-		proc.addLinkExport(oldPath, newPath)
-	}
-	for _, elem := range s.Functions {
-		oldPath := AppendNew(oldPath, elem.Name)
-		newPath := AppendNew(newPath, elem.Name)
-		proc.addLinkExport(oldPath, newPath)
-	}
+	collectExportsList(proc, s.Parameters, oldPath, newPath)
+	collectExportsList(proc, s.Fields, oldPath, newPath)
+	collectExportsList(proc, s.Functions, oldPath, newPath)
 }
 
 func (proc *Processor) collectExportsTrait(s *Trait, oldPath []string, newPath []string) {
@@ -148,16 +136,8 @@ func (proc *Processor) collectExportsTrait(s *Trait, oldPath []string, newPath [
 
 	proc.addLinkExport(oldPath, newPath)
 
-	for _, elem := range s.Fields {
-		oldPath := AppendNew(oldPath, elem.Name)
-		newPath := AppendNew(newPath, elem.Name)
-		proc.addLinkExport(oldPath, newPath)
-	}
-	for _, elem := range s.Functions {
-		oldPath := AppendNew(oldPath, elem.Name)
-		newPath := AppendNew(newPath, elem.Name)
-		proc.addLinkExport(oldPath, newPath)
-	}
+	collectExportsList(proc, s.Fields, oldPath, newPath)
+	collectExportsList(proc, s.Functions, oldPath, newPath)
 }
 
 func (proc *Processor) collectExportsFunction(s *Function, oldPath []string, newPath []string) {
@@ -165,6 +145,14 @@ func (proc *Processor) collectExportsFunction(s *Function, oldPath []string, new
 	newPath = AppendNew(newPath, s.Name)
 
 	proc.addLinkExport(oldPath, newPath)
+}
+
+func collectExportsList[T Named](proc *Processor, sl []T, oldPath, newPath []string) {
+	for _, elem := range sl {
+		oldPath := AppendNew(oldPath, elem.GetName())
+		newPath := AppendNew(newPath, elem.GetName())
+		proc.addLinkExport(oldPath, newPath)
+	}
 }
 
 type members struct {
