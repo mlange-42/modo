@@ -110,17 +110,16 @@ decl:
 	assert.Nil(t, err)
 	assert.NotNil(t, docs)
 
+	formatter := TestFormatter{}
 	files := map[string]string{}
-	err = renderWithWriter(docs, &Config{
-		OutputDir:    "out",
-		TemplateDirs: []string{},
-		RenderFormat: &TestFormatter{},
-		UseExports:   true,
-		ShortLinks:   true,
-	}, func(file, text string) error {
+	templ, err := loadTemplates(&formatter)
+	assert.Nil(t, err)
+	proc := NewProcessorWithWriter(docs, &formatter, templ, true, true, func(file, text string) error {
 		files[file] = text
 		return nil
 	})
+
+	err = renderWith("out", proc)
 	assert.Nil(t, err)
 
 	for f := range files {

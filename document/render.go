@@ -20,24 +20,22 @@ type Config struct {
 }
 
 func Render(docs *Docs, config *Config) error {
-	return renderWithWriter(docs, config, func(file, text string) error {
-		return os.WriteFile(file, []byte(text), 0666)
-	})
-}
-
-func renderWithWriter(docs *Docs, config *Config, writer func(file, text string) error) error {
 	t, err := loadTemplates(config.RenderFormat, config.TemplateDirs...)
 	if err != nil {
 		return err
 	}
-	proc := NewProcessorWithWriter(docs, config.RenderFormat, t, config.UseExports, config.ShortLinks, writer)
+	proc := NewProcessor(docs, config.RenderFormat, t, config.UseExports, config.ShortLinks)
+	return renderWith(config.OutputDir, proc)
+}
+
+func renderWith(outDir string, proc *Processor) error {
 	if err := proc.PrepareDocs(); err != nil {
 		return err
 	}
-	if err := renderPackage(proc.ExportDocs.Decl, []string{config.OutputDir}, proc); err != nil {
+	if err := renderPackage(proc.ExportDocs.Decl, []string{outDir}, proc); err != nil {
 		return err
 	}
-	if err := proc.Formatter.WriteAuxiliary(proc.ExportDocs.Decl, config.OutputDir, proc); err != nil {
+	if err := proc.Formatter.WriteAuxiliary(proc.ExportDocs.Decl, outDir, proc); err != nil {
 		return err
 	}
 	return nil
