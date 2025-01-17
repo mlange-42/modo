@@ -9,68 +9,68 @@ import (
 func TestCollectPaths(t *testing.T) {
 	docs := Docs{
 		Decl: &Package{
-			MemberKind: NewKind("package"),
-			MemberName: NewName("pkg"),
+			MemberKind: newKind("package"),
+			MemberName: newName("pkg"),
 			Packages: []*Package{
 				{
-					MemberKind: NewKind("package"),
-					MemberName: NewName("subpkg"),
+					MemberKind: newKind("package"),
+					MemberName: newName("subpkg"),
 				},
 			},
 			Modules: []*Module{
 				{
-					MemberKind: NewKind("module"),
-					MemberName: NewName("mod"),
+					MemberKind: newKind("module"),
+					MemberName: newName("mod"),
 					Structs: []*Struct{
 						{
-							MemberKind: NewKind("struct"),
-							MemberName: NewName("Struct"),
+							MemberKind: newKind("struct"),
+							MemberName: newName("Struct"),
 							Parameters: []*Parameter{
 								{
-									MemberKind: NewKind("parameter"),
-									MemberName: NewName("par"),
+									MemberKind: newKind("parameter"),
+									MemberName: newName("par"),
 								},
 							},
 							Fields: []*Field{
 								{
-									MemberKind: NewKind("field"),
-									MemberName: NewName("f"),
+									MemberKind: newKind("field"),
+									MemberName: newName("f"),
 								},
 							},
 							Functions: []*Function{
 								{
-									MemberKind: NewKind("function"),
-									MemberName: NewName("func"),
+									MemberKind: newKind("function"),
+									MemberName: newName("func"),
 								},
 							},
 						},
 					},
 					Traits: []*Trait{
 						{
-							MemberKind: NewKind("trait"),
-							MemberName: NewName("Trait"),
+							MemberKind: newKind("trait"),
+							MemberName: newName("Trait"),
 							Fields: []*Field{
 								{
-									MemberKind: NewKind("field"),
-									MemberName: NewName("f"),
+									MemberKind: newKind("field"),
+									MemberName: newName("f"),
 								},
 							},
 							Functions: []*Function{
 								{
-									MemberKind: NewKind("function"),
-									MemberName: NewName("func"),
+									MemberKind: newKind("function"),
+									MemberName: newName("func"),
 								},
 							},
 						},
 					},
 					Functions: []*Function{
 						{
-							MemberKind: NewKind("function"),
-							MemberName: NewName("func"),
+							MemberKind: newKind("function"),
+							MemberName: newName("func"),
 							Overloads: []*Function{
 								{
-									MemberKind: NewKind("function"),
-									MemberName: NewName("func"),
+									MemberKind: newKind("function"),
+									MemberName: newName("func"),
 									Parameters: []*Parameter{},
 									Args:       []*Arg{},
 								},

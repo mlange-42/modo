@@ -9,18 +9,18 @@ import (
 
 func TestRenderPackage(tt *testing.T) {
 	pkg := Package{
-		MemberKind:        NewKind("package"),
-		MemberName:        NewName("Modo"),
-		MemberSummary:     NewSummary("Mojo documentation generator"),
-		MemberDescription: NewDescription("Package description"),
+		MemberKind:        newKind("package"),
+		MemberName:        newName("Modo"),
+		MemberSummary:     newSummary("Mojo documentation generator"),
+		MemberDescription: newDescription("Package description"),
 		Modules: []*Module{
 			{
-				MemberName:    NewName("mod1"),
-				MemberSummary: *NewSummary("Mod1 summary"),
+				MemberName:    newName("mod1"),
+				MemberSummary: *newSummary("Mod1 summary"),
 			},
 			{
-				MemberName:    NewName("mod2"),
-				MemberSummary: *NewSummary("Mod2 summary"),
+				MemberName:    newName("mod2"),
+				MemberSummary: *newSummary("Mod2 summary"),
 			},
 		},
 		Packages: []*Package{},
@@ -40,19 +40,19 @@ func TestRenderPackage(tt *testing.T) {
 
 func TestRenderModule(tt *testing.T) {
 	mod := Module{
-		MemberKind:    NewKind("module"),
-		MemberName:    NewName("modo"),
+		MemberKind:    newKind("module"),
+		MemberName:    newName("modo"),
 		Description:   "",
-		MemberSummary: *NewSummary("a test module"),
+		MemberSummary: *newSummary("a test module"),
 		Aliases:       []*Alias{},
 		Structs: []*Struct{
 			{
-				MemberName:    NewName("TestStruct2"),
-				MemberSummary: *NewSummary("Struct summary..."),
+				MemberName:    newName("TestStruct2"),
+				MemberSummary: *newSummary("Struct summary..."),
 			},
 			{
-				MemberName:    NewName("TestStruct"),
-				MemberSummary: *NewSummary("Struct summary 2..."),
+				MemberName:    newName("TestStruct"),
+				MemberSummary: *newSummary("Struct summary 2..."),
 			},
 		},
 		Traits:    []*Trait{},

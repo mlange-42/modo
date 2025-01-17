@@ -10,22 +10,22 @@ import (
 func createFilterTestDocs() *Docs {
 	return &Docs{
 		Decl: &Package{
-			MemberKind:        NewKind("package"),
-			MemberName:        NewName("pkg"),
-			MemberDescription: NewDescription(""),
+			MemberKind:        newKind("package"),
+			MemberName:        newName("pkg"),
+			MemberDescription: newDescription(""),
 			Packages: []*Package{
 				{
-					MemberKind:        NewKind("package"),
-					MemberName:        NewName("subpkg"),
-					MemberDescription: NewDescription(""),
+					MemberKind:        newKind("package"),
+					MemberName:        newName("subpkg"),
+					MemberDescription: newDescription(""),
 					Modules: []*Module{
 						{
-							MemberKind: NewKind("module"),
-							MemberName: NewName("mod3"),
+							MemberKind: newKind("module"),
+							MemberName: newName("mod3"),
 							Structs: []*Struct{
 								{
-									MemberKind: NewKind("struct"),
-									MemberName: NewName("Struct3"),
+									MemberKind: newKind("struct"),
+									MemberName: newName("Struct3"),
 								},
 							},
 						},
@@ -34,38 +34,38 @@ func createFilterTestDocs() *Docs {
 			},
 			Modules: []*Module{
 				{
-					MemberKind: NewKind("module"),
-					MemberName: NewName("mod1"),
+					MemberKind: newKind("module"),
+					MemberName: newName("mod1"),
 					Structs: []*Struct{
 						{
-							MemberKind: NewKind("struct"),
-							MemberName: NewName("Struct1"),
+							MemberKind: newKind("struct"),
+							MemberName: newName("Struct1"),
 						},
 						{
-							MemberKind: NewKind("struct"),
-							MemberName: NewName("Struct2"),
+							MemberKind: newKind("struct"),
+							MemberName: newName("Struct2"),
 						},
 					},
 					Traits: []*Trait{
 						{
-							MemberKind: NewKind("trait"),
-							MemberName: NewName("Trait"),
+							MemberKind: newKind("trait"),
+							MemberName: newName("Trait"),
 						},
 					},
 					Functions: []*Function{
 						{
-							MemberKind: NewKind("function"),
-							MemberName: NewName("func"),
+							MemberKind: newKind("function"),
+							MemberName: newName("func"),
 						},
 					},
 				},
 				{
-					MemberKind: NewKind("module"),
-					MemberName: NewName("mod2"),
+					MemberKind: newKind("module"),
+					MemberName: newName("mod2"),
 					Structs: []*Struct{
 						{
-							MemberKind: NewKind("struct"),
-							MemberName: NewName("Struct2"),
+							MemberKind: newKind("struct"),
+							MemberName: newName("Struct2"),
 						},
 					},
 				},

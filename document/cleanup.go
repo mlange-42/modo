@@ -11,10 +11,10 @@ func cleanup(doc *Docs) {
 
 func cleanupPackage(p *Package) {
 	if p.MemberSummary == nil {
-		p.MemberSummary = NewSummary("")
+		p.MemberSummary = newSummary("")
 	}
 	if p.MemberDescription == nil {
-		p.MemberDescription = NewDescription("")
+		p.MemberDescription = newDescription("")
 	}
 
 	for _, pp := range p.Packages {
