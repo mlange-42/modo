@@ -15,8 +15,8 @@ func (proc *Processor) collectPaths() {
 }
 
 func (proc *Processor) collectPathsPackage(p *Package, elems []string, pathElem []string) {
-	newElems := AppendNew(elems, p.GetName())
-	newPath := AppendNew(pathElem, p.GetFileName())
+	newElems := appendNew(elems, p.GetName())
+	newPath := appendNew(pathElem, p.GetFileName())
 	proc.addLinkTarget(newElems, newPath, "package", false)
 
 	for _, pkg := range p.Packages {
@@ -33,15 +33,15 @@ func (proc *Processor) collectPathsPackage(p *Package, elems []string, pathElem 
 		proc.collectPathsTrait(t, newElems, newPath)
 	}
 	for _, f := range p.Functions {
-		newElems := AppendNew(newElems, f.GetName())
-		newPath := AppendNew(newPath, f.GetFileName())
+		newElems := appendNew(newElems, f.GetName())
+		newPath := appendNew(newPath, f.GetFileName())
 		proc.addLinkTarget(newElems, newPath, "function", false)
 	}
 }
 
 func (proc *Processor) collectPathsModule(m *Module, elems []string, pathElem []string) {
-	newElems := AppendNew(elems, m.GetName())
-	newPath := AppendNew(pathElem, m.GetFileName())
+	newElems := appendNew(elems, m.GetName())
+	newPath := appendNew(pathElem, m.GetFileName())
 	proc.addLinkTarget(newElems, newPath, "module", false)
 
 	for _, s := range m.Structs {
@@ -51,47 +51,47 @@ func (proc *Processor) collectPathsModule(m *Module, elems []string, pathElem []
 		proc.collectPathsTrait(t, newElems, newPath)
 	}
 	for _, f := range m.Functions {
-		newElems := AppendNew(newElems, f.GetName())
-		newPath := AppendNew(newPath, f.GetFileName())
+		newElems := appendNew(newElems, f.GetName())
+		newPath := appendNew(newPath, f.GetFileName())
 		proc.addLinkTarget(newElems, newPath, "function", false)
 	}
 }
 
 func (proc *Processor) collectPathsStruct(s *Struct, elems []string, pathElem []string) {
-	newElems := AppendNew(elems, s.GetName())
-	newPath := AppendNew(pathElem, s.GetFileName())
+	newElems := appendNew(elems, s.GetName())
+	newPath := appendNew(pathElem, s.GetFileName())
 	proc.addLinkTarget(newElems, newPath, "struct", false)
 
 	for _, f := range s.Parameters {
-		newElems := AppendNew(newElems, f.GetName())
-		newPath := AppendNew(newPath, "#parameters")
+		newElems := appendNew(newElems, f.GetName())
+		newPath := appendNew(newPath, "#parameters")
 		proc.addLinkTarget(newElems, newPath, "member", true)
 	}
 	for _, f := range s.Fields {
-		newElems := AppendNew(newElems, f.GetName())
-		newPath := AppendNew(newPath, "#fields")
+		newElems := appendNew(newElems, f.GetName())
+		newPath := appendNew(newPath, "#fields")
 		proc.addLinkTarget(newElems, newPath, "member", true)
 	}
 	for _, f := range s.Functions {
-		newElems := AppendNew(newElems, f.GetName())
-		newPath := AppendNew(newPath, "#"+strings.ToLower(f.GetName()))
+		newElems := appendNew(newElems, f.GetName())
+		newPath := appendNew(newPath, "#"+strings.ToLower(f.GetName()))
 		proc.addLinkTarget(newElems, newPath, "member", true)
 	}
 }
 
 func (proc *Processor) collectPathsTrait(t *Trait, elems []string, pathElem []string) {
-	newElems := AppendNew(elems, t.GetName())
-	newPath := AppendNew(pathElem, t.GetFileName())
+	newElems := appendNew(elems, t.GetName())
+	newPath := appendNew(pathElem, t.GetFileName())
 	proc.addLinkTarget(newElems, newPath, "trait", false)
 
 	for _, f := range t.Fields {
-		newElems := AppendNew(newElems, f.GetName())
-		newPath := AppendNew(newPath, "#fields")
+		newElems := appendNew(newElems, f.GetName())
+		newPath := appendNew(newPath, "#fields")
 		proc.addLinkTarget(newElems, newPath, "member", true)
 	}
 	for _, f := range t.Functions {
-		newElems := AppendNew(newElems, f.GetName())
-		newPath := AppendNew(newPath, "#"+strings.ToLower(f.GetName()))
+		newElems := appendNew(newElems, f.GetName())
+		newPath := appendNew(newPath, "#"+strings.ToLower(f.GetName()))
 		proc.addLinkTarget(newElems, newPath, "member", true)
 	}
 }

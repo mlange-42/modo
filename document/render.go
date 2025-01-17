@@ -54,7 +54,7 @@ func renderElement(data interface {
 }
 
 func renderPackage(p *Package, dir []string, proc *Processor) error {
-	newDir := AppendNew(dir, p.GetFileName())
+	newDir := appendNew(dir, p.GetFileName())
 	pkgPath := path.Join(newDir...)
 	if err := mkDirs(pkgPath); err != nil {
 		return err
@@ -94,7 +94,7 @@ func renderPackage(p *Package, dir []string, proc *Processor) error {
 }
 
 func renderModule(mod *Module, dir []string, proc *Processor) error {
-	newDir := AppendNew(dir, mod.GetFileName())
+	newDir := appendNew(dir, mod.GetFileName())
 	if err := mkDirs(path.Join(newDir...)); err != nil {
 		return err
 	}
@@ -125,7 +125,7 @@ func renderList[T interface {
 	Kinded
 }](list []T, dir []string, proc *Processor) error {
 	for _, elem := range list {
-		newDir := AppendNew(dir, elem.GetFileName())
+		newDir := appendNew(dir, elem.GetFileName())
 		text, err := renderElement(elem, proc)
 		if err != nil {
 			return err
