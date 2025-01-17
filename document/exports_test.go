@@ -9,12 +9,22 @@ import (
 func TestParseExports(t *testing.T) {
 	text := `Text.
 Text
+   indented text
 
 Exports:
  - mod.Struct
  - mod.Trait
  - mod.func
 
+` +
+		"```python\n" +
+		`Exports:
+ - xxx.Struct
+ - xxx.Trait
+ - xxx.func
+` +
+		"```\n" +
+		`
 Text
 
 Exports:
@@ -23,6 +33,7 @@ Exports:
 
 Text
 `
+
 	proc := NewProcessor(nil, nil, nil, false, false)
 	exports, newText, anyExp := proc.parseExports(text, []string{"pkg"}, true)
 
@@ -35,13 +46,23 @@ Text
 		{Short: []string{"mod", "submod"}, Long: []string{"pkg", "mod", "submod"}},
 	}, exports)
 
-	assert.Equal(t, `Text.
+	assert.Equal(t, newText, `Text.
+Text
+   indented text
+
+
+`+
+		"```python\n"+
+		`Exports:
+ - xxx.Struct
+ - xxx.Trait
+ - xxx.func
+`+
+		"```\n"+
+		`
 Text
 
 
 Text
-
-
-Text
-`, newText)
+`)
 }
