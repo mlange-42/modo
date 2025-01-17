@@ -1,37 +1,36 @@
-package format
+package document
 
 import (
 	"fmt"
 	"testing"
 
-	"github.com/mlange-42/modo/document"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestRenderPackage(tt *testing.T) {
-	pkg := document.Package{
-		MemberKind:        document.NewKind("package"),
-		MemberName:        document.NewName("Modo"),
-		MemberSummary:     document.NewSummary("Mojo documentation generator"),
-		MemberDescription: document.NewDescription("Package description"),
-		Modules: []*document.Module{
+	pkg := Package{
+		MemberKind:        NewKind("package"),
+		MemberName:        NewName("Modo"),
+		MemberSummary:     NewSummary("Mojo documentation generator"),
+		MemberDescription: NewDescription("Package description"),
+		Modules: []*Module{
 			{
-				MemberName:    document.NewName("mod1"),
-				MemberSummary: *document.NewSummary("Mod1 summary"),
+				MemberName:    NewName("mod1"),
+				MemberSummary: *NewSummary("Mod1 summary"),
 			},
 			{
-				MemberName:    document.NewName("mod2"),
-				MemberSummary: *document.NewSummary("Mod2 summary"),
+				MemberName:    NewName("mod2"),
+				MemberSummary: *NewSummary("Mod2 summary"),
 			},
 		},
-		Packages: []*document.Package{},
+		Packages: []*Package{},
 	}
 
-	form := PlainFormatter{}
+	form := TestFormatter{}
 	templ, err := loadTemplates(&form)
 	assert.Nil(tt, err)
 
-	proc := document.NewProcessor(nil, &form, templ, false, false)
+	proc := NewProcessor(nil, &form, templ, false, false)
 
 	text, err := renderElement(&pkg, proc)
 	assert.Nil(tt, err)
@@ -40,31 +39,31 @@ func TestRenderPackage(tt *testing.T) {
 }
 
 func TestRenderModule(tt *testing.T) {
-	mod := document.Module{
-		MemberKind:    document.NewKind("module"),
-		MemberName:    document.NewName("modo"),
+	mod := Module{
+		MemberKind:    NewKind("module"),
+		MemberName:    NewName("modo"),
 		Description:   "",
-		MemberSummary: *document.NewSummary("a test module"),
-		Aliases:       []*document.Alias{},
-		Structs: []*document.Struct{
+		MemberSummary: *NewSummary("a test module"),
+		Aliases:       []*Alias{},
+		Structs: []*Struct{
 			{
-				MemberName:    document.NewName("TestStruct2"),
-				MemberSummary: *document.NewSummary("Struct summary..."),
+				MemberName:    NewName("TestStruct2"),
+				MemberSummary: *NewSummary("Struct summary..."),
 			},
 			{
-				MemberName:    document.NewName("TestStruct"),
-				MemberSummary: *document.NewSummary("Struct summary 2..."),
+				MemberName:    NewName("TestStruct"),
+				MemberSummary: *NewSummary("Struct summary 2..."),
 			},
 		},
-		Traits:    []*document.Trait{},
-		Functions: []*document.Function{},
+		Traits:    []*Trait{},
+		Functions: []*Function{},
 	}
 
-	form := PlainFormatter{}
+	form := TestFormatter{}
 	templ, err := loadTemplates(&form)
 	assert.Nil(tt, err)
 
-	proc := document.NewProcessor(nil, &form, templ, false, false)
+	proc := NewProcessor(nil, &form, templ, false, false)
 
 	text, err := renderElement(&mod, proc)
 	if err != nil {
@@ -107,7 +106,7 @@ decl:
             - name: func2
               kind: function
 `
-	docs, err := document.FromYaml([]byte(yml))
+	docs, err := FromYaml([]byte(yml))
 	assert.Nil(t, err)
 	assert.NotNil(t, docs)
 
@@ -115,7 +114,7 @@ decl:
 	err = renderWithWriter(docs, &Config{
 		OutputDir:    "out",
 		TemplateDirs: []string{},
-		RenderFormat: Plain,
+		RenderFormat: &TestFormatter{},
 		UseExports:   true,
 		ShortLinks:   true,
 	}, func(file, text string) error {
