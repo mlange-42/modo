@@ -8,14 +8,14 @@
 [![GitHub](https://img.shields.io/badge/github-repo-blue?logo=github)](https://github.com/mlange-42/modo)
 [![MIT license](https://img.shields.io/badge/MIT-brightgreen?label=license)](https://github.com/mlange-42/modo/blob/main/LICENSE)
 
-Modo is a documentation generator (DocGen) for the [Mojo](https://www.modular.com/mojo) programming language.
+Modo is a documentation generator (DocGen) for the [Mojo](https://www.modular.com/mojo)🔥 programming language.
 It generates Markdown for static site generators (SSGs) from `mojo doc` JSON output.
 
-[This example](https://mlange-42.github.io/modo/) shows the Mojo [stdlib](https://github.com/modularml/mojo) processed with Modo and rendered with [mdBook](https://github.com/rust-lang/mdBook).
+[This example](https://mlange-42.github.io/modo/) shows the Mojo🔥 [stdlib](https://github.com/modularml/mojo) processed with Modo and rendered with [mdBook](https://github.com/rust-lang/mdBook).
 
 ## Features
 
-* Generates [Mojo](https://www.modular.com/mojo) API docs for [Hugo](#hugo), [mdBook](#mdbook) or just [plain](#plain-markdown) Markdown.
+* Generates [Mojo](https://www.modular.com/mojo)🔥 API docs for [Hugo](#hugo), [mdBook](#mdbook) or just [plain](#plain-markdown) Markdown.
 * Provides a simple syntax for code [cross-references](#cross-references).
 * Optionally structures API docs according to [package re-exports](#package-re-exports).
 * Customizable output through [user templates](#templates).
@@ -94,7 +94,7 @@ Alternatively, run Modo with switch `--case-insensitive`.
 
 Modo supports cross-refs within the documentation of a project.
 Absolute as well as relative references are supported.
-Relative references follow Mojo's import syntax, with a leading dot denoting the current module, and further dots navigating upwards.
+Relative references follow Mojo🔥's import syntax, with a leading dot denoting the current module, and further dots navigating upwards.
 
 Some examples:
 
