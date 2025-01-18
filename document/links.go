@@ -344,7 +344,7 @@ func (proc *Processor) ReplacePlaceholders(text string, elems []string, modElems
 
 func (proc *Processor) placeholderToLink(link string, elems []string, modElems int, shorten bool) (entry *elemPath, text string, parts []string, ok bool) {
 	linkParts := strings.SplitN(link, " ", 2)
-	entry, text, parts, ok = proc.placeholderToAbsLink(linkParts[0], elems, modElems)
+	entry, text, parts, ok = proc.placeholderToRelLink(linkParts[0], elems, modElems)
 	if !ok {
 		return
 	}
@@ -364,10 +364,10 @@ func (proc *Processor) placeholderToLink(link string, elems []string, modElems i
 	return
 }
 
-func (proc *Processor) placeholderToAbsLink(link string, elems []string, modElems int) (*elemPath, string, []string, bool) {
+func (proc *Processor) placeholderToRelLink(link string, elems []string, modElems int) (*elemPath, string, []string, bool) {
 	elemPath, ok := proc.linkTargets[link]
 	if !ok {
-		log.Printf("WARNING: Can't resolve cross ref '%s' in %s", link, strings.Join(elems, "."))
+		log.Printf("WARNING: Can't resolve cross ref placeholder '%s' in %s", link, strings.Join(elems, "."))
 		return nil, "", nil, false
 	}
 	skip := 0
@@ -386,6 +386,10 @@ func (proc *Processor) placeholderToAbsLink(link string, elems []string, modElem
 		fullPath = append(fullPath, "..")
 	}
 	fullPath = append(fullPath, elemPath.Elements[skip:]...)
+	if len(fullPath) == 0 {
+		fullPath = append(fullPath, ".")
+	}
+
 	return &elemPath, link, fullPath, true
 }
 
@@ -429,7 +433,7 @@ func (proc *Processor) refToPlaceholderRel(link string, elems []string, modElems
 
 	placeholder, ok := proc.linkExports[fullLink]
 	if !ok {
-		log.Printf("WARNING: Can't resolve cross ref '%s' (%s) in %s", link, fullLink, strings.Join(elems, "."))
+		log.Printf("WARNING: Can't resolve cross ref (rel) '%s' (%s) in %s", link, fullLink, strings.Join(elems, "."))
 		return "", false
 	}
 	return placeholder, true
@@ -438,7 +442,7 @@ func (proc *Processor) refToPlaceholderRel(link string, elems []string, modElems
 func (proc *Processor) refToPlaceholderAbs(link string, elems []string) (string, bool) {
 	placeholder, ok := proc.linkExports[link]
 	if !ok {
-		log.Printf("WARNING: Can't resolve cross ref '%s' in %s", link, strings.Join(elems, "."))
+		log.Printf("WARNING: Can't resolve cross ref (abs) '%s' in %s", link, strings.Join(elems, "."))
 		return "", false
 	}
 	return placeholder, true
