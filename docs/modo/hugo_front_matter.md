@@ -1,6 +1,6 @@
 ---
 type: docs
-title: {{.Name}}
+title: {{if and (eq .Name "mypkg") (eq .Kind "package")}}Example API docs{{else}}{{.Name}}{{end}}
 {{if or (eq .Kind "struct") (eq .Kind "trait") -}}
 weight: 100
 {{- else if eq .Kind "function" -}}
@@ -12,4 +12,6 @@ weight: 400
 {{- else  -}}
 weight: 500
 {{- end}}
+params:
+  breadcrumb: {{.Name}}
 ---

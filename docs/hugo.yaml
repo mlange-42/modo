@@ -1,0 +1,28 @@
+baseURL: https://mlange-42.github.io/modo/
+languageCode: en-us
+title: Modo
+disablePathToLower: true
+
+module:
+  imports:
+    - path: github.com/imfing/hextra
+
+menu:
+  main:
+    - name: Search
+      weight: 3
+      params:
+        type: search
+    - name: GitHub
+      weight: 4
+      url: "https://github.com/mlange-42/modo"
+      params:
+        icon: github
+
+params:
+  search:
+    enable: true
+    type: flexsearch
+    flexsearch:
+      # index page by: content | summary | heading | title
+      index: content
