@@ -12,4 +12,6 @@ weight: 400
 {{- else  -}}
 weight: 500
 {{- end}}
+params:
+  breadcrumb: {{.Name}}
 ---

@@ -14,3 +14,11 @@ It generates Markdown for static site generators (SSGs) from `mojo doc` JSON out
 * Provides a simple syntax for code [cross-references](#cross-references).
 * Optionally structures API docs according to [package re-exports](#package-re-exports).
 * Customizable output through [user templates](#templates).
+
+## Demo
+
+See the [Example API docs](mypkg) for a demo of Modo🧯's features.
+
+## Usage
+
+For usage examples and details, see the repository's [README.md](https://github.com/mlange-42/modo) file.
