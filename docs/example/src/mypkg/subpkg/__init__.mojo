@@ -1,0 +1,6 @@
+"""
+Sub-package
+
+Exports:
+ - submodule
+"""

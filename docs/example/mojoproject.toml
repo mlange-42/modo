@@ -1,0 +1,12 @@
+[project]
+authors = ["mlange-42 <martin_lange_@gmx.net>"]
+channels = ["conda-forge", "https://conda.modular.com/max-nightly"]
+description = "Add a short description here"
+name = "example"
+platforms = ["linux-64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+max = ">=25.1.0.dev2025011105"

@@ -147,12 +147,12 @@ In a package's `__init__.mojo`, document re-exports like this:
 Package creatures demonstrates Modo re-exports.
 
 Exports:
- - animals.vertebrates.Cat
- - animals.vertebrates.Dog
+ - animals.mammals.Cat
+ - animals.mammals.Dog
  - plants.vascular
  - fungi
 """
-from .animals.vertebrates import Cat, Dog
+from .animals.mammals import Cat, Dog
 from .plants import vascular
 ```
 
