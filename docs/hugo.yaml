@@ -1,6 +1,6 @@
 baseURL: https://mlange-42.github.io/modo/
 languageCode: en-us
-title: Modo
+title: Modo🧯
 disablePathToLower: true
 
 module:
@@ -26,3 +26,6 @@ params:
     flexsearch:
       # index page by: content | summary | heading | title
       index: content
+  navbar:
+    displayTitle: true
+    displayLogo: false

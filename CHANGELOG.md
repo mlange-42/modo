@@ -1,5 +1,9 @@
 ## [[unpublished]](https://github.com/mlange-42/modo/compare/v0.6.0...main)
 
+### Documentation
+
+* Replaces the mdBook stdlib example by a custom one using Hugo (#64)
+
 ### Bugfixes
 
 * Don't trim docstrings during extraction and removal of exports section (#60)
