@@ -27,6 +27,7 @@ func (proc *Processor) filterPackages() error {
 		Version: proc.Docs.Version,
 		Decl:    proc.Docs.Decl.linkedCopy(),
 	}
+	proc.addLinkExport([]string{proc.Docs.Decl.Name}, []string{proc.Docs.Decl.Name})
 	proc.filterPackage(proc.Docs.Decl, proc.ExportDocs.Decl, nil, nil)
 	return nil
 }
@@ -97,6 +98,16 @@ func (proc *Processor) collectModuleExports(src *Module, rootOut *Package, oldPa
 
 		tempNewPath := appendNew(newPath, src.Name)
 		proc.addLinkExport(oldPath, tempNewPath)
+
+		for _, elem := range src.Structs {
+			proc.collectExportsStruct(elem, oldPath, tempNewPath)
+		}
+		for _, elem := range src.Traits {
+			proc.collectExportsTrait(elem, oldPath, tempNewPath)
+		}
+		for _, elem := range src.Functions {
+			proc.collectExportsFunction(elem, oldPath, tempNewPath)
+		}
 	}
 
 	for _, elem := range src.Structs {

@@ -49,21 +49,41 @@ func TestFindLinks(t *testing.T) {
 	assert.Equal(t, "[link4]", text[indices[2]:indices[3]])
 }
 
-func TestReplaceLinks(t *testing.T) {
-	text := "A [.Struct], a [.Struct.member], a [..Trait], a [.q.func], abs [stdlib.Trait]. And a [Markdown](link)."
+func TestReplaceRefs(t *testing.T) {
+	text := "A [.Struct], a [.Struct.member], a [..Trait], a [.q.func], abs [stdlib.Trait], [stdlib]. And a [Markdown](link)."
+	lookup := map[string]string{
+		"stdlib.Trait":           "stdlib.Trait",
+		"stdlib.p.Struct":        "stdlib.p.Struct",
+		"stdlib.p.Struct.member": "stdlib.p.Struct.member",
+		"stdlib.p.q.func":        "stdlib.p.q.func",
+		"stdlib":                 "stdlib",
+	}
+	elems := []string{"stdlib", "p", "Struct"}
+
+	proc := NewProcessor(nil, &TestFormatter{}, nil, false, false)
+	proc.linkExports = lookup
+	out, err := proc.replaceRefs(text, elems, 2)
+	assert.Nil(t, err)
+
+	assert.Equal(t, "A [stdlib.p.Struct], a [stdlib.p.Struct.member], a [stdlib.Trait], a [stdlib.p.q.func], abs [stdlib.Trait], [stdlib]. And a [Markdown](link).", out)
+}
+
+func TestReplacePlaceholders(t *testing.T) {
+	text := "A [stdlib.p.Struct], a [stdlib.p.Struct.member], a [stdlib.Trait], a [stdlib.p.q.func], abs [stdlib.Trait], [stdlib]. And a [Markdown](link)."
 	lookup := map[string]elemPath{
 		"stdlib.Trait":           {Elements: []string{"stdlib", "Trait"}, Kind: "member"},
 		"stdlib.p.Struct":        {Elements: []string{"stdlib", "p", "Struct"}, Kind: "member"},
 		"stdlib.p.Struct.member": {Elements: []string{"stdlib", "p", "Struct", "#member"}, Kind: "member", IsSection: true},
 		"stdlib.p.q.func":        {Elements: []string{"stdlib", "p", "q", "func"}, Kind: "member"},
+		"stdlib":                 {Elements: []string{"stdlib"}, Kind: "package"},
 	}
 	elems := []string{"stdlib", "p", "Struct"}
 
-	proc := NewProcessor(nil, &TestFormatter{}, nil, false, false)
+	proc := NewProcessor(nil, &TestFormatter{}, nil, false, true)
 	proc.linkTargets = lookup
-	out, err := proc.replaceRefs(text, elems, 2)
+	out, err := proc.ReplacePlaceholders(text, elems, 2)
 	assert.Nil(t, err)
 
 	fmt.Println(out)
-	//assert.Equal(t, "A [`Struct`](Struct.md), a [`Struct.member`](Struct.md#member), a [`Trait`](../Trait.md), a [`q.func`](q/func.md), abs [`stdlib.Trait`](../Trait.md). And a [Markdown](link).", out)
+	assert.Equal(t, "A [`Struct`](Struct.md), a [`Struct.member`](Struct.md#member), a [`Trait`](../Trait.md), a [`func`](q/func.md), abs [`Trait`](../Trait.md), [`stdlib`](../_index.md). And a [Markdown](link).", out)
 }
