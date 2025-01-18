@@ -1,8 +1,7 @@
 name: Publish
 
 env:
-  MDBOOK_VERSION: v0.4.43
-  STDLIB_VERSION: max/v24.6.0
+  HUGO_VERSION: 0.140.2
 
 on:
   push:
@@ -29,50 +28,47 @@ jobs:
         run: |
           curl -ssL https://magic.modular.com | bash
           source /home/runner/.bash_profile
-      - name: Clone stdlib
-        run: |
-          git clone https://github.com/modularml/mojo.git
-          cd mojo
-          git checkout ${{env.STDLIB_VERSION}}
       - name: Install mojo and dependencies
         run: |
           source /home/runner/.bash_profile
-          cd mojo
+          cd docs/example
           magic install --locked
+
+      - name: Setup Hugo
+        uses: peaceiris/actions-hugo@v3
+        with:
+          hugo-version: '${{env.HUGO_VERSION}}'
+          extended: true
 
       - name: Generate JSON docs
         run: |
           source /home/runner/.bash_profile
-          cd mojo
-          magic run mojo doc -o ../stdlib.json stdlib/src
+          cd docs/example
+          magic run mojo doc -o example.json src/mypkg
       - name: Create Markdown
         run: |
-          go run . markdown -i stdlib.json --format=mdbook
+          go run . docs/content -i docs/example/example.json --exports --short-links --format=hugo --templates=docs/modo
 
-      - name: Download mdBook
+      - name: Run hugo
         run: |
-          mkdir bin
-          curl -sSL https://github.com/rust-lang/mdBook/releases/download/${{env.MDBOOK_VERSION}}/mdbook-${{env.MDBOOK_VERSION}}-x86_64-unknown-linux-gnu.tar.gz | tar -xz --directory=bin
-      - name: Run mdBook
-        run: |
-          bin/mdbook build markdown --dest-dir ../public
+          hugo -s docs
 
       - name: Archive Markdown artifacts
         uses: actions/upload-artifact@v4
         with:
           name: markdown
-          path: markdown
+          path: docs/content
       - name: Archive HTML artifacts
         uses: actions/upload-artifact@v4
         with:
           name: public
-          path: public
+          path: docs/public
 
       - name: Deploy to GitHub Pages
         if: ${{ github.event_name == 'push' && github.ref == 'refs/heads/main' }}
         uses: crazy-max/ghaction-github-pages@v4
         with:
           target_branch: gh-pages
-          build_dir: public
+          build_dir: docs/public
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
