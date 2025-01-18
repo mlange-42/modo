@@ -11,7 +11,7 @@
 Modo🧯 is a documentation generator (DocGen) for the [Mojo](https://www.modular.com/mojo)🔥 programming language.
 It generates Markdown for static site generators (SSGs) from `mojo doc` JSON output.
 
-[This example](https://mlange-42.github.io/modo/) shows the Mojo🔥 [stdlib](https://github.com/modularml/mojo) processed with Modo🧯 and rendered with [mdBook](https://github.com/rust-lang/mdBook).
+[This example](https://mlange-42.github.io/modo/) shows a Mojo🔥 package processed with Modo🧯 and rendered with [Hugo](https://gohugo.io), to demonstrate Modo🧯's features.
 
 ## Features
 
