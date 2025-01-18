@@ -1,38 +1,36 @@
 """
 Module in subpkg.
 
-Link to [.dummy].
-
-Link to [...subpkg].
+This module is re-exported by [...subpkg],
+so all its members are included.
 """
 
 
-fn dummy():
+fn simple_func():
+    """A simple function."""
+    pass
+
+
+fn overloaded_func():
+    """An overloaded function, variant 1."""
+    pass
+
+
+fn overloaded_func(v: Int):
     """
-    Dummy function.
+    An overloaded function, variant 2.
 
-    Link to [...subpkg].
-
-    Abs link to [mypkg.subpkg]
-
-    Link to [mypkg].
-
-    Link to containing module: [..submodule]
-
-    Link to cstruct in mypkg: [...mymodule.MyPair]
+    Args:
+        v: Some arguments...
     """
     pass
 
 
-struct SubStruct:
+fn overloaded_func(v: String):
     """
-    Dummy struct.
+    An overloaded function, variant 3.
 
-    Link to [.dummy].
+    Args:
+        v: Some arguments...
     """
-
-    fn test(self):
-        """
-        Link in struct member: [.dummy].
-        """
-        pass
+    pass
