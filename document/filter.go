@@ -111,6 +111,9 @@ func (proc *Processor) collectPackageExports(src, rootOut *Package, oldPath, new
 		}
 	}
 
+	for _, elem := range src.Aliases {
+		proc.collectExportsAlias(elem, oldPath, newPath)
+	}
 	for _, elem := range src.Structs {
 		proc.collectExportsStruct(elem, oldPath, newPath)
 	}
@@ -144,6 +147,12 @@ func (proc *Processor) collectModuleExports(src *Module, rootOut *Package, oldPa
 		}
 	}
 
+	for _, elem := range src.Aliases {
+		if _, ok := toCrawl[elem.Name]; ok {
+			rootOut.Aliases = append(rootOut.Aliases, elem)
+			proc.collectExportsAlias(elem, oldPath, newPath)
+		}
+	}
 	for _, elem := range src.Structs {
 		if _, ok := toCrawl[elem.Name]; ok {
 			rootOut.Structs = append(rootOut.Structs, elem)
@@ -174,6 +183,13 @@ func (proc *Processor) collectExportsStruct(s *Struct, oldPath []string, newPath
 	collectExportsList(proc, s.Parameters, oldPath, newPath)
 	collectExportsList(proc, s.Fields, oldPath, newPath)
 	collectExportsList(proc, s.Functions, oldPath, newPath)
+}
+
+func (proc *Processor) collectExportsAlias(a *Alias, oldPath []string, newPath []string) {
+	oldPath = appendNew(oldPath, a.Name)
+	newPath = appendNew(newPath, a.Name)
+
+	proc.addLinkExport(oldPath, newPath)
 }
 
 func (proc *Processor) collectExportsTrait(s *Trait, oldPath []string, newPath []string) {

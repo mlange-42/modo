@@ -1,6 +1,8 @@
 package document
 
-import "strings"
+import (
+	"strings"
+)
 
 type elemPath struct {
 	Elements  []string
@@ -38,6 +40,11 @@ func (proc *Processor) collectPathsPackage(p *Package, elems []string, pathElem 
 	}
 	for _, t := range p.Traits {
 		proc.collectPathsTrait(t, newElems, newPath, add)
+	}
+	for _, a := range p.Aliases {
+		newElems := appendNew(newElems, a.GetName())
+		newPath := appendNew(newPath, "#aliases")
+		add(newElems, newPath, "alias", true)
 	}
 	for _, f := range p.Functions {
 		newElems := appendNew(newElems, f.GetName())

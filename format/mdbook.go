@@ -40,6 +40,9 @@ func (f *MdBookFormatter) ToFilePath(p string, kind string) (string, error) {
 	if kind == "package" || kind == "module" {
 		return path.Join(p, "_index.md"), nil
 	}
+	if len(p) == 0 {
+		return p, nil
+	}
 	return p + ".md", nil
 }
 
