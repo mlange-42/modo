@@ -15,6 +15,7 @@ type packageExport struct {
 	Long  []string
 }
 
+// Parses and collects project re-exports, recursively.
 func (proc *Processor) collectExports(p *Package, elems []string) (bool, error) {
 	anyExports := false
 

@@ -40,7 +40,7 @@ func NewProcessorWithWriter(docs *Docs, f Formatter, t *template.Template, confi
 func (proc *Processor) PrepareDocs() error {
 	// Collect the paths of all (sub)-elements in the original structure.
 	proc.collectElementPaths()
-	// Restructure according to exports.
+	// Re-structure according to exports.
 	err := proc.filterPackages()
 	if err != nil {
 		return err
