@@ -5,6 +5,7 @@ import (
 	"io"
 	"os"
 	"strings"
+	"time"
 
 	"github.com/mlange-42/modo/document"
 	"github.com/mlange-42/modo/format"
@@ -12,10 +13,12 @@ import (
 )
 
 func main() {
+	start := time.Now()
 	if err := rootCommand().Execute(); err != nil {
 		fmt.Println("Use 'modo --help' for help.")
 		os.Exit(1)
 	}
+	fmt.Printf("Completed in %.1fms 🧯\n", float64(time.Since(start).Microseconds())/1000.0)
 }
 
 type args struct {
