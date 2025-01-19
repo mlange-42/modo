@@ -94,6 +94,10 @@ func (proc *Processor) processLinksStruct(s *Struct, elems []string) error {
 	}
 
 	for _, a := range s.Aliases {
+		a.Summary, err = proc.replaceRefs(a.Summary, newElems, len(elems))
+		if err != nil {
+			return err
+		}
 		a.Description, err = proc.replaceRefs(a.Description, newElems, len(elems))
 		if err != nil {
 			return err

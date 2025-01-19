@@ -57,6 +57,11 @@ func (proc *Processor) collectPathsModule(m *Module, elems []string, pathElem []
 	for _, t := range m.Traits {
 		proc.collectPathsTrait(t, newElems, newPath, add)
 	}
+	for _, a := range m.Aliases {
+		newElems := appendNew(newElems, a.GetName())
+		newPath := appendNew(newPath, "#aliases")
+		add(newElems, newPath, "alias", true)
+	}
 	for _, f := range m.Functions {
 		newElems := appendNew(newElems, f.GetName())
 		newPath := appendNew(newPath, f.GetFileName())
@@ -69,6 +74,11 @@ func (proc *Processor) collectPathsStruct(s *Struct, elems []string, pathElem []
 	newPath := appendNew(pathElem, s.GetFileName())
 	add(newElems, newPath, "struct", false)
 
+	for _, f := range s.Aliases {
+		newElems := appendNew(newElems, f.GetName())
+		newPath := appendNew(newPath, "#aliases")
+		add(newElems, newPath, "member", true)
+	}
 	for _, f := range s.Parameters {
 		newElems := appendNew(newElems, f.GetName())
 		newPath := appendNew(newPath, "#parameters")
