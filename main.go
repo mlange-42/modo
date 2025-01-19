@@ -27,6 +27,7 @@ type args struct {
 	caseInsensitive bool
 	useExports      bool
 	shortLinks      bool
+	strict          bool
 	outDir          string
 	templateDirs    []string
 }
@@ -55,6 +56,7 @@ Modo generates Markdown for static site generators (SSGs) from 'mojo doc' JSON o
 	root.Flags().BoolVarP(&cliArgs.useExports, "exports", "e", false, "Process according to 'Exports:' sections in packages.")
 	root.Flags().BoolVar(&cliArgs.shortLinks, "short-links", false, "Render shortened link labels, stripping packages and modules.")
 	root.Flags().BoolVar(&cliArgs.caseInsensitive, "case-insensitive", false, "Build for systems that are not case-sensitive regarding file names.\nAppends hyphen (-) to capitalized file names.")
+	root.Flags().BoolVarP(&cliArgs.strict, "strict", "s", false, "Strict mode. Errors instead of warnings.")
 	root.Flags().StringSliceVarP(&cliArgs.templateDirs, "templates", "t", []string{}, "Optional directories with templates for (partial) overwrite.\nSee folder assets/templates in the repository.")
 
 	root.Flags().SortFlags = false
@@ -85,6 +87,7 @@ func run(args *args) error {
 		UseExports:    args.useExports,
 		ShortLinks:    args.shortLinks,
 		CaseSensitive: !args.caseInsensitive,
+		Strict:        args.strict,
 	})
 	if err != nil {
 		return err

@@ -9,9 +9,12 @@ import (
 // Also collects a lookup, mapping from original to altered cross-refs.
 func (proc *Processor) filterPackages() error {
 	proc.linkExports = map[string]string{}
-	anyExports := proc.collectExports(proc.Docs.Decl, nil)
+	anyExports, err := proc.collectExports(proc.Docs.Decl, nil)
+	if err != nil {
+		return err
+	}
 
-	if !proc.UseExports {
+	if !proc.Config.UseExports {
 		proc.ExportDocs = &Docs{
 			Version: proc.Docs.Version,
 			Decl:    proc.Docs.Decl,

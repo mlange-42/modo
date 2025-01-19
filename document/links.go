@@ -2,7 +2,6 @@ package document
 
 import (
 	"fmt"
-	"log"
 	"path"
 	"regexp"
 	"strings"
@@ -297,7 +296,10 @@ func (proc *Processor) replaceRefs(text string, elems []string, modElems int) (s
 		start, end := indices[i], indices[i+1]
 		link := text[start+1 : end-1]
 
-		content, ok := proc.refToPlaceholder(link, elems, modElems)
+		content, ok, err := proc.refToPlaceholder(link, elems, modElems)
+		if err != nil {
+			return "", err
+		}
 		if !ok {
 			continue
 		}
@@ -318,7 +320,10 @@ func (proc *Processor) ReplacePlaceholders(text string, elems []string, modElems
 		start, end := indices[i], indices[i+1]
 		link := text[start+1 : end-1]
 
-		entry, linkText, parts, ok := proc.placeholderToLink(link, elems, modElems, proc.ShortLinks)
+		entry, linkText, parts, ok, err := proc.placeholderToLink(link, elems, modElems, proc.Config.ShortLinks)
+		if err != nil {
+			return "", err
+		}
 		if !ok {
 			continue
 		}
@@ -342,9 +347,12 @@ func (proc *Processor) ReplacePlaceholders(text string, elems []string, modElems
 	return text, nil
 }
 
-func (proc *Processor) placeholderToLink(link string, elems []string, modElems int, shorten bool) (entry *elemPath, text string, parts []string, ok bool) {
+func (proc *Processor) placeholderToLink(link string, elems []string, modElems int, shorten bool) (entry *elemPath, text string, parts []string, ok bool, err error) {
 	linkParts := strings.SplitN(link, " ", 2)
-	entry, text, parts, ok = proc.placeholderToRelLink(linkParts[0], elems, modElems)
+	entry, text, parts, ok, err = proc.placeholderToRelLink(linkParts[0], elems, modElems)
+	if err != nil {
+		return
+	}
 	if !ok {
 		return
 	}
@@ -364,11 +372,11 @@ func (proc *Processor) placeholderToLink(link string, elems []string, modElems i
 	return
 }
 
-func (proc *Processor) placeholderToRelLink(link string, elems []string, modElems int) (*elemPath, string, []string, bool) {
+func (proc *Processor) placeholderToRelLink(link string, elems []string, modElems int) (*elemPath, string, []string, bool, error) {
 	elemPath, ok := proc.linkTargets[link]
 	if !ok {
-		log.Printf("WARNING: Can't resolve cross ref placeholder '%s' in %s", link, strings.Join(elems, "."))
-		return nil, "", nil, false
+		err := proc.warnOrError("Can't resolve cross ref placeholder '%s' in %s", link, strings.Join(elems, "."))
+		return nil, "", nil, false, err
 	}
 	skip := 0
 	for range modElems {
@@ -390,37 +398,42 @@ func (proc *Processor) placeholderToRelLink(link string, elems []string, modElem
 		fullPath = append(fullPath, ".")
 	}
 
-	return &elemPath, link, fullPath, true
+	return &elemPath, link, fullPath, true, nil
 }
 
-func (proc *Processor) refToPlaceholder(link string, elems []string, modElems int) (string, bool) {
+func (proc *Processor) refToPlaceholder(link string, elems []string, modElems int) (string, bool, error) {
 	linkParts := strings.SplitN(link, " ", 2)
 
 	var placeholder string
 	var ok bool
+	var err error
 	if strings.HasPrefix(link, ".") {
-		placeholder, ok = proc.refToPlaceholderRel(linkParts[0], elems, modElems)
+		placeholder, ok, err = proc.refToPlaceholderRel(linkParts[0], elems, modElems)
 	} else {
-		placeholder, ok = proc.refToPlaceholderAbs(linkParts[0], elems)
+		placeholder, ok, err = proc.refToPlaceholderAbs(linkParts[0], elems)
+	}
+	if err != nil {
+		return "", false, err
 	}
 	if !ok {
-		return "", false
+		return "", false, nil
 	}
+
 	if len(linkParts) > 1 {
-		return fmt.Sprintf("%s %s", placeholder, linkParts[1]), true
+		return fmt.Sprintf("%s %s", placeholder, linkParts[1]), true, nil
 	} else {
-		return placeholder, true
+		return placeholder, true, nil
 	}
 }
 
-func (proc *Processor) refToPlaceholderRel(link string, elems []string, modElems int) (string, bool) {
+func (proc *Processor) refToPlaceholderRel(link string, elems []string, modElems int) (string, bool, error) {
 	dots := 0
 	for strings.HasPrefix(link[dots:], ".") {
 		dots++
 	}
 	if dots > modElems {
-		log.Printf("WARNING: Too many leading dots in cross ref '%s' in %s", link, strings.Join(elems, "."))
-		return "", false
+		err := proc.warnOrError("Too many leading dots in cross ref '%s' in %s", link, strings.Join(elems, "."))
+		return "", false, err
 	}
 	linkText := link[dots:]
 	subElems := elems[:modElems-(dots-1)]
@@ -433,19 +446,19 @@ func (proc *Processor) refToPlaceholderRel(link string, elems []string, modElems
 
 	placeholder, ok := proc.linkExports[fullLink]
 	if !ok {
-		log.Printf("WARNING: Can't resolve cross ref (rel) '%s' (%s) in %s", link, fullLink, strings.Join(elems, "."))
-		return "", false
+		err := proc.warnOrError("Can't resolve cross ref (rel) '%s' (%s) in %s", link, fullLink, strings.Join(elems, "."))
+		return "", false, err
 	}
-	return placeholder, true
+	return placeholder, true, nil
 }
 
-func (proc *Processor) refToPlaceholderAbs(link string, elems []string) (string, bool) {
+func (proc *Processor) refToPlaceholderAbs(link string, elems []string) (string, bool, error) {
 	placeholder, ok := proc.linkExports[link]
 	if !ok {
-		log.Printf("WARNING: Can't resolve cross ref (abs) '%s' in %s", link, strings.Join(elems, "."))
-		return "", false
+		err := proc.warnOrError("Can't resolve cross ref (abs) '%s' in %s", link, strings.Join(elems, "."))
+		return "", false, err
 	}
-	return placeholder, true
+	return placeholder, true, nil
 }
 
 func findLinks(text string) ([]int, error) {

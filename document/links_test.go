@@ -60,7 +60,7 @@ func TestReplaceRefs(t *testing.T) {
 	}
 	elems := []string{"stdlib", "p", "Struct"}
 
-	proc := NewProcessor(nil, &TestFormatter{}, nil, false, false)
+	proc := NewProcessor(nil, &TestFormatter{}, nil, &Config{})
 	proc.linkExports = lookup
 	out, err := proc.replaceRefs(text, elems, 2)
 	assert.Nil(t, err)
@@ -79,7 +79,7 @@ func TestReplacePlaceholders(t *testing.T) {
 	}
 	elems := []string{"stdlib", "p", "Struct"}
 
-	proc := NewProcessor(nil, &TestFormatter{}, nil, false, true)
+	proc := NewProcessor(nil, &TestFormatter{}, nil, &Config{ShortLinks: true})
 	proc.linkTargets = lookup
 	out, err := proc.ReplacePlaceholders(text, elems, 2)
 	assert.Nil(t, err)

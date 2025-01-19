@@ -17,6 +17,7 @@ type Config struct {
 	UseExports    bool
 	ShortLinks    bool
 	CaseSensitive bool
+	Strict        bool
 }
 
 func Render(docs *Docs, config *Config, form Formatter) error {
@@ -24,7 +25,7 @@ func Render(docs *Docs, config *Config, form Formatter) error {
 	if err != nil {
 		return err
 	}
-	proc := NewProcessor(docs, form, t, config.UseExports, config.ShortLinks)
+	proc := NewProcessor(docs, form, t, config)
 	return renderWith(config, proc)
 }
 

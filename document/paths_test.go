@@ -82,7 +82,7 @@ func TestCollectPaths(t *testing.T) {
 		},
 	}
 
-	proc := NewProcessor(&docs, nil, nil, false, false)
+	proc := NewProcessor(&docs, nil, nil, &Config{})
 	proc.ExportDocs = &docs
 	proc.collectPaths()
 	assert.Equal(t, 11, len(proc.linkTargets))

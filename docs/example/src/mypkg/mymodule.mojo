@@ -2,7 +2,7 @@ struct MyPair[T: Intable]:
     """
     A simple example struct.
 
-    This struct is re-exported by its [mypkg parent package], so it where the user expects it due to the import path.
+    This struct is re-exported by its [mypkg parent package], so shows up where the user expects it due to the import path.
     It has [aliases](#aliases), [parameters](#parameters), [fields](#fields) and [methods](#methods).
 
     Linking to individual members is as easy as this:
