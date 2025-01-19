@@ -20,15 +20,16 @@ type Config struct {
 }
 
 type Processor struct {
-	Config      *Config
-	Template    *template.Template
-	Formatter   Formatter
-	Docs        *Docs
-	ExportDocs  *Docs
-	allPaths    map[string]bool
-	linkTargets map[string]elemPath
-	linkExports map[string]string
-	writer      func(file, text string) error
+	Config             *Config
+	Template           *template.Template
+	Formatter          Formatter
+	Docs               *Docs
+	ExportDocs         *Docs
+	allPaths           map[string]bool
+	linkTargets        map[string]elemPath
+	linkExports        map[string]string
+	linkExportsReverse map[string]*exportError
+	writer             func(file, text string) error
 }
 
 func NewProcessor(docs *Docs, f Formatter, t *template.Template, config *Config) *Processor {
@@ -83,7 +84,17 @@ func (proc *Processor) warnOrError(pattern string, args ...any) error {
 }
 
 func (proc *Processor) addLinkExport(oldPath, newPath []string) {
-	proc.linkExports[strings.Join(oldPath, ".")] = strings.Join(newPath, ".")
+	pNew := strings.Join(newPath, ".")
+	pOld := strings.Join(oldPath, ".")
+	if present, ok := proc.linkExportsReverse[pNew]; ok {
+		present.OldPaths = append(present.OldPaths, pOld)
+	} else {
+		proc.linkExportsReverse[pNew] = &exportError{
+			NewPath:  pNew,
+			OldPaths: []string{pOld},
+		}
+	}
+	proc.linkExports[pOld] = pNew
 }
 
 func (proc *Processor) addLinkTarget(elPath, filePath []string, kind string, isSection bool) {

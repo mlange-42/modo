@@ -2,6 +2,7 @@ package document
 
 import (
 	"fmt"
+	"strings"
 )
 
 // Filters and re-structures docs for package re-exports.
@@ -9,6 +10,7 @@ import (
 // Also collects a lookup, mapping from original to altered cross-refs.
 func (proc *Processor) filterPackages() error {
 	proc.linkExports = map[string]string{}
+	proc.linkExportsReverse = map[string]*exportError{}
 	anyExports, err := proc.collectExports(proc.Docs.Decl, nil)
 	if err != nil {
 		return err
@@ -32,7 +34,35 @@ func (proc *Processor) filterPackages() error {
 	}
 	proc.addLinkExport([]string{proc.Docs.Decl.Name}, []string{proc.Docs.Decl.Name})
 	proc.filterPackage(proc.Docs.Decl, proc.ExportDocs.Decl, nil, nil)
-	return nil
+
+	errs := []*exportError{}
+	for _, expErr := range proc.linkExportsReverse {
+		if len(expErr.OldPaths) > 1 {
+			errs = append(errs, expErr)
+		}
+	}
+	if len(errs) == 0 {
+		return nil
+	}
+	msg := strings.Builder{}
+	msg.WriteString(fmt.Sprintln("Name collisions in package re-exports:"))
+	for _, expErr := range errs {
+		msg.WriteString(fmt.Sprintf(" - %s (", expErr.NewPath))
+		for i, pOld := range expErr.OldPaths {
+			if i > 0 {
+				msg.WriteString(", ")
+			}
+			msg.WriteString(pOld)
+		}
+		msg.WriteString(")\n")
+	}
+
+	return fmt.Errorf("%s", msg.String())
+}
+
+type exportError struct {
+	NewPath  string
+	OldPaths []string
 }
 
 func (proc *Processor) filterPackage(src, rootOut *Package, oldPath, newPath []string) {
