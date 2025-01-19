@@ -78,6 +78,7 @@ func TestFilterPackages(t *testing.T) {
 	docs := createFilterTestDocs()
 
 	docs.Decl.Description = `Package pkg
+
 Exports:
  - mod1.Struct1
  - mod1.func
@@ -88,10 +89,12 @@ Exports:
 `
 
 	docs.Decl.Packages[0].Description = `Package subpkg
+
 Exports:
  - mod3.Struct3
 `
 	proc := NewProcessor(docs, nil, nil, &Config{UseExports: true, ShortLinks: true})
+	proc.collectElementPaths()
 	err := proc.filterPackages()
 	assert.Nil(t, err)
 
@@ -135,6 +138,7 @@ Exports:
 `
 
 	proc := NewProcessor(docs, nil, nil, &Config{UseExports: true, ShortLinks: true})
+	proc.collectElementPaths()
 	err := proc.filterPackages()
 	assert.Nil(t, err)
 
