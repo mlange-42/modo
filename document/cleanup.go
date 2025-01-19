@@ -5,6 +5,7 @@ import (
 	"strings"
 )
 
+// Removes `__init__` packages, creates missing struct signatures (Mojo bug?).
 func cleanup(doc *Docs) {
 	cleanupPackage(doc.Decl)
 }
