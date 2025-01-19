@@ -2,6 +2,7 @@ package document
 
 import (
 	"bufio"
+	"fmt"
 	"strings"
 )
 
@@ -38,9 +39,7 @@ func (proc *Processor) collectExports(p *Package, elems []string) (bool, error) 
 		}
 		for _, ex := range p.exports {
 			if _, ok := proc.allPaths[strings.Join(ex.Long, ".")]; !ok {
-				if err := proc.warnOrError("Unresolved package re-export '%s' in %s", strings.Join(ex.Long, "."), strings.Join(newElems, ".")); err != nil {
-					return anyExports, err
-				}
+				return anyExports, fmt.Errorf("unresolved package re-export '%s' in %s", strings.Join(ex.Long, "."), strings.Join(newElems, "."))
 			}
 		}
 		return anyExports, nil
