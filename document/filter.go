@@ -14,7 +14,7 @@ func (proc *Processor) filterPackages() error {
 		return err
 	}
 
-	if !proc.UseExports {
+	if !proc.Config.UseExports {
 		proc.ExportDocs = &Docs{
 			Version: proc.Docs.Version,
 			Decl:    proc.Docs.Decl,

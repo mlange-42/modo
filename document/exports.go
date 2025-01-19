@@ -29,7 +29,7 @@ func (proc *Processor) collectExports(p *Package, elems []string) (bool, error) 
 		}
 	}
 
-	if proc.UseExports {
+	if proc.Config.UseExports {
 		var anyHere bool
 		p.exports, p.Description, anyHere = proc.parseExports(p.Description, newElems, true)
 		if anyHere {

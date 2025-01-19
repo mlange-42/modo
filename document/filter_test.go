@@ -91,7 +91,7 @@ Exports:
 Exports:
  - mod3.Struct3
 `
-	proc := NewProcessor(docs, nil, nil, true, true)
+	proc := NewProcessor(docs, nil, nil, &Config{UseExports: true, ShortLinks: true})
 	err := proc.filterPackages()
 	assert.Nil(t, err)
 
@@ -134,7 +134,7 @@ Exports:
  - mod3.Struct3
 `
 
-	proc := NewProcessor(docs, nil, nil, true, true)
+	proc := NewProcessor(docs, nil, nil, &Config{UseExports: true, ShortLinks: true})
 	err := proc.filterPackages()
 	assert.Nil(t, err)
 

@@ -20,4 +20,5 @@ Exports:
 
 Exports:
  - submodule
+ - submodule.F
 """

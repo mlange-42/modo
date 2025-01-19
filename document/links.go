@@ -320,7 +320,7 @@ func (proc *Processor) ReplacePlaceholders(text string, elems []string, modElems
 		start, end := indices[i], indices[i+1]
 		link := text[start+1 : end-1]
 
-		entry, linkText, parts, ok, err := proc.placeholderToLink(link, elems, modElems, proc.ShortLinks)
+		entry, linkText, parts, ok, err := proc.placeholderToLink(link, elems, modElems, proc.Config.ShortLinks)
 		if err != nil {
 			return "", err
 		}

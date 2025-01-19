@@ -60,12 +60,13 @@ Examples:
   mojo doc ./src | modo docs    # from 'mojo doc'
 
 Flags:
-  -i, --input string        'mojo doc' JSON file to process. Reads from STDIN if not specified.       
+  -i, --input string        'mojo doc' JSON file to process. Reads from STDIN if not specified.
   -f, --format string       Output format. One of (plain|mdbook|hugo). (default "plain")
   -e, --exports             Process according to 'Exports:' sections in packages.
       --short-links         Render shortened link labels, stripping packages and modules.
-      --case-insensitive    Build for systems that are not case-sensitive regarding file names.       
+      --case-insensitive    Build for systems that are not case-sensitive regarding file names.
                             Appends hyphen (-) to capitalized file names.
+  -s, --strict              Strict mode. Errors instead of warnings.
   -t, --templates strings   Optional directories with templates for (partial) overwrite.
                             See folder assets/templates in the repository.
   -h, --help                help for modo

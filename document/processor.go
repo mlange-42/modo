@@ -9,11 +9,9 @@ import (
 )
 
 type Processor struct {
+	Config      *Config
 	Template    *template.Template
 	Formatter   Formatter
-	UseExports  bool
-	ShortLinks  bool
-	Strict      bool
 	Docs        *Docs
 	ExportDocs  *Docs
 	allPaths    map[string]bool
@@ -22,20 +20,19 @@ type Processor struct {
 	writer      func(file, text string) error
 }
 
-func NewProcessor(docs *Docs, f Formatter, t *template.Template, useExports bool, shortLinks bool) *Processor {
-	return NewProcessorWithWriter(docs, f, t, useExports, shortLinks, func(file, text string) error {
+func NewProcessor(docs *Docs, f Formatter, t *template.Template, config *Config) *Processor {
+	return NewProcessorWithWriter(docs, f, t, config, func(file, text string) error {
 		return os.WriteFile(file, []byte(text), 0666)
 	})
 }
 
-func NewProcessorWithWriter(docs *Docs, f Formatter, t *template.Template, useExports bool, shortLinks bool, writer func(text, file string) error) *Processor {
+func NewProcessorWithWriter(docs *Docs, f Formatter, t *template.Template, config *Config, writer func(text, file string) error) *Processor {
 	return &Processor{
-		Template:   t,
-		Formatter:  f,
-		UseExports: useExports,
-		ShortLinks: shortLinks,
-		Docs:       docs,
-		writer:     writer,
+		Config:    config,
+		Template:  t,
+		Formatter: f,
+		Docs:      docs,
+		writer:    writer,
 	}
 }
 
@@ -50,7 +47,7 @@ func (proc *Processor) PrepareDocs() error {
 	}
 	// Collect all link target paths.
 	proc.collectPaths()
-	if !proc.UseExports {
+	if !proc.Config.UseExports {
 		for k := range proc.linkTargets {
 			proc.linkExports[k] = k
 		}
@@ -67,7 +64,7 @@ func (proc *Processor) WriteFile(file, text string) error {
 }
 
 func (proc *Processor) warnOrError(pattern string, args ...any) error {
-	if proc.Strict {
+	if proc.Config.Strict {
 		return fmt.Errorf(pattern, args...)
 	}
 	log.Printf("WARNING: "+pattern+"\n", args...)

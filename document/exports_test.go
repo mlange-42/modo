@@ -34,7 +34,7 @@ Exports:
 Text
 `
 
-	proc := NewProcessor(nil, nil, nil, false, false)
+	proc := NewProcessor(nil, nil, nil, &Config{})
 	exports, newText, anyExp := proc.parseExports(text, []string{"pkg"}, true)
 
 	assert.True(t, anyExp)
