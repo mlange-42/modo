@@ -27,10 +27,10 @@ func (f *MdBookFormatter) WriteAuxiliary(p *document.Package, dir string, proc *
 	if err := f.writeSummary(p, dir, proc); err != nil {
 		return err
 	}
-	if err := f.writeToml(p, dir, proc.Template); err != nil {
+	if err := f.writeToml(p, dir, proc); err != nil {
 		return err
 	}
-	if err := f.writeCss(dir); err != nil {
+	if err := f.writeCss(dir, proc); err != nil {
 		return err
 	}
 	return nil
@@ -62,6 +62,9 @@ func (f *MdBookFormatter) writeSummary(p *document.Package, dir string, proc *do
 		return err
 	}
 	summaryPath := path.Join(dir, p.GetFileName(), "SUMMARY.md")
+	if proc.Config.DryRun {
+		return nil
+	}
 	if err := os.WriteFile(summaryPath, []byte(summary), 0666); err != nil {
 		return err
 	}
@@ -205,10 +208,13 @@ func (f *MdBookFormatter) renderModuleMember(mem document.Named, pathStr string,
 	return nil
 }
 
-func (f *MdBookFormatter) writeToml(p *document.Package, dir string, t *template.Template) error {
-	toml, err := f.renderToml(p, t)
+func (f *MdBookFormatter) writeToml(p *document.Package, dir string, proc *document.Processor) error {
+	toml, err := f.renderToml(p, proc.Template)
 	if err != nil {
 		return err
+	}
+	if proc.Config.DryRun {
+		return nil
 	}
 	tomlPath := path.Join(dir, "book.toml")
 	if err := os.WriteFile(tomlPath, []byte(toml), 0666); err != nil {
@@ -225,17 +231,21 @@ func (f *MdBookFormatter) renderToml(p *document.Package, t *template.Template) 
 	return b.String(), nil
 }
 
-func (f *MdBookFormatter) writeCss(dir string) error {
+func (f *MdBookFormatter) writeCss(dir string, proc *document.Processor) error {
 	cssDir := path.Join(dir, "css")
-	if err := os.MkdirAll(cssDir, os.ModePerm); err != nil && !os.IsExist(err) {
-		return err
+	if !proc.Config.DryRun {
+		if err := os.MkdirAll(cssDir, os.ModePerm); err != nil && !os.IsExist(err) {
+			return err
+		}
 	}
 	css, err := fs.ReadFile(assets.CSS, "css/mdbook.css")
 	if err != nil {
 		return err
 	}
-	if err := os.WriteFile(path.Join(cssDir, "custom.css"), css, 0666); err != nil {
-		return err
+	if !proc.Config.DryRun {
+		if err := os.WriteFile(path.Join(cssDir, "custom.css"), css, 0666); err != nil {
+			return err
+		}
 	}
 	return nil
 }
