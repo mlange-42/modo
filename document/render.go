@@ -1,6 +1,7 @@
 package document
 
 import (
+	"fmt"
 	"io/fs"
 	"os"
 	"path"
@@ -11,26 +12,35 @@ import (
 	"github.com/mlange-42/modo/assets"
 )
 
-type Config struct {
-	OutputDir     string
-	TemplateDirs  []string
-	UseExports    bool
-	ShortLinks    bool
-	CaseSensitive bool
-	Strict        bool
-}
-
 func Render(docs *Docs, config *Config, form Formatter) error {
 	t, err := loadTemplates(form, config.TemplateDirs...)
 	if err != nil {
 		return err
 	}
-	proc := NewProcessor(docs, form, t, config)
-	return renderWith(config, proc)
+	if !config.DryRun {
+		proc := NewProcessor(docs, form, t, config)
+		return renderWith(config, proc)
+	}
+
+	files := []string{}
+	proc := NewProcessorWithWriter(docs, form, t, config, func(file, text string) error {
+		files = append(files, file)
+		return nil
+	})
+	err = renderWith(config, proc)
+	if err != nil {
+		return err
+	}
+
+	fmt.Println("Dry-run. Would write these files:")
+	for _, f := range files {
+		fmt.Println(f)
+	}
+	return nil
 }
 
 func renderWith(config *Config, proc *Processor) error {
-	caseSensitiveSystem = config.CaseSensitive
+	caseSensitiveSystem = !config.CaseInsensitive
 	if err := proc.PrepareDocs(); err != nil {
 		return err
 	}
@@ -58,7 +68,7 @@ func renderElement(data interface {
 func renderPackage(p *Package, dir []string, proc *Processor) error {
 	newDir := appendNew(dir, p.GetFileName())
 	pkgPath := path.Join(newDir...)
-	if err := mkDirs(pkgPath); err != nil {
+	if err := proc.mkDirs(pkgPath); err != nil {
 		return err
 	}
 
@@ -97,7 +107,7 @@ func renderPackage(p *Package, dir []string, proc *Processor) error {
 
 func renderModule(mod *Module, dir []string, proc *Processor) error {
 	newDir := appendNew(dir, mod.GetFileName())
-	if err := mkDirs(path.Join(newDir...)); err != nil {
+	if err := proc.mkDirs(path.Join(newDir...)); err != nil {
 		return err
 	}
 
@@ -209,11 +219,4 @@ func linkAndWrite(text string, dir []string, modElems int, kind string, proc *Pr
 		return err
 	}
 	return proc.WriteFile(outFile, text)
-}
-
-func mkDirs(path string) error {
-	if err := os.MkdirAll(path, os.ModePerm); err != nil && !os.IsExist(err) {
-		return err
-	}
-	return nil
 }

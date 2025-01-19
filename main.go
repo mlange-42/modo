@@ -21,19 +21,9 @@ func main() {
 	fmt.Printf("Completed in %.1fms 🧯\n", float64(time.Since(start).Microseconds())/1000.0)
 }
 
-type args struct {
-	file            string
-	renderFormat    string
-	caseInsensitive bool
-	useExports      bool
-	shortLinks      bool
-	strict          bool
-	outDir          string
-	templateDirs    []string
-}
-
 func rootCommand() *cobra.Command {
-	var cliArgs args
+	var cliArgs document.Config
+	var renderFormat string
 
 	root := &cobra.Command{
 		Use:   "modo OUT-PATH",
@@ -46,18 +36,19 @@ Modo generates Markdown for static site generators (SSGs) from 'mojo doc' JSON o
 		Args:         cobra.ExactArgs(1),
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliArgs.outDir = args[0]
-			return run(&cliArgs)
+			cliArgs.OutputDir = args[0]
+			return run(&cliArgs, renderFormat)
 		},
 	}
 
-	root.Flags().StringVarP(&cliArgs.file, "input", "i", "", "'mojo doc' JSON file to process. Reads from STDIN if not specified.")
-	root.Flags().StringVarP(&cliArgs.renderFormat, "format", "f", "plain", "Output format. One of (plain|mdbook|hugo).")
-	root.Flags().BoolVarP(&cliArgs.useExports, "exports", "e", false, "Process according to 'Exports:' sections in packages.")
-	root.Flags().BoolVar(&cliArgs.shortLinks, "short-links", false, "Render shortened link labels, stripping packages and modules.")
-	root.Flags().BoolVar(&cliArgs.caseInsensitive, "case-insensitive", false, "Build for systems that are not case-sensitive regarding file names.\nAppends hyphen (-) to capitalized file names.")
-	root.Flags().BoolVarP(&cliArgs.strict, "strict", "s", false, "Strict mode. Errors instead of warnings.")
-	root.Flags().StringSliceVarP(&cliArgs.templateDirs, "templates", "t", []string{}, "Optional directories with templates for (partial) overwrite.\nSee folder assets/templates in the repository.")
+	root.Flags().StringVarP(&cliArgs.InputFile, "input", "i", "", "'mojo doc' JSON file to process. Reads from STDIN if not specified.")
+	root.Flags().StringVarP(&renderFormat, "format", "f", "plain", "Output format. One of (plain|mdbook|hugo).")
+	root.Flags().BoolVarP(&cliArgs.UseExports, "exports", "e", false, "Process according to 'Exports:' sections in packages.")
+	root.Flags().BoolVar(&cliArgs.ShortLinks, "short-links", false, "Render shortened link labels, stripping packages and modules.")
+	root.Flags().BoolVar(&cliArgs.CaseInsensitive, "case-insensitive", false, "Build for systems that are not case-sensitive regarding file names.\nAppends hyphen (-) to capitalized file names.")
+	root.Flags().BoolVar(&cliArgs.Strict, "strict", false, "Strict mode. Errors instead of warnings.")
+	root.Flags().BoolVar(&cliArgs.DryRun, "dry-run", false, "Dry-run without any file output.")
+	root.Flags().StringSliceVarP(&cliArgs.TemplateDirs, "templates", "t", []string{}, "Optional directories with templates for (partial) overwrite.\nSee folder assets/templates in the repository.")
 
 	root.Flags().SortFlags = false
 	root.MarkFlagFilename("input", "json")
@@ -66,29 +57,22 @@ Modo generates Markdown for static site generators (SSGs) from 'mojo doc' JSON o
 	return root
 }
 
-func run(args *args) error {
-	if args.outDir == "" {
+func run(args *document.Config, renderFormat string) error {
+	if args.OutputDir == "" {
 		return fmt.Errorf("no output path given")
 	}
 
-	docs, err := readDocs(args.file)
+	docs, err := readDocs(args.InputFile)
 	if err != nil {
 		return err
 	}
 
-	rFormat, err := format.GetFormat(args.renderFormat)
+	rFormat, err := format.GetFormat(renderFormat)
 	if err != nil {
 		return err
 	}
 	formatter := format.GetFormatter(rFormat)
-	err = formatter.Render(docs, &document.Config{
-		OutputDir:     args.outDir,
-		TemplateDirs:  args.templateDirs,
-		UseExports:    args.useExports,
-		ShortLinks:    args.shortLinks,
-		CaseSensitive: !args.caseInsensitive,
-		Strict:        args.strict,
-	})
+	err = formatter.Render(docs, args)
 	if err != nil {
 		return err
 	}

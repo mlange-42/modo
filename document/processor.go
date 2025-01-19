@@ -8,6 +8,17 @@ import (
 	"text/template"
 )
 
+type Config struct {
+	InputFile       string
+	OutputDir       string
+	TemplateDirs    []string
+	UseExports      bool
+	ShortLinks      bool
+	CaseInsensitive bool
+	Strict          bool
+	DryRun          bool
+}
+
 type Processor struct {
 	Config      *Config
 	Template    *template.Template
@@ -26,7 +37,7 @@ func NewProcessor(docs *Docs, f Formatter, t *template.Template, config *Config)
 	})
 }
 
-func NewProcessorWithWriter(docs *Docs, f Formatter, t *template.Template, config *Config, writer func(text, file string) error) *Processor {
+func NewProcessorWithWriter(docs *Docs, f Formatter, t *template.Template, config *Config, writer func(file, text string) error) *Processor {
 	return &Processor{
 		Config:    config,
 		Template:  t,
@@ -85,4 +96,14 @@ func (proc *Processor) addElementPath(elPath, filePath []string, kind string, is
 	}
 	proc.allPaths[strings.Join(elPath, ".")] = true
 	_, _ = filePath, kind
+}
+
+func (proc *Processor) mkDirs(path string) error {
+	if proc.Config.DryRun {
+		return nil
+	}
+	if err := os.MkdirAll(path, os.ModePerm); err != nil && !os.IsExist(err) {
+		return err
+	}
+	return nil
 }
