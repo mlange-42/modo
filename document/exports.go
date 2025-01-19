@@ -15,12 +15,16 @@ type packageExport struct {
 	Long  []string
 }
 
-func (proc *Processor) collectExports(p *Package, elems []string) bool {
+func (proc *Processor) collectExports(p *Package, elems []string) (bool, error) {
 	anyExports := false
 
 	newElems := appendNew(elems, p.Name)
 	for _, pkg := range p.Packages {
-		if anyHere := proc.collectExports(pkg, newElems); anyHere {
+		anyHere, err := proc.collectExports(pkg, newElems)
+		if err != nil {
+			return anyExports, err
+		}
+		if anyHere {
 			anyExports = true
 		}
 	}
@@ -31,7 +35,14 @@ func (proc *Processor) collectExports(p *Package, elems []string) bool {
 		if anyHere {
 			anyExports = true
 		}
-		return anyExports
+		for _, ex := range p.exports {
+			if _, ok := proc.allPaths[strings.Join(ex.Long, ".")]; !ok {
+				if err := proc.warnOrError("Unresolved package re-export '%s' in %s", strings.Join(ex.Long, "."), strings.Join(newElems, ".")); err != nil {
+					return anyExports, err
+				}
+			}
+		}
+		return anyExports, nil
 	}
 
 	p.exports = make([]*packageExport, 0, len(p.Packages)+len(p.Modules))
@@ -42,7 +53,7 @@ func (proc *Processor) collectExports(p *Package, elems []string) bool {
 		p.exports = append(p.exports, &packageExport{Short: []string{mod.Name}, Long: appendNew(newElems, mod.Name)})
 	}
 
-	return anyExports
+	return anyExports, nil
 }
 
 func (proc *Processor) parseExports(pkgDocs string, basePath []string, remove bool) ([]*packageExport, string, bool) {
