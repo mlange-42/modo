@@ -102,6 +102,7 @@ func (proc *Processor) collectModuleExports(src *Module, rootOut *Package, oldPa
 		tempNewPath := appendNew(newPath, src.Name)
 		proc.addLinkExport(oldPath, tempNewPath)
 
+		collectExportsList(proc, src.Aliases, oldPath, tempNewPath)
 		for _, elem := range src.Structs {
 			proc.collectExportsStruct(elem, oldPath, tempNewPath)
 		}
@@ -139,6 +140,7 @@ func (proc *Processor) collectExportsStruct(s *Struct, oldPath []string, newPath
 
 	proc.addLinkExport(oldPath, newPath)
 
+	collectExportsList(proc, s.Aliases, oldPath, newPath)
 	collectExportsList(proc, s.Parameters, oldPath, newPath)
 	collectExportsList(proc, s.Fields, oldPath, newPath)
 	collectExportsList(proc, s.Functions, oldPath, newPath)

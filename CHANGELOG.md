@@ -3,6 +3,8 @@
 ### Features
 
 * Adds CLI flag `--strict` to break with an error instead of warnings (#68)
+* Checks package re-exports, giving warning or error on fail (#68)
+* Allows for cross-refs to aliases in modules and structs (#69)
 
 ### Documentation
 
@@ -12,7 +14,6 @@
 
 * Don't trim docstrings during extraction and removal of exports section (#60)
 * Fixes broken links when referencing parents or the root package (#62)
-* Checks package re-exports, giving warning or error on fail (#68)
 
 ## [[v0.6.0]](https://github.com/mlange-42/modo/compare/v0.5.0...v0.6.0)
 
