@@ -24,6 +24,13 @@
   font-size: 1.0em;
 }
 
+/* images */
+.content :where(img):not(:where([class~="not-prose"], [class~="not-prose"] *)) {
+	margin-top: 0.66rem;
+	margin-bottom: 0.66rem;
+	border-radius: 0.2rem;
+}
+
 /* code in headings */
 .content :where(h1, h2, h3, h4):not(:where([class~="not-prose"], [class~="not-prose"] *)) code {
   font-size: 100%;
