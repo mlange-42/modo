@@ -39,10 +39,11 @@ It generates Markdown for static site generators (SSGs) from `mojo doc` JSON out
 
 ## Features
 
-* Generates [Mojo](https://www.modular.com/mojo)🔥 API docs for [Hugo](https://github.com/mlange-42/modo#hugo), [mdBook](https://github.com/mlange-42/modo#mdbook) or just [plain](https://github.com/mlange-42/modo#plain-markdown) Markdown.
-* Optionally structures API docs according to [package re-exports](https://github.com/mlange-42/modo#package-re-exports).
-* Optionally extracts [doc-tests](https://github.com/mlange-42/modo#doc-tests) for `mojo test` from code blocks.modo#package-re-exports).
-* Customizable output through [user templates](https://github.com/mlange-42/modo#templates).
+* Generates [Mojo](https://www.modular.com/mojo)🔥 API docs for [Hugo](guide/formats#hugo), [mdBook](guide/formats#mdbook) or just [plain](guide/formats#plain-markdown) Markdown.
+* Provides a simple syntax for code [cross-references](guide/cross-refs).
+* Optionally structures API docs according to [package re-exports](guide/re-exports).
+* Optionally extracts [doc-tests](guide/doctests) for `mojo test` from code blocks.
+* Customizable output through [user templates](guide/templates).
 
 ## Usage
 
