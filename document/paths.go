@@ -44,7 +44,7 @@ func (proc *Processor) collectPathsPackage(p *Package, elems []string, pathElem 
 	for _, a := range p.Aliases {
 		newElems := appendNew(newElems, a.GetName())
 		newPath := appendNew(newPath, "#aliases")
-		add(newElems, newPath, "alias", true)
+		add(newElems, newPath, "package", true) // kind=package for correct link paths
 	}
 	for _, f := range p.Functions {
 		newElems := appendNew(newElems, f.GetName())
@@ -67,7 +67,7 @@ func (proc *Processor) collectPathsModule(m *Module, elems []string, pathElem []
 	for _, a := range m.Aliases {
 		newElems := appendNew(newElems, a.GetName())
 		newPath := appendNew(newPath, "#aliases")
-		add(newElems, newPath, "alias", true)
+		add(newElems, newPath, "module", true) // kind=module for correct link paths
 	}
 	for _, f := range m.Functions {
 		newElems := appendNew(newElems, f.GetName())

@@ -15,12 +15,14 @@ The docstring for the package looks like this:
 
 Exports:
  - mymodule.MyPair
+ - mymodule.MyIntAlias
  - subpkg
 \"\"\"
 ```
 
 Exports:
  - mymodule.MyPair
+ - mymodule.MyIntAlias
  - subpkg
 """
 from .mymodule import MyPair

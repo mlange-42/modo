@@ -103,7 +103,7 @@ func (proc *Processor) addLinkTarget(elPath, filePath []string, kind string, isS
 }
 
 func (proc *Processor) addElementPath(elPath, filePath []string, kind string, isSection bool) {
-	if isSection && kind != "alias" {
+	if isSection && kind != "package" && kind != "module" { // actually, we are catching aliases here
 		return
 	}
 	proc.allPaths[strings.Join(elPath, ".")] = true

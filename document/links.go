@@ -384,7 +384,7 @@ func (proc *Processor) placeholderToRelLink(link string, elems []string, modElem
 	}
 	skip := 0
 	for range modElems {
-		if len(elemPath.Elements) <= skip {
+		if skip >= len(elemPath.Elements) {
 			break
 		}
 		if elemPath.Elements[skip] == elems[skip] {
@@ -399,9 +399,8 @@ func (proc *Processor) placeholderToRelLink(link string, elems []string, modElem
 	}
 	fullPath = append(fullPath, elemPath.Elements[skip:]...)
 	if len(fullPath) == 0 {
-		fullPath = append(fullPath, ".")
+		fullPath = []string{"."}
 	}
-
 	return &elemPath, link, fullPath, true, nil
 }
 

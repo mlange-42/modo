@@ -1,3 +1,7 @@
+alias MyIntAlias = Int
+"""An example module alias."""
+
+
 struct MyPair[T: Intable]:
     """
     A simple example struct.
@@ -19,8 +23,8 @@ struct MyPair[T: Intable]:
       T: The [.MyPair]'s element type.
     """
 
-    alias MyInt = Intable
-    """An example alias."""
+    alias MyInt = MyIntAlias
+    """An example struct alias. Alias for [.MyIntAlias]"""
 
     var first: T
     """First struct field."""
