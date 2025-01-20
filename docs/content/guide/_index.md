@@ -3,6 +3,9 @@ title: User guide
 type: docs
 summary: Modo🧯's user guide.
 weight: -1
+next: basics
+sidebar:
+  open: true
 ---
 
 This guide explains how to use Modo🧯's features:
