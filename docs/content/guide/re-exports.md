@@ -14,7 +14,7 @@ these re-exports must be documented in an `Exports:` section in the package docs
 
 In a package's `__init__.mojo`, document re-exports like this:
 
-```python
+```python {class="no-wrap"}
 """
 Package creatures demonstrates Modo re-exports.
 

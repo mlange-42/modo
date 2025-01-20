@@ -20,8 +20,11 @@
 }
 
 .hextra-code-block pre {
-  text-wrap: auto;
   font-size: 1.0em;
+}
+
+.hextra-code-block:not(.no-wrap) pre {
+  text-wrap: auto;
 }
 
 /* images */
