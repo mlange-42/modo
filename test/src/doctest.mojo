@@ -1,28 +1,24 @@
 """
 Package doctests tests doctests
 
-```mojo {doctest="test-global"}
+```mojo {doctest="test" global=true hide=true}
 from testing import *
 
-struct Test:
-    fn __init__(out self):
-        pass
+fn add(a: Int, b: Int) -> Int:
+    return a + b
 ```
 
-```mojo {doctest="test-setup"}
-alias T = Test
-```
-
-```mojo {doctest="test-setup"}
-var b = 1
+```mojo {doctest="test" hide=true}
+var a = 1
+var b = 2
 ```
 
 ```mojo {doctest="test"}
-var a = 1
+var c = add(a, b)
 ```
 
-```mojo {doctest="test-teardown"}
-assert_equal(a, b)
+```mojo {doctest="test" hide=true}
+assert_equal(c, 3)
 ```
 """
 

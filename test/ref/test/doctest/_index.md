@@ -7,9 +7,8 @@ Package doctests tests doctests
 
 
 
-
 ```mojo {doctest="test"}
-var a = 1
+var c = add(a, b)
 ```
 
 

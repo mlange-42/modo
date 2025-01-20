@@ -10,14 +10,14 @@ import (
 func TestExtractDocTests(t *testing.T) {
 	text := "Docstring\n" +
 		"\n" +
-		"```mojo {doctest=\"test-global\"}\n" +
+		"```mojo {doctest=\"test\" global=true hide=true}\n" +
 		"struct Test:\n" +
 		"    pass\n" +
 		"```\n" +
 		"\n" +
 		"Some text\n" +
 		"\n" +
-		"```mojo {doctest=\"test-setup\"}\n" +
+		"```mojo {doctest=\"test\" hide=true}\n" +
 		"import b\n" +
 		"```\n" +
 		"\n" +
@@ -29,7 +29,7 @@ func TestExtractDocTests(t *testing.T) {
 		"\n" +
 		"Some text\n" +
 		"\n" +
-		"```mojo {doctest=\"test-teardown\"}\n" +
+		"```mojo {doctest=\"test\" hide=true}\n" +
 		"assert(b == 0)\n" +
 		"```\n"
 

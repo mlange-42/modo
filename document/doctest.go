@@ -7,10 +7,9 @@ import (
 	"strings"
 )
 
-const globalSuffix = "-global"
-const setupSuffix = "-setup"
-const teardownSuffix = "-teardown"
 const docTestAttr = "doctest"
+const hideAttr = "hide"
+const globalAttr = "global"
 
 func (proc *Processor) extractDocTests() error {
 	proc.docTests = []*docTest{}
@@ -53,8 +52,10 @@ func (proc *Processor) extractTests(text string, elems []string, modElems int) (
 	fenced := false
 	blocks := map[string]*docTest{}
 	var blockLines []string
+	var globalLines []string
 	var blockName string
 	var excluded bool
+	var global bool
 	for scanner.Scan() {
 		origLine := scanner.Text()
 
@@ -63,7 +64,7 @@ func (proc *Processor) extractTests(text string, elems []string, modElems int) (
 		if isFence && !fenced {
 			var ok bool
 			var err error
-			blockName, ok, err = parseBlockAttr(origLine)
+			blockName, excluded, global, ok, err = parseBlockAttr(origLine)
 			if err != nil {
 				if err := proc.warnOrError("%s in %s", err.Error(), strings.Join(elems, ".")); err != nil {
 					return "", err
@@ -71,11 +72,6 @@ func (proc *Processor) extractTests(text string, elems []string, modElems int) (
 			}
 			if !ok {
 				blockName = ""
-			}
-			if strings.HasSuffix(blockName, globalSuffix) ||
-				strings.HasSuffix(blockName, setupSuffix) ||
-				strings.HasSuffix(blockName, teardownSuffix) {
-				excluded = true
 			}
 			fenced = true
 			isStart = true
@@ -87,25 +83,35 @@ func (proc *Processor) extractTests(text string, elems []string, modElems int) (
 		}
 
 		if fenced && !isFence && blockName != "" {
-			blockLines = append(blockLines, origLine)
+			if global {
+				globalLines = append(globalLines, origLine)
+			} else {
+				blockLines = append(blockLines, origLine)
+			}
 		}
 
 		if isFence && fenced && !isStart {
 			if blockName == "" {
 				excluded = false
+				global = false
 				fenced = false
 				continue
 			}
 			if dt, ok := blocks[blockName]; ok {
 				dt.Code = append(dt.Code, blockLines...)
+				dt.Global = append(dt.Global, globalLines...)
 			} else {
 				blocks[blockName] = &docTest{
-					Name: blockName,
-					Path: elems,
-					Code: append([]string{}, blockLines...)}
+					Name:   blockName,
+					Path:   elems,
+					Code:   append([]string{}, blockLines...),
+					Global: append([]string{}, globalLines...),
+				}
 			}
 			blockLines = blockLines[:0]
+			globalLines = globalLines[:0]
 			excluded = false
+			global = false
 			fenced = false
 		}
 	}
@@ -118,35 +124,22 @@ func (proc *Processor) extractTests(text string, elems []string, modElems int) (
 		}
 	}
 
-	for name, block := range blocks {
-		if strings.HasSuffix(name, globalSuffix) ||
-			strings.HasSuffix(name, setupSuffix) ||
-			strings.HasSuffix(name, teardownSuffix) {
-			continue
-		}
-		if global, ok := blocks[name+globalSuffix]; ok {
-			block.Global = global.Code
-		}
-		if setup, ok := blocks[name+setupSuffix]; ok {
-			block.Code = append(setup.Code, block.Code...)
-		}
-		if teardown, ok := blocks[name+teardownSuffix]; ok {
-			block.Code = append(block.Code, teardown.Code...)
-		}
+	for _, block := range blocks {
 		proc.docTests = append(proc.docTests, block)
 	}
 
 	return outText.String(), nil
 }
 
-func parseBlockAttr(line string) (string, bool, error) {
+func parseBlockAttr(line string) (name string, hide bool, global bool, ok bool, err error) {
 	parts := strings.SplitN(line, "{", 2)
 	if len(parts) < 2 {
-		return "", false, nil
+		return
 	}
 	attrString := strings.TrimSpace(parts[1])
 	if !strings.HasSuffix(attrString, "}") {
-		return "", false, fmt.Errorf("missing closing parentheses in code block attributes")
+		err = fmt.Errorf("missing closing parentheses in code block attributes")
+		return
 	}
 	attrString = strings.TrimSuffix(attrString, "}")
 	attrPairs := strings.Split(attrString, " ")
@@ -154,12 +147,30 @@ func parseBlockAttr(line string) (string, bool, error) {
 	for _, pair := range attrPairs {
 		elems := strings.Split(pair, "=")
 		if len(elems) != 2 {
-			return "", false, fmt.Errorf("malformed code block attributes '%s'", pair)
+			err = fmt.Errorf("malformed code block attributes '%s'", pair)
+			return
 		}
-		if strings.TrimSpace(elems[0]) != docTestAttr {
+
+		key := strings.TrimSpace(elems[0])
+		if key == docTestAttr {
+			name = strings.Trim(elems[1], "\"")
 			continue
 		}
-		return strings.Trim(elems[1], "\""), true, nil
+		if key == hideAttr {
+			h := strings.Trim(elems[1], "\"")
+			if h == "true" {
+				hide = true
+			}
+			continue
+		}
+		if key == globalAttr {
+			g := strings.Trim(elems[1], "\"")
+			if g == "true" {
+				global = true
+			}
+			continue
+		}
 	}
-	return "", false, nil
+	ok = true
+	return
 }
