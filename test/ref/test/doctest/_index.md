@@ -9,8 +9,12 @@ Package doctests tests doctests
 
 
 ```mojo {doctest="test"}
-a = T()
+var a = 1
 ```
 
 
+
+## Structs
+
+- [`Struct`](Struct-.md)
 

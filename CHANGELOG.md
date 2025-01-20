@@ -1,3 +1,9 @@
+## [[unpublished]](https://github.com/mlange-42/modo/compare/v0.7.0..main)
+
+### Features
+
+* Optionally extracts doc-tests to run with `mojo test` (#81)
+
 ## [[v0.7.0]](https://github.com/mlange-42/modo/compare/v0.6.0..v0.7.0)
 
 ### Features

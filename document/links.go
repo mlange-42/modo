@@ -10,7 +10,9 @@ import (
 const regexString = `(?s)(?:(` + "```.*?```)|(`.*?`" + `))|(\[.*?\])`
 
 func (proc *Processor) processLinks(docs *Docs) error {
-	return proc.walkDocs(docs, proc.replaceRefs)
+	return proc.walkDocs(docs, proc.replaceRefs, func(elem Named) string {
+		return elem.GetName()
+	})
 }
 
 func (proc *Processor) replaceRefs(text string, elems []string, modElems int) (string, error) {

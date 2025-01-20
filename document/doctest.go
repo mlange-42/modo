@@ -3,6 +3,7 @@ package document
 import (
 	"bufio"
 	"fmt"
+	"path"
 	"strings"
 )
 
@@ -13,7 +14,9 @@ const docTestAttr = "doctest"
 
 func (proc *Processor) extractDocTests() error {
 	proc.docTests = []*docTest{}
-	return proc.walkDocs(proc.Docs, proc.extractTests)
+	return proc.walkDocs(proc.Docs, proc.extractTests, func(elem Named) string {
+		return elem.GetFileName()
+	})
 }
 
 func (proc *Processor) writeDocTests(dir string) error {
@@ -30,7 +33,14 @@ func (proc *Processor) writeDocTests(dir string) error {
 		if err != nil {
 			return err
 		}
-		fmt.Println(b.String())
+		filePath := strings.Join(test.Path, "_")
+		filePath += "_" + test.Name + ".mojo"
+		fullPath := path.Join(dir, filePath)
+
+		err = proc.WriteFile(fullPath, b.String())
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -87,7 +97,10 @@ func (proc *Processor) extractTests(text string, elems []string, modElems int) (
 			if dt, ok := blocks[blockName]; ok {
 				dt.Code = append(dt.Code, blockLines...)
 			} else {
-				blocks[blockName] = &docTest{Name: blockName, Path: elems, Code: append([]string{}, blockLines...)}
+				blocks[blockName] = &docTest{
+					Name: blockName,
+					Path: elems,
+					Code: append([]string{}, blockLines...)}
 			}
 			blockLines = blockLines[:0]
 			excluded = false

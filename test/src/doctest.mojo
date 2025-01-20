@@ -14,14 +14,26 @@ alias T = Test
 ```
 
 ```mojo {doctest="test-setup"}
-b = T()
+var b = 1
 ```
 
 ```mojo {doctest="test"}
-a = T()
+var a = 1
 ```
 
 ```mojo {doctest="test-teardown"}
 assert_equal(a, b)
 ```
 """
+
+
+struct Struct:
+    fn func(self):
+        """
+        Doctests in a struct member.
+
+        ```mojo {doctest="func"}
+        var a = 1
+        ```
+        """
+        pass
