@@ -11,6 +11,7 @@ import (
 type Config struct {
 	InputFile       string
 	OutputDir       string
+	DocTests        string
 	TemplateDirs    []string
 	UseExports      bool
 	ShortLinks      bool
@@ -68,6 +69,10 @@ func (proc *Processor) PrepareDocs() error {
 
 	// Extract doc tests.
 	err := proc.extractDocTests()
+	if err != nil {
+		return err
+	}
+	err = proc.writeDocTests(proc.Config.DocTests)
 	if err != nil {
 		return err
 	}

@@ -17,6 +17,7 @@ Exports:
  - mymodule.MyPair
  - mymodule.MyIntAlias
  - subpkg
+ - doctest
 \"\"\"
 ```
 
@@ -24,5 +25,6 @@ Exports:
  - mymodule.MyPair
  - mymodule.MyIntAlias
  - subpkg
+ - doctest
 """
 from .mymodule import MyPair

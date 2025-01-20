@@ -22,6 +22,7 @@ Exports:
  - mod.Trait
  - mod.module_function
  - pkg
+ - doctest
 """
 from .mod import ModuleAlias, Struct, Trait, module_function
 from .pkg import submod

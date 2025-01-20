@@ -16,6 +16,25 @@ func (proc *Processor) extractDocTests() error {
 	return proc.walkDocs(proc.Docs, proc.extractTests)
 }
 
+func (proc *Processor) writeDocTests(dir string) error {
+	if dir == "" {
+		return nil
+	}
+	err := proc.mkDirs(dir)
+	if err != nil {
+		return err
+	}
+	for _, test := range proc.docTests {
+		b := strings.Builder{}
+		err := proc.Template.ExecuteTemplate(&b, "doctest.mojo", test)
+		if err != nil {
+			return err
+		}
+		fmt.Println(b.String())
+	}
+	return nil
+}
+
 func (proc *Processor) extractTests(text string, elems []string, modElems int) (string, error) {
 	_ = modElems
 	scanner := bufio.NewScanner(strings.NewReader(text))
@@ -61,6 +80,8 @@ func (proc *Processor) extractTests(text string, elems []string, modElems int) (
 
 		if isFence && fenced && !isStart {
 			if blockName == "" {
+				excluded = false
+				fenced = false
 				continue
 			}
 			if dt, ok := blocks[blockName]; ok {
