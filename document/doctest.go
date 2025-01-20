@@ -33,7 +33,7 @@ func (proc *Processor) writeDocTests(dir string) error {
 			return err
 		}
 		filePath := strings.Join(test.Path, "_")
-		filePath += "_" + test.Name + ".mojo"
+		filePath += "_" + test.Name + "_test.mojo"
 		fullPath := path.Join(dir, filePath)
 
 		err = proc.WriteFile(fullPath, b.String())
