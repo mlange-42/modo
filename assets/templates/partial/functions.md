@@ -3,6 +3,6 @@
 
 {{range .Functions -}}
  - [`{{.Name}}`]({{toLink .GetFileName "function"}}){{if .Summary}}: {{.Summary}}{{end}}
-{{end -}}
+{{end}}
 {{end}}
 {{- end}}

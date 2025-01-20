@@ -2,7 +2,7 @@
 {{if .Functions}}## Methods
 
 {{range .Functions -}}
-{{template "method" .}}
-{{end -}}
+{{template "method" . -}}
+{{end}}
 {{end}}
 {{- end}}

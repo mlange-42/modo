@@ -2,8 +2,6 @@ Mojo function
 
 # `module_function`
 
-
-
 ```mojo
 module_function[FunctionParameter: Intable](arg: Int) -> Int
 ```
@@ -28,6 +26,4 @@ module_function[FunctionParameter: Intable](arg: Int) -> Int
 **Raises:**
 
 Error [`Struct.struct_method`](Struct-.md#struct_method).
-
-
 

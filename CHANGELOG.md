@@ -20,6 +20,7 @@
 
 * Checks package re-exports for correct paths (#68)
 * Checks package re-exports for resulting name conflicts (#72)
+* More consistent line breaks in Markdown output (#75)
 
 ## [[v0.6.0]](https://github.com/mlange-42/modo/compare/v0.5.0...v0.6.0)
 

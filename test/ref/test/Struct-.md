@@ -11,13 +11,13 @@ struct Struct[StructParameter: Intable]
 
 [`Struct.struct_method`](Struct-.md#struct_method)
 
-## Parameters
-
-- **StructParameter** (`Intable`)
-
 ## Aliases
 
 - `StructAlias = StructParameter`: [`test.ModuleAlias`](_index.md#aliases). [`Struct.struct_method`](Struct-.md#struct_method)
+
+## Parameters
+
+- **StructParameter** (`Intable`)
 
 ## Fields
 
@@ -30,8 +30,6 @@ struct Struct[StructParameter: Intable]
 ## Methods
 
 ### `struct_method`
-
-
 
 ```mojo
 struct_method[T: Intable](self, arg: StructParameter) -> Int
@@ -58,8 +56,5 @@ struct_method[T: Intable](self, arg: StructParameter) -> Int
 **Raises:**
 
 Error [`Struct.struct_method`](Struct-.md#struct_method).
-
-
-
 
 

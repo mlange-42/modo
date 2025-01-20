@@ -6,7 +6,6 @@ Mojo trait
 
 [`Struct.struct_method`](Struct-.md#struct_method)
 
-
 ## Implemented traits
 
 `AnyType`, `UnknownDestructibility`
@@ -14,8 +13,6 @@ Mojo trait
 ## Methods
 
 ### `trait_method`
-
-
 
 ```mojo
 trait_method[T: Intable](self: _Self, arg: T) -> Int
@@ -42,8 +39,5 @@ trait_method[T: Intable](self: _Self, arg: T) -> Int
 **Raises:**
 
 Error [`Struct.struct_method`](Struct-.md#struct_method).
-
-
-
 
 

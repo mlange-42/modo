@@ -11,13 +11,13 @@ struct Struct[StructParameter: Intable]
 
 [`Struct`](Struct-.md), [`submod.ModuleAlias`](_index.md#aliases)
 
-## Parameters
-
-- **StructParameter** (`Intable`)
-
 ## Aliases
 
 - `StructAlias = StructParameter`
+
+## Parameters
+
+- **StructParameter** (`Intable`)
 
 ## Fields
 
@@ -31,12 +31,9 @@ struct Struct[StructParameter: Intable]
 
 ### `struct_method`
 
-
-
 ```mojo
 struct_method(self, arg: StructParameter) -> Int
 ```
-
 
 **Args:**
 
@@ -46,9 +43,5 @@ struct_method(self, arg: StructParameter) -> Int
 **Returns:**
 
 `Int`
-
-
-
-
 
 

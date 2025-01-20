@@ -2,5 +2,6 @@
 {{if .ReturnType}}**Returns:**
 
 `{{.ReturnType}}`{{if .ReturnsDoc}}: {{.ReturnsDoc}}{{end}}
+
 {{end}}
 {{- end}}
