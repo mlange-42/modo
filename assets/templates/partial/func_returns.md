@@ -1,8 +1,7 @@
 {{define "func_returns" -}}
 {{if .ReturnType}}**Returns:**
 
-`{{.ReturnType}}`{{if .ReturnsDoc}}: {{.ReturnsDoc}}
+`{{.ReturnType}}`{{if .ReturnsDoc}}: {{.ReturnsDoc}}{{end}}
 
-{{end -}}
 {{end}}
 {{- end}}

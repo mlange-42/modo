@@ -43,3 +43,5 @@ struct_method(self, arg: StructParameter) -> Int
 **Returns:**
 
 `Int`
+
+
