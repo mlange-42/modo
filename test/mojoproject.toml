@@ -1,0 +1,12 @@
+[project]
+authors = ["mlange-42 <martin_lange_@gmx.net>"]
+channels = ["conda-forge", "https://conda.modular.com/max", "https://repo.prefix.dev/modular-community"]
+description = "Add a short description here"
+name = "test"
+platforms = ["linux-64"]
+version = "0.1.0"
+
+[tasks]
+
+[dependencies]
+max = ">=24.6.0,<25"

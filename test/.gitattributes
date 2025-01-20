@@ -1,0 +1,6 @@
+# SCM syntax highlighting
+pixi.lock linguist-language=YAML linguist-generated=true
+
+* text=auto
+*.mojo eol=lf
+*.md eol=lf

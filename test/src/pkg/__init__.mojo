@@ -1,0 +1,6 @@
+"""
+Package pkg.
+
+Exports:
+ - submod
+"""
