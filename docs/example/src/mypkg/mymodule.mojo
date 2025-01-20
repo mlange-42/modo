@@ -43,6 +43,24 @@ struct MyPair[T: Intable]:
         self.second = second
 
     fn dump(self):
-        """Creates a new [.MyPair]'s fields [.MyPair.first `first`] and [.MyPair.second `second`].
+        """Prints fields [.MyPair.first `first`] and [.MyPair.second `second`].
         """
         print(Int(self.first), Int(self.second))
+
+    fn format(self, fmt: String) raises -> String:
+        """
+        Formats this [.MyPair].
+
+        A longer description of the method,
+        explaining how to use it.
+
+        Args:
+            fmt: Desired output format.
+
+        Returns:
+            A formatted string.
+
+        Raises:
+            When called with an unknown `fmt` argument.
+        """
+        return ""
