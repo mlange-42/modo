@@ -2,6 +2,10 @@ package document
 
 import (
 	"fmt"
+	"os"
+	"path"
+	"path/filepath"
+	"strings"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -267,4 +271,60 @@ func createProcessor(t *testing.T, docs *Docs, useExports bool, files map[string
 		files[file] = text
 		return nil
 	})
+}
+
+func TestRenderFiles(t *testing.T) {
+	tmpDir := strings.ReplaceAll(t.TempDir(), "\\", "/")
+	refDir := path.Join("..", "test", "ref")
+	config := Config{
+		InputFile:       "../test/test.json",
+		OutputDir:       tmpDir,
+		UseExports:      true,
+		ShortLinks:      true,
+		CaseInsensitive: true,
+	}
+	formatter := TestFormatter{}
+
+	data, err := os.ReadFile(config.InputFile)
+	assert.Nil(t, err)
+	doc, err := FromJson(data)
+	assert.Nil(t, err)
+
+	err = formatter.Render(doc, &config)
+	assert.Nil(t, err)
+
+	refFiles, err := filterFiles(refDir)
+	assert.Nil(t, err)
+	tmpFiles, err := filterFiles(tmpDir)
+	assert.Nil(t, err)
+
+	assert.Equal(t, len(refFiles), len(tmpFiles))
+
+	for i, ref := range refFiles {
+		tmp := tmpFiles[i]
+		refShort, tmpShort := strings.TrimPrefix(ref, refDir), strings.TrimPrefix(tmp, tmpDir)
+		assert.Equal(t, refShort, tmpShort)
+
+		refContent, err := os.ReadFile(ref)
+		assert.Nil(t, err)
+		tmpContent, err := os.ReadFile(tmp)
+		assert.Nil(t, err)
+
+		assert.Equal(t, string(refContent), string(tmpContent), "Mismatch in file content for %s", refShort)
+	}
+}
+
+func filterFiles(path string) ([]string, error) {
+	files := []string{}
+	err := filepath.WalkDir(path,
+		func(path string, info os.DirEntry, err error) error {
+			if err != nil {
+				return err
+			}
+			if !info.IsDir() {
+				files = append(files, strings.ReplaceAll(path, "\\", "/"))
+			}
+			return nil
+		})
+	return files, err
 }
