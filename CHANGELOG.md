@@ -4,6 +4,10 @@
 
 * Optionally extracts doc-tests to run with `mojo test` (#81)
 
+### Documentation
+
+* Moves most of the documentation to the user guide on GitHub Pages (#82)
+
 ## [[v0.7.0]](https://github.com/mlange-42/modo/compare/v0.6.0..v0.7.0)
 
 ### Features
