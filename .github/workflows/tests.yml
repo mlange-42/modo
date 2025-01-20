@@ -36,6 +36,22 @@ jobs:
         go-version: '1.23.x'
     - name: Check out code
       uses: actions/checkout@v2
+      
+    - name: Install magic CLI
+      run: |
+        curl -ssL https://magic.modular.com | bash
+        source /home/runner/.bash_profile
+    - name: Install mojo and dependencies
+      run: |
+        source /home/runner/.bash_profile
+        cd test
+        magic install --locked
+    - name: Generate JSON test docs
+      run: |
+        source /home/runner/.bash_profile
+        cd test
+        magic run mojo doc -o test.json src
+
     - name: Install dependencies
       run: |
         go get .
