@@ -273,6 +273,32 @@ func createProcessor(t *testing.T, docs *Docs, useExports bool, files map[string
 	})
 }
 
+func TestRenderDry(t *testing.T) {
+	tmpDir := strings.ReplaceAll(t.TempDir(), "\\", "/")
+	config := Config{
+		InputFile:       "../test/test.json",
+		OutputDir:       tmpDir,
+		UseExports:      true,
+		ShortLinks:      true,
+		CaseInsensitive: true,
+		DryRun:          true,
+	}
+	formatter := TestFormatter{}
+
+	data, err := os.ReadFile(config.InputFile)
+	assert.Nil(t, err)
+	doc, err := FromJson(data)
+	assert.Nil(t, err)
+
+	err = formatter.Render(doc, &config)
+	assert.Nil(t, err)
+
+	tmpFiles, err := filterFiles(tmpDir)
+	assert.Nil(t, err)
+
+	assert.Equal(t, 0, len(tmpFiles))
+}
+
 func TestRenderFiles(t *testing.T) {
 	tmpDir := strings.ReplaceAll(t.TempDir(), "\\", "/")
 	refDir := path.Join("..", "test", "ref")
