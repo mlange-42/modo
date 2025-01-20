@@ -8,39 +8,91 @@ weight: 5
 To keep code examples in docstrings up to date, Modo🧯 can generate test files for `mojo test` from them.
 Doctests are enabled by flag `--doctest`, which takes an output directory for test files as an argument:
 
+```shell {class="no-wrap"}
+mojo doc src/ -o docs.json                 # generate doc JSON
+modo docs -i docs.json --doctest=doctest   # render to Markdown and extract doctests
+mojo test -I src doctest                   # run the doctests
+```
+
+## Tested blocks
+
 Code block attributes are used to identify code blocks to be tested.
 Any block that should be included in the tests needs a name:
 
-````markdown
+````markdown {class="no-wrap"}
 ```mojo {doctest="mytest"}
 var a = 0
 ```
 ````
 
 Multiple code blocks with the same name are concatenated.
+
+## Hidden blocks
+
 Individual blocks can be hidden with an attribute `hide=true`:
 
-````markdown
+````markdown {class="no-wrap"}
 ```mojo {doctest="mytest" hide=true}
 # hidden code block
 ```
 ````
 
+## Global blocks
+
 Further, for code examples that can't be put into a test function, attribute `global=true` can be used:
 
-````markdown
+````markdown {class="no-wrap"}
 ```mojo {doctest="mytest" global=true}
 struct MyStruct:
     pass
 ```
 ````
 
+## Full example
+
 Combining multiple code blocks using these attributes allows for flexible tests with hidden setup, teardown and assertions.
+Here is a full example:
 
-CLI usage example:
+````python {class="no-wrap"}
+fn add(a: Int, b: Int) -> Int:
+    """
+    Function `add` sums up its arguments.
 
+    ```mojo {doctest="add" global=true hide=true}
+    from testing import *
+    from mypkg import add
+    ```
+
+    ```mojo {doctest="add"}
+    var result = add(1, 2)
+    ```
+    
+    ```mojo {doctest="add" hide=true}
+    assert_equal(result, 3)
+    ```
+    """
+    return a + b
+````
+
+This generates the following docs content:
+
+----
+Function `add` sums up its arguments.
+
+```mojo {doctest="add"}
+var result = add(1, 2)
 ```
-mojo doc src/ -o docs.json                 # generate doc JSON
-modo docs -i docs.json --doctest=doctest   # render to Markdown and extract doctests
-mojo test -I src doctest                   # run the doctests
+----
+
+Further, Modo🧯 creates a test file with this content:
+
+```mojo
+from testing import *
+from mypkg import add
+
+fn test_add() raises:
+    result = add(1, 2)
+    assert_equal(result, 3)
 ```
+
+----

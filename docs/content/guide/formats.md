@@ -21,12 +21,12 @@ Markdown files as well as auxiliary files for [mdBook](https://github.com/rust-l
 with `--format=mdbook`.
 The generated files can be used by mdBook without any further steps:
 
-```
+``` {class="no-wrap"}
 modo docs-out -i docs.json --format=mdbook
 mdbook serve docs-out --open
 ```
 
-[Templates](../templates) can be used to customize the mdBook configuration file `book.toml`
+[Templates](../templates) can be used to customize the mdBook configuration file `book.toml`.
 
 ## Hugo
 
@@ -36,7 +36,7 @@ with flag `--format=hugo`.
 You should first set up a Hugo project in a sub-folder of your repository.
 Then, run Modo🧯 with the Hugo `content` folder as output path:
 
-```
+``` {class="no-wrap"}
 modo <hugo-project>/content -i docs.json --format=hugo
 ```
 
@@ -44,3 +44,5 @@ Further, in your `hugo.toml`, add `disablePathToLower = true` to the main sectio
 to prevent lower case members (like functions) and upper case members (like structs)
 overwrite each other.
 Alternatively, run Modo🧯 with switch `--case-insensitive`.
+
+[Templates](../templates) can be used to customize the Hugo front matter of each page.
