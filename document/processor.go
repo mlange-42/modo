@@ -52,6 +52,7 @@ func NewProcessorWithWriter(docs *Docs, f Formatter, t *template.Template, confi
 func (proc *Processor) PrepareDocs() error {
 	// Collect the paths of all (sub)-elements in the original structure.
 	proc.collectElementPaths()
+
 	// Re-structure according to exports.
 	err := proc.filterPackages()
 	if err != nil {
@@ -102,7 +103,7 @@ func (proc *Processor) addLinkTarget(elPath, filePath []string, kind string, isS
 }
 
 func (proc *Processor) addElementPath(elPath, filePath []string, kind string, isSection bool) {
-	if isSection {
+	if isSection && kind != "package" && kind != "module" { // actually, we are catching aliases here
 		return
 	}
 	proc.allPaths[strings.Join(elPath, ".")] = true

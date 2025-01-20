@@ -4,7 +4,8 @@
 
 * Adds CLI flag `--strict` to break with an error instead of warnings (#68)
 * Adds CLI flag `--dry-run` to run without file output (#71)
-* Allows for cross-refs to aliases in modules and structs (#69)
+* Allows to re-export aliases on package level (#73)
+* Allows for cross-refs to aliases in packages, modules and structs (#69, #73)
 
 ### Documentation
 

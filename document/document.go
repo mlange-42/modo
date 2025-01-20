@@ -27,6 +27,7 @@ type Package struct {
 	*MemberDescription `yaml:",inline"`
 	Modules            []*Module
 	Packages           []*Package
+	Aliases            []*Alias         `yaml:",omitempty" json:",omitempty"` // Additional field for package re-exports
 	Functions          []*Function      `yaml:",omitempty" json:",omitempty"` // Additional field for package re-exports
 	Structs            []*Struct        `yaml:",omitempty" json:",omitempty"` // Additional field for package re-exports
 	Traits             []*Trait         `yaml:",omitempty" json:",omitempty"` // Additional field for package re-exports

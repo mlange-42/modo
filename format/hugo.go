@@ -37,5 +37,9 @@ func (f *HugoFormatter) ToFilePath(p string, kind string) (string, error) {
 }
 
 func (f *HugoFormatter) ToLinkPath(p string, kind string) (string, error) {
+	p, err := f.ToFilePath(p, kind)
+	if err != nil {
+		return "", err
+	}
 	return fmt.Sprintf("{{< ref \"%s\" >}}", p), nil
 }
