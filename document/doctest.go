@@ -65,7 +65,9 @@ func (proc *Processor) extractTests(text string, elems []string, modElems int) (
 			var err error
 			blockName, ok, err = parseBlockAttr(origLine)
 			if err != nil {
-				return "", fmt.Errorf("%s in %s", err.Error(), strings.Join(elems, "."))
+				if err := proc.warnOrError("%s in %s", err.Error(), strings.Join(elems, ".")); err != nil {
+					return "", err
+				}
 			}
 			if !ok {
 				blockName = ""
@@ -111,7 +113,9 @@ func (proc *Processor) extractTests(text string, elems []string, modElems int) (
 		panic(err)
 	}
 	if fenced {
-		return "", fmt.Errorf("unbalanced code block in %s", strings.Join(elems, "."))
+		if err := proc.warnOrError("unbalanced code block in %s", strings.Join(elems, ".")); err != nil {
+			return "", err
+		}
 	}
 
 	for name, block := range blocks {
