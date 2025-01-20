@@ -6,7 +6,7 @@
 
 ### Documentation
 
-* Moves most of the documentation to the user guide on GitHub Pages (#82)
+* Moves most of the documentation to the user guide on GitHub Pages (#82, #83)
 
 ## [[v0.7.0]](https://github.com/mlange-42/modo/compare/v0.6.0..v0.7.0)
 
