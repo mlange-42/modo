@@ -2,6 +2,7 @@
 title: Getting started
 type: docs
 summary: Installation and basic usage of Modo🧯.
+prev: guide
 weight: 1
 ---
 
