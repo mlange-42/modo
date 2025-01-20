@@ -2,12 +2,8 @@ Mojo trait
 
 # `{{.Name}}`
 
-{{if .Summary}}{{.Summary}}
-
-{{end -}}
-{{if .Description}}{{.Description}}
-
-{{end -}}
-{{template "fields" .}}
-{{template "parentTraits" .}}
-{{template "methods" .}}
+{{template "summary" . -}}
+{{template "description" . -}}
+{{template "fields" . -}}
+{{template "parentTraits" . -}}
+{{template "methods" . -}}

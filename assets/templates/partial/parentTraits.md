@@ -3,5 +3,6 @@
 
 {{range $i, $e := .ParentTraits -}}
 {{ if $i }}, {{ end }}`{{ $e }}`{{end}}
+
 {{end -}}
-{{- end}}
+{{end}}

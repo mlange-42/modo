@@ -37,7 +37,6 @@ Exports (abs) [`test.ModuleAlias`](_index.md#aliases), [`Struct`](Struct-.md), [
 
 - [`module_function`](module_function.md)
 
-
 ## Packages
 
 - [`pkg`](pkg/_index.md): Package pkg.

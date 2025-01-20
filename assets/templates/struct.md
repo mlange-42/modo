@@ -7,14 +7,10 @@ Mojo struct
 {{if .Signature}}{{.Signature}}{{else}}{{.Name}}{{end}}
 ```
 
-{{if .Summary}}{{.Summary}}
-
-{{end -}}
-{{if .Description}}{{.Description}}
-
-{{end -}}
-{{template "parameters" .}}
-{{template "aliases" .}}
-{{template "fields" .}}
-{{template "parentTraits" .}}
-{{template "methods" .}}
+{{template "summary" . -}}
+{{template "description" . -}}
+{{template "aliases" . -}}
+{{template "parameters" . -}}
+{{template "fields" . -}}
+{{template "parentTraits" . -}}
+{{template "methods" . -}}
