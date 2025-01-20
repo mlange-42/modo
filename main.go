@@ -42,11 +42,11 @@ Modo generates Markdown for static site generators (SSGs) from 'mojo doc' JSON o
 	}
 
 	root.Flags().StringVarP(&cliArgs.InputFile, "input", "i", "", "'mojo doc' JSON file to process. Reads from STDIN if not specified.")
+	root.Flags().StringVarP(&cliArgs.DocTests, "doctest", "d", "", "Target folder to extract doctests for 'mojo test'. (default no doctests)")
 	root.Flags().StringVarP(&renderFormat, "format", "f", "plain", "Output format. One of (plain|mdbook|hugo).")
 	root.Flags().BoolVarP(&cliArgs.UseExports, "exports", "e", false, "Process according to 'Exports:' sections in packages.")
 	root.Flags().BoolVar(&cliArgs.ShortLinks, "short-links", false, "Render shortened link labels, stripping packages and modules.")
 	root.Flags().BoolVar(&cliArgs.CaseInsensitive, "case-insensitive", false, "Build for systems that are not case-sensitive regarding file names.\nAppends hyphen (-) to capitalized file names.")
-	root.Flags().StringVar(&cliArgs.DocTests, "doctest", "", "Extract doctests for running 'mojo test' on them.")
 	root.Flags().BoolVar(&cliArgs.Strict, "strict", false, "Strict mode. Errors instead of warnings.")
 	root.Flags().BoolVar(&cliArgs.DryRun, "dry-run", false, "Dry-run without any file output.")
 	root.Flags().StringSliceVarP(&cliArgs.TemplateDirs, "templates", "t", []string{}, "Optional directories with templates for (partial) overwrite.\nSee folder assets/templates in the repository.")
