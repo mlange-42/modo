@@ -66,7 +66,7 @@ func (proc *Processor) PrepareDocs() error {
 		}
 	}
 	// Replaces cross-refs by placeholders.
-	if err := proc.processLinksPackage(proc.Docs.Decl, []string{}); err != nil {
+	if err := proc.processLinks(proc.Docs); err != nil {
 		return err
 	}
 	return nil
