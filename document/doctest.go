@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+const globalSuffix = "-global"
 const setupSuffix = "-setup"
 const teardownSuffix = "-teardown"
 const docTestAttr = "doctest"
@@ -40,7 +41,9 @@ func (proc *Processor) extractTests(text string, elems []string, modElems int) (
 			if !ok {
 				blockName = ""
 			}
-			if strings.HasSuffix(blockName, setupSuffix) || strings.HasSuffix(blockName, teardownSuffix) {
+			if strings.HasSuffix(blockName, globalSuffix) ||
+				strings.HasSuffix(blockName, setupSuffix) ||
+				strings.HasSuffix(blockName, teardownSuffix) {
 				excluded = true
 			}
 			fenced = true
@@ -78,8 +81,13 @@ func (proc *Processor) extractTests(text string, elems []string, modElems int) (
 	}
 
 	for name, block := range blocks {
-		if strings.HasSuffix(name, setupSuffix) || strings.HasSuffix(name, teardownSuffix) {
+		if strings.HasSuffix(name, globalSuffix) ||
+			strings.HasSuffix(name, setupSuffix) ||
+			strings.HasSuffix(name, teardownSuffix) {
 			continue
+		}
+		if global, ok := blocks[name+globalSuffix]; ok {
+			block.Global = global.Code
 		}
 		if setup, ok := blocks[name+setupSuffix]; ok {
 			block.Code = append(setup.Code, block.Code...)

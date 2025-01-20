@@ -39,9 +39,10 @@ type exportError struct {
 }
 
 type docTest struct {
-	Name string
-	Path []string
-	Code []string
+	Name   string
+	Path   []string
+	Code   []string
+	Global []string
 }
 
 func NewProcessor(docs *Docs, f Formatter, t *template.Template, config *Config) *Processor {

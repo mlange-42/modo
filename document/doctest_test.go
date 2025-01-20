@@ -10,6 +10,13 @@ import (
 func TestExtractDocTests(t *testing.T) {
 	text := "Docstring\n" +
 		"\n" +
+		"```mojo {doctest=\"test-global\"}\n" +
+		"struct Test:\n" +
+		"    pass\n" +
+		"```\n" +
+		"\n" +
+		"Some text\n" +
+		"\n" +
 		"```mojo {doctest=\"test-setup\"}\n" +
 		"import b\n" +
 		"```\n" +
@@ -29,7 +36,7 @@ func TestExtractDocTests(t *testing.T) {
 	proc := NewProcessor(nil, nil, nil, &Config{})
 	outText, err := proc.extractTests(text, []string{"pkg", "Struct"}, 1)
 	assert.Nil(t, err)
-	assert.Equal(t, 12, len(strings.Split(outText, "\n")))
+	assert.Equal(t, 15, len(strings.Split(outText, "\n")))
 
 	assert.Equal(t, 1, len(proc.docTests))
 	assert.Equal(t, proc.docTests[0], &docTest{
@@ -40,5 +47,6 @@ func TestExtractDocTests(t *testing.T) {
 			"var a = b",
 			"assert(b == 0)",
 		},
+		Global: []string{"struct Test:", "    pass"},
 	})
 }
