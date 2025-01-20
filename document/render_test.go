@@ -310,7 +310,11 @@ func TestRenderFiles(t *testing.T) {
 		tmpContent, err := os.ReadFile(tmp)
 		assert.Nil(t, err)
 
-		assert.Equal(t, string(refContent), string(tmpContent), "Mismatch in file content for %s", refShort)
+		refStr, tmpStr := string(refContent), string(tmpContent)
+		refStr = strings.ReplaceAll(refStr, "\r\n", "\n")
+		tmpStr = strings.ReplaceAll(tmpStr, "\r\n", "\n")
+
+		assert.Equal(t, refStr, tmpStr, "Mismatch in file content for %s", refShort)
 	}
 }
 
