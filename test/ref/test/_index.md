@@ -4,6 +4,7 @@ Mojo package
 
 Package test.
 
+
 Self ref [`test`](_index.md).
 
 Exports (rel) [`test.ModuleAlias`](_index.md#aliases), [`Struct`](Struct-.md), [`Trait`](Trait-.md), [`module_function`](module_function.md), [`pkg`](pkg/_index.md).
@@ -29,15 +30,23 @@ Exports (abs) [`test.ModuleAlias`](_index.md#aliases), [`Struct`](Struct-.md), [
 
 - [`Struct`](Struct-.md): [`test.ModuleAlias`](_index.md#aliases).
 
+
 ## Traits
 
 - [`Trait`](Trait-.md): [`test.ModuleAlias`](_index.md#aliases).
+
 
 ## Functions
 
 - [`module_function`](module_function.md)
 
+## Modules
+
+- [`doctest`](doctest/_index.md): Package doctests tests doctests
+
+
 ## Packages
 
 - [`pkg`](pkg/_index.md): Package pkg.
+
 

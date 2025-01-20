@@ -11,6 +11,7 @@ import (
 type Config struct {
 	InputFile       string
 	OutputDir       string
+	DocTests        string
 	TemplateDirs    []string
 	UseExports      bool
 	ShortLinks      bool
@@ -29,7 +30,20 @@ type Processor struct {
 	linkTargets        map[string]elemPath
 	linkExports        map[string]string
 	linkExportsReverse map[string]*exportError
+	docTests           []*docTest
 	writer             func(file, text string) error
+}
+
+type exportError struct {
+	NewPath  string
+	OldPaths []string
+}
+
+type docTest struct {
+	Name   string
+	Path   []string
+	Code   []string
+	Global []string
 }
 
 func NewProcessor(docs *Docs, f Formatter, t *template.Template, config *Config) *Processor {
@@ -53,8 +67,18 @@ func (proc *Processor) PrepareDocs() error {
 	// Collect the paths of all (sub)-elements in the original structure.
 	proc.collectElementPaths()
 
+	// Extract doc tests.
+	err := proc.extractDocTests()
+	if err != nil {
+		return err
+	}
+	err = proc.writeDocTests(proc.Config.DocTests)
+	if err != nil {
+		return err
+	}
+
 	// Re-structure according to exports.
-	err := proc.filterPackages()
+	err = proc.filterPackages()
 	if err != nil {
 		return err
 	}
@@ -66,7 +90,7 @@ func (proc *Processor) PrepareDocs() error {
 		}
 	}
 	// Replaces cross-refs by placeholders.
-	if err := proc.processLinksPackage(proc.Docs.Decl, []string{}); err != nil {
+	if err := proc.processLinks(proc.Docs); err != nil {
 		return err
 	}
 	return nil

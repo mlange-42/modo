@@ -9,11 +9,15 @@ struct Struct[StructParameter: Intable]
 
 [`test.ModuleAlias`](_index.md#aliases).
 
+
 [`Struct.struct_method`](Struct-.md#struct_method)
+
 
 ## Aliases
 
-- `StructAlias = StructParameter`: [`test.ModuleAlias`](_index.md#aliases). [`Struct.struct_method`](Struct-.md#struct_method)
+- `StructAlias = StructParameter`: [`test.ModuleAlias`](_index.md#aliases).
+ [`Struct.struct_method`](Struct-.md#struct_method)
+
 
 ## Parameters
 
@@ -21,7 +25,9 @@ struct Struct[StructParameter: Intable]
 
 ## Fields
 
-- **struct_field** (`Int`): [`test.ModuleAlias`](_index.md#aliases). [`Struct.struct_method`](Struct-.md#struct_method)
+- **struct_field** (`Int`): [`test.ModuleAlias`](_index.md#aliases).
+ [`Struct.struct_method`](Struct-.md#struct_method)
+
 
 ## Implemented traits
 
@@ -37,6 +43,7 @@ struct_method[T: Intable](self, arg: StructParameter) -> Int
 
 [`test.ModuleAlias`](_index.md#aliases).
 
+
 [`Struct.struct_method`](Struct-.md#struct_method)
 
 
@@ -44,17 +51,21 @@ struct_method[T: Intable](self, arg: StructParameter) -> Int
 
 - **T** (`Intable`): [`Struct.struct_method`](Struct-.md#struct_method).
 
+
 **Args:**
 
 - **self** (`Self`)
 - **arg** (`StructParameter`): [`Struct.struct_method`](Struct-.md#struct_method).
 
+
 **Returns:**
 
 `Int`: Bla [`Struct.struct_method`](Struct-.md#struct_method).
 
+
 **Raises:**
 
 Error [`Struct.struct_method`](Struct-.md#struct_method).
+
 
 

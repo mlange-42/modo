@@ -18,6 +18,7 @@ It generates Markdown for static site generators (SSGs) from `mojo doc` JSON out
 * Generates [Mojo](https://www.modular.com/mojo)🔥 API docs for [Hugo](#hugo), [mdBook](#mdbook) or just [plain](#plain-markdown) Markdown.
 * Provides a simple syntax for code [cross-references](#cross-references).
 * Optionally structures API docs according to [package re-exports](#package-re-exports).
+* Optionally extracts [doc-tests](#doc-tests) for `mojo test` from code blocks.
 * Customizable output through [user templates](#templates).
 
 ## Installation
@@ -60,11 +61,12 @@ Examples:
   mojo doc ./src | modo docs    # from 'mojo doc'
 
 Flags:
-  -i, --input string        'mojo doc' JSON file to process. Reads from STDIN if not specified.       
+  -i, --input string        'mojo doc' JSON file to process. Reads from STDIN if not specified.
+  -d, --doctest string      Target folder to extract doctests for 'mojo test'. (default no doctests)
   -f, --format string       Output format. One of (plain|mdbook|hugo). (default "plain")
   -e, --exports             Process according to 'Exports:' sections in packages.
       --short-links         Render shortened link labels, stripping packages and modules.
-      --case-insensitive    Build for systems that are not case-sensitive regarding file names.       
+      --case-insensitive    Build for systems that are not case-sensitive regarding file names.
                             Appends hyphen (-) to capitalized file names.
       --strict              Strict mode. Errors instead of warnings.
       --dry-run             Dry-run without any file output.
@@ -170,6 +172,48 @@ Re-exported modules (like `plants.vascular`) are fully included with all members
 
 [Cross-references](#cross-references) should still use the original structure of the package.
 They are automatically transformed to match the altered structure.
+
+## Doc-tests
+
+To keep code examples in docstrings up to date, Modo🧯 can generate test files for `mojo test` from them.
+Doctests are enabled by flag `--doctest`, which takes an output directory for test files as an argument:
+
+Code block attributes are used to identify code blocks to be tested.
+Any block that should be included in the tests needs a name:
+
+````md
+```mojo {doctest="mytest"}
+var a = 0
+```
+````
+
+Multiple code blocks with the same name are concatenated.
+Individual blocks can be hidden with an attribute `hide=true`:
+
+````md
+```mojo {doctest="mytest" hide=true}
+# hidden code block
+```
+````
+
+Further, for code examples that can't be put into a test function, attribute `global=true` can be used:
+
+````md
+```mojo {doctest="mytest" global=true}
+struct MyStruct:
+    pass
+```
+````
+
+Combining multiple code blocks using these attributes allows for flexible tests with hidden setup, teardown and assertions.
+
+CLI usage example:
+
+```
+mojo doc src/ -o docs.json                 # generate doc JSON
+modo docs -i docs.json --doctest=doctest   # render to Markdown and extract doctests
+mojo test -I src doctest                   # run the doctests
+```
 
 ## Templates
 

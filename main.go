@@ -42,6 +42,7 @@ Modo generates Markdown for static site generators (SSGs) from 'mojo doc' JSON o
 	}
 
 	root.Flags().StringVarP(&cliArgs.InputFile, "input", "i", "", "'mojo doc' JSON file to process. Reads from STDIN if not specified.")
+	root.Flags().StringVarP(&cliArgs.DocTests, "doctest", "d", "", "Target folder to extract doctests for 'mojo test'. (default no doctests)")
 	root.Flags().StringVarP(&renderFormat, "format", "f", "plain", "Output format. One of (plain|mdbook|hugo).")
 	root.Flags().BoolVarP(&cliArgs.UseExports, "exports", "e", false, "Process according to 'Exports:' sections in packages.")
 	root.Flags().BoolVar(&cliArgs.ShortLinks, "short-links", false, "Render shortened link labels, stripping packages and modules.")

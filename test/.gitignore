@@ -6,3 +6,6 @@
 
 # mojo doc output
 /*.json
+
+# modo doctest output
+/doctest/
