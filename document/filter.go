@@ -60,11 +60,6 @@ func (proc *Processor) filterPackages() error {
 	return fmt.Errorf("%s", msg.String())
 }
 
-type exportError struct {
-	NewPath  string
-	OldPaths []string
-}
-
 func (proc *Processor) filterPackage(src, rootOut *Package, oldPath, newPath []string) {
 	rootExports := map[string]*members{}
 	collectExportsPackage(src, rootExports)
