@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
-func initCommand() *cobra.Command {
+func initCommand() (*cobra.Command, error) {
 	root := &cobra.Command{
 		Use:          "init PACKAGES...",
 		Short:        "Generate a Modo config file in the current directory.",
@@ -38,5 +38,5 @@ func initCommand() *cobra.Command {
 		},
 	}
 
-	return root
+	return root, nil
 }

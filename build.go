@@ -9,7 +9,9 @@ import (
 	"github.com/spf13/viper"
 )
 
-func buildCommand() *cobra.Command {
+func buildCommand() (*cobra.Command, error) {
+	v := viper.New()
+
 	root := &cobra.Command{
 		Use:   "build",
 		Short: "Build documentation from 'mojo doc' JSON.",
@@ -18,10 +20,10 @@ func buildCommand() *cobra.Command {
 		Args:         cobra.ExactArgs(0),
 		SilenceUsage: true,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
-			viper.SetConfigName(configFile)
-			viper.SetConfigType("yaml")
-			viper.AddConfigPath(".")
-			if err := viper.ReadInConfig(); err != nil {
+			v.SetConfigName(configFile)
+			v.SetConfigType("yaml")
+			v.AddConfigPath(".")
+			if err := v.ReadInConfig(); err != nil {
 				if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
 					return err
 				}
@@ -30,7 +32,7 @@ func buildCommand() *cobra.Command {
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliArgs := document.Config{}
-			err := viper.Unmarshal(&cliArgs)
+			err := v.Unmarshal(&cliArgs)
 			if err != nil {
 				return err
 			}
@@ -38,7 +40,7 @@ func buildCommand() *cobra.Command {
 		},
 	}
 
-	root.Flags().StringP("input", "i", "", "'mojo doc' JSON file to process. Reads from STDIN if not specified.")
+	root.Flags().StringSliceP("input", "i", []string{}, "'mojo doc' JSON file to process. Reads from STDIN if not specified.")
 	root.Flags().StringP("output", "o", "", "Output folder for generated Markdown files.")
 	root.Flags().StringP("tests", "t", "", "Target folder to extract doctests for 'mojo test'.\nSee also command 'modo test'. (default no doctests)")
 	root.Flags().StringP("format", "f", "plain", "Output format. One of (plain|mdbook|hugo).")
@@ -55,9 +57,11 @@ func buildCommand() *cobra.Command {
 	root.MarkFlagDirname("tests")
 	root.MarkFlagDirname("templates")
 
-	viper.BindPFlags(root.Flags())
-
-	return root
+	err := v.BindPFlags(root.Flags())
+	if err != nil {
+		return nil, err
+	}
+	return root, nil
 }
 
 func runBuild(args *document.Config) error {
@@ -74,14 +78,15 @@ func runBuild(args *document.Config) error {
 		return err
 	}
 
-	for _, f := range args.InputFiles {
-		docs, err := readDocs(f)
-		if err != nil {
+	if len(args.InputFiles) == 0 {
+		if err := runBuildOnce("", args, formatter); err != nil {
 			return err
 		}
-		err = formatter.Render(docs, args)
-		if err != nil {
-			return err
+	} else {
+		for _, f := range args.InputFiles {
+			if err := runBuildOnce(f, args, formatter); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -89,6 +94,18 @@ func runBuild(args *document.Config) error {
 		return err
 	}
 
+	return nil
+}
+
+func runBuildOnce(file string, args *document.Config, form document.Formatter) error {
+	docs, err := readDocs(file)
+	if err != nil {
+		return err
+	}
+	err = form.Render(docs, args)
+	if err != nil {
+		return err
+	}
 	return nil
 }
 

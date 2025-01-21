@@ -9,7 +9,9 @@ import (
 	"github.com/spf13/viper"
 )
 
-func testCommand() *cobra.Command {
+func testCommand() (*cobra.Command, error) {
+	v := viper.New()
+
 	root := &cobra.Command{
 		Use:   "test",
 		Short: "Generate tests from 'mojo doc' JSON.",
@@ -18,10 +20,10 @@ func testCommand() *cobra.Command {
 		Args:         cobra.ExactArgs(0),
 		SilenceUsage: true,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
-			viper.SetConfigName(configFile)
-			viper.SetConfigType("yaml")
-			viper.AddConfigPath(".")
-			if err := viper.ReadInConfig(); err != nil {
+			v.SetConfigName(configFile)
+			v.SetConfigType("yaml")
+			v.AddConfigPath(".")
+			if err := v.ReadInConfig(); err != nil {
 				if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
 					return err
 				}
@@ -30,7 +32,7 @@ func testCommand() *cobra.Command {
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
 			cliArgs := document.Config{}
-			err := viper.Unmarshal(&cliArgs)
+			err := v.Unmarshal(&cliArgs)
 			if err != nil {
 				return err
 			}
@@ -38,7 +40,7 @@ func testCommand() *cobra.Command {
 		},
 	}
 
-	root.Flags().StringP("input", "i", "", "'mojo doc' JSON file to process. Reads from STDIN if not specified.")
+	root.Flags().StringSliceP("input", "i", []string{}, "'mojo doc' JSON file to process. Reads from STDIN if not specified.")
 	root.Flags().StringP("tests", "t", "", "Target folder to extract doctests for 'mojo test'.")
 	root.Flags().BoolP("case-insensitive", "C", false, "Build for systems that are not case-sensitive regarding file names.\nAppends hyphen (-) to capitalized file names.")
 	root.Flags().BoolP("strict", "S", false, "Strict mode. Errors instead of warnings.")
@@ -50,9 +52,11 @@ func testCommand() *cobra.Command {
 	root.MarkFlagDirname("tests")
 	root.MarkFlagDirname("templates")
 
-	viper.BindPFlags(root.Flags())
-
-	return root
+	err := v.BindPFlags(root.Flags())
+	if err != nil {
+		return nil, err
+	}
+	return root, nil
 }
 
 func runTest(args *document.Config) error {
@@ -64,13 +68,15 @@ func runTest(args *document.Config) error {
 		return err
 	}
 
-	for _, f := range args.InputFiles {
-		docs, err := readDocs(f)
-		if err != nil {
+	if len(args.InputFiles) == 0 {
+		if err := runTestOnce("", args); err != nil {
 			return err
 		}
-		if err := document.ExtractTests(docs, args, &format.PlainFormatter{}); err != nil {
-			return err
+	} else {
+		for _, f := range args.InputFiles {
+			if err := runTestOnce(f, args); err != nil {
+				return err
+			}
 		}
 	}
 
@@ -78,6 +84,17 @@ func runTest(args *document.Config) error {
 		return err
 	}
 
+	return nil
+}
+
+func runTestOnce(file string, args *document.Config) error {
+	docs, err := readDocs(file)
+	if err != nil {
+		return err
+	}
+	if err := document.ExtractTests(docs, args, &format.PlainFormatter{}); err != nil {
+		return err
+	}
 	return nil
 }
 

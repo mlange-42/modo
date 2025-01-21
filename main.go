@@ -16,14 +16,18 @@ const configFile = "modo"
 
 func main() {
 	start := time.Now()
-	if err := rootCommand().Execute(); err != nil {
+	root, err := rootCommand()
+	if err != nil {
+		panic(err)
+	}
+	if err := root.Execute(); err != nil {
 		fmt.Println("Use 'modo --help' for help.")
 		os.Exit(1)
 	}
 	fmt.Printf("Completed in %.1fms 🧯\n", float64(time.Since(start).Microseconds())/1000.0)
 }
 
-func rootCommand() *cobra.Command {
+func rootCommand() (*cobra.Command, error) {
 	root := &cobra.Command{
 		Use:   "modo",
 		Short: "Modo -- DocGen for Mojo.",
@@ -35,11 +39,16 @@ Modo generates Markdown for static site generators (SSGs) from 'mojo doc' JSON o
 	}
 
 	root.CompletionOptions.HiddenDefaultCmd = true
-	root.AddCommand(initCommand())
-	root.AddCommand(buildCommand())
-	root.AddCommand(testCommand())
 
-	return root
+	for _, fn := range []func() (*cobra.Command, error){initCommand, buildCommand, testCommand} {
+		cmd, err := fn()
+		if err != nil {
+			return nil, err
+		}
+		root.AddCommand(cmd)
+	}
+
+	return root, nil
 }
 
 func runCommand(command string) error {
