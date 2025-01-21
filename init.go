@@ -1,7 +1,6 @@
 package main
 
 import (
-	"errors"
 	"fmt"
 	"io/fs"
 	"os"
@@ -13,16 +12,18 @@ import (
 
 func initCommand() (*cobra.Command, error) {
 	root := &cobra.Command{
-		Use:          "init PACKAGES...",
+		Use:          "init",
 		Short:        "Generate a Modo config file in the current directory.",
 		Args:         cobra.ExactArgs(0),
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			file := configFile + ".yaml"
-			if _, err := os.Stat(file); err == nil {
-				return fmt.Errorf("config file %s already exists", file)
-			} else if !errors.Is(err, os.ErrNotExist) {
+			exists, err := fileExists(file)
+			if err != nil {
 				return fmt.Errorf("error checking config file %s: %s", file, err.Error())
+			}
+			if exists {
+				return fmt.Errorf("config file %s already exists", file)
 			}
 
 			configData, err := fs.ReadFile(assets.Config, path.Join("config", file))

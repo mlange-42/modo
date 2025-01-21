@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -10,6 +11,7 @@ import (
 
 	"github.com/mlange-42/modo/document"
 	"github.com/spf13/cobra"
+	"github.com/spf13/viper"
 )
 
 const configFile = "modo"
@@ -87,4 +89,49 @@ func read(file string) ([]byte, error) {
 	} else {
 		return os.ReadFile(file)
 	}
+}
+
+func fileExists(file string) (bool, error) {
+	if _, err := os.Stat(file); err == nil {
+		return true, nil
+	} else if !errors.Is(err, os.ErrNotExist) {
+		return false, err
+	}
+	return false, nil
+}
+
+func mountProject(v *viper.Viper, paths []string) error {
+	withConfig := len(paths) > 0
+	p := "."
+	if withConfig {
+		p = paths[0]
+		if err := os.Chdir(p); err != nil {
+			return err
+		}
+	}
+
+	//filePath := path.Join(p, configFile+".yaml")
+	filePath := configFile + ".yaml"
+	exists, err := fileExists(filePath)
+	if err != nil {
+		return err
+	}
+	if !exists {
+		return fmt.Errorf("no '%s' found in path '%s'", filePath, p)
+	}
+
+	v.SetConfigName(configFile)
+	v.SetConfigType("yaml")
+	v.AddConfigPath(".")
+
+	if err := v.ReadInConfig(); err != nil {
+		_, notFound := err.(viper.ConfigFileNotFoundError)
+		if !notFound {
+			return err
+		}
+		if withConfig {
+			return err
+		}
+	}
+	return nil
 }

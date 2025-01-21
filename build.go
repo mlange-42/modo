@@ -13,20 +13,19 @@ func buildCommand() (*cobra.Command, error) {
 	v := viper.New()
 
 	root := &cobra.Command{
-		Use:   "build",
+		Use:   "build [PATH]",
 		Short: "Build documentation from 'mojo doc' JSON.",
-		Example: `  modo build -i api.json -o docs/        # from a file
+		Long: `Build documentation from 'mojo doc' JSON.
+
+Builds based on the 'modo.yaml' file
+in the current directory if no path is given.`,
+		Example: `  modo build -i api.json -o docs/         # from a file
   mojo doc ./src | modo build -o docs/    # from 'mojo doc'`,
-		Args:         cobra.ExactArgs(0),
+		Args:         cobra.MaximumNArgs(1),
 		SilenceUsage: true,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
-			v.SetConfigName(configFile)
-			v.SetConfigType("yaml")
-			v.AddConfigPath(".")
-			if err := v.ReadInConfig(); err != nil {
-				if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
-					return err
-				}
+			if err := mountProject(v, args); err != nil {
+				return err
 			}
 			return nil
 		},

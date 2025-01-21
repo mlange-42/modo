@@ -13,20 +13,19 @@ func testCommand() (*cobra.Command, error) {
 	v := viper.New()
 
 	root := &cobra.Command{
-		Use:   "test",
+		Use:   "test [PATH]",
 		Short: "Generate tests from 'mojo doc' JSON.",
-		Example: `  modo test -i api.json -t tests/        # from a file
+		Long: `Extracts doc-tests from 'mojo doc' JSON.
+
+Extracts tests based on the 'modo.yaml' file
+in the current directory if no path is given.`,
+		Example: `  modo test -i api.json -t tests/         # from a file
   mojo doc ./src | modo test -t tests/    # from 'mojo doc'`,
-		Args:         cobra.ExactArgs(0),
+		Args:         cobra.MaximumNArgs(1),
 		SilenceUsage: true,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
-			v.SetConfigName(configFile)
-			v.SetConfigType("yaml")
-			v.AddConfigPath(".")
-			if err := v.ReadInConfig(); err != nil {
-				if _, ok := err.(viper.ConfigFileNotFoundError); !ok {
-					return err
-				}
+			if err := mountProject(v, args); err != nil {
+				return err
 			}
 			return nil
 		},
