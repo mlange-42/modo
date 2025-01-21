@@ -5,6 +5,9 @@
 # coverage report
 /coverage.out
 
+# profiling output
+*.pprof
+
 # test files
 /*.json
 /*.yaml
