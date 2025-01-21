@@ -19,8 +19,10 @@ type Config struct {
 	CaseInsensitive bool     `mapstructure:"case-insensitive"`
 	Strict          bool     `mapstructure:"strict"`
 	DryRun          bool     `mapstructure:"dry-run"`
-	PreRun          []string `mapstructure:"pre-run"`
-	PostRun         []string `mapstructure:"post-run"`
+	PreBuild        []string `mapstructure:"pre-build"`
+	PostBuild       []string `mapstructure:"post-build"`
+	PreTest         []string `mapstructure:"pre-test"`
+	PostTest        []string `mapstructure:"post-test"`
 }
 
 type Processor struct {

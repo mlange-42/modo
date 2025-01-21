@@ -64,11 +64,26 @@ func runTest(args *document.Config) error {
 	if args.DocTests == "" {
 		return fmt.Errorf("no output path for tests given")
 	}
+	for _, command := range args.PreTest {
+		err := runCommand(command)
+		if err != nil {
+			return err
+		}
+	}
 
 	docs, err := readDocs(args.InputFile)
 	if err != nil {
 		return err
 	}
+	if err := document.ExtractTests(docs, args, &format.PlainFormatter{}); err != nil {
+		return err
+	}
 
-	return document.ExtractTests(docs, args, &format.PlainFormatter{})
+	for _, command := range args.PostTest {
+		err := runCommand(command)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }

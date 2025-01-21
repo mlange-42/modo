@@ -41,6 +41,7 @@ func (proc *Processor) writeDocTests(dir string) error {
 			return err
 		}
 	}
+	fmt.Printf("Extracted %d tests.\n", len(proc.docTests))
 	return nil
 }
 

@@ -65,15 +65,22 @@ func buildCommand() *cobra.Command {
 }
 
 func runBuild(args *document.Config) error {
-	for _, command := range args.PreRun {
+	if args.OutputDir == "" {
+		return fmt.Errorf("no output path given")
+	}
+	for _, command := range args.PreBuild {
 		err := runCommand(command)
 		if err != nil {
 			return err
 		}
 	}
-
-	if args.OutputDir == "" {
-		return fmt.Errorf("no output path given")
+	if args.DocTests != "" {
+		for _, command := range args.PreTest {
+			err := runCommand(command)
+			if err != nil {
+				return err
+			}
+		}
 	}
 	docs, err := readDocs(args.InputFile)
 	if err != nil {
@@ -88,7 +95,15 @@ func runBuild(args *document.Config) error {
 		return err
 	}
 
-	for _, command := range args.PostRun {
+	if args.DocTests != "" {
+		for _, command := range args.PostTest {
+			err := runCommand(command)
+			if err != nil {
+				return err
+			}
+		}
+	}
+	for _, command := range args.PostBuild {
 		err := runCommand(command)
 		if err != nil {
 			return err

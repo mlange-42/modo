@@ -1,15 +1,16 @@
-input: example/example.json
-output: content/
-format: hugo
+input: test.json
+output: out/
+format: plain
 doctest: doctest/
 exports: true
 short-links: true
 case-insensitive: true
-templates:
-  - modo/
 
 pre-build:
   - echo Starting build.
+  - |
+    cd out
+    ls
 
 post-build:
   - echo Build finished
