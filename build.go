@@ -18,7 +18,7 @@ func buildCommand() *cobra.Command {
 		Args:         cobra.MaximumNArgs(1),
 		SilenceUsage: true,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
-			viper.SetConfigName("modo")
+			viper.SetConfigName(configFile)
 			viper.SetConfigType("yaml")
 			viper.AddConfigPath(".")
 			if err := viper.ReadInConfig(); err != nil {
@@ -72,14 +72,6 @@ func runBuild(args *document.Config) error {
 		err := runCommand(command)
 		if err != nil {
 			return err
-		}
-	}
-	if args.DocTests != "" {
-		for _, command := range args.PreTest {
-			err := runCommand(command)
-			if err != nil {
-				return err
-			}
 		}
 	}
 	docs, err := readDocs(args.InputFile)

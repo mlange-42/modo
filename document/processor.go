@@ -9,20 +9,19 @@ import (
 )
 
 type Config struct {
-	RenderFormat    string   `mapstructure:"format"`
-	InputFile       string   `mapstructure:"input"`
-	OutputDir       string   `mapstructure:"output"`
-	DocTests        string   `mapstructure:"doctest"`
-	TemplateDirs    []string `mapstructure:"templates"`
-	UseExports      bool     `mapstructure:"use-exports"`
-	ShortLinks      bool     `mapstructure:"short-links"`
-	CaseInsensitive bool     `mapstructure:"case-insensitive"`
-	Strict          bool     `mapstructure:"strict"`
-	DryRun          bool     `mapstructure:"dry-run"`
-	PreBuild        []string `mapstructure:"pre-build"`
-	PostBuild       []string `mapstructure:"post-build"`
-	PreTest         []string `mapstructure:"pre-test"`
-	PostTest        []string `mapstructure:"post-test"`
+	InputFile       string   `mapstructure:"input" yaml:"input"`
+	OutputDir       string   `mapstructure:"output" yaml:"output"`
+	DocTests        string   `mapstructure:"doctest" yaml:"doctest"`
+	RenderFormat    string   `mapstructure:"format" yaml:"format"`
+	UseExports      bool     `mapstructure:"use-exports" yaml:"use-exports"`
+	ShortLinks      bool     `mapstructure:"short-links" yaml:"short-links"`
+	Strict          bool     `mapstructure:"strict" yaml:"strict"`
+	DryRun          bool     `mapstructure:"dry-run" yaml:"dry-run"`
+	CaseInsensitive bool     `mapstructure:"case-insensitive" yaml:"case-insensitive"`
+	TemplateDirs    []string `mapstructure:"templates" yaml:"templates"`
+	PreBuild        []string `mapstructure:"pre-build" yaml:"pre-build"`
+	PostBuild       []string `mapstructure:"post-build" yaml:"post-build"`
+	PostTest        []string `mapstructure:"post-test" yaml:"post-test"`
 }
 
 type Processor struct {
@@ -53,7 +52,7 @@ type docTest struct {
 
 func NewProcessor(docs *Docs, f Formatter, t *template.Template, config *Config) *Processor {
 	return NewProcessorWithWriter(docs, f, t, config, func(file, text string) error {
-		return os.WriteFile(file, []byte(text), 0666)
+		return os.WriteFile(file, []byte(text), 0644)
 	})
 }
 

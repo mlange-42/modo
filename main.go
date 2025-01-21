@@ -12,6 +12,8 @@ import (
 	"github.com/spf13/cobra"
 )
 
+const configFile = "modo"
+
 func main() {
 	start := time.Now()
 	if err := rootCommand().Execute(); err != nil {
@@ -33,6 +35,7 @@ Modo generates Markdown for static site generators (SSGs) from 'mojo doc' JSON o
 	}
 
 	root.CompletionOptions.HiddenDefaultCmd = true
+	root.AddCommand(initCommand())
 	root.AddCommand(buildCommand())
 	root.AddCommand(testCommand())
 

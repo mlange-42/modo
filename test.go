@@ -18,7 +18,7 @@ func testCommand() *cobra.Command {
 		Args:         cobra.MaximumNArgs(1),
 		SilenceUsage: true,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
-			viper.SetConfigName("modo")
+			viper.SetConfigName(configFile)
 			viper.SetConfigType("yaml")
 			viper.AddConfigPath(".")
 			if err := viper.ReadInConfig(); err != nil {
@@ -64,7 +64,7 @@ func runTest(args *document.Config) error {
 	if args.DocTests == "" {
 		return fmt.Errorf("no output path for tests given")
 	}
-	for _, command := range args.PreTest {
+	for _, command := range args.PreBuild {
 		err := runCommand(command)
 		if err != nil {
 			return err
