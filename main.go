@@ -28,14 +28,13 @@ func rootCommand() *cobra.Command {
 		Long: `Modo -- DocGen for Mojo.
 
 Modo generates Markdown for static site generators (SSGs) from 'mojo doc' JSON output.`,
-		Example: `  modo build docs -i docs.json        # from a file
-  mojo doc ./src | modo build docs    # from 'mojo doc'`,
 		Args:         cobra.ExactArgs(0),
 		SilenceUsage: true,
 	}
 
 	root.CompletionOptions.HiddenDefaultCmd = true
 	root.AddCommand(buildCommand())
+	root.AddCommand(testCommand())
 
 	return root
 }

@@ -67,15 +67,7 @@ func NewProcessorWithWriter(docs *Docs, f Formatter, t *template.Template, confi
 
 // PrepareDocs processes the API docs for subsequent rendering.
 func (proc *Processor) PrepareDocs() error {
-	// Collect the paths of all (sub)-elements in the original structure.
-	proc.collectElementPaths()
-
-	// Extract doc tests.
-	err := proc.extractDocTests()
-	if err != nil {
-		return err
-	}
-	err = proc.writeDocTests(proc.Config.DocTests)
+	err := proc.ExtractTests()
 	if err != nil {
 		return err
 	}
@@ -95,6 +87,24 @@ func (proc *Processor) PrepareDocs() error {
 	// Replaces cross-refs by placeholders.
 	if err := proc.processLinks(proc.Docs); err != nil {
 		return err
+	}
+	return nil
+}
+
+func (proc *Processor) ExtractTests() error {
+	// Collect the paths of all (sub)-elements in the original structure.
+	proc.collectElementPaths()
+
+	if proc.Config.DocTests != "" {
+		// Extract doc tests.
+		err := proc.extractDocTests()
+		if err != nil {
+			return err
+		}
+		err = proc.writeDocTests(proc.Config.DocTests)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }
