@@ -9,6 +9,16 @@ import (
 
 const regexString = `(?s)(?:(` + "```.*?```)|(`.*?`" + `))|(\[.*?\])`
 
+var re *regexp.Regexp
+
+func init() {
+	var err error
+	re, err = regexp.Compile(regexString)
+	if err != nil {
+		panic(err)
+	}
+}
+
 func (proc *Processor) processLinks(docs *Docs) error {
 	return proc.walkDocs(docs, proc.replaceRefs, func(elem Named) string {
 		return elem.GetName()
@@ -192,10 +202,6 @@ func (proc *Processor) refToPlaceholderAbs(link string, elems []string) (string,
 }
 
 func findLinks(text string) ([]int, error) {
-	re, err := regexp.Compile(regexString)
-	if err != nil {
-		return nil, err
-	}
 	links := []int{}
 	results := re.FindAllStringSubmatchIndex(text, -1)
 	for _, r := range results {
