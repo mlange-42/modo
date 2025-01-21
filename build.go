@@ -68,12 +68,11 @@ func runBuild(args *document.Config) error {
 	if args.OutputDir == "" {
 		return fmt.Errorf("no output path given")
 	}
-	for _, command := range args.PreBuild {
-		err := runCommand(command)
-		if err != nil {
-			return err
-		}
+
+	if err := runPreBuildCommands(args); err != nil {
+		return err
 	}
+
 	docs, err := readDocs(args.InputFile)
 	if err != nil {
 		return err
@@ -87,19 +86,39 @@ func runBuild(args *document.Config) error {
 		return err
 	}
 
-	if args.DocTests != "" {
-		for _, command := range args.PostTest {
-			err := runCommand(command)
-			if err != nil {
-				return err
-			}
-		}
+	if err := runPostBuildCommands(args); err != nil {
+		return err
 	}
-	for _, command := range args.PostBuild {
-		err := runCommand(command)
-		if err != nil {
+
+	return nil
+}
+
+func runPreBuildCommands(cfg *document.Config) error {
+	if err := runCommands(cfg.PreRun); err != nil {
+		return err
+	}
+	if err := runCommands(cfg.PreBuild); err != nil {
+		return err
+	}
+	if cfg.DocTests != "" {
+		if err := runCommands(cfg.PreTest); err != nil {
 			return err
 		}
+	}
+	return nil
+}
+
+func runPostBuildCommands(cfg *document.Config) error {
+	if cfg.DocTests != "" {
+		if err := runCommands(cfg.PostTest); err != nil {
+			return err
+		}
+	}
+	if err := runCommands(cfg.PostBuild); err != nil {
+		return err
+	}
+	if err := runCommands(cfg.PostRun); err != nil {
+		return err
 	}
 	return nil
 }

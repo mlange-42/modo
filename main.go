@@ -49,6 +49,16 @@ func runCommand(command string) error {
 	return cmd.Run()
 }
 
+func runCommands(commands []string) error {
+	for _, command := range commands {
+		err := runCommand(command)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func readDocs(file string) (*document.Docs, error) {
 	data, err := read(file)
 	if err != nil {

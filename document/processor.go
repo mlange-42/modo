@@ -19,9 +19,12 @@ type Config struct {
 	DryRun          bool     `mapstructure:"dry-run" yaml:"dry-run"`
 	CaseInsensitive bool     `mapstructure:"case-insensitive" yaml:"case-insensitive"`
 	TemplateDirs    []string `mapstructure:"templates" yaml:"templates"`
+	PreRun          []string `mapstructure:"pre-run" yaml:"pre-run"`
 	PreBuild        []string `mapstructure:"pre-build" yaml:"pre-build"`
-	PostBuild       []string `mapstructure:"post-build" yaml:"post-build"`
+	PreTest         []string `mapstructure:"pre-test" yaml:"pre-test"`
 	PostTest        []string `mapstructure:"post-test" yaml:"post-test"`
+	PostBuild       []string `mapstructure:"post-build" yaml:"post-build"`
+	PostRun         []string `mapstructure:"post-run" yaml:"post-run"`
 }
 
 type Processor struct {

@@ -64,11 +64,9 @@ func runTest(args *document.Config) error {
 	if args.DocTests == "" {
 		return fmt.Errorf("no output path for tests given")
 	}
-	for _, command := range args.PreBuild {
-		err := runCommand(command)
-		if err != nil {
-			return err
-		}
+
+	if err := runPreTestCommands(args); err != nil {
+		return err
 	}
 
 	docs, err := readDocs(args.InputFile)
@@ -79,11 +77,29 @@ func runTest(args *document.Config) error {
 		return err
 	}
 
-	for _, command := range args.PostTest {
-		err := runCommand(command)
-		if err != nil {
-			return err
-		}
+	if err := runPostTestCommands(args); err != nil {
+		return err
+	}
+
+	return nil
+}
+
+func runPreTestCommands(cfg *document.Config) error {
+	if err := runCommands(cfg.PreRun); err != nil {
+		return err
+	}
+	if err := runCommands(cfg.PreTest); err != nil {
+		return err
+	}
+	return nil
+}
+
+func runPostTestCommands(cfg *document.Config) error {
+	if err := runCommands(cfg.PostTest); err != nil {
+		return err
+	}
+	if err := runCommands(cfg.PostRun); err != nil {
+		return err
 	}
 	return nil
 }

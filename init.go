@@ -1,27 +1,15 @@
 package main
 
 import (
-	"bytes"
 	"errors"
 	"fmt"
+	"io/fs"
 	"os"
+	"path"
 
-	"github.com/mlange-42/modo/document"
+	"github.com/mlange-42/modo/assets"
 	"github.com/spf13/cobra"
-	"gopkg.in/yaml.v3"
 )
-
-var defaultConfig = document.Config{
-	InputFile:    "docs.json",
-	OutputDir:    "docs/",
-	DocTests:     "doctest/",
-	RenderFormat: "plain",
-	ShortLinks:   true,
-	UseExports:   true,
-	PreBuild: []string{`echo Use pre- and post-commands...
-echo to run 'mojo doc' or 'mojo test'.
-`},
-}
 
 func initCommand() *cobra.Command {
 	root := &cobra.Command{
@@ -37,16 +25,14 @@ func initCommand() *cobra.Command {
 				return fmt.Errorf("error checking config file %s: %s", file, err.Error())
 			}
 
-			b := bytes.Buffer{}
-			enc := yaml.NewEncoder(&b)
-			enc.SetIndent(2)
+			configData, err := fs.ReadFile(assets.Config, path.Join("config", file))
+			if err != nil {
+				return err
+			}
+			if err := os.WriteFile(file, configData, 0644); err != nil {
+				return err
+			}
 
-			if err := enc.Encode(&defaultConfig); err != nil {
-				return err
-			}
-			if err := os.WriteFile(file, b.Bytes(), 0644); err != nil {
-				return err
-			}
 			fmt.Println("Modo project initialized.")
 			return nil
 		},
