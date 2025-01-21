@@ -9,9 +9,9 @@ import (
 )
 
 type Config struct {
-	InputFile       string   `mapstructure:"input" yaml:"input"`
+	InputFiles      []string `mapstructure:"input" yaml:"input"`
 	OutputDir       string   `mapstructure:"output" yaml:"output"`
-	DocTests        string   `mapstructure:"doctest" yaml:"doctest"`
+	TestOutput      string   `mapstructure:"tests" yaml:"tests"`
 	RenderFormat    string   `mapstructure:"format" yaml:"format"`
 	UseExports      bool     `mapstructure:"use-exports" yaml:"use-exports"`
 	ShortLinks      bool     `mapstructure:"short-links" yaml:"short-links"`
@@ -99,13 +99,13 @@ func (proc *Processor) ExtractTests() error {
 	// Collect the paths of all (sub)-elements in the original structure.
 	proc.collectElementPaths()
 
-	if proc.Config.DocTests != "" {
+	if proc.Config.TestOutput != "" {
 		// Extract doc tests.
 		err := proc.extractDocTests()
 		if err != nil {
 			return err
 		}
-		err = proc.writeDocTests(proc.Config.DocTests)
+		err = proc.writeDocTests(proc.Config.TestOutput)
 		if err != nil {
 			return err
 		}

@@ -11,11 +11,11 @@ import (
 
 func buildCommand() *cobra.Command {
 	root := &cobra.Command{
-		Use:   "build [OUT-PATH]",
+		Use:   "build",
 		Short: "Build documentation from 'mojo doc' JSON.",
-		Example: `  modo build docs -i docs.json        # from a file
-  mojo doc ./src | modo build docs    # from 'mojo doc'`,
-		Args:         cobra.MaximumNArgs(1),
+		Example: `  modo build -i api.json -o docs/        # from a file
+  mojo doc ./src | modo build -o docs/    # from 'mojo doc'`,
+		Args:         cobra.ExactArgs(0),
 		SilenceUsage: true,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			viper.SetConfigName(configFile)
@@ -34,29 +34,25 @@ func buildCommand() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			if len(args) > 0 {
-				cliArgs.OutputDir = args[0]
-			} else {
-				if cliArgs.OutputDir == "" {
-					return fmt.Errorf("missing output directory argument")
-				}
-			}
 			return runBuild(&cliArgs)
 		},
 	}
 
 	root.Flags().StringP("input", "i", "", "'mojo doc' JSON file to process. Reads from STDIN if not specified.")
-	root.Flags().StringP("doctest", "d", "", "Target folder to extract doctests for 'mojo test'. (default no doctests)")
+	root.Flags().StringP("output", "o", "", "Output folder for generated Markdown files.")
+	root.Flags().StringP("tests", "t", "", "Target folder to extract doctests for 'mojo test'.\nSee also command 'modo test'. (default no doctests)")
 	root.Flags().StringP("format", "f", "plain", "Output format. One of (plain|mdbook|hugo).")
 	root.Flags().BoolP("exports", "e", false, "Process according to 'Exports:' sections in packages.")
-	root.Flags().Bool("short-links", false, "Render shortened link labels, stripping packages and modules.")
-	root.Flags().Bool("case-insensitive", false, "Build for systems that are not case-sensitive regarding file names.\nAppends hyphen (-) to capitalized file names.")
-	root.Flags().Bool("strict", false, "Strict mode. Errors instead of warnings.")
-	root.Flags().Bool("dry-run", false, "Dry-run without any file output.")
-	root.Flags().StringSliceP("templates", "t", []string{}, "Optional directories with templates for (partial) overwrite.\nSee folder assets/templates in the repository.")
+	root.Flags().BoolP("short-links", "s", false, "Render shortened link labels, stripping packages and modules.")
+	root.Flags().BoolP("case-insensitive", "C", false, "Build for systems that are not case-sensitive regarding file names.\nAppends hyphen (-) to capitalized file names.")
+	root.Flags().BoolP("strict", "S", false, "Strict mode. Errors instead of warnings.")
+	root.Flags().BoolP("dry-run", "D", false, "Dry-run without any file output.")
+	root.Flags().StringSliceP("templates", "T", []string{}, "Optional directories with templates for (partial) overwrite.\nSee folder assets/templates in the repository.")
 
 	root.Flags().SortFlags = false
 	root.MarkFlagFilename("input", "json")
+	root.MarkFlagDirname("output")
+	root.MarkFlagDirname("tests")
 	root.MarkFlagDirname("templates")
 
 	viper.BindPFlags(root.Flags())
@@ -73,17 +69,20 @@ func runBuild(args *document.Config) error {
 		return err
 	}
 
-	docs, err := readDocs(args.InputFile)
-	if err != nil {
-		return err
-	}
 	formatter, err := format.GetFormatter(args.RenderFormat)
 	if err != nil {
 		return err
 	}
-	err = formatter.Render(docs, args)
-	if err != nil {
-		return err
+
+	for _, f := range args.InputFiles {
+		docs, err := readDocs(f)
+		if err != nil {
+			return err
+		}
+		err = formatter.Render(docs, args)
+		if err != nil {
+			return err
+		}
 	}
 
 	if err := runPostBuildCommands(args); err != nil {
@@ -100,7 +99,7 @@ func runPreBuildCommands(cfg *document.Config) error {
 	if err := runCommands(cfg.PreBuild); err != nil {
 		return err
 	}
-	if cfg.DocTests != "" {
+	if cfg.TestOutput != "" {
 		if err := runCommands(cfg.PreTest); err != nil {
 			return err
 		}
@@ -109,7 +108,7 @@ func runPreBuildCommands(cfg *document.Config) error {
 }
 
 func runPostBuildCommands(cfg *document.Config) error {
-	if cfg.DocTests != "" {
+	if cfg.TestOutput != "" {
 		if err := runCommands(cfg.PostTest); err != nil {
 			return err
 		}

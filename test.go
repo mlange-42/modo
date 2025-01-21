@@ -11,11 +11,11 @@ import (
 
 func testCommand() *cobra.Command {
 	root := &cobra.Command{
-		Use:   "test [OUT-PATH]",
+		Use:   "test",
 		Short: "Generate tests from 'mojo doc' JSON.",
-		Example: `  modo test doctest -i docs.json        # from a file
-  mojo doc ./src | modo test doctest    # from 'mojo doc'`,
-		Args:         cobra.MaximumNArgs(1),
+		Example: `  modo test -i api.json -t tests/        # from a file
+  mojo doc ./src | modo test -t tests/    # from 'mojo doc'`,
+		Args:         cobra.ExactArgs(0),
 		SilenceUsage: true,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			viper.SetConfigName(configFile)
@@ -34,25 +34,20 @@ func testCommand() *cobra.Command {
 			if err != nil {
 				return err
 			}
-			if len(args) > 0 {
-				cliArgs.DocTests = args[0]
-			} else {
-				if cliArgs.OutputDir == "" {
-					return fmt.Errorf("missing output directory argument")
-				}
-			}
 			return runTest(&cliArgs)
 		},
 	}
 
 	root.Flags().StringP("input", "i", "", "'mojo doc' JSON file to process. Reads from STDIN if not specified.")
-	root.Flags().Bool("case-insensitive", false, "Build for systems that are not case-sensitive regarding file names.\nAppends hyphen (-) to capitalized file names.")
-	root.Flags().Bool("strict", false, "Strict mode. Errors instead of warnings.")
-	root.Flags().Bool("dry-run", false, "Dry-run without any file output.")
-	root.Flags().StringSliceP("templates", "t", []string{}, "Optional directories with templates for (partial) overwrite.\nSee folder assets/templates in the repository.")
+	root.Flags().StringP("tests", "t", "", "Target folder to extract doctests for 'mojo test'.")
+	root.Flags().BoolP("case-insensitive", "C", false, "Build for systems that are not case-sensitive regarding file names.\nAppends hyphen (-) to capitalized file names.")
+	root.Flags().BoolP("strict", "S", false, "Strict mode. Errors instead of warnings.")
+	root.Flags().BoolP("dry-run", "D", false, "Dry-run without any file output.")
+	root.Flags().StringSliceP("templates", "T", []string{}, "Optional directories with templates for (partial) overwrite.\nSee folder assets/templates in the repository.")
 
 	root.Flags().SortFlags = false
 	root.MarkFlagFilename("input", "json")
+	root.MarkFlagDirname("tests")
 	root.MarkFlagDirname("templates")
 
 	viper.BindPFlags(root.Flags())
@@ -61,7 +56,7 @@ func testCommand() *cobra.Command {
 }
 
 func runTest(args *document.Config) error {
-	if args.DocTests == "" {
+	if args.TestOutput == "" {
 		return fmt.Errorf("no output path for tests given")
 	}
 
@@ -69,12 +64,14 @@ func runTest(args *document.Config) error {
 		return err
 	}
 
-	docs, err := readDocs(args.InputFile)
-	if err != nil {
-		return err
-	}
-	if err := document.ExtractTests(docs, args, &format.PlainFormatter{}); err != nil {
-		return err
+	for _, f := range args.InputFiles {
+		docs, err := readDocs(f)
+		if err != nil {
+			return err
+		}
+		if err := document.ExtractTests(docs, args, &format.PlainFormatter{}); err != nil {
+			return err
+		}
 	}
 
 	if err := runPostTestCommands(args); err != nil {

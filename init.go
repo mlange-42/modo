@@ -13,8 +13,8 @@ import (
 
 func initCommand() *cobra.Command {
 	root := &cobra.Command{
-		Use:          "init",
-		Short:        "Generate Modo config file in the current directory.",
+		Use:          "init PACKAGES...",
+		Short:        "Generate a Modo config file in the current directory.",
 		Args:         cobra.ExactArgs(0),
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
