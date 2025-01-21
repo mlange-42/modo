@@ -1,0 +1,15 @@
+input: example/example.json
+output: content/
+format: hugo
+doctest: doctest/
+exports: true
+short-links: true
+case-insensitive: true
+templates:
+  - modo/
+
+pre-run:
+  - echo Hello World!
+
+post-run:
+  - echo Good bye!

@@ -3,6 +3,8 @@
 ### Features
 
 * Optionally extracts doc-tests to run with `mojo test` (#81, #88)
+* CLI flags can be stored in a `modo.yaml` config file (#90)
+* Shell commands to run before and after docs processing can be given in `modo.yaml` (#90)
 
 ### Documentation
 
