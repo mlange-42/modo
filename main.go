@@ -62,22 +62,18 @@ func run(args *document.Config, renderFormat string) error {
 	if args.OutputDir == "" {
 		return fmt.Errorf("no output path given")
 	}
-
 	docs, err := readDocs(args.InputFile)
 	if err != nil {
 		return err
 	}
-
-	rFormat, err := format.GetFormat(renderFormat)
+	formatter, err := format.GetFormatter(renderFormat)
 	if err != nil {
 		return err
 	}
-	formatter := format.GetFormatter(rFormat)
 	err = formatter.Render(docs, args)
 	if err != nil {
 		return err
 	}
-
 	return nil
 }
 
