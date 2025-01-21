@@ -2,7 +2,7 @@
 
 ### Features
 
-* Optionally extracts doc-tests to run with `mojo test` (#81)
+* Optionally extracts doc-tests to run with `mojo test` (#81, #88)
 
 ### Documentation
 

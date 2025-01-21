@@ -142,13 +142,23 @@ func parseBlockAttr(line string) (name string, hide bool, global bool, ok bool, 
 		return
 	}
 	attrString = strings.TrimSuffix(attrString, "}")
-	attrPairs := strings.Split(attrString, " ")
+
+	quoted := false
+	attrPairs := strings.FieldsFunc(attrString, func(r rune) bool {
+		if r == '"' {
+			quoted = !quoted
+		}
+		return !quoted && r == ' '
+	})
 
 	for _, pair := range attrPairs {
 		elems := strings.Split(pair, "=")
-		if len(elems) != 2 {
+		if len(elems) > 2 {
 			err = fmt.Errorf("malformed code block attributes '%s'", pair)
 			return
+		}
+		if len(elems) < 2 {
+			continue
 		}
 
 		key := strings.TrimSpace(elems[0])
@@ -157,7 +167,7 @@ func parseBlockAttr(line string) (name string, hide bool, global bool, ok bool, 
 			continue
 		}
 		if key == hideAttr {
-			h := strings.Trim(elems[1], "\"")
+			h := strings.Trim(elems[1], "\" ")
 			if h == "true" {
 				hide = true
 			}

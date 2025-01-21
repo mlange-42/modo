@@ -59,7 +59,7 @@ fn add(a: Int, b: Int) -> Int:
     Function `add` sums up its arguments.
 
     ```mojo {doctest="add" global=true hide=true}
-    from testing import *
+    from testing import assert_equal
     from mypkg import add
     ```
 
@@ -87,12 +87,10 @@ var result = add(1, 2)
 Further, Modo🧯 creates a test file with this content:
 
 ```mojo
-from testing import *
+from testing import assert_equal
 from mypkg import add
 
 fn test_add() raises:
     result = add(1, 2)
     assert_equal(result, 3)
 ```
-
-----
