@@ -9,15 +9,18 @@ import (
 )
 
 type Config struct {
-	InputFile       string
-	OutputDir       string
-	DocTests        string
-	TemplateDirs    []string
-	UseExports      bool
-	ShortLinks      bool
-	CaseInsensitive bool
-	Strict          bool
-	DryRun          bool
+	RenderFormat    string   `mapstructure:"format"`
+	InputFile       string   `mapstructure:"input"`
+	OutputDir       string   `mapstructure:"output"`
+	DocTests        string   `mapstructure:"doctest"`
+	TemplateDirs    []string `mapstructure:"templates"`
+	UseExports      bool     `mapstructure:"use-exports"`
+	ShortLinks      bool     `mapstructure:"short-links"`
+	CaseInsensitive bool     `mapstructure:"case-insensitive"`
+	Strict          bool     `mapstructure:"strict"`
+	DryRun          bool     `mapstructure:"dry-run"`
+	PreRun          []string `mapstructure:"pre-run"`
+	PostRun         []string `mapstructure:"post-run"`
 }
 
 type Processor struct {
