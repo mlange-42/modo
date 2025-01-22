@@ -1,5 +1,9 @@
 ## [[unpublished]](https://github.com/mlange-42/modo/compare/v0.7.0..main)
 
+### Breaking changes
+
+* Rework of the command line interface to use sub-commands `init`, `build` and `test` (#91)
+
 ### Features
 
 * Optionally extracts doc-tests to run with `mojo test` (#81, #88)

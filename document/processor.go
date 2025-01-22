@@ -9,18 +9,23 @@ import (
 )
 
 type Config struct {
-	RenderFormat    string   `mapstructure:"format"`
-	InputFile       string   `mapstructure:"input"`
-	OutputDir       string   `mapstructure:"output"`
-	DocTests        string   `mapstructure:"doctest"`
-	TemplateDirs    []string `mapstructure:"templates"`
-	UseExports      bool     `mapstructure:"use-exports"`
-	ShortLinks      bool     `mapstructure:"short-links"`
-	CaseInsensitive bool     `mapstructure:"case-insensitive"`
-	Strict          bool     `mapstructure:"strict"`
-	DryRun          bool     `mapstructure:"dry-run"`
-	PreRun          []string `mapstructure:"pre-run"`
-	PostRun         []string `mapstructure:"post-run"`
+	InputFiles      []string `mapstructure:"input" yaml:"input"`
+	OutputDir       string   `mapstructure:"output" yaml:"output"`
+	TestOutput      string   `mapstructure:"tests" yaml:"tests"`
+	RenderFormat    string   `mapstructure:"format" yaml:"format"`
+	UseExports      bool     `mapstructure:"exports" yaml:"exports"`
+	ShortLinks      bool     `mapstructure:"short-links" yaml:"short-links"`
+	Strict          bool     `mapstructure:"strict" yaml:"strict"`
+	DryRun          bool     `mapstructure:"dry-run" yaml:"dry-run"`
+	CaseInsensitive bool     `mapstructure:"case-insensitive" yaml:"case-insensitive"`
+	Bare            bool     `mapstructure:"bare"`
+	TemplateDirs    []string `mapstructure:"templates" yaml:"templates"`
+	PreRun          []string `mapstructure:"pre-run" yaml:"pre-run"`
+	PreBuild        []string `mapstructure:"pre-build" yaml:"pre-build"`
+	PreTest         []string `mapstructure:"pre-test" yaml:"pre-test"`
+	PostTest        []string `mapstructure:"post-test" yaml:"post-test"`
+	PostBuild       []string `mapstructure:"post-build" yaml:"post-build"`
+	PostRun         []string `mapstructure:"post-run" yaml:"post-run"`
 }
 
 type Processor struct {
@@ -51,7 +56,7 @@ type docTest struct {
 
 func NewProcessor(docs *Docs, f Formatter, t *template.Template, config *Config) *Processor {
 	return NewProcessorWithWriter(docs, f, t, config, func(file, text string) error {
-		return os.WriteFile(file, []byte(text), 0666)
+		return os.WriteFile(file, []byte(text), 0644)
 	})
 }
 
@@ -67,15 +72,7 @@ func NewProcessorWithWriter(docs *Docs, f Formatter, t *template.Template, confi
 
 // PrepareDocs processes the API docs for subsequent rendering.
 func (proc *Processor) PrepareDocs() error {
-	// Collect the paths of all (sub)-elements in the original structure.
-	proc.collectElementPaths()
-
-	// Extract doc tests.
-	err := proc.extractDocTests()
-	if err != nil {
-		return err
-	}
-	err = proc.writeDocTests(proc.Config.DocTests)
+	err := proc.ExtractTests()
 	if err != nil {
 		return err
 	}
@@ -95,6 +92,24 @@ func (proc *Processor) PrepareDocs() error {
 	// Replaces cross-refs by placeholders.
 	if err := proc.processLinks(proc.Docs); err != nil {
 		return err
+	}
+	return nil
+}
+
+func (proc *Processor) ExtractTests() error {
+	// Collect the paths of all (sub)-elements in the original structure.
+	proc.collectElementPaths()
+
+	// Extract doc tests.
+	err := proc.extractDocTests()
+	if err != nil {
+		return err
+	}
+	if proc.Config.TestOutput != "" {
+		err = proc.writeDocTests(proc.Config.TestOutput)
+		if err != nil {
+			return err
+		}
 	}
 	return nil
 }

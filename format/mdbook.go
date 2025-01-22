@@ -68,7 +68,7 @@ func (f *MdBookFormatter) writeSummary(p *document.Package, dir string, proc *do
 	if proc.Config.DryRun {
 		return nil
 	}
-	if err := os.WriteFile(summaryPath, []byte(summary), 0666); err != nil {
+	if err := os.WriteFile(summaryPath, []byte(summary), 0644); err != nil {
 		return err
 	}
 	return nil
@@ -220,7 +220,7 @@ func (f *MdBookFormatter) writeToml(p *document.Package, dir string, proc *docum
 		return nil
 	}
 	tomlPath := path.Join(dir, "book.toml")
-	if err := os.WriteFile(tomlPath, []byte(toml), 0666); err != nil {
+	if err := os.WriteFile(tomlPath, []byte(toml), 0644); err != nil {
 		return err
 	}
 	return nil
@@ -246,7 +246,7 @@ func (f *MdBookFormatter) writeCss(dir string, proc *document.Processor) error {
 		return err
 	}
 	if !proc.Config.DryRun {
-		if err := os.WriteFile(path.Join(cssDir, "custom.css"), css, 0666); err != nil {
+		if err := os.WriteFile(path.Join(cssDir, "custom.css"), css, 0644); err != nil {
 			return err
 		}
 	}

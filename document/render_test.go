@@ -276,7 +276,7 @@ func createProcessor(t *testing.T, docs *Docs, useExports bool, files map[string
 func TestRenderDry(t *testing.T) {
 	tmpDir := strings.ReplaceAll(t.TempDir(), "\\", "/")
 	config := Config{
-		InputFile:       "../test/test.json",
+		InputFiles:      []string{"../test/test.json"},
 		OutputDir:       tmpDir,
 		UseExports:      true,
 		ShortLinks:      true,
@@ -285,7 +285,7 @@ func TestRenderDry(t *testing.T) {
 	}
 	formatter := TestFormatter{}
 
-	data, err := os.ReadFile(config.InputFile)
+	data, err := os.ReadFile(config.InputFiles[0])
 	assert.Nil(t, err)
 	doc, err := FromJson(data)
 	assert.Nil(t, err)
@@ -303,7 +303,7 @@ func TestRenderFiles(t *testing.T) {
 	tmpDir := strings.ReplaceAll(t.TempDir(), "\\", "/")
 	refDir := path.Join("..", "test", "ref")
 	config := Config{
-		InputFile:       "../test/test.json",
+		InputFiles:      []string{"../test/test.json"},
 		OutputDir:       tmpDir,
 		UseExports:      true,
 		ShortLinks:      true,
@@ -311,7 +311,7 @@ func TestRenderFiles(t *testing.T) {
 	}
 	formatter := TestFormatter{}
 
-	data, err := os.ReadFile(config.InputFile)
+	data, err := os.ReadFile(config.InputFiles[0])
 	assert.Nil(t, err)
 	doc, err := FromJson(data)
 	assert.Nil(t, err)
@@ -341,6 +341,14 @@ func TestRenderFiles(t *testing.T) {
 		tmpStr = strings.ReplaceAll(tmpStr, "\r\n", "\n")
 
 		assert.Equal(t, refStr, tmpStr, "Mismatch in file content for %s", refShort)
+
+		if refStr != tmpStr {
+			fmt.Println("=====================")
+			fmt.Println(refStr)
+			fmt.Println("---------------------")
+			fmt.Println(tmpStr)
+			fmt.Println("---------------------")
+		}
 	}
 }
 

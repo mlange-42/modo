@@ -41,12 +41,12 @@ func run(file string, iters int) {
 	}
 	for range iters {
 		config := document.Config{
-			InputFile:       file,
+			InputFiles:      []string{file},
 			OutputDir:       tmpDir,
 			UseExports:      false,
 			ShortLinks:      true,
 			CaseInsensitive: true,
-			DocTests:        path.Join(tmpDir, "doctest"),
+			TestOutput:      path.Join(tmpDir, "doctest"),
 			DryRun:          true,
 		}
 		formatter := format.PlainFormatter{}

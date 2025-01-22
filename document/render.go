@@ -39,6 +39,23 @@ func Render(docs *Docs, config *Config, form Formatter) error {
 	return nil
 }
 
+func ExtractTests(docs *Docs, config *Config, form Formatter) error {
+	caseSensitiveSystem = !config.CaseInsensitive
+	t, err := loadTemplates(form, config.TemplateDirs...)
+	if err != nil {
+		return err
+	}
+	var proc *Processor
+	if config.DryRun {
+		proc = NewProcessorWithWriter(docs, form, t, config, func(file, text string) error {
+			return nil
+		})
+	} else {
+		proc = NewProcessor(docs, form, t, config)
+	}
+	return proc.ExtractTests()
+}
+
 func renderWith(config *Config, proc *Processor) error {
 	caseSensitiveSystem = !config.CaseInsensitive
 	if err := proc.PrepareDocs(); err != nil {
@@ -154,12 +171,15 @@ func loadTemplates(f Formatter, additional ...string) (*template.Template, error
 	if err != nil {
 		return nil, err
 	}
-	templ, err := template.New("all").Funcs(template.FuncMap{
+	templ := template.New("all")
+	templ = templ.Funcs(template.FuncMap{
 		"toLink": f.ToLinkPath,
-	}).ParseFS(assets.Templates, allTemplates...)
+	})
+	templ, err = templ.ParseFS(assets.Templates, allTemplates...)
 	if err != nil {
 		return nil, err
 	}
+
 	for _, dir := range additional {
 		moreTemplates, err := findTemplates(dir)
 		if err != nil {

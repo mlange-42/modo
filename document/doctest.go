@@ -41,6 +41,7 @@ func (proc *Processor) writeDocTests(dir string) error {
 			return err
 		}
 	}
+	fmt.Printf("Extracted %d tests.\n", len(proc.docTests))
 	return nil
 }
 
@@ -56,6 +57,7 @@ func (proc *Processor) extractTests(text string, elems []string, modElems int) (
 	var blockName string
 	var excluded bool
 	var global bool
+	var count int
 	for scanner.Scan() {
 		origLine := scanner.Text()
 
@@ -89,6 +91,7 @@ func (proc *Processor) extractTests(text string, elems []string, modElems int) (
 				blockLines = append(blockLines, origLine)
 			}
 		}
+		count++
 
 		if isFence && fenced && !isStart {
 			if blockName == "" {
@@ -128,7 +131,7 @@ func (proc *Processor) extractTests(text string, elems []string, modElems int) (
 		proc.docTests = append(proc.docTests, block)
 	}
 
-	return outText.String(), nil
+	return strings.TrimSuffix(outText.String(), "\n"), nil
 }
 
 func parseBlockAttr(line string) (name string, hide bool, global bool, ok bool, err error) {

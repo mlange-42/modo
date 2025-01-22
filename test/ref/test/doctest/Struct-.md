@@ -21,11 +21,9 @@ func(self)
 
 Doctests in a struct member.
 
-
 ```mojo {doctest="func"}
 var a = 1
 ```
-
 
 **Args:**
 

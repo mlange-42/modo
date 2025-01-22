@@ -1,0 +1,34 @@
+input: 
+  - test.json
+
+output: out/
+
+format: plain
+
+tests: doctest/
+
+exports: true
+
+short-links: true
+
+case-insensitive: true
+
+
+pre-run:
+  - echo Starting...
+
+pre-build:
+  - echo Starting build...
+
+pre-test:
+  - echo Starting test...
+
+
+post-test:
+  - echo Tests finished...
+
+post-build:
+  - echo Build finished.
+
+post-run:
+  - echo Finished...

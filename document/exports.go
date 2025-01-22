@@ -116,7 +116,7 @@ func (proc *Processor) parseExports(pkgDocs string, basePath []string, remove bo
 		panic(err)
 	}
 	if remove {
-		return exports, outText.String(), anyExports
+		return exports, strings.TrimSuffix(outText.String(), "\n"), anyExports
 	}
 	return exports, pkgDocs, anyExports
 }

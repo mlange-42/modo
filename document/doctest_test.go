@@ -24,6 +24,8 @@ func TestParseBlockAttributes(t *testing.T) {
 			"test", false, false, true, false},
 		{"```mojo {.class1 doctest=\"test\" class2}",
 			"test", false, false, true, false},
+		{"```mojo {hide=true}",
+			"", true, false, true, false},
 	}
 
 	for _, test := range tests {
@@ -65,7 +67,7 @@ func TestExtractDocTests(t *testing.T) {
 	proc := NewProcessor(nil, nil, nil, &Config{})
 	outText, err := proc.extractTests(text, []string{"pkg", "Struct"}, 1)
 	assert.Nil(t, err)
-	assert.Equal(t, 15, len(strings.Split(outText, "\n")))
+	assert.Equal(t, 14, len(strings.Split(outText, "\n")))
 
 	assert.Equal(t, 1, len(proc.docTests))
 	assert.Equal(t, proc.docTests[0], &docTest{
