@@ -36,6 +36,9 @@ func rootCommand() (*cobra.Command, error) {
 		Long: `Modo -- DocGen for Mojo.
 
 Modo generates Markdown for static site generators (SSGs) from 'mojo doc' JSON output.`,
+		Example: `  modo init                      # set up a project
+  mojo doc src/ -o api.json      # run 'mojo doc'
+  modo build                     # build the docs`,
 		Args:         cobra.ExactArgs(0),
 		SilenceUsage: true,
 	}
