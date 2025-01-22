@@ -1,4 +1,4 @@
-package main
+package cmd
 
 import (
 	"fmt"
@@ -14,11 +14,13 @@ func testCommand() (*cobra.Command, error) {
 
 	root := &cobra.Command{
 		Use:   "test [PATH]",
-		Short: "Generate tests from 'mojo doc' JSON.",
-		Long: `Extracts doc-tests from 'mojo doc' JSON.
+		Short: "Extract doc-tests from 'mojo doc' JSON",
+		Long: `Extract doc-tests from 'mojo doc' JSON.
 
-Extracts tests based on the 'modo.yaml' file
-in the current directory if no path is given.`,
+Extracts tests based on the 'modo.yaml' file in the current directory if no path is given.
+The flags listed below overwrite the settings from that file.
+
+Complete documentation at https://mlange-42.github.io/modo/`,
 		Example: `  modo init                      # set up a project
   mojo doc src/ -o api.json      # run 'mojo doc'
   modo test                      # extract tests
@@ -40,13 +42,13 @@ in the current directory if no path is given.`,
 		},
 	}
 
-	root.Flags().StringSliceP("input", "i", []string{}, "'mojo doc' JSON file to process. Reads from STDIN if not specified.")
-	root.Flags().StringP("tests", "t", "", "Target folder to extract doctests for 'mojo test'.")
-	root.Flags().BoolP("case-insensitive", "C", false, "Build for systems that are not case-sensitive regarding file names.\nAppends hyphen (-) to capitalized file names.")
-	root.Flags().BoolP("strict", "S", false, "Strict mode. Errors instead of warnings.")
-	root.Flags().BoolP("dry-run", "D", false, "Dry-run without any file output.")
-	root.Flags().BoolP("bare", "B", false, "Don't run ore- and post-commands.")
-	root.Flags().StringSliceP("templates", "T", []string{}, "Optional directories with templates for (partial) overwrite.\nSee folder assets/templates in the repository.")
+	root.Flags().StringSliceP("input", "i", []string{}, "'mojo doc' JSON file to process. Reads from STDIN if not specified")
+	root.Flags().StringP("tests", "t", "", "Target folder to extract doctests for 'mojo test'")
+	root.Flags().BoolP("case-insensitive", "C", false, "Build for systems that are not case-sensitive regarding file names.\nAppends hyphen (-) to capitalized file names")
+	root.Flags().BoolP("strict", "S", false, "Strict mode. Errors instead of warnings")
+	root.Flags().BoolP("dry-run", "D", false, "Dry-run without any file output")
+	root.Flags().BoolP("bare", "B", false, "Don't run ore- and post-commands")
+	root.Flags().StringSliceP("templates", "T", []string{}, "Optional directories with templates for (partial) overwrite.\nSee folder assets/templates in the repository")
 
 	root.Flags().SortFlags = false
 	root.MarkFlagFilename("input", "json")
