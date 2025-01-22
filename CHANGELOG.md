@@ -1,4 +1,4 @@
-## [[unpublished]](https://github.com/mlange-42/modo/compare/v0.7.0..main)
+## [[v0.8.0]](https://github.com/mlange-42/modo/compare/v0.7.0..v0.8.0)
 
 ### Breaking changes
 
