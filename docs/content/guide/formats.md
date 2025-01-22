@@ -7,7 +7,7 @@ weight: 2
 
 Modo🧯 emits Markdown files.
 These files need to be processed further to generate an HTML site that can be served on GitHub pages (or elsewhere).
-Modo🧯 supports different formats to make this step easier, via the flag `--format`:
+Modo🧯 supports different formats to make this step easier, via the config field `format` or flag `--format`:
 
 ## Plain Markdown
 

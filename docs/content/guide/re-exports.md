@@ -8,7 +8,8 @@ weight: 4
 In Mojo🔥, package-level re-exports (or rather, imports) can be used
 to flatten the structure of a package and shorten import paths for users.
 
-Modo🧯 can structure documentation output according to re-exports using the flag `--exports`.
+Modo🧯 can structure documentation output according to re-exports
+by using `exports: true` in the config, or flag `--exports`.
 However, as we don't look at the actual code but just `mojo doc` JSON,
 these re-exports must be documented in an `Exports:` section in the package docstring.
 

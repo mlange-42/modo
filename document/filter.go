@@ -25,7 +25,7 @@ func (proc *Processor) filterPackages() error {
 	}
 
 	if !anyExports {
-		return fmt.Errorf("no package re-exports found. Given flag '--exports', there will be no output.\n       Add exports or run without flag '--exports'")
+		return fmt.Errorf("no package re-exports found. As 'exports' are enabled, there will be no output.\n       Add re-exports or run without 'exports' enabled")
 	}
 
 	proc.ExportDocs = &Docs{
