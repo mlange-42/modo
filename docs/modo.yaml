@@ -7,3 +7,31 @@ short-links: true
 case-insensitive: true
 templates:
   - modo/
+
+# Shell commands to run before build as well as test.
+pre-run:
+  - |
+    echo Running 'mojo doc'...
+    magic run mojo doc -o example/example.json example/src/mypkg
+    echo Done.
+
+# Shell commands to run before build.
+pre-build: []
+
+# Shell commands to run before test.
+# Also runs before build if 'doctest' is given.
+pre-test: []
+
+# Shell commands to run after test.
+# Also runs after build if 'doctest' is given.
+post-test:
+  - |
+    echo Running 'mojo test'...
+    magic run mojo test -I example/src/ doctest/
+    echo Done.
+
+# Shell commands to run after build.
+post-build: []
+
+# Shell commands to run after as well as test.
+post-run: []
