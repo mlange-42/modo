@@ -19,8 +19,9 @@ func buildCommand() (*cobra.Command, error) {
 
 Builds based on the 'modo.yaml' file
 in the current directory if no path is given.`,
-		Example: `  modo build -i api.json -o docs/         # from a file
-  mojo doc ./src | modo build -o docs/    # from 'mojo doc'`,
+		Example: `  modo init                      # set up a project
+  mojo doc src/ -o api.json      # run 'mojo doc'
+  modo build                     # build the docs`,
 		Args:         cobra.MaximumNArgs(1),
 		SilenceUsage: true,
 		PreRunE: func(cmd *cobra.Command, args []string) error {

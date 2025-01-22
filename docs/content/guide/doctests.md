@@ -9,17 +9,17 @@ To keep code examples in docstrings up to date, Modo🧯 can generate test files
 Doctests are enabled `tests` in the `modo.yaml` or flag `--tests`, which take an output directory for test files as an argument:
 
 ```shell {class="no-wrap"}
-modo build --tests tests/        # render to Markdown and extract doctests
-mojo test -I src/ tests/         # run the doctests
+modo build --tests doctest/       # render to Markdown and extract doctests
+mojo test -I . doctest/           # run the doctests
 ```
 
 Alternatively, Modo🧯's `test` command can be used to extract tests without building the Markdown docs:
 
 ```shell {class="no-wrap"}
-modo test --tests tests/        # only extract doctests
+modo test --tests doctest/        # only extract doctests
 ```
 
-In both cases, flag `--tests` can be omitted if `tests: tests/` is set in the `modo.yaml` file.
+In both cases, flag `--tests` can be omitted if `tests: doctest/` is set in the `modo.yaml` file.
 
 ## Tested blocks
 

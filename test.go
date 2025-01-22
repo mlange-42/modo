@@ -19,8 +19,10 @@ func testCommand() (*cobra.Command, error) {
 
 Extracts tests based on the 'modo.yaml' file
 in the current directory if no path is given.`,
-		Example: `  modo test -i api.json -t tests/         # from a file
-  mojo doc ./src | modo test -t tests/    # from 'mojo doc'`,
+		Example: `  modo init                      # set up a project
+  mojo doc src/ -o api.json      # run 'mojo doc'
+  modo test                      # extract tests
+  mojo test -I . doctest/        # run the tests`,
 		Args:         cobra.MaximumNArgs(1),
 		SilenceUsage: true,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
