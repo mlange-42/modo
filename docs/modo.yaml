@@ -12,7 +12,8 @@ templates:
 pre-run:
   - |
     echo Running 'mojo doc'...
-    magic run mojo doc -o example/example.json example/src/mypkg
+    cd example
+    magic run mojo doc -o example.json src/mypkg
     echo Done.
 
 # Shell commands to run before build.
@@ -27,7 +28,8 @@ pre-test: []
 post-test:
   - |
     echo Running 'mojo test'...
-    magic run mojo test -I example/src/ doctest/
+    cd example
+    magic run mojo test -I src/ ../doctest/
     echo Done.
 
 # Shell commands to run after build.
