@@ -6,12 +6,12 @@ weight: 5
 ---
 
 To keep code examples in docstrings up to date, Modo🧯 can generate test files for `mojo test` from them.
-Doctests are enabled by flag `--tests`, which takes an output directory for test files as an argument:
+Doctests are enabled `tests` in the `modo.yaml` or flag `--tests`, which take an output directory for test files as an argument:
 
 ```shell {class="no-wrap"}
-mojo doc src/ -o api.json                    # generate doc JSON
-modo build -i api.json -o docs/ --tests tests/     # render to Markdown and extract doctests
-mojo test -I src/ tests/                     # run the doctests
+mojo doc src/ -o api.json        # generate doc JSON
+modo build --tests tests/        # render to Markdown and extract doctests
+mojo test -I src/ tests/         # run the doctests
 ```
 
 ## Tested blocks

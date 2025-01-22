@@ -6,7 +6,7 @@ weight: 6
 ---
 
 Modo🧯 relies heavily on templating.
-With flag `--templates`, a custom templates folder can be specified to (partially) overwrite the embedded templates.
+With the option `templates` in the `modo.yaml` or flag `--templates`, custom template folders can be specified to (partially) overwrite the embedded templates.
 Simply use the same files names, and alter the content.
 Embedded templates that can be overwritten can be found in folder [assets/templates](https://github.com/mlange-42/modo/tree/main/assets/templates).
 

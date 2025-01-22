@@ -70,7 +70,7 @@ func runTest(args *document.Config) error {
 		}
 	}
 
-	if len(args.InputFiles) == 0 {
+	if len(args.InputFiles) == 0 || (len(args.InputFiles) == 1 && args.InputFiles[0] == "") {
 		if err := runTestOnce("", args); err != nil {
 			return err
 		}
