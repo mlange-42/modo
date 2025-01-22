@@ -4,7 +4,6 @@ Mojo package
 
 Package pkg.
 
-
 ## Modules
 
 - [`submod`](submod/_index.md)
