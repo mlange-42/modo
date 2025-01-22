@@ -2,7 +2,7 @@
 title: Output formats
 type: docs
 summary: Modo🧯's output formats.
-weight: 2
+weight: 3
 ---
 
 Modo🧯 emits Markdown files.
