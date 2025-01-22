@@ -13,7 +13,7 @@ type Config struct {
 	OutputDir       string   `mapstructure:"output" yaml:"output"`
 	TestOutput      string   `mapstructure:"tests" yaml:"tests"`
 	RenderFormat    string   `mapstructure:"format" yaml:"format"`
-	UseExports      bool     `mapstructure:"use-exports" yaml:"use-exports"`
+	UseExports      bool     `mapstructure:"exports" yaml:"exports"`
 	ShortLinks      bool     `mapstructure:"short-links" yaml:"short-links"`
 	Strict          bool     `mapstructure:"strict" yaml:"strict"`
 	DryRun          bool     `mapstructure:"dry-run" yaml:"dry-run"`
