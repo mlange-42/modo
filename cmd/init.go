@@ -12,8 +12,11 @@ import (
 
 func initCommand() (*cobra.Command, error) {
 	root := &cobra.Command{
-		Use:          "init",
-		Short:        "Generate a Modo config file in the current directory.",
+		Use:   "init",
+		Short: "Generate a Modo config file in the current directory",
+		Long: `Generate a Modo config file in the current directory.
+
+Complete documentation at https://mlange-42.github.io/modo/`,
 		Args:         cobra.ExactArgs(0),
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {

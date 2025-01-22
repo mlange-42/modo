@@ -10,7 +10,9 @@ func RootCommand() (*cobra.Command, error) {
 		Short: "Modo -- DocGen for Mojo.",
 		Long: `Modo -- DocGen for Mojo.
 
-Modo generates Markdown for static site generators (SSGs) from 'mojo doc' JSON output.`,
+Modo generates Markdown for static site generators (SSGs) from 'mojo doc' JSON output.
+
+Complete documentation at https://mlange-42.github.io/modo/`,
 		Example: `  modo init                      # set up a project
   mojo doc src/ -o api.json      # run 'mojo doc'
   modo build                     # build the docs`,
