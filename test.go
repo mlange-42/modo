@@ -44,6 +44,7 @@ in the current directory if no path is given.`,
 	root.Flags().BoolP("case-insensitive", "C", false, "Build for systems that are not case-sensitive regarding file names.\nAppends hyphen (-) to capitalized file names.")
 	root.Flags().BoolP("strict", "S", false, "Strict mode. Errors instead of warnings.")
 	root.Flags().BoolP("dry-run", "D", false, "Dry-run without any file output.")
+	root.Flags().BoolP("bare", "B", false, "Don't run ore- and post-commands.")
 	root.Flags().StringSliceP("templates", "T", []string{}, "Optional directories with templates for (partial) overwrite.\nSee folder assets/templates in the repository.")
 
 	root.Flags().SortFlags = false
@@ -63,8 +64,10 @@ func runTest(args *document.Config) error {
 		return fmt.Errorf("no output path for tests given")
 	}
 
-	if err := runPreTestCommands(args); err != nil {
-		return err
+	if !args.Bare {
+		if err := runPreTestCommands(args); err != nil {
+			return err
+		}
 	}
 
 	if len(args.InputFiles) == 0 {
@@ -79,8 +82,10 @@ func runTest(args *document.Config) error {
 		}
 	}
 
-	if err := runPostTestCommands(args); err != nil {
-		return err
+	if !args.Bare {
+		if err := runPostTestCommands(args); err != nil {
+			return err
+		}
 	}
 
 	return nil

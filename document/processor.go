@@ -18,6 +18,7 @@ type Config struct {
 	Strict          bool     `mapstructure:"strict" yaml:"strict"`
 	DryRun          bool     `mapstructure:"dry-run" yaml:"dry-run"`
 	CaseInsensitive bool     `mapstructure:"case-insensitive" yaml:"case-insensitive"`
+	Bare            bool     `mapstructure:"bare"`
 	TemplateDirs    []string `mapstructure:"templates" yaml:"templates"`
 	PreRun          []string `mapstructure:"pre-run" yaml:"pre-run"`
 	PreBuild        []string `mapstructure:"pre-build" yaml:"pre-build"`
