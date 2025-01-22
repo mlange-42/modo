@@ -9,10 +9,17 @@ To keep code examples in docstrings up to date, Modo🧯 can generate test files
 Doctests are enabled `tests` in the `modo.yaml` or flag `--tests`, which take an output directory for test files as an argument:
 
 ```shell {class="no-wrap"}
-mojo doc src/ -o api.json        # generate doc JSON
 modo build --tests tests/        # render to Markdown and extract doctests
 mojo test -I src/ tests/         # run the doctests
 ```
+
+Alternatively, Modo🧯's `test` command can be used to extract tests without building the Markdown docs:
+
+```shell {class="no-wrap"}
+modo test --tests tests/        # only extract doctests
+```
+
+In both cases, flag `--tests` can be omitted if `tests: tests/` is set in the `modo.yaml` file.
 
 ## Tested blocks
 
