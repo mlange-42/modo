@@ -47,7 +47,7 @@ jobs:
           magic run mojo doc -o example.json src/mypkg
       - name: Create Markdown
         run: |
-          go run . docs/content -i docs/example/example.json --exports --short-links --format=hugo --templates=docs/modo
+          go run . build docs
 
       - name: Run hugo
         run: |

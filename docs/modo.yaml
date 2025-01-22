@@ -7,15 +7,3 @@ short-links: true
 case-insensitive: true
 templates:
   - modo/
-
-pre-build:
-  - echo Starting build.
-
-post-build:
-  - echo Build finished
-
-pre-test:
-  - echo Starting tests.
-
-post-test:
-  - echo Tests finished
