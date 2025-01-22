@@ -20,7 +20,6 @@ Exports (abs) [`test.ModuleAlias`](_index.md#aliases), [`Struct`](Struct-.md), [
  - [`Struct.struct_method`](pkg/submod/Struct-.md#struct_method)
 
 
-
 ## Aliases
 
 - `ModuleAlias = Int`
