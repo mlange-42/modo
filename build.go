@@ -30,12 +30,11 @@ in the current directory if no path is given.`,
 			return nil
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
-			cliArgs := document.Config{}
-			err := v.Unmarshal(&cliArgs)
+			cliArgs, err := document.ConfigFromViper(v)
 			if err != nil {
 				return err
 			}
-			return runBuild(&cliArgs)
+			return runBuild(cliArgs)
 		},
 	}
 

@@ -8,26 +8,6 @@ import (
 	"text/template"
 )
 
-type Config struct {
-	InputFiles      []string `mapstructure:"input" yaml:"input"`
-	OutputDir       string   `mapstructure:"output" yaml:"output"`
-	TestOutput      string   `mapstructure:"tests" yaml:"tests"`
-	RenderFormat    string   `mapstructure:"format" yaml:"format"`
-	UseExports      bool     `mapstructure:"exports" yaml:"exports"`
-	ShortLinks      bool     `mapstructure:"short-links" yaml:"short-links"`
-	Strict          bool     `mapstructure:"strict" yaml:"strict"`
-	DryRun          bool     `mapstructure:"dry-run" yaml:"dry-run"`
-	CaseInsensitive bool     `mapstructure:"case-insensitive" yaml:"case-insensitive"`
-	Bare            bool     `mapstructure:"bare"`
-	TemplateDirs    []string `mapstructure:"templates" yaml:"templates"`
-	PreRun          []string `mapstructure:"pre-run" yaml:"pre-run"`
-	PreBuild        []string `mapstructure:"pre-build" yaml:"pre-build"`
-	PreTest         []string `mapstructure:"pre-test" yaml:"pre-test"`
-	PostTest        []string `mapstructure:"post-test" yaml:"post-test"`
-	PostBuild       []string `mapstructure:"post-build" yaml:"post-build"`
-	PostRun         []string `mapstructure:"post-run" yaml:"post-run"`
-}
-
 type Processor struct {
 	Config             *Config
 	Template           *template.Template
