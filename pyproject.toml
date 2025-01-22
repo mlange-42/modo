@@ -26,10 +26,10 @@ Issues = "https://github.com/mlange-42/modo/issues"
 pymodo = "pymodo.run:main"
 
 [tool.setuptools]
-packages = ["pymodo"]
+packages = ["pymodo", "pymodo.bin"]
 
 [tool.setuptools.package-data]
-pymodo = ["bin/*"]
+bin = ["*"]
 
 [tool.setuptools_scm]
 version_file = "pymodo/_version.py"

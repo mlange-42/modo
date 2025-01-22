@@ -13,7 +13,7 @@ jobs:
     steps:
       - name: Checkout Modo
         uses: actions/checkout@v3
-      - name: Setup PYthon
+      - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: '3.13'
