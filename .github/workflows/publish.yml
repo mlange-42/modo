@@ -42,6 +42,7 @@ jobs:
 
       - name: Run Modo # includes `mojo doc` and `mojo test`
         run: |
+          source /home/runner/.bash_profile
           go run . build docs
 
       - name: Run hugo
