@@ -73,7 +73,6 @@ func mountProject(v *viper.Viper, paths []string) error {
 		}
 	}
 
-	//filePath := path.Join(p, configFile+".yaml")
 	filePath := configFile + ".yaml"
 	exists, err := fileExists(filePath)
 	if err != nil {
