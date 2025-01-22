@@ -40,13 +40,9 @@ jobs:
           hugo-version: '${{env.HUGO_VERSION}}'
           extended: true
 
-      - name: Generate JSON docs
+      - name: Run Modo # includes `mojo doc` and `mojo test`
         run: |
           source /home/runner/.bash_profile
-          cd docs/example
-          magic run mojo doc -o example.json src/mypkg
-      - name: Create Markdown
-        run: |
           go run . build docs
 
       - name: Run hugo
