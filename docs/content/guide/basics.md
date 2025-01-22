@@ -18,17 +18,23 @@ Pre-compiled binaries for Linux, Windows and MacOS are available in the
 
 ## Usage
 
-Pipe `mojo doc` to Modo🧯:
+In your Mojo🔥 project, set up Modo🧯:
 
-``` {class="no-wrap"}
-mojo doc src/ | modo build -o docs/
+```shell {class="no-wrap"}
+modo init
 ```
 
-Alternatively, use a file:
+This sets up the project with default settings and paths.
+See the generated `modo.yaml` file to modify them.
 
-``` {class="no-wrap"}
+Next, run `mojo doc` to extract the API docs in JSON format:
+
+```shell {class="no-wrap"}
 mojo doc src/ -o api.json
-modo build -i api.json -o docs/
 ```
 
-Get CLI help with `modo --help`.
+Finally, build the Markdown documentation:
+
+```shell {class="no-wrap"}
+modo build
+```

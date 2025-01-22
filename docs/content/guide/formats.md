@@ -18,12 +18,12 @@ The generated files are suitable for GitHub's Markdown rendering.
 ## mdBook
 
 Markdown files as well as auxiliary files for [mdBook](https://github.com/rust-lang/mdBook),
-with `--format=mdbook`.
+with `format: mdbook` in the `modo.yaml` or with flag `--format=mdbook`.
 The generated files can be used by mdBook without any further steps:
 
 ``` {class="no-wrap"}
-modo build -i api.json -o docs/ --format=mdbook
-mdbook serve docs-out --open
+modo build
+mdbook serve docs/ --open
 ```
 
 [Templates](../templates) can be used to customize the mdBook configuration file `book.toml`.
@@ -31,18 +31,19 @@ mdbook serve docs-out --open
 ## Hugo
 
 Markdown files with front matter and cross-references for [Hugo](https://gohugo.io/),
-with flag `--format=hugo`.
+with `format: hugo` in the `modo.yaml` or with flag `--format=hugo`.
 
 You should first set up a Hugo project in a sub-folder of your repository.
-Then, run Modo🧯 with the Hugo `content` folder as output path:
+Then, use the Hugo `content` folder as output path,
+either by editing `modo.yaml` or via flag `--output`.
 
 ``` {class="no-wrap"}
-modo build -i api.json -o <hugo-project>/content --format=hugo
+modo build --output=docs/content
 ```
 
 Further, in your `hugo.toml`, add `disablePathToLower = true` to the main section
 to prevent lower case members (like functions) and upper case members (like structs)
 overwrite each other.
-Alternatively, run Modo🧯 with switch `--case-insensitive`.
+Alternatively, run Modo🧯 with `case-insensitive: true` or flag `--case-insensitive`.
 
 [Templates](../templates) can be used to customize the Hugo front matter of each page.

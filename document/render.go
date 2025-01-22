@@ -181,6 +181,9 @@ func loadTemplates(f Formatter, additional ...string) (*template.Template, error
 	}
 
 	for _, dir := range additional {
+		if dir == "" {
+			continue
+		}
 		moreTemplates, err := findTemplates(dir)
 		if err != nil {
 			return nil, err
