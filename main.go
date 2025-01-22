@@ -15,6 +15,7 @@ import (
 )
 
 const configFile = "modo"
+const setExitOnError = "set -e"
 
 func main() {
 	start := time.Now()
@@ -57,7 +58,8 @@ Modo generates Markdown for static site generators (SSGs) from 'mojo doc' JSON o
 }
 
 func runCommand(command string) error {
-	cmd := exec.Command("bash", "-c", command)
+	commandWithExit := fmt.Sprintf("%s\n%s", setExitOnError, command)
+	cmd := exec.Command("bash", "-c", commandWithExit)
 	cmd.Stdout = os.Stdout
 	cmd.Stderr = os.Stderr
 	return cmd.Run()
