@@ -99,12 +99,12 @@ func (proc *Processor) ExtractTests() error {
 	// Collect the paths of all (sub)-elements in the original structure.
 	proc.collectElementPaths()
 
+	// Extract doc tests.
+	err := proc.extractDocTests()
+	if err != nil {
+		return err
+	}
 	if proc.Config.TestOutput != "" {
-		// Extract doc tests.
-		err := proc.extractDocTests()
-		if err != nil {
-			return err
-		}
 		err = proc.writeDocTests(proc.Config.TestOutput)
 		if err != nil {
 			return err

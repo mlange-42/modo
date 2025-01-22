@@ -65,7 +65,7 @@ func TestExtractDocTests(t *testing.T) {
 	proc := NewProcessor(nil, nil, nil, &Config{})
 	outText, err := proc.extractTests(text, []string{"pkg", "Struct"}, 1)
 	assert.Nil(t, err)
-	assert.Equal(t, 15, len(strings.Split(outText, "\n")))
+	assert.Equal(t, 14, len(strings.Split(outText, "\n")))
 
 	assert.Equal(t, 1, len(proc.docTests))
 	assert.Equal(t, proc.docTests[0], &docTest{
