@@ -23,6 +23,7 @@ jobs:
       - name: Build wheel
         run: |
           python -m build
+          cat pymodo/_version.py
       - name: Upload to TestPyPI
         run: |
           python -m twine upload --verbose --skip-existing -r testpypi -u __token__ -p ${{ secrets.TEST_PYPI_TOKEN }} dist/*
