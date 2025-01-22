@@ -1,7 +1,7 @@
 input: example/example.json
 output: content/
+tests: doctest/
 format: hugo
-doctest: doctest/
 exports: true
 short-links: true
 case-insensitive: true

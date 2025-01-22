@@ -117,7 +117,10 @@ func mountProject(v *viper.Viper, paths []string) error {
 		return err
 	}
 	if !exists {
-		return fmt.Errorf("no '%s' found in path '%s'", filePath, p)
+		if withConfig {
+			return fmt.Errorf("no '%s' found in path '%s'", filePath, p)
+		}
+		return nil
 	}
 
 	v.SetConfigName(configFile)
