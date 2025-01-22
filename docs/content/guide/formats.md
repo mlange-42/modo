@@ -22,7 +22,7 @@ with `--format=mdbook`.
 The generated files can be used by mdBook without any further steps:
 
 ``` {class="no-wrap"}
-modo -i api.json -o docs/ --format=mdbook
+modo build -i api.json -o docs/ --format=mdbook
 mdbook serve docs-out --open
 ```
 
@@ -37,7 +37,7 @@ You should first set up a Hugo project in a sub-folder of your repository.
 Then, run Modo🧯 with the Hugo `content` folder as output path:
 
 ``` {class="no-wrap"}
-modo -i api.json -o <hugo-project>/content --format=hugo
+modo build -i api.json -o <hugo-project>/content --format=hugo
 ```
 
 Further, in your `hugo.toml`, add `disablePathToLower = true` to the main section

@@ -10,7 +10,7 @@ Doctests are enabled by flag `--tests`, which takes an output directory for test
 
 ```shell {class="no-wrap"}
 mojo doc src/ -o api.json                    # generate doc JSON
-modo -i api.json -o docs/ --tests tests/     # render to Markdown and extract doctests
+modo build -i api.json -o docs/ --tests tests/     # render to Markdown and extract doctests
 mojo test -I src/ tests/                     # run the doctests
 ```
 

@@ -39,14 +39,14 @@ Pre-compiled binaries for Linux, Windows and MacOS are available in the
 Pipe `mojo doc` to Modo🧯:
 
 ```
-mojo doc src/ | modo -o docs/
+mojo doc src/ | modo build -o docs/
 ```
 
 Alternatively, use a file:
 
 ```
 mojo doc src/ -o api.json
-modo -i api.json -o docs/
+modo build -i api.json -o docs/
 ```
 
 Get CLI help with `modo --help`.
