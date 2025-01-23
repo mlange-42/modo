@@ -110,7 +110,7 @@ jobs:
           name: modo_macos
           path: pymodo/bin/
       - name: Display structure of downloaded files
-        run: ls -R pymodo/bin/
+        run: ls -R -l pymodo/bin/
 
       - name: Build wheel
         run: |
