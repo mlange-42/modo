@@ -4,7 +4,6 @@ on:
   push:
     branches:
     - main
-  pull_request:
 
 jobs:
 
@@ -51,7 +50,7 @@ jobs:
           path: pymodo/bin/modo_win.exe
   
   build-macos:
-    name: MacOS amd64 build
+    name: MacOS build
     runs-on: macos-latest
     steps:
       - uses: actions/checkout@v3
