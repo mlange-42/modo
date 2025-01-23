@@ -33,4 +33,3 @@ bin = ["*"]
 
 [tool.setuptools_scm]
 version_file = "pymodo/_version.py"
-local_scheme = "no-local-version"
