@@ -26,12 +26,12 @@ jobs:
         run: |
           GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o pymodo/bin/modo_linux .
           chmod +x pymodo/bin/modo_linux
-          ls -R -l pymodo/bin/
+          tar cfz pymodo/bin/modo_linux.tar.gz pymodo/bin/modo_linux
       - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
-          name: modo_linux
-          path: pymodo/bin/modo_linux
+          name: modo_linux.tar.gz
+          path: pymodo/bin/modo_linux.tar.gz
   
   build-windows:
     name: Windows build
@@ -69,7 +69,7 @@ jobs:
         run: |
           GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o pymodo/bin/modo_macos .
           chmod +x pymodo/bin/modo_macos
-          ls -R -l pymodo/bin/
+          tar cfz pymodo/bin/modo_macos.tar.gz pymodo/bin/modo_macos
       - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
@@ -99,7 +99,7 @@ jobs:
       - name: Download Linux binaries
         uses: actions/download-artifact@v4
         with:
-          name: modo_linux
+          name: modo_linux.tar.gz
           path: pymodo/bin/
       - name: Download Windows binaries
         uses: actions/download-artifact@v4
@@ -109,10 +109,15 @@ jobs:
       - name: Download MacOS binaries
         uses: actions/download-artifact@v4
         with:
-          name: modo_macos
+          name: modo_macos.tar.gz
           path: pymodo/bin/
-      - name: Display structure of downloaded files
-        run: ls -R -l pymodo/bin/
+      - name: Extract and check files
+        run: |
+          tar xfz pymodo/bin/modo_linux.tar.gz
+          tar xfz pymodo/bin/modo_macos.tar.gz
+          rm pymodo/bin/modo_linux.tar.gz
+          rm pymodo/bin/modo_macos.tar.gz
+          ls -R -l pymodo/bin/
 
       - name: Build wheel
         run: |
