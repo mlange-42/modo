@@ -23,7 +23,7 @@ jobs:
       - name: Build
         run: |
           GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" .
-          chmod u+x modo
+          chmod +x modo
       - name: Compress binaries
         run: |
           tar -czf modo.tar.gz modo
@@ -83,7 +83,7 @@ jobs:
       - name: Build
         run: |
           GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" .
-          chmod u+x modo
+          chmod +x modo
       - name: Compress binaries
         run: |
           zip -r modo.zip modo
@@ -114,7 +114,7 @@ jobs:
       - name: Build
         run: |
           GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" .
-          chmod u+x modo
+          chmod +x modo
       - name: Compress binaries
         run: |
           zip -r modo.zip modo
