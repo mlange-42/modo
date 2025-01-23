@@ -19,6 +19,10 @@
   margin-top: 0.66rem;
 }
 
+.hextra-code-block pre:not(.lntable pre) {
+  border-radius: 0.5rem;
+}
+
 .hextra-code-block pre {
   font-size: 1.0em;
 }

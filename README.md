@@ -41,7 +41,8 @@ pip install pymodo
 ### Using Go
 
 With [Go](https://go.dev) installed, you can install Modo🧯 like this:
-```shell
+
+```
 go install github.com/mlange-42/modo@latest
 ```
 
@@ -55,7 +56,7 @@ for Linux, Windows and MacOS.
 
 In your Mojo🔥 project, set up Modo🧯:
 
-```shell
+```
 modo init
 ```
 
@@ -64,13 +65,13 @@ See the generated `modo.yaml` file to modify them.
 
 Next, run `mojo doc` to extract the API docs in JSON format:
 
-```shell
+```
 mojo doc src/ -o api.json
 ```
 
 Finally, build the Markdown documentation:
 
-```shell
+```
 modo build
 ```
 
