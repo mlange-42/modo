@@ -1,0 +1,36 @@
+[build-system]
+requires = ["setuptools>=64", "setuptools_scm>=8"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "pymodo"
+dynamic = ["version"]
+authors = [
+  { name="Martin Lange", email="martin_lange_@gmx.net" },
+]
+description = "Python wrapper for Modo, a documentation generator (DocGen) for the Mojo programming language."
+readme = "README.md"
+requires-python = ">=3.8"
+classifiers = [
+    "Programming Language :: Python :: 3",
+    "Operating System :: OS Independent",
+]
+#license = "MIT"
+#license-files = ["LICENSE"]
+
+[project.urls]
+Homepage = "https://github.com/mlange-42/modo"
+Issues = "https://github.com/mlange-42/modo/issues"
+
+[project.scripts]
+pymodo = "pymodo.run:main"
+
+[tool.setuptools]
+packages = ["pymodo", "pymodo.bin"]
+
+[tool.setuptools.package-data]
+"*" = ["modo_win.exe", "modo_linux", "modo_macos"]
+
+[tool.setuptools_scm]
+version_file = "pymodo/_version.py"
+local_scheme = "no-local-version"

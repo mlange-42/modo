@@ -16,12 +16,14 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v3
         with:
-          go-version: '1.22.x'
+          go-version: '1.23.x'
       - name: Install dependencies
         run: |
           go get ./...
       - name: Build
-        run: GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" .
+        run: |
+          GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" .
+          chmod +x modo
       - name: Compress binaries
         run: |
           tar -czf modo.tar.gz modo
@@ -45,7 +47,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v3
         with:
-          go-version: '1.22.x'
+          go-version: '1.23.x'
       - name: Install dependencies
         run: |
           go get ./...
@@ -74,12 +76,13 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v3
         with:
-          go-version: '1.22.x'
+          go-version: '1.23.x'
       - name: Install dependencies
         run: |
           go get ./...
       - name: Build
-        run: GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" .
+        run: |
+          GOOS=darwin GOARCH=arm64 go build -ldflags="-s -w" .
       - name: Compress binaries
         run: |
           zip -r modo.zip modo
@@ -103,7 +106,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v3
         with:
-          go-version: '1.22.x'
+          go-version: '1.23.x'
       - name: Install dependencies
         run: |
           go get ./...
