@@ -16,7 +16,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v3
         with:
-          go-version: '1.22.x'
+          go-version: '1.23.x'
       - name: Install dependencies
         run: |
           go get ./...
@@ -45,7 +45,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v3
         with:
-          go-version: '1.22.x'
+          go-version: '1.23.x'
       - name: Install dependencies
         run: |
           go get ./...
@@ -74,7 +74,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v3
         with:
-          go-version: '1.22.x'
+          go-version: '1.23.x'
       - name: Install dependencies
         run: |
           go get ./...
@@ -103,7 +103,7 @@ jobs:
       - name: Setup Go
         uses: actions/setup-go@v3
         with:
-          go-version: '1.22.x'
+          go-version: '1.23.x'
       - name: Install dependencies
         run: |
           go get ./...
