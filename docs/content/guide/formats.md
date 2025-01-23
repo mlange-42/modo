@@ -21,7 +21,7 @@ Markdown files as well as auxiliary files for [mdBook](https://github.com/rust-l
 with `format: mdbook` in the `modo.yaml` or with flag `--format=mdbook`.
 The generated files can be used by mdBook without any further steps:
 
-``` {class="no-wrap"}
+```{class="no-wrap"}
 modo build
 mdbook serve docs/ --open
 ```
@@ -37,7 +37,7 @@ You should first set up a Hugo project in a sub-folder of your repository.
 Then, use the Hugo `content` folder as output path,
 either by editing `modo.yaml` or via flag `--output`.
 
-``` {class="no-wrap"}
+```{class="no-wrap"}
 modo build --output=docs/content
 ```
 

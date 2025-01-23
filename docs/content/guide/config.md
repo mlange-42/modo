@@ -12,7 +12,7 @@ A Modo🧯 project is defined by a file `modo.yaml`.
 This file contains the complete configuration for commands `build` and `test`.
 A config file can be generated with the `init` command:
 
-```shell {class="no-wrap"}
+```{class="no-wrap"}
 modo init
 ```
 
@@ -21,14 +21,14 @@ The content of the generated file is shown [at the bottom](#config-file-referenc
 When `modo build` or `modo test` are executed in a folder containing a `modo.yaml`,
 the file is used for configuration and no command like flags are required:
 
-```shell {class="no-wrap"}
+```{class="no-wrap"}
 modo build
 ```
 
 However, command line flags can still be used to overwrite the values that were read from the file.
 As an example, this is how to overwrite the output format:
 
-```shell {class="no-wrap"}
+```{class="no-wrap"}
 modo build --format=hugo
 ```
 
@@ -42,7 +42,7 @@ If there is no such file in the current directory,
 an empty configuration is used.
 Command line flags must be used for any configuration:
 
-```shell {class="no-wrap"}
+```{class="no-wrap"}
 modo build -i api.json -o docs/
 ```
 
