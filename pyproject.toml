@@ -21,7 +21,7 @@ Homepage = "https://github.com/mlange-42/modo"
 Issues = "https://github.com/mlange-42/modo/issues"
 
 [project.scripts]
-modo = "pymodo.run:main"
+modo = "pymodo.modo:main"
 
 [tool.setuptools]
 packages = ["pymodo", "pymodo.bin"]
