@@ -26,6 +26,7 @@ jobs:
         run: |
           GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o pymodo/bin/modo_linux .
           chmod +x pymodo/bin/modo_linux
+          ls -R -l pymodo/bin/
       - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
@@ -68,6 +69,7 @@ jobs:
         run: |
           GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o pymodo/bin/modo_macos .
           chmod +x pymodo/bin/modo_macos
+          ls -R -l pymodo/bin/
       - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
