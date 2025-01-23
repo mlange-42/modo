@@ -21,7 +21,9 @@ jobs:
         run: |
           go get ./...
       - name: Build
-        run: GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o pymodo/bin/modo_linux .
+        run: |
+          GOOS=linux GOARCH=amd64 go build -ldflags="-s -w" -o pymodo/bin/modo_linux .
+          chmod +x pymodo/bin/modo_linux
       - name: Upload binary
         uses: actions/upload-artifact@v4
         with:
