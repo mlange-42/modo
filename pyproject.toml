@@ -29,7 +29,7 @@ pymodo = "pymodo.run:main"
 packages = ["pymodo", "pymodo.bin"]
 
 [tool.setuptools.package-data]
-"*" = ["modo_win.exe", "modo_linux"]
+"*" = ["modo_win.exe", "modo_linux", "modo_macos"]
 
 [tool.setuptools_scm]
 version_file = "pymodo/_version.py"

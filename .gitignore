@@ -23,5 +23,7 @@
 /build/
 # Python egg metadata, regenerated from source files by setuptools.
 /*.egg-info
+# Other Python stuff
+__pycache__/
 # Pymodo version
 /pymodo/_version.py

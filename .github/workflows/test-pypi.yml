@@ -50,6 +50,26 @@ jobs:
           name: modo_win.exe
           path: pymodo/bin/modo_win.exe
   
+  build-macos:
+    name: MacOS amd64 build
+    runs-on: macos-latest
+    steps:
+      - uses: actions/checkout@v3
+      - name: Setup Go
+        uses: actions/setup-go@v3
+        with:
+          go-version: '1.23.x'
+      - name: Install dependencies
+        run: |
+          go get ./...
+      - name: Build
+        run: GOOS=darwin GOARCH=amd64 go build -ldflags="-s -w" -o pymodo/bin/modo_macos .
+      - name: Upload binary
+        uses: actions/upload-artifact@v4
+        with:
+          name: modo_macos
+          path: pymodo/bin/modo_macos
+
   publish:
     name: Build and upload to TestPyPI
     runs-on: ubuntu-latest
@@ -78,6 +98,11 @@ jobs:
         uses: actions/download-artifact@v4
         with:
           name: modo_win.exe
+          path: pymodo/bin/
+      - name: Download MacOS binaries
+        uses: actions/download-artifact@v4
+        with:
+          name: modo_macos
           path: pymodo/bin/
       - name: Display structure of downloaded files
         run: ls -R pymodo/bin/
