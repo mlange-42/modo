@@ -8,13 +8,30 @@ weight: 1
 
 ## Installation
 
-Pre-compiled binaries for Linux, Windows and MacOS are available in the
-[Releases](https://github.com/mlange-42/modo/releases).
+### Using Python
 
-> Alternatively, install using [Go](https://go.dev):
-> ```shell {class="no-wrap"}
-> go install github.com/mlange-42/modo@latest
-> ```
+Modo🧯 is available on PyPI as [`pymodo`](https://pypi.org/project/pymodo/).
+Install it with pip:
+
+```
+pip install pymodo
+```
+
+> This installs the `modo` command. If the command is not found, try:  
+> `python -m pymodo`
+
+### Using Go
+
+With [Go](https://go.dev) installed, you can install Modo🧯 like this:
+```shell
+go install github.com/mlange-42/modo@latest
+```
+
+### Precompiled binaries
+
+Pre-compiled binaries for manual installation are available in the
+[Releases](https://github.com/mlange-42/modo/releases)
+for Linux, Windows and MacOS.
 
 ## Usage
 
