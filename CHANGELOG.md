@@ -1,8 +1,6 @@
-## [[unpublished]](https://github.com/mlange-42/modo/compare/v0.8.0...main)
+## [[v0.8.1]](https://github.com/mlange-42/modo/compare/v0.8.0...v0.8.1)
 
-### Other
-
-* Modo is now installable with `pip`, as `pymodo` (#102, #104)
+Modo🧯 is now installable with `pip`, as `pymodo` (#102, #104)
 
 ## [[v0.8.0]](https://github.com/mlange-42/modo/compare/v0.7.0...v0.8.0)
 
