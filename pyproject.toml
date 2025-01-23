@@ -15,15 +15,13 @@ classifiers = [
     "Programming Language :: Python :: 3",
     "Operating System :: OS Independent",
 ]
-#license = "MIT"
-#license-files = ["LICENSE"]
 
 [project.urls]
 Homepage = "https://github.com/mlange-42/modo"
 Issues = "https://github.com/mlange-42/modo/issues"
 
 [project.scripts]
-pymodo = "pymodo.run:main"
+modo = "pymodo.run:main"
 
 [tool.setuptools]
 packages = ["pymodo", "pymodo.bin"]
