@@ -1,4 +1,10 @@
-## [[v0.8.0]](https://github.com/mlange-42/modo/compare/v0.7.0..v0.8.0)
+## [[unpublished]](https://github.com/mlange-42/modo/compare/v0.8.0...main)
+
+### Other
+
+* Modo is now installable with `pip`, as `pymodo` (#102, #104)
+
+## [[v0.8.0]](https://github.com/mlange-42/modo/compare/v0.7.0...v0.8.0)
 
 ### Breaking changes
 
@@ -18,7 +24,7 @@
 
 * Speedup by avoiding repeated RegExp compilation (#89)
 
-## [[v0.7.0]](https://github.com/mlange-42/modo/compare/v0.6.0..v0.7.0)
+## [[v0.7.0]](https://github.com/mlange-42/modo/compare/v0.6.0...v0.7.0)
 
 ### Features
 

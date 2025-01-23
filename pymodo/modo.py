@@ -16,7 +16,6 @@ def get_executable_path():
 
 def main():
     executable_path = get_executable_path()
-    print(executable_path)
     if os.path.exists(executable_path):
         subprocess.run([executable_path] + sys.argv[1:])
     else:
