@@ -1,3 +1,9 @@
+## [[unpublished]](https://github.com/mlange-42/modo/compare/v0.8.1...main)
+
+### Other
+
+* Doctests are written in a sub-folder for each package (#116)
+
 ## [[v0.8.1]](https://github.com/mlange-42/modo/compare/v0.8.0...v0.8.1)
 
 Modo🧯 is now installable with `pip`, as `pymodo` (#102, #104)

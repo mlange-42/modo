@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"log"
 	"os"
+	"path"
 	"strings"
 	"text/template"
 )
@@ -85,7 +86,8 @@ func (proc *Processor) ExtractTests() error {
 		return err
 	}
 	if proc.Config.TestOutput != "" {
-		err = proc.writeDocTests(proc.Config.TestOutput)
+		outPath := path.Join(proc.Config.TestOutput, proc.Docs.Decl.Name)
+		err = proc.writeDocTests(outPath)
 		if err != nil {
 			return err
 		}
