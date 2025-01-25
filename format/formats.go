@@ -6,19 +6,11 @@ import (
 	"github.com/mlange-42/modo/document"
 )
 
-type Format uint8
-
-const (
-	Plain Format = iota
-	MdBook
-	Hugo
-)
-
 var formats = map[string]document.Formatter{
-	"":       &PlainFormatter{},
-	"plain":  &PlainFormatter{},
-	"mdbook": &MdBookFormatter{},
-	"hugo":   &HugoFormatter{},
+	"":       &Plain{},
+	"plain":  &Plain{},
+	"mdbook": &MdBook{},
+	"hugo":   &Hugo{},
 }
 
 func GetFormatter(f string) (document.Formatter, error) {

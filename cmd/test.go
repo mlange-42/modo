@@ -99,7 +99,7 @@ func runTestOnce(file string, args *document.Config) error {
 	if err != nil {
 		return err
 	}
-	if err := document.ExtractTests(docs, args, &format.PlainFormatter{}); err != nil {
+	if err := document.ExtractTests(docs, args, &format.Plain{}); err != nil {
 		return err
 	}
 	return nil

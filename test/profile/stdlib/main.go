@@ -49,7 +49,7 @@ func run(file string, iters int) {
 			TestOutput:      path.Join(tmpDir, "doctest"),
 			DryRun:          true,
 		}
-		formatter := format.PlainFormatter{}
+		formatter := format.Plain{}
 
 		doc, err := document.FromJson(data)
 		if err != nil {
