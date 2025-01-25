@@ -4,6 +4,10 @@ import "path"
 
 type TestFormatter struct{}
 
+func (f *TestFormatter) Accepts(files []string) error {
+	return nil
+}
+
 func (f *TestFormatter) Render(docs *Docs, config *Config) error {
 	return Render(docs, config, f)
 }

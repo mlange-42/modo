@@ -96,6 +96,9 @@ func runBuild(args *document.Config) error {
 }
 
 func runBuildOnce(file string, args *document.Config, form document.Formatter, isFile, isDir bool) error {
+	if isDir {
+		return runBuildDirectory(file, args, form)
+	}
 	docs, err := readDocs(file)
 	if err != nil {
 		return err
@@ -104,6 +107,10 @@ func runBuildOnce(file string, args *document.Config, form document.Formatter, i
 	if err != nil {
 		return err
 	}
+	return nil
+}
+
+func runBuildDirectory(file string, args *document.Config, form document.Formatter) error {
 	return nil
 }
 

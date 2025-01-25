@@ -8,6 +8,10 @@ import (
 
 type Plain struct{}
 
+func (f *Plain) Accepts(files []string) error {
+	return nil
+}
+
 func (f *Plain) Render(docs *document.Docs, config *document.Config) error {
 	return document.Render(docs, config, f)
 }

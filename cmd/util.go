@@ -104,6 +104,10 @@ func mountProject(v *viper.Viper, paths []string) error {
 type command = func(file string, args *document.Config, form document.Formatter, isFile, isDir bool) error
 
 func runOnFilesOrDir(cmd command, args *document.Config, form document.Formatter) error {
+	if err := form.Accepts(args.InputFiles); err != nil {
+		return err
+	}
+
 	if len(args.InputFiles) == 0 || (len(args.InputFiles) == 1 && args.InputFiles[0] == "") {
 		if err := cmd("", args, form, false, false); err != nil {
 			return err

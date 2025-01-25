@@ -1,6 +1,7 @@
 package document
 
 type Formatter interface {
+	Accepts(files []string) error
 	Render(docs *Docs, config *Config) error
 	ToFilePath(path string, kind string) (string, error)
 	ToLinkPath(path string, kind string) (string, error)
