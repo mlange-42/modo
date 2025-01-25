@@ -14,10 +14,10 @@ type Processor struct {
 	Formatter          Formatter
 	Docs               *Docs
 	ExportDocs         *Docs
-	allPaths           map[string]bool
-	linkTargets        map[string]elemPath
-	linkExports        map[string]string
-	linkExportsReverse map[string]*exportError
+	allPaths           map[string]bool         // Full paths of all original members. Used to check whether all re-exports could be found.
+	linkTargets        map[string]elemPath     // Mapping from full (new) member paths to link strings.
+	linkExports        map[string]string       // Mapping from original to new member paths.
+	linkExportsReverse map[string]*exportError // Used to check for name collisions through re-exports.
 	docTests           []*docTest
 	writer             func(file, text string) error
 }
@@ -56,7 +56,6 @@ func (proc *Processor) PrepareDocs() error {
 	if err != nil {
 		return err
 	}
-
 	// Re-structure according to exports.
 	err = proc.filterPackages()
 	if err != nil {
@@ -125,11 +124,11 @@ func (proc *Processor) addLinkTarget(elPath, filePath []string, kind string, isS
 }
 
 func (proc *Processor) addElementPath(elPath, filePath []string, kind string, isSection bool) {
-	if isSection && kind != "package" && kind != "module" { // actually, we are catching aliases here
+	if isSection && kind != "package" && kind != "module" { // actually, we are want to let aliases pass
 		return
 	}
 	proc.allPaths[strings.Join(elPath, ".")] = true
-	_, _ = filePath, kind
+	_ = filePath
 }
 
 func (proc *Processor) mkDirs(path string) error {
