@@ -2,6 +2,8 @@ package cmd
 
 import (
 	"fmt"
+	"os"
+	"path/filepath"
 
 	"github.com/mlange-42/modo/document"
 	"github.com/mlange-42/modo/format"
@@ -111,7 +113,15 @@ func runBuildOnce(file string, args *document.Config, form document.Formatter, i
 }
 
 func runBuildDirectory(file string, args *document.Config, form document.Formatter) error {
-	return nil
+	err := filepath.WalkDir(file,
+		func(path string, info os.DirEntry, err error) error {
+			if err != nil {
+				return err
+			}
+			fmt.Println(path)
+			return nil
+		})
+	return err
 }
 
 func runPreBuildCommands(cfg *document.Config) error {
