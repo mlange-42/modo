@@ -87,10 +87,8 @@ func runBuild(args *document.Config) error {
 			return err
 		}
 	} else {
-		for _, f := range args.InputFiles {
-			if err := runBuildOnce(f, args, formatter); err != nil {
-				return err
-			}
+		if err := runOnFilesOrDir(runBuildOnce, args, formatter); err != nil {
+			return err
 		}
 	}
 

@@ -100,3 +100,25 @@ func mountProject(v *viper.Viper, paths []string) error {
 	}
 	return nil
 }
+
+type command = func(file string, args *document.Config, form document.Formatter) error
+
+func runOnFilesOrDir(cmd command, args *document.Config, form document.Formatter) error {
+	if len(args.InputFiles) > 1 {
+		for _, file := range args.InputFiles {
+			if s, err := os.Stat(file); err == nil {
+				if s.IsDir() {
+					return fmt.Errorf("only a single directory at a time can be processed")
+				}
+			} else {
+				return err
+			}
+		}
+	}
+	for _, file := range args.InputFiles {
+		if err := cmd(file, args, form); err != nil {
+			return err
+		}
+	}
+	return nil
+}

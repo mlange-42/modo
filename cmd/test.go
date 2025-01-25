@@ -74,14 +74,12 @@ func runTest(args *document.Config) error {
 	}
 
 	if len(args.InputFiles) == 0 || (len(args.InputFiles) == 1 && args.InputFiles[0] == "") {
-		if err := runTestOnce("", args); err != nil {
+		if err := runTestOnce("", args, nil); err != nil {
 			return err
 		}
 	} else {
-		for _, f := range args.InputFiles {
-			if err := runTestOnce(f, args); err != nil {
-				return err
-			}
+		if err := runOnFilesOrDir(runTestOnce, args, nil); err != nil {
+			return err
 		}
 	}
 
@@ -94,7 +92,7 @@ func runTest(args *document.Config) error {
 	return nil
 }
 
-func runTestOnce(file string, args *document.Config) error {
+func runTestOnce(file string, args *document.Config, _ document.Formatter) error {
 	docs, err := readDocs(file)
 	if err != nil {
 		return err
