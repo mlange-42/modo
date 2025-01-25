@@ -82,14 +82,8 @@ func runBuild(args *document.Config) error {
 		return err
 	}
 
-	if len(args.InputFiles) == 0 || (len(args.InputFiles) == 1 && args.InputFiles[0] == "") {
-		if err := runBuildOnce("", args, formatter); err != nil {
-			return err
-		}
-	} else {
-		if err := runOnFilesOrDir(runBuildOnce, args, formatter); err != nil {
-			return err
-		}
+	if err := runOnFilesOrDir(runBuildOnce, args, formatter); err != nil {
+		return err
 	}
 
 	if !args.Bare {
@@ -101,7 +95,7 @@ func runBuild(args *document.Config) error {
 	return nil
 }
 
-func runBuildOnce(file string, args *document.Config, form document.Formatter) error {
+func runBuildOnce(file string, args *document.Config, form document.Formatter, isFile, isDir bool) error {
 	docs, err := readDocs(file)
 	if err != nil {
 		return err

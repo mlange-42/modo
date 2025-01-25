@@ -101,22 +101,37 @@ func mountProject(v *viper.Viper, paths []string) error {
 	return nil
 }
 
-type command = func(file string, args *document.Config, form document.Formatter) error
+type command = func(file string, args *document.Config, form document.Formatter, isFile, isDir bool) error
 
 func runOnFilesOrDir(cmd command, args *document.Config, form document.Formatter) error {
-	if len(args.InputFiles) > 1 {
-		for _, file := range args.InputFiles {
-			if s, err := os.Stat(file); err == nil {
-				if s.IsDir() {
-					return fmt.Errorf("only a single directory at a time can be processed")
-				}
-			} else {
-				return err
-			}
+	if len(args.InputFiles) == 0 || (len(args.InputFiles) == 1 && args.InputFiles[0] == "") {
+		if err := cmd("", args, form, false, false); err != nil {
+			return err
 		}
 	}
+
+	stats := make([]struct {
+		file bool
+		dir  bool
+	}, len(args.InputFiles))
+
 	for _, file := range args.InputFiles {
-		if err := cmd(file, args, form); err != nil {
+		if s, err := os.Stat(file); err == nil {
+			if s.IsDir() && len(args.InputFiles) > 1 {
+				return fmt.Errorf("only a single directory at a time can be processed")
+			}
+			stats = append(stats, struct {
+				file bool
+				dir  bool
+			}{!s.IsDir(), s.IsDir()})
+		} else {
+			return err
+		}
+	}
+
+	for i, file := range args.InputFiles {
+		s := stats[i]
+		if err := cmd(file, args, form, s.file, s.dir); err != nil {
 			return err
 		}
 	}
