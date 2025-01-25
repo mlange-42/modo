@@ -117,7 +117,7 @@ func runOnFilesOrDir(cmd command, args *document.Config, form document.Formatter
 	stats := make([]struct {
 		file bool
 		dir  bool
-	}, len(args.InputFiles))
+	}, 0, len(args.InputFiles))
 
 	for _, file := range args.InputFiles {
 		if s, err := os.Stat(file); err == nil {
