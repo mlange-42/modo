@@ -13,17 +13,17 @@ import (
 	"github.com/mlange-42/modo/document"
 )
 
-type MdBookFormatter struct{}
+type MdBook struct{}
 
-func (f *MdBookFormatter) Render(docs *document.Docs, config *document.Config) error {
+func (f *MdBook) Render(docs *document.Docs, config *document.Config) error {
 	return document.Render(docs, config, f)
 }
 
-func (f *MdBookFormatter) ProcessMarkdown(element any, text string, proc *document.Processor) (string, error) {
+func (f *MdBook) ProcessMarkdown(element any, text string, proc *document.Processor) (string, error) {
 	return text, nil
 }
 
-func (f *MdBookFormatter) WriteAuxiliary(p *document.Package, dir string, proc *document.Processor) error {
+func (f *MdBook) WriteAuxiliary(p *document.Package, dir string, proc *document.Processor) error {
 	if err := f.writeSummary(p, dir, proc); err != nil {
 		return err
 	}
@@ -36,7 +36,7 @@ func (f *MdBookFormatter) WriteAuxiliary(p *document.Package, dir string, proc *
 	return nil
 }
 
-func (f *MdBookFormatter) ToFilePath(p string, kind string) (string, error) {
+func (f *MdBook) ToFilePath(p string, kind string) (string, error) {
 	if kind == "package" || kind == "module" {
 		return path.Join(p, "_index.md"), nil
 	}
@@ -46,7 +46,7 @@ func (f *MdBookFormatter) ToFilePath(p string, kind string) (string, error) {
 	return p + ".md", nil
 }
 
-func (f *MdBookFormatter) ToLinkPath(p string, kind string) (string, error) {
+func (f *MdBook) ToLinkPath(p string, kind string) (string, error) {
 	return f.ToFilePath(p, kind)
 }
 
@@ -59,7 +59,7 @@ type summary struct {
 	Functions string
 }
 
-func (f *MdBookFormatter) writeSummary(p *document.Package, dir string, proc *document.Processor) error {
+func (f *MdBook) writeSummary(p *document.Package, dir string, proc *document.Processor) error {
 	summary, err := f.renderSummary(p, proc)
 	if err != nil {
 		return err
@@ -74,7 +74,7 @@ func (f *MdBookFormatter) writeSummary(p *document.Package, dir string, proc *do
 	return nil
 }
 
-func (f *MdBookFormatter) renderSummary(p *document.Package, proc *document.Processor) (string, error) {
+func (f *MdBook) renderSummary(p *document.Package, proc *document.Processor) (string, error) {
 	s := summary{}
 
 	pkgFile, err := f.ToLinkPath("", "package")
@@ -129,7 +129,7 @@ func (f *MdBookFormatter) renderSummary(p *document.Package, proc *document.Proc
 	return b.String(), nil
 }
 
-func (f *MdBookFormatter) renderPackage(pkg *document.Package, t *template.Template, linkPath []string, out *strings.Builder) error {
+func (f *MdBook) renderPackage(pkg *document.Package, t *template.Template, linkPath []string, out *strings.Builder) error {
 	newPath := append([]string{}, linkPath...)
 	newPath = append(newPath, pkg.GetFileName())
 
@@ -171,7 +171,7 @@ func (f *MdBookFormatter) renderPackage(pkg *document.Package, t *template.Templ
 	return nil
 }
 
-func (f *MdBookFormatter) renderModule(mod *document.Module, linkPath []string, out *strings.Builder) error {
+func (f *MdBook) renderModule(mod *document.Module, linkPath []string, out *strings.Builder) error {
 	newPath := append([]string{}, linkPath...)
 	newPath = append(newPath, mod.GetFileName())
 
@@ -202,7 +202,7 @@ func (f *MdBookFormatter) renderModule(mod *document.Module, linkPath []string, 
 	return nil
 }
 
-func (f *MdBookFormatter) renderModuleMember(mem document.Named, pathStr string, depth int, out io.Writer) error {
+func (f *MdBook) renderModuleMember(mem document.Named, pathStr string, depth int, out io.Writer) error {
 	memPath, err := f.ToLinkPath(path.Join(pathStr, mem.GetFileName(), ""), "")
 	if err != nil {
 		return err
@@ -211,7 +211,7 @@ func (f *MdBookFormatter) renderModuleMember(mem document.Named, pathStr string,
 	return nil
 }
 
-func (f *MdBookFormatter) writeToml(p *document.Package, dir string, proc *document.Processor) error {
+func (f *MdBook) writeToml(p *document.Package, dir string, proc *document.Processor) error {
 	toml, err := f.renderToml(p, proc.Template)
 	if err != nil {
 		return err
@@ -226,7 +226,7 @@ func (f *MdBookFormatter) writeToml(p *document.Package, dir string, proc *docum
 	return nil
 }
 
-func (f *MdBookFormatter) renderToml(p *document.Package, t *template.Template) (string, error) {
+func (f *MdBook) renderToml(p *document.Package, t *template.Template) (string, error) {
 	b := strings.Builder{}
 	if err := t.ExecuteTemplate(&b, "book.toml", p); err != nil {
 		return "", err
@@ -234,7 +234,7 @@ func (f *MdBookFormatter) renderToml(p *document.Package, t *template.Template) 
 	return b.String(), nil
 }
 
-func (f *MdBookFormatter) writeCss(dir string, proc *document.Processor) error {
+func (f *MdBook) writeCss(dir string, proc *document.Processor) error {
 	cssDir := path.Join(dir, "css")
 	if !proc.Config.DryRun {
 		if err := os.MkdirAll(cssDir, os.ModePerm); err != nil && !os.IsExist(err) {
