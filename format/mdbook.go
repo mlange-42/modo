@@ -32,10 +32,6 @@ func (f *MdBook) Accepts(files []string) error {
 	return nil
 }
 
-func (f *MdBook) Render(docs *document.Docs, config *document.Config, subdir string) error {
-	return document.Render(docs, config, f, subdir)
-}
-
 func (f *MdBook) ProcessMarkdown(element any, text string, proc *document.Processor) (string, error) {
 	return text, nil
 }

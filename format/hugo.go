@@ -14,10 +14,6 @@ func (f *Hugo) Accepts(files []string) error {
 	return nil
 }
 
-func (f *Hugo) Render(docs *document.Docs, config *document.Config, subdir string) error {
-	return document.Render(docs, config, f, subdir)
-}
-
 func (f *Hugo) ProcessMarkdown(element any, text string, proc *document.Processor) (string, error) {
 	b := strings.Builder{}
 	err := proc.Template.ExecuteTemplate(&b, "hugo_front_matter.md", element)
