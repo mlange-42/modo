@@ -97,7 +97,7 @@ func runBuild(args *document.Config) error {
 
 func runBuildOnce(file string, args *document.Config, form document.Formatter, subdir string, isFile, isDir bool) error {
 	if isDir {
-		if err := document.ExtractTestsMarkdown(args, form, file); err != nil {
+		if err := document.ExtractTestsMarkdown(args, form, file, true); err != nil {
 			return err
 		}
 		return runDir(file, args, form, runBuildOnce)

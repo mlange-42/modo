@@ -20,7 +20,7 @@ func (proc *Processor) extractDocTests() error {
 	})
 }
 
-func (proc *Processor) extractDocTestsMarkdown(baseDir string) error {
+func (proc *Processor) extractDocTestsMarkdown(baseDir string, build bool) error {
 	proc.docTests = []*docTest{}
 	outDir := filepath.Clean(proc.Config.OutputDir)
 	baseDir = filepath.Clean(baseDir)
@@ -32,7 +32,7 @@ func (proc *Processor) extractDocTestsMarkdown(baseDir string) error {
 			if info.IsDir() {
 				return nil
 			}
-			return proc.extractMarkdown(p, baseDir, outDir)
+			return proc.extractMarkdown(p, baseDir, outDir, build)
 		})
 	if err != nil {
 		return err
@@ -46,7 +46,7 @@ func (proc *Processor) extractDocTestsMarkdown(baseDir string) error {
 	return nil
 }
 
-func (proc *Processor) extractMarkdown(file, baseDir, outDir string) error {
+func (proc *Processor) extractMarkdown(file, baseDir, outDir string, build bool) error {
 	if strings.HasSuffix(strings.ToLower(file), ".json") {
 		return nil
 	}
@@ -69,11 +69,14 @@ func (proc *Processor) extractMarkdown(file, baseDir, outDir string) error {
 		}
 	}
 
-	err = proc.mkDirs(targetDir)
-	if err != nil {
-		return err
+	if build {
+		err = proc.mkDirs(targetDir)
+		if err != nil {
+			return err
+		}
+		return proc.WriteFile(targetPath, contentStr)
 	}
-	return proc.WriteFile(targetPath, contentStr)
+	return nil
 }
 
 func (proc *Processor) writeDocTests(dir string) error {

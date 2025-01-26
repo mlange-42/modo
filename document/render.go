@@ -56,7 +56,7 @@ func ExtractTests(docs *Docs, config *Config, form Formatter, subdir string) err
 	return proc.ExtractTests(subdir)
 }
 
-func ExtractTestsMarkdown(config *Config, form Formatter, baseDir string) error {
+func ExtractTestsMarkdown(config *Config, form Formatter, baseDir string, build bool) error {
 	caseSensitiveSystem = !config.CaseInsensitive
 
 	t, err := loadTemplates(form, config.TemplateDirs...)
@@ -71,7 +71,7 @@ func ExtractTestsMarkdown(config *Config, form Formatter, baseDir string) error 
 	} else {
 		proc = NewProcessor(nil, form, t, config)
 	}
-	return proc.extractDocTestsMarkdown(baseDir)
+	return proc.extractDocTestsMarkdown(baseDir, build)
 }
 
 func renderWith(config *Config, proc *Processor, subdir string) error {

@@ -88,7 +88,7 @@ func runTest(args *document.Config) error {
 
 func runTestOnce(file string, args *document.Config, _ document.Formatter, subdir string, isFile, isDir bool) error {
 	if isDir {
-		if err := document.ExtractTestsMarkdown(args, nil, file); err != nil {
+		if err := document.ExtractTestsMarkdown(args, &format.Plain{}, file, false); err != nil {
 			return err
 		}
 		return runDir(file, args, nil, runTestOnce)

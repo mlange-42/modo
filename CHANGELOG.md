@@ -3,6 +3,7 @@
 ### Features
 
 * A folder can be given as input, for all JSON files getting processed recursively (#118)
+* With an input folder, doc-tests are also extracted from Markdown files (#119)
 
 ### Other
 
