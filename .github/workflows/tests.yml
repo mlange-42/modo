@@ -50,7 +50,7 @@ jobs:
       run: |
         source /home/runner/.bash_profile
         cd test
-        magic run mojo doc -o test.json src
+        magic run mojo doc -o docs/test.json src
 
     - name: Install dependencies
       run: |

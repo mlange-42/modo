@@ -1,0 +1,444 @@
+{
+  "decl": {
+    "description": "Self ref [test].\n\nExports (rel) [.mod.ModuleAlias], [.mod.Struct], [.mod.Trait], [.mod.module_function], [.pkg].\nExports (abs) [test.mod.ModuleAlias], [test.mod.Struct], [test.mod.Trait], [test.mod.module_function], [test.pkg].\n\n - [.mod.Struct.StructParameter]\n - [.mod.Struct.struct_field]\n - [.mod.Struct.struct_method]\n - [.mod.Struct.StructAlias]\n\n - [.mod.Trait.trait_method]\n\n - [.pkg.submod]\n - [.pkg.submod.Struct]\n - [.pkg.submod.Struct.struct_method]\n - [.pkg.submod.ModuleAlias]\n\nExports:\n - mod.ModuleAlias\n - mod.Struct\n - mod.Trait\n - mod.module_function\n - pkg\n - doctest",
+    "kind": "package",
+    "modules": [
+      {
+        "aliases": [],
+        "description": "Self ref [test].\n\nExports (rel) [.mod.ModuleAlias], [.mod.Struct], [.mod.Trait], [.mod.module_function], [.pkg].\nExports (abs) [test.mod.ModuleAlias], [test.mod.Struct], [test.mod.Trait], [test.mod.module_function], [test.pkg].\n\n - [.mod.Struct.StructParameter]\n - [.mod.Struct.struct_field]\n - [.mod.Struct.struct_method]\n - [.mod.Struct.StructAlias]\n\n - [.mod.Trait.trait_method]\n\n - [.pkg.submod]\n - [.pkg.submod.Struct]\n - [.pkg.submod.Struct.struct_method]\n - [.pkg.submod.ModuleAlias]\n\nExports:\n - mod.ModuleAlias\n - mod.Struct\n - mod.Trait\n - mod.module_function\n - pkg\n - doctest",
+        "functions": [],
+        "kind": "module",
+        "name": "__init__",
+        "structs": [],
+        "summary": "Package test.",
+        "traits": []
+      },
+      {
+        "aliases": [
+          {
+            "deprecated": "",
+            "description": "",
+            "kind": "alias",
+            "name": "ModAlias",
+            "summary": "",
+            "value": "Int"
+          }
+        ],
+        "description": "```mojo {doctest=\"test\" global=true hide=true}\nfrom testing import *\n\nfn add(a: Int, b: Int) -> Int:\n    return a + b\n```\n\n```mojo {doctest=\"test\" hide=true}\nvar a = 1\nvar b = 2\n```\n\n```mojo {doctest=\"test\"}\nvar c = add(a, b)\n```\n\n```mojo {doctest=\"test\" hide=true}\nassert_equal(c, 3)\n```",
+        "functions": [],
+        "kind": "module",
+        "name": "doctest",
+        "structs": [
+          {
+            "aliases": [
+              {
+                "deprecated": "",
+                "description": "",
+                "kind": "alias",
+                "name": "StructAlias",
+                "summary": "",
+                "value": "Int"
+              }
+            ],
+            "constraints": "",
+            "convention": "memory_only",
+            "deprecated": "",
+            "description": "",
+            "fields": [],
+            "functions": [
+              {
+                "kind": "function",
+                "name": "func",
+                "overloads": [
+                  {
+                    "args": [
+                      {
+                        "convention": "read",
+                        "description": "",
+                        "kind": "argument",
+                        "name": "self",
+                        "passingKind": "pos_or_kw",
+                        "type": "Self"
+                      }
+                    ],
+                    "async": false,
+                    "constraints": "",
+                    "deprecated": "",
+                    "description": "```mojo {doctest=\"func\"}\nvar a = 1\n```",
+                    "isDef": false,
+                    "isStatic": false,
+                    "kind": "function",
+                    "name": "func",
+                    "parameters": [],
+                    "raises": false,
+                    "raisesDoc": "",
+                    "returnType": null,
+                    "returnsDoc": "",
+                    "signature": "func(self)",
+                    "summary": "Doctests in a struct member."
+                  }
+                ]
+              }
+            ],
+            "kind": "struct",
+            "name": "Struct",
+            "parameters": [],
+            "parentTraits": [
+              "AnyType",
+              "UnknownDestructibility"
+            ],
+            "summary": ""
+          }
+        ],
+        "summary": "Package doctests tests doctests",
+        "traits": []
+      },
+      {
+        "aliases": [
+          {
+            "deprecated": "",
+            "description": "",
+            "kind": "alias",
+            "name": "ModuleAlias",
+            "summary": "",
+            "value": "Int"
+          }
+        ],
+        "description": "Contains (rel) [.ModuleAlias], [.Struct], [.Trait], [.module_function].\nContains (abs) [test.mod.ModuleAlias], [test.mod.Struct], [test.mod.Trait], [test.mod.module_function].\n\n[.Struct.StructAlias]",
+        "functions": [
+          {
+            "kind": "function",
+            "name": "module_function",
+            "overloads": [
+              {
+                "args": [
+                  {
+                    "convention": "read",
+                    "description": "[.Struct.struct_method].",
+                    "kind": "argument",
+                    "name": "arg",
+                    "passingKind": "pos_or_kw",
+                    "type": "Int"
+                  }
+                ],
+                "async": false,
+                "constraints": "",
+                "deprecated": "",
+                "description": "[.Struct.struct_method]\n",
+                "isDef": false,
+                "isStatic": false,
+                "kind": "function",
+                "name": "module_function",
+                "parameters": [
+                  {
+                    "description": "[.Struct.struct_method].",
+                    "kind": "parameter",
+                    "name": "FunctionParameter",
+                    "passingKind": "pos_or_kw",
+                    "type": "Intable"
+                  }
+                ],
+                "raises": true,
+                "raisesDoc": "Error [.Struct.struct_method].",
+                "returnType": "Int",
+                "returnsDoc": "Bla [.Struct.struct_method].",
+                "signature": "module_function[FunctionParameter: Intable](arg: Int) -> Int",
+                "summary": "[.ModuleAlias]."
+              }
+            ]
+          }
+        ],
+        "kind": "module",
+        "name": "mod",
+        "structs": [
+          {
+            "aliases": [
+              {
+                "deprecated": "",
+                "description": "[.Struct.struct_method]",
+                "kind": "alias",
+                "name": "StructAlias",
+                "summary": "[.ModuleAlias].",
+                "value": "StructParameter"
+              }
+            ],
+            "constraints": "",
+            "convention": "memory_only",
+            "deprecated": "",
+            "description": "[.Struct.struct_method]",
+            "fields": [
+              {
+                "description": "[.Struct.struct_method]",
+                "kind": "field",
+                "name": "struct_field",
+                "summary": "[.ModuleAlias].",
+                "type": "Int"
+              }
+            ],
+            "functions": [
+              {
+                "kind": "function",
+                "name": "struct_method",
+                "overloads": [
+                  {
+                    "args": [
+                      {
+                        "convention": "read",
+                        "description": "",
+                        "kind": "argument",
+                        "name": "self",
+                        "passingKind": "pos_or_kw",
+                        "type": "Self"
+                      },
+                      {
+                        "convention": "read",
+                        "description": "[.Struct.struct_method].",
+                        "kind": "argument",
+                        "name": "arg",
+                        "passingKind": "pos_or_kw",
+                        "type": "StructParameter"
+                      }
+                    ],
+                    "async": false,
+                    "constraints": "",
+                    "deprecated": "",
+                    "description": "[.Struct.struct_method]\n",
+                    "isDef": false,
+                    "isStatic": false,
+                    "kind": "function",
+                    "name": "struct_method",
+                    "parameters": [
+                      {
+                        "description": "[.Struct.struct_method].",
+                        "kind": "parameter",
+                        "name": "T",
+                        "passingKind": "pos_or_kw",
+                        "type": "Intable"
+                      }
+                    ],
+                    "raises": true,
+                    "raisesDoc": "Error [.Struct.struct_method].",
+                    "returnType": "Int",
+                    "returnsDoc": "Bla [.Struct.struct_method].",
+                    "signature": "struct_method[T: Intable](self, arg: StructParameter) -> Int",
+                    "summary": "[.ModuleAlias]."
+                  }
+                ]
+              }
+            ],
+            "kind": "struct",
+            "name": "Struct",
+            "parameters": [
+              {
+                "description": "",
+                "kind": "parameter",
+                "name": "StructParameter",
+                "passingKind": "pos_or_kw",
+                "type": "Intable"
+              }
+            ],
+            "parentTraits": [
+              "AnyType",
+              "UnknownDestructibility"
+            ],
+            "summary": "[.ModuleAlias]."
+          }
+        ],
+        "summary": "Module mod.",
+        "traits": [
+          {
+            "deprecated": "",
+            "description": "[.Struct.struct_method]",
+            "fields": [],
+            "functions": [
+              {
+                "kind": "function",
+                "name": "trait_method",
+                "overloads": [
+                  {
+                    "args": [
+                      {
+                        "convention": "read",
+                        "description": "",
+                        "kind": "argument",
+                        "name": "self",
+                        "passingKind": "pos_or_kw",
+                        "type": "_Self"
+                      },
+                      {
+                        "convention": "read",
+                        "description": "[.Struct.struct_method].",
+                        "kind": "argument",
+                        "name": "arg",
+                        "passingKind": "pos_or_kw",
+                        "type": "T"
+                      }
+                    ],
+                    "async": false,
+                    "constraints": "",
+                    "deprecated": "",
+                    "description": "[.Struct.struct_method]\n",
+                    "isDef": false,
+                    "isStatic": false,
+                    "kind": "function",
+                    "name": "trait_method",
+                    "parameters": [
+                      {
+                        "description": "[.Struct.struct_method].",
+                        "kind": "parameter",
+                        "name": "T",
+                        "passingKind": "pos_or_kw",
+                        "type": "Intable"
+                      }
+                    ],
+                    "raises": true,
+                    "raisesDoc": "Error [.Struct.struct_method].",
+                    "returnType": "Int",
+                    "returnsDoc": "Bla [.Struct.struct_method].",
+                    "signature": "trait_method[T: Intable](self: _Self, arg: T) -> Int",
+                    "summary": "[.ModuleAlias]."
+                  }
+                ]
+              }
+            ],
+            "kind": "trait",
+            "name": "Trait",
+            "parentTraits": [
+              "AnyType",
+              "UnknownDestructibility"
+            ],
+            "summary": "[.ModuleAlias]."
+          }
+        ]
+      }
+    ],
+    "name": "test",
+    "packages": [
+      {
+        "description": "Exports:\n - submod",
+        "kind": "package",
+        "modules": [
+          {
+            "aliases": [],
+            "description": "Exports:\n - submod",
+            "functions": [],
+            "kind": "module",
+            "name": "__init__",
+            "structs": [],
+            "summary": "Package pkg.",
+            "traits": []
+          },
+          {
+            "aliases": [
+              {
+                "deprecated": "",
+                "description": "",
+                "kind": "alias",
+                "name": "ModuleAlias",
+                "summary": "",
+                "value": "Int"
+              }
+            ],
+            "description": "",
+            "functions": [],
+            "kind": "module",
+            "name": "submod",
+            "structs": [
+              {
+                "aliases": [
+                  {
+                    "deprecated": "",
+                    "description": "",
+                    "kind": "alias",
+                    "name": "StructAlias",
+                    "summary": "",
+                    "value": "StructParameter"
+                  }
+                ],
+                "constraints": "",
+                "convention": "memory_only",
+                "deprecated": "",
+                "description": "[.Struct], [.ModuleAlias]",
+                "fields": [
+                  {
+                    "description": "",
+                    "kind": "field",
+                    "name": "struct_field",
+                    "summary": "",
+                    "type": "Int"
+                  }
+                ],
+                "functions": [
+                  {
+                    "kind": "function",
+                    "name": "struct_method",
+                    "overloads": [
+                      {
+                        "args": [
+                          {
+                            "convention": "read",
+                            "description": "",
+                            "kind": "argument",
+                            "name": "self",
+                            "passingKind": "pos_or_kw",
+                            "type": "Self"
+                          },
+                          {
+                            "convention": "read",
+                            "description": "",
+                            "kind": "argument",
+                            "name": "arg",
+                            "passingKind": "pos_or_kw",
+                            "type": "StructParameter"
+                          }
+                        ],
+                        "async": false,
+                        "constraints": "",
+                        "deprecated": "",
+                        "description": "",
+                        "isDef": false,
+                        "isStatic": false,
+                        "kind": "function",
+                        "name": "struct_method",
+                        "parameters": [],
+                        "raises": false,
+                        "raisesDoc": "",
+                        "returnType": "Int",
+                        "returnsDoc": "",
+                        "signature": "struct_method(self, arg: StructParameter) -> Int",
+                        "summary": ""
+                      }
+                    ]
+                  }
+                ],
+                "kind": "struct",
+                "name": "Struct",
+                "parameters": [
+                  {
+                    "description": "",
+                    "kind": "parameter",
+                    "name": "StructParameter",
+                    "passingKind": "pos_or_kw",
+                    "type": "Intable"
+                  }
+                ],
+                "parentTraits": [
+                  "AnyType",
+                  "UnknownDestructibility"
+                ],
+                "summary": "[..submod.Struct], [..submod.ModuleAlias]."
+              }
+            ],
+            "summary": "",
+            "traits": []
+          }
+        ],
+        "name": "pkg",
+        "packages": [],
+        "summary": "Package pkg."
+      }
+    ],
+    "summary": "Package test."
+  },
+  "version": "24.6.0"
+}
