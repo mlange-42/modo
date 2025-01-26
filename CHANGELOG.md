@@ -1,5 +1,9 @@
 ## [[unpublished]](https://github.com/mlange-42/modo/compare/v0.8.1...main)
 
+### Features
+
+* A folder can be given as input, for all JSON files getting processed recursively (#118)
+
 ### Other
 
 * Doctests are written in a sub-folder for each package (#116)
