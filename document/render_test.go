@@ -276,7 +276,7 @@ func createProcessor(t *testing.T, docs *Docs, useExports bool, files map[string
 func TestRenderDry(t *testing.T) {
 	tmpDir := strings.ReplaceAll(t.TempDir(), "\\", "/")
 	config := Config{
-		InputFiles:      []string{"../test/test.json"},
+		InputFiles:      []string{"../test/docs/test.json"},
 		OutputDir:       tmpDir,
 		UseExports:      true,
 		ShortLinks:      true,
@@ -303,7 +303,7 @@ func TestRenderFiles(t *testing.T) {
 	tmpDir := strings.ReplaceAll(t.TempDir(), "\\", "/")
 	refDir := path.Join("..", "test", "ref")
 	config := Config{
-		InputFiles:      []string{"../test/test.json"},
+		InputFiles:      []string{"../test/docs"},
 		OutputDir:       tmpDir,
 		UseExports:      true,
 		ShortLinks:      true,
@@ -311,13 +311,15 @@ func TestRenderFiles(t *testing.T) {
 	}
 	formatter := TestFormatter{}
 
-	data, err := os.ReadFile(config.InputFiles[0])
+	data, err := os.ReadFile(path.Join(config.InputFiles[0], "test.json"))
 	assert.Nil(t, err)
 	doc, err := FromJson(data)
 	assert.Nil(t, err)
 
 	err = formatter.Render(doc, &config, "")
 	assert.Nil(t, err)
+
+	ExtractTestsMarkdown(&config, &formatter, config.InputFiles[0], true)
 
 	refFiles, err := filterFiles(refDir)
 	assert.Nil(t, err)
