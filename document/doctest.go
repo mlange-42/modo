@@ -3,7 +3,9 @@ package document
 import (
 	"bufio"
 	"fmt"
+	"os"
 	"path"
+	"path/filepath"
 	"strings"
 )
 
@@ -18,13 +20,68 @@ func (proc *Processor) extractDocTests() error {
 	})
 }
 
+func (proc *Processor) extractDocTestsMarkdown(baseDir string, build bool) error {
+	proc.docTests = []*docTest{}
+	outDir := filepath.Clean(proc.Config.OutputDir)
+	baseDir = filepath.Clean(baseDir)
+	err := filepath.WalkDir(baseDir,
+		func(p string, info os.DirEntry, err error) error {
+			if err != nil {
+				return err
+			}
+			if info.IsDir() {
+				return nil
+			}
+			return proc.extractMarkdown(p, baseDir, outDir, build)
+		})
+	if err != nil {
+		return err
+	}
+	if proc.Config.TestOutput != "" {
+		err = proc.writeDocTests(proc.Config.TestOutput)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func (proc *Processor) extractMarkdown(file, baseDir, outDir string, build bool) error {
+	if strings.HasSuffix(strings.ToLower(file), ".json") {
+		return nil
+	}
+
+	cleanPath := path.Clean(file)
+	relPath := filepath.Clean(strings.TrimPrefix(cleanPath, baseDir))
+	targetPath := filepath.Join(outDir, relPath)
+	targetDir, _ := filepath.Split(targetPath)
+
+	content, err := os.ReadFile(cleanPath)
+	if err != nil {
+		return err
+	}
+	contentStr := string(content)
+	if strings.HasSuffix(strings.ToLower(file), ".md") {
+		var err error
+		contentStr, err = proc.extractTests(contentStr, []string{strings.TrimSuffix(relPath, ".md")}, 1)
+		if err != nil {
+			return err
+		}
+	}
+
+	if build {
+		err = proc.mkDirs(targetDir)
+		if err != nil {
+			return err
+		}
+		return proc.WriteFile(targetPath, contentStr)
+	}
+	return nil
+}
+
 func (proc *Processor) writeDocTests(dir string) error {
 	if dir == "" {
 		return nil
-	}
-	err := proc.mkDirs(dir)
-	if err != nil {
-		return err
 	}
 	for _, test := range proc.docTests {
 		b := strings.Builder{}
@@ -36,6 +93,12 @@ func (proc *Processor) writeDocTests(dir string) error {
 		filePath += "_" + test.Name + "_test.mojo"
 		fullPath := path.Join(dir, filePath)
 
+		parentDir, _ := filepath.Split(filepath.Clean(fullPath))
+		err = proc.mkDirs(parentDir)
+		if err != nil {
+			return err
+		}
+
 		err = proc.WriteFile(fullPath, b.String())
 		if err != nil {
 			return err
@@ -46,7 +109,15 @@ func (proc *Processor) writeDocTests(dir string) error {
 }
 
 func (proc *Processor) extractTests(text string, elems []string, modElems int) (string, error) {
-	_ = modElems
+	t, tests, err := extractTestsText(text, elems, proc.Config.Strict)
+	if err != nil {
+		return "", err
+	}
+	proc.docTests = append(proc.docTests, tests...)
+	return t, nil
+}
+
+func extractTestsText(text string, elems []string, strict bool) (string, []*docTest, error) {
 	scanner := bufio.NewScanner(strings.NewReader(text))
 	outText := strings.Builder{}
 
@@ -68,8 +139,8 @@ func (proc *Processor) extractTests(text string, elems []string, modElems int) (
 			var err error
 			blockName, excluded, global, ok, err = parseBlockAttr(origLine)
 			if err != nil {
-				if err := proc.warnOrError("%s in %s", err.Error(), strings.Join(elems, ".")); err != nil {
-					return "", err
+				if err := warnOrError(strict, "%s in %s", err.Error(), strings.Join(elems, ".")); err != nil {
+					return "", nil, err
 				}
 			}
 			if !ok {
@@ -122,16 +193,17 @@ func (proc *Processor) extractTests(text string, elems []string, modElems int) (
 		panic(err)
 	}
 	if fenced {
-		if err := proc.warnOrError("unbalanced code block in %s", strings.Join(elems, ".")); err != nil {
-			return "", err
+		if err := warnOrError(strict, "unbalanced code block in %s", strings.Join(elems, ".")); err != nil {
+			return "", nil, err
 		}
 	}
 
+	tests := make([]*docTest, 0, len(blocks))
 	for _, block := range blocks {
-		proc.docTests = append(proc.docTests, block)
+		tests = append(tests, block)
 	}
 
-	return strings.TrimSuffix(outText.String(), "\n"), nil
+	return strings.TrimSuffix(outText.String(), "\n"), tests, nil
 }
 
 func parseBlockAttr(line string) (name string, hide bool, global bool, ok bool, err error) {

@@ -1,8 +1,6 @@
 package document
 
 import (
-	"fmt"
-	"log"
 	"os"
 	"path"
 	"strings"
@@ -100,11 +98,7 @@ func (proc *Processor) WriteFile(file, text string) error {
 }
 
 func (proc *Processor) warnOrError(pattern string, args ...any) error {
-	if proc.Config.Strict {
-		return fmt.Errorf(pattern, args...)
-	}
-	log.Printf("WARNING: "+pattern+"\n", args...)
-	return nil
+	return warnOrError(proc.Config.Strict, pattern, args...)
 }
 
 func (proc *Processor) addLinkExport(oldPath, newPath []string) {
