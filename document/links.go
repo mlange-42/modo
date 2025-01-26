@@ -102,7 +102,7 @@ func (proc *Processor) placeholderToLink(link string, elems []string, modElems i
 	} else {
 		if shorten {
 			textParts := strings.Split(text, ".")
-			if entry.IsSection {
+			if entry.IsSection && entry.Kind != "package" && entry.Kind != "module" {
 				text = strings.Join(textParts[len(textParts)-2:], ".")
 			} else {
 				text = textParts[len(textParts)-1]

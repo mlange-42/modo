@@ -2,7 +2,7 @@ Mojo trait
 
 # `Trait`
 
-[`test.ModuleAlias`](_index.md#aliases).
+[`ModuleAlias`](_index.md#aliases).
 
 [`Struct.struct_method`](Struct-.md#struct_method)
 
@@ -18,7 +18,7 @@ Mojo trait
 trait_method[T: Intable](self: _Self, arg: T) -> Int
 ```
 
-[`test.ModuleAlias`](_index.md#aliases).
+[`ModuleAlias`](_index.md#aliases).
 
 [`Struct.struct_method`](Struct-.md#struct_method)
 

@@ -21,9 +21,11 @@ var c = add(a, b)
 assert_equal(c, 3)
 ```
 """
-
+alias ModAlias = Int
 
 struct Struct:
+    alias StructAlias = Int
+    
     fn func(self):
         """
         Doctests in a struct member.

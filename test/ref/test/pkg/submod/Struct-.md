@@ -7,9 +7,9 @@ Mojo struct
 struct Struct[StructParameter: Intable]
 ```
 
-[`Struct`](Struct-.md), [`submod.ModuleAlias`](_index.md#aliases).
+[`Struct`](Struct-.md), [`ModuleAlias`](_index.md#aliases).
 
-[`Struct`](Struct-.md), [`submod.ModuleAlias`](_index.md#aliases)
+[`Struct`](Struct-.md), [`ModuleAlias`](_index.md#aliases)
 
 ## Aliases
 

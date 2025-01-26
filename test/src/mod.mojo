@@ -3,6 +3,8 @@ Module mod.
 
 Contains (rel) [.ModuleAlias], [.Struct], [.Trait], [.module_function].
 Contains (abs) [test.mod.ModuleAlias], [test.mod.Struct], [test.mod.Trait], [test.mod.module_function].
+
+[.Struct.StructAlias]
 """
 alias ModuleAlias = Int
 

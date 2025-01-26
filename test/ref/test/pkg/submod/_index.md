@@ -8,5 +8,5 @@ Mojo module
 
 ## Structs
 
-- [`Struct`](Struct-.md): [`Struct`](Struct-.md), [`submod.ModuleAlias`](_index.md#aliases).
+- [`Struct`](Struct-.md): [`Struct`](Struct-.md), [`ModuleAlias`](_index.md#aliases).
 
