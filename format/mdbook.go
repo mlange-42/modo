@@ -15,8 +15,25 @@ import (
 
 type MdBook struct{}
 
-func (f *MdBook) Render(docs *document.Docs, config *document.Config) error {
-	return document.Render(docs, config, f)
+func (f *MdBook) Accepts(files []string) error {
+	if len(files) > 1 {
+		return fmt.Errorf("mdBook formatter can process only a single JSON file, but %d is given", len(files))
+	}
+	if len(files) == 0 || files[0] == "" {
+		return nil
+	}
+	if s, err := os.Stat(files[0]); err == nil {
+		if s.IsDir() {
+			return fmt.Errorf("mdBook formatter can process only a single JSON file, but directory '%s' is given", files[0])
+		}
+	} else {
+		return err
+	}
+	return nil
+}
+
+func (f *MdBook) Render(docs *document.Docs, config *document.Config, subdir string) error {
+	return document.Render(docs, config, f, subdir)
 }
 
 func (f *MdBook) ProcessMarkdown(element any, text string, proc *document.Processor) (string, error) {

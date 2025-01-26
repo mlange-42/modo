@@ -8,8 +8,12 @@ import (
 
 type Plain struct{}
 
-func (f *Plain) Render(docs *document.Docs, config *document.Config) error {
-	return document.Render(docs, config, f)
+func (f *Plain) Accepts(files []string) error {
+	return nil
+}
+
+func (f *Plain) Render(docs *document.Docs, config *document.Config, subdir string) error {
+	return document.Render(docs, config, f, subdir)
 }
 
 func (f *Plain) ProcessMarkdown(element any, text string, proc *document.Processor) (string, error) {

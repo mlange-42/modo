@@ -12,14 +12,14 @@ import (
 	"github.com/mlange-42/modo/assets"
 )
 
-func Render(docs *Docs, config *Config, form Formatter) error {
+func Render(docs *Docs, config *Config, form Formatter, subdir string) error {
 	t, err := loadTemplates(form, config.TemplateDirs...)
 	if err != nil {
 		return err
 	}
 	if !config.DryRun {
 		proc := NewProcessor(docs, form, t, config)
-		return renderWith(config, proc)
+		return renderWith(config, proc, subdir)
 	}
 
 	files := []string{}
@@ -27,7 +27,7 @@ func Render(docs *Docs, config *Config, form Formatter) error {
 		files = append(files, file)
 		return nil
 	})
-	err = renderWith(config, proc)
+	err = renderWith(config, proc, subdir)
 	if err != nil {
 		return err
 	}
@@ -39,7 +39,7 @@ func Render(docs *Docs, config *Config, form Formatter) error {
 	return nil
 }
 
-func ExtractTests(docs *Docs, config *Config, form Formatter) error {
+func ExtractTests(docs *Docs, config *Config, form Formatter, subdir string) error {
 	caseSensitiveSystem = !config.CaseInsensitive
 	t, err := loadTemplates(form, config.TemplateDirs...)
 	if err != nil {
@@ -53,18 +53,19 @@ func ExtractTests(docs *Docs, config *Config, form Formatter) error {
 	} else {
 		proc = NewProcessor(docs, form, t, config)
 	}
-	return proc.ExtractTests()
+	return proc.ExtractTests(subdir)
 }
 
-func renderWith(config *Config, proc *Processor) error {
+func renderWith(config *Config, proc *Processor, subdir string) error {
 	caseSensitiveSystem = !config.CaseInsensitive
-	if err := proc.PrepareDocs(); err != nil {
+	if err := proc.PrepareDocs(subdir); err != nil {
 		return err
 	}
-	if err := renderPackage(proc.ExportDocs.Decl, []string{config.OutputDir}, proc); err != nil {
+	outPath := path.Join(config.OutputDir, subdir)
+	if err := renderPackage(proc.ExportDocs.Decl, []string{outPath}, proc); err != nil {
 		return err
 	}
-	if err := proc.Formatter.WriteAuxiliary(proc.ExportDocs.Decl, config.OutputDir, proc); err != nil {
+	if err := proc.Formatter.WriteAuxiliary(proc.ExportDocs.Decl, outPath, proc); err != nil {
 		return err
 	}
 	return nil

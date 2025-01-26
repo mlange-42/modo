@@ -6,6 +6,8 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"path"
+	"path/filepath"
 	"strings"
 
 	"github.com/mlange-42/modo/document"
@@ -99,4 +101,68 @@ func mountProject(v *viper.Viper, paths []string) error {
 		}
 	}
 	return nil
+}
+
+type command = func(file string, args *document.Config, form document.Formatter, subdir string, isFile, isDir bool) error
+
+func runFilesOrDir(cmd command, args *document.Config, form document.Formatter) error {
+	if form != nil {
+		if err := form.Accepts(args.InputFiles); err != nil {
+			return err
+		}
+	}
+
+	if len(args.InputFiles) == 0 || (len(args.InputFiles) == 1 && args.InputFiles[0] == "") {
+		if err := cmd("", args, form, "", false, false); err != nil {
+			return err
+		}
+	}
+
+	stats := make([]struct {
+		file bool
+		dir  bool
+	}, 0, len(args.InputFiles))
+
+	for _, file := range args.InputFiles {
+		if s, err := os.Stat(file); err == nil {
+			if s.IsDir() && len(args.InputFiles) > 1 {
+				return fmt.Errorf("only a single directory at a time can be processed")
+			}
+			stats = append(stats, struct {
+				file bool
+				dir  bool
+			}{!s.IsDir(), s.IsDir()})
+		} else {
+			return err
+		}
+	}
+
+	for i, file := range args.InputFiles {
+		s := stats[i]
+		if err := cmd(file, args, form, "", s.file, s.dir); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func runDir(baseDir string, args *document.Config, form document.Formatter, runFile command) error {
+	baseDir = filepath.Clean(baseDir)
+
+	err := filepath.WalkDir(baseDir,
+		func(p string, info os.DirEntry, err error) error {
+			if err != nil {
+				return err
+			}
+			if info.IsDir() {
+				return nil
+			}
+			if !strings.HasSuffix(strings.ToLower(p), ".json") {
+				return nil
+			}
+			cleanDir, _ := filepath.Split(path.Clean(p))
+			relDir := filepath.Clean(strings.TrimPrefix(cleanDir, baseDir))
+			return runFile(p, args, form, relDir, true, false)
+		})
+	return err
 }

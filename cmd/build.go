@@ -41,7 +41,7 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 		},
 	}
 
-	root.Flags().StringSliceP("input", "i", []string{}, "'mojo doc' JSON file to process. Reads from STDIN if not specified")
+	root.Flags().StringSliceP("input", "i", []string{}, "'mojo doc' JSON file to process. Reads from STDIN if not specified.\nIf a single directory is given, it is processed recursively")
 	root.Flags().StringP("output", "o", "", "Output folder for generated Markdown files")
 	root.Flags().StringP("tests", "t", "", "Target folder to extract doctests for 'mojo test'.\nSee also command 'modo test' (default no doctests)")
 	root.Flags().StringP("format", "f", "plain", "Output format. One of (plain|mdbook|hugo)")
@@ -82,16 +82,8 @@ func runBuild(args *document.Config) error {
 		return err
 	}
 
-	if len(args.InputFiles) == 0 || (len(args.InputFiles) == 1 && args.InputFiles[0] == "") {
-		if err := runBuildOnce("", args, formatter); err != nil {
-			return err
-		}
-	} else {
-		for _, f := range args.InputFiles {
-			if err := runBuildOnce(f, args, formatter); err != nil {
-				return err
-			}
-		}
+	if err := runFilesOrDir(runBuildOnce, args, formatter); err != nil {
+		return err
 	}
 
 	if !args.Bare {
@@ -103,12 +95,15 @@ func runBuild(args *document.Config) error {
 	return nil
 }
 
-func runBuildOnce(file string, args *document.Config, form document.Formatter) error {
+func runBuildOnce(file string, args *document.Config, form document.Formatter, subdir string, isFile, isDir bool) error {
+	if isDir {
+		return runDir(file, args, form, runBuildOnce)
+	}
 	docs, err := readDocs(file)
 	if err != nil {
 		return err
 	}
-	err = form.Render(docs, args)
+	err = form.Render(docs, args, subdir)
 	if err != nil {
 		return err
 	}
