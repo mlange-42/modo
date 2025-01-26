@@ -1,6 +1,7 @@
 package format_test
 
 import (
+	"strings"
 	"testing"
 
 	"github.com/mlange-42/modo/document"
@@ -40,5 +41,20 @@ func TestHugoProcessMarkdown(t *testing.T) {
 	assert.Nil(t, err)
 
 	proc := document.NewProcessor(nil, &form, templ, &document.Config{})
-	_ = proc
+
+	text, err := form.ProcessMarkdown(document.Struct{
+		MemberName: document.MemberName{Name: "Struct"},
+		MemberKind: document.MemberKind{Kind: "struct"},
+	}, "test", proc)
+	assert.Nil(t, err)
+
+	assert.Equal(t,
+		strings.ReplaceAll(text, "\r\n", "\n"),
+		`---
+type: docs
+title: Struct
+weight: 100
+---
+
+test`)
 }
