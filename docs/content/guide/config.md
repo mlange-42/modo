@@ -86,26 +86,26 @@ case-insensitive: false
 # Directories to scan for templates to overwrite builtin templates.
 templates: []
 
-# Shell commands to run before build as well as test.
+# Bash commands to run before build as well as test.
 pre-run:
   - |
     echo You can use pre- and post-commands...
     echo to run 'mojo doc', 'mojo test', etc.
 
-# Shell commands to run before build.
+# Bash commands to run before build.
 pre-build: []
 
-# Shell commands to run before test.
-# Also runs before build if 'doctest' is given.
+# Bash commands to run before test.
+# Also runs before build if 'tests' is given.
 pre-test: []
 
-# Shell commands to run after test.
-# Also runs after build if 'doctest' is given.
+# Bash commands to run after test.
+# Also runs after build if 'tests' is given.
 post-test: []
 
 # Shell commands to run after build.
 post-build: []
 
-# Shell commands to run after as well as test.
+# Bash commands to run after build as well as test.
 post-run: []
 ```

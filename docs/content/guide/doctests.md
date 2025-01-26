@@ -1,5 +1,5 @@
 ---
-title: Doc testing
+title: Doc-tests
 type: docs
 summary: Extract doc tests from code examples in the API docs.
 weight: 6

@@ -2,7 +2,7 @@
 title: Templates
 type: docs
 summary: Use templates to customize Modo🧯's output.
-weight: 7
+weight: 8
 ---
 
 Modo🧯 relies heavily on templating.
