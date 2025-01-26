@@ -31,7 +31,7 @@ func TestRenderPackage(tt *testing.T) {
 	}
 
 	form := TestFormatter{}
-	templ, err := loadTemplates(&form)
+	templ, err := LoadTemplates(&form)
 	assert.Nil(tt, err)
 
 	proc := NewProcessor(nil, &form, templ, &Config{})
@@ -64,7 +64,7 @@ func TestRenderModule(tt *testing.T) {
 	}
 
 	form := TestFormatter{}
-	templ, err := loadTemplates(&form)
+	templ, err := LoadTemplates(&form)
 	assert.Nil(tt, err)
 
 	proc := NewProcessor(nil, &form, templ, &Config{})
@@ -265,7 +265,7 @@ decl:
 
 func createProcessor(t *testing.T, docs *Docs, useExports bool, files map[string]string) *Processor {
 	formatter := TestFormatter{}
-	templ, err := loadTemplates(&formatter)
+	templ, err := LoadTemplates(&formatter)
 	assert.Nil(t, err)
 	return NewProcessorWithWriter(docs, &formatter, templ, &Config{UseExports: useExports, ShortLinks: true}, func(file, text string) error {
 		files[file] = text

@@ -76,10 +76,7 @@ func (proc *Processor) ReplacePlaceholders(text string, elems []string, modElems
 			basePath = path.Join(parts...)
 		}
 
-		pathStr, err := proc.Formatter.ToLinkPath(basePath, entry.Kind)
-		if err != nil {
-			return "", err
-		}
+		pathStr := proc.Formatter.ToLinkPath(basePath, entry.Kind)
 		if entry.IsSection {
 			pathStr += parts[len(parts)-1]
 		}

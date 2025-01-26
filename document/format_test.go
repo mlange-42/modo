@@ -20,16 +20,16 @@ func (f *TestFormatter) WriteAuxiliary(p *Package, dir string, proc *Processor) 
 	return nil
 }
 
-func (f *TestFormatter) ToFilePath(p string, kind string) (string, error) {
+func (f *TestFormatter) ToFilePath(p string, kind string) string {
 	if kind == "package" || kind == "module" {
-		return path.Join(p, "_index.md"), nil
+		return path.Join(p, "_index.md")
 	}
 	if len(p) == 0 {
-		return p, nil
+		return p
 	}
-	return p + ".md", nil
+	return p + ".md"
 }
 
-func (f *TestFormatter) ToLinkPath(p string, kind string) (string, error) {
+func (f *TestFormatter) ToLinkPath(p string, kind string) string {
 	return f.ToFilePath(p, kind)
 }
