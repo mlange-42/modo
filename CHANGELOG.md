@@ -5,6 +5,10 @@
 * A folder can be given as input, for all JSON files getting processed recursively (#118)
 * With an input folder, doc-tests are also extracted from Markdown files (#119)
 
+### Bugfixes
+
+* Fixes #80: short link labels for module aliases (#121)
+
 ### Other
 
 * Doctests are written in a sub-folder for each package (#116)

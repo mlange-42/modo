@@ -12,12 +12,10 @@ Exports (abs) [`ModuleAlias`](_index.md#aliases), [`Struct`](Struct-.md), [`Trai
  - [`Struct.StructParameter`](Struct-.md#parameters)
  - [`Struct.struct_field`](Struct-.md#fields)
  - [`Struct.struct_method`](Struct-.md#struct_method)
- - [`Struct.StructAlias`](Struct-.md#aliases)
 
  - [`Trait.trait_method`](Trait-.md#trait_method)
 
  - [`submod`](pkg/submod/_index.md)
- - [`ModuleAlias`](pkg/submod/_index.md#aliases)
  - [`Struct`](pkg/submod/Struct-.md)
  - [`Struct.struct_method`](pkg/submod/Struct-.md#struct_method)
 

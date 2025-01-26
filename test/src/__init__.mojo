@@ -9,12 +9,14 @@ Exports (abs) [test.mod.ModuleAlias], [test.mod.Struct], [test.mod.Trait], [test
  - [.mod.Struct.StructParameter]
  - [.mod.Struct.struct_field]
  - [.mod.Struct.struct_method]
+ - [.mod.Struct.StructAlias]
 
  - [.mod.Trait.trait_method]
 
  - [.pkg.submod]
  - [.pkg.submod.Struct]
  - [.pkg.submod.Struct.struct_method]
+ - [.pkg.submod.ModuleAlias]
 
 Exports:
  - mod.ModuleAlias
