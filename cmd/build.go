@@ -3,7 +3,9 @@ package cmd
 import (
 	"fmt"
 	"os"
+	"path"
 	"path/filepath"
+	"strings"
 
 	"github.com/mlange-42/modo/document"
 	"github.com/mlange-42/modo/format"
@@ -97,7 +99,7 @@ func runBuild(args *document.Config) error {
 	return nil
 }
 
-func runBuildOnce(file string, args *document.Config, form document.Formatter, isFile, isDir bool) error {
+func runBuildOnce(file string, args *document.Config, form document.Formatter, subdir string, isFile, isDir bool) error {
 	if isDir {
 		return runBuildDirectory(file, args, form)
 	}
@@ -105,21 +107,30 @@ func runBuildOnce(file string, args *document.Config, form document.Formatter, i
 	if err != nil {
 		return err
 	}
-	err = form.Render(docs, args)
+	err = form.Render(docs, args, subdir)
 	if err != nil {
 		return err
 	}
 	return nil
 }
 
-func runBuildDirectory(file string, args *document.Config, form document.Formatter) error {
-	err := filepath.WalkDir(file,
-		func(path string, info os.DirEntry, err error) error {
+func runBuildDirectory(baseDir string, args *document.Config, form document.Formatter) error {
+	baseDir = filepath.Clean(baseDir)
+
+	err := filepath.WalkDir(baseDir,
+		func(p string, info os.DirEntry, err error) error {
 			if err != nil {
 				return err
 			}
-			fmt.Println(path)
-			return nil
+			if info.IsDir() {
+				return nil
+			}
+			if !strings.HasSuffix(strings.ToLower(p), ".json") {
+				return nil
+			}
+			cleanDir, _ := filepath.Split(path.Clean(p))
+			relDir := filepath.Clean(strings.TrimPrefix(cleanDir, baseDir))
+			return runBuildOnce(p, args, form, relDir, true, false)
 		})
 	return err
 }

@@ -52,8 +52,8 @@ func NewProcessorWithWriter(docs *Docs, f Formatter, t *template.Template, confi
 }
 
 // PrepareDocs processes the API docs for subsequent rendering.
-func (proc *Processor) PrepareDocs() error {
-	err := proc.ExtractTests()
+func (proc *Processor) PrepareDocs(subdir string) error {
+	err := proc.ExtractTests(subdir)
 	if err != nil {
 		return err
 	}
@@ -76,7 +76,7 @@ func (proc *Processor) PrepareDocs() error {
 	return nil
 }
 
-func (proc *Processor) ExtractTests() error {
+func (proc *Processor) ExtractTests(subdir string) error {
 	// Collect the paths of all (sub)-elements in the original structure.
 	proc.collectElementPaths()
 
@@ -86,7 +86,7 @@ func (proc *Processor) ExtractTests() error {
 		return err
 	}
 	if proc.Config.TestOutput != "" {
-		outPath := path.Join(proc.Config.TestOutput, proc.Docs.Decl.Name)
+		outPath := path.Join(proc.Config.TestOutput, subdir, proc.Docs.Decl.Name)
 		err = proc.writeDocTests(outPath)
 		if err != nil {
 			return err

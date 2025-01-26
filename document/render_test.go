@@ -123,7 +123,7 @@ decl:
 	files := map[string]string{}
 	proc := createProcessor(t, docs, true, files)
 
-	err = renderWith(&Config{OutputDir: outDir}, proc)
+	err = renderWith(&Config{OutputDir: outDir}, proc, "")
 	assert.Nil(t, err)
 }
 
@@ -177,7 +177,7 @@ decl:
 	files := map[string]string{}
 	proc := createProcessor(t, docs, false, files)
 
-	err = renderWith(&Config{OutputDir: outDir}, proc)
+	err = renderWith(&Config{OutputDir: outDir}, proc, "")
 	assert.Nil(t, err)
 }
 
@@ -222,7 +222,7 @@ decl:
 	files := map[string]string{}
 	proc := createProcessor(t, docs, false, files)
 
-	err = renderWith(&Config{OutputDir: outDir}, proc)
+	err = renderWith(&Config{OutputDir: outDir}, proc, "")
 	assert.Nil(t, err)
 }
 
@@ -259,7 +259,7 @@ decl:
 	files := map[string]string{}
 	proc := createProcessor(t, docs, false, files)
 
-	err = renderWith(&Config{OutputDir: outDir}, proc)
+	err = renderWith(&Config{OutputDir: outDir}, proc, "")
 	assert.Nil(t, err)
 }
 
@@ -290,7 +290,7 @@ func TestRenderDry(t *testing.T) {
 	doc, err := FromJson(data)
 	assert.Nil(t, err)
 
-	err = formatter.Render(doc, &config)
+	err = formatter.Render(doc, &config, "")
 	assert.Nil(t, err)
 
 	tmpFiles, err := filterFiles(tmpDir)
@@ -316,7 +316,7 @@ func TestRenderFiles(t *testing.T) {
 	doc, err := FromJson(data)
 	assert.Nil(t, err)
 
-	err = formatter.Render(doc, &config)
+	err = formatter.Render(doc, &config, "")
 	assert.Nil(t, err)
 
 	refFiles, err := filterFiles(refDir)

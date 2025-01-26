@@ -14,8 +14,8 @@ func (f *Hugo) Accepts(files []string) error {
 	return nil
 }
 
-func (f *Hugo) Render(docs *document.Docs, config *document.Config) error {
-	return document.Render(docs, config, f)
+func (f *Hugo) Render(docs *document.Docs, config *document.Config, subdir string) error {
+	return document.Render(docs, config, f, subdir)
 }
 
 func (f *Hugo) ProcessMarkdown(element any, text string, proc *document.Processor) (string, error) {

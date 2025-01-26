@@ -86,12 +86,12 @@ func runTest(args *document.Config) error {
 	return nil
 }
 
-func runTestOnce(file string, args *document.Config, _ document.Formatter, isFile, isDir bool) error {
+func runTestOnce(file string, args *document.Config, _ document.Formatter, subdir string, isFile, isDir bool) error {
 	docs, err := readDocs(file)
 	if err != nil {
 		return err
 	}
-	if err := document.ExtractTests(docs, args, &format.Plain{}); err != nil {
+	if err := document.ExtractTests(docs, args, &format.Plain{}, ""); err != nil {
 		return err
 	}
 	return nil
