@@ -46,6 +46,15 @@ func (proc *Processor) writeDocTests(dir string) error {
 }
 
 func (proc *Processor) extractTests(text string, elems []string, modElems int) (string, error) {
+	t, tests, err := extractTestsText(text, elems, modElems, proc.Config.Strict)
+	if err != nil {
+		return "", err
+	}
+	proc.docTests = append(proc.docTests, tests...)
+	return t, nil
+}
+
+func extractTestsText(text string, elems []string, modElems int, strict bool) (string, []*docTest, error) {
 	_ = modElems
 	scanner := bufio.NewScanner(strings.NewReader(text))
 	outText := strings.Builder{}
@@ -68,8 +77,8 @@ func (proc *Processor) extractTests(text string, elems []string, modElems int) (
 			var err error
 			blockName, excluded, global, ok, err = parseBlockAttr(origLine)
 			if err != nil {
-				if err := proc.warnOrError("%s in %s", err.Error(), strings.Join(elems, ".")); err != nil {
-					return "", err
+				if err := warnOrError(strict, "%s in %s", err.Error(), strings.Join(elems, ".")); err != nil {
+					return "", nil, err
 				}
 			}
 			if !ok {
@@ -122,16 +131,17 @@ func (proc *Processor) extractTests(text string, elems []string, modElems int) (
 		panic(err)
 	}
 	if fenced {
-		if err := proc.warnOrError("unbalanced code block in %s", strings.Join(elems, ".")); err != nil {
-			return "", err
+		if err := warnOrError(strict, "unbalanced code block in %s", strings.Join(elems, ".")); err != nil {
+			return "", nil, err
 		}
 	}
 
+	tests := make([]*docTest, 0, len(blocks))
 	for _, block := range blocks {
-		proc.docTests = append(proc.docTests, block)
+		tests = append(tests, block)
 	}
 
-	return strings.TrimSuffix(outText.String(), "\n"), nil
+	return strings.TrimSuffix(outText.String(), "\n"), tests, nil
 }
 
 func parseBlockAttr(line string) (name string, hide bool, global bool, ok bool, err error) {
