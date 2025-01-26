@@ -276,7 +276,7 @@ func createProcessor(t *testing.T, docs *Docs, useExports bool, files map[string
 func TestRenderDry(t *testing.T) {
 	tmpDir := strings.ReplaceAll(t.TempDir(), "\\", "/")
 	config := Config{
-		InputFiles:      []string{"../test/test.json"},
+		InputFiles:      []string{"../test/docs/test.json"},
 		OutputDir:       tmpDir,
 		UseExports:      true,
 		ShortLinks:      true,
