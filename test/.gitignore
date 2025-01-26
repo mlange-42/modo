@@ -5,7 +5,7 @@
 .magic
 
 # mojo doc output
-/*.json
+/docs/*.json
 
 # modo doctest output
 /doctest/
