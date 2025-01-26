@@ -49,7 +49,7 @@ func (proc *Processor) extractDocTestsMarkdown(baseDir string) error {
 			contentStr := string(content)
 			if strings.HasSuffix(strings.ToLower(p), ".md") {
 				var err error
-				contentStr, err = proc.extractTests(contentStr, []string{relPath}, 1)
+				contentStr, err = proc.extractTests(contentStr, []string{strings.TrimSuffix(relPath, ".md")}, 1)
 				if err != nil {
 					return err
 				}
@@ -76,10 +76,6 @@ func (proc *Processor) writeDocTests(dir string) error {
 	if dir == "" {
 		return nil
 	}
-	err := proc.mkDirs(dir)
-	if err != nil {
-		return err
-	}
 	for _, test := range proc.docTests {
 		b := strings.Builder{}
 		err := proc.Template.ExecuteTemplate(&b, "doctest.mojo", test)
@@ -89,6 +85,12 @@ func (proc *Processor) writeDocTests(dir string) error {
 		filePath := strings.Join(test.Path, "_")
 		filePath += "_" + test.Name + "_test.mojo"
 		fullPath := path.Join(dir, filePath)
+
+		parentDir, _ := filepath.Split(filepath.Clean(fullPath))
+		err = proc.mkDirs(parentDir)
+		if err != nil {
+			return err
+		}
 
 		err = proc.WriteFile(fullPath, b.String())
 		if err != nil {
