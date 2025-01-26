@@ -56,6 +56,24 @@ func ExtractTests(docs *Docs, config *Config, form Formatter, subdir string) err
 	return proc.ExtractTests(subdir)
 }
 
+func ExtractTestsMarkdown(config *Config, form Formatter, baseDir string) error {
+	caseSensitiveSystem = !config.CaseInsensitive
+
+	t, err := loadTemplates(form, config.TemplateDirs...)
+	if err != nil {
+		return err
+	}
+	var proc *Processor
+	if config.DryRun {
+		proc = NewProcessorWithWriter(nil, form, t, config, func(file, text string) error {
+			return nil
+		})
+	} else {
+		proc = NewProcessor(nil, form, t, config)
+	}
+	return proc.extractDocTestsMarkdown(baseDir)
+}
+
 func renderWith(config *Config, proc *Processor, subdir string) error {
 	caseSensitiveSystem = !config.CaseInsensitive
 	if err := proc.PrepareDocs(subdir); err != nil {

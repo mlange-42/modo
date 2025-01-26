@@ -3,7 +3,9 @@ package document
 import (
 	"bufio"
 	"fmt"
+	"os"
 	"path"
+	"path/filepath"
 	"strings"
 )
 
@@ -16,6 +18,58 @@ func (proc *Processor) extractDocTests() error {
 	return proc.walkDocs(proc.Docs, proc.extractTests, func(elem Named) string {
 		return elem.GetFileName()
 	})
+}
+
+func (proc *Processor) extractDocTestsMarkdown(baseDir string) error {
+	proc.docTests = []*docTest{}
+	outDir := filepath.Clean(proc.Config.OutputDir)
+	baseDir = filepath.Clean(baseDir)
+	err := filepath.WalkDir(baseDir,
+		func(p string, info os.DirEntry, err error) error {
+			if err != nil {
+				return err
+			}
+			if info.IsDir() {
+				return nil
+			}
+			if strings.HasSuffix(strings.ToLower(p), ".json") {
+				return nil
+			}
+			cleanPath := path.Clean(p)
+			relPath := filepath.Clean(strings.TrimPrefix(cleanPath, baseDir))
+			targetPath := filepath.Join(outDir, relPath)
+			targetDir, _ := filepath.Split(targetPath)
+
+			err = proc.mkDirs(targetDir)
+			if err != nil {
+				return err
+			}
+
+			content, err := os.ReadFile(cleanPath)
+			contentStr := string(content)
+			if strings.HasSuffix(strings.ToLower(p), ".md") {
+				var err error
+				contentStr, err = proc.extractTests(contentStr, []string{relPath}, 1)
+				if err != nil {
+					return err
+				}
+			}
+
+			if err != nil {
+				return err
+			}
+			return proc.WriteFile(targetPath, contentStr)
+		})
+	if err != nil {
+		return err
+	}
+	if proc.Config.TestOutput != "" {
+		err = proc.writeDocTests(proc.Config.TestOutput)
+		if err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func (proc *Processor) writeDocTests(dir string) error {
@@ -46,7 +100,7 @@ func (proc *Processor) writeDocTests(dir string) error {
 }
 
 func (proc *Processor) extractTests(text string, elems []string, modElems int) (string, error) {
-	t, tests, err := extractTestsText(text, elems, modElems, proc.Config.Strict)
+	t, tests, err := extractTestsText(text, elems, proc.Config.Strict)
 	if err != nil {
 		return "", err
 	}
@@ -54,8 +108,7 @@ func (proc *Processor) extractTests(text string, elems []string, modElems int) (
 	return t, nil
 }
 
-func extractTestsText(text string, elems []string, modElems int, strict bool) (string, []*docTest, error) {
-	_ = modElems
+func extractTestsText(text string, elems []string, strict bool) (string, []*docTest, error) {
 	scanner := bufio.NewScanner(strings.NewReader(text))
 	outText := strings.Builder{}
 
