@@ -13,7 +13,7 @@ import (
 )
 
 func Render(docs *Docs, config *Config, form Formatter, subdir string) error {
-	t, err := loadTemplates(form, config.TemplateDirs...)
+	t, err := LoadTemplates(form, config.TemplateDirs...)
 	if err != nil {
 		return err
 	}
@@ -41,7 +41,7 @@ func Render(docs *Docs, config *Config, form Formatter, subdir string) error {
 
 func ExtractTests(docs *Docs, config *Config, form Formatter, subdir string) error {
 	caseSensitiveSystem = !config.CaseInsensitive
-	t, err := loadTemplates(form, config.TemplateDirs...)
+	t, err := LoadTemplates(form, config.TemplateDirs...)
 	if err != nil {
 		return err
 	}
@@ -59,7 +59,7 @@ func ExtractTests(docs *Docs, config *Config, form Formatter, subdir string) err
 func ExtractTestsMarkdown(config *Config, form Formatter, baseDir string, build bool) error {
 	caseSensitiveSystem = !config.CaseInsensitive
 
-	t, err := loadTemplates(form, config.TemplateDirs...)
+	t, err := LoadTemplates(form, config.TemplateDirs...)
 	if err != nil {
 		return err
 	}
@@ -185,7 +185,7 @@ func renderList[T interface {
 	return nil
 }
 
-func loadTemplates(f Formatter, additional ...string) (*template.Template, error) {
+func LoadTemplates(f Formatter, additional ...string) (*template.Template, error) {
 	allTemplates, err := findTemplatesFS()
 	if err != nil {
 		return nil, err
@@ -256,9 +256,6 @@ func linkAndWrite(text string, dir []string, modElems int, kind string, proc *Pr
 	if err != nil {
 		return err
 	}
-	outFile, err := proc.Formatter.ToFilePath(path.Join(dir...), kind)
-	if err != nil {
-		return err
-	}
+	outFile := proc.Formatter.ToFilePath(path.Join(dir...), kind)
 	return proc.WriteFile(outFile, text)
 }

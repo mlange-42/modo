@@ -33,17 +33,14 @@ func (f *Hugo) WriteAuxiliary(p *document.Package, dir string, proc *document.Pr
 	return nil
 }
 
-func (f *Hugo) ToFilePath(p string, kind string) (string, error) {
+func (f *Hugo) ToFilePath(p string, kind string) string {
 	if kind == "package" || kind == "module" {
-		return path.Join(p, "_index.md"), nil
+		return path.Join(p, "_index.md")
 	}
-	return p + ".md", nil
+	return p + ".md"
 }
 
-func (f *Hugo) ToLinkPath(p string, kind string) (string, error) {
-	p, err := f.ToFilePath(p, kind)
-	if err != nil {
-		return "", err
-	}
-	return fmt.Sprintf("{{< ref \"%s\" >}}", p), nil
+func (f *Hugo) ToLinkPath(p string, kind string) string {
+	p = f.ToFilePath(p, kind)
+	return fmt.Sprintf("{{< ref \"%s\" >}}", p)
 }

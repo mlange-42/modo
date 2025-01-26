@@ -53,17 +53,17 @@ func (f *MdBook) WriteAuxiliary(p *document.Package, dir string, proc *document.
 	return nil
 }
 
-func (f *MdBook) ToFilePath(p string, kind string) (string, error) {
+func (f *MdBook) ToFilePath(p string, kind string) string {
 	if kind == "package" || kind == "module" {
-		return path.Join(p, "_index.md"), nil
+		return path.Join(p, "_index.md")
 	}
 	if len(p) == 0 {
-		return p, nil
+		return p
 	}
-	return p + ".md", nil
+	return p + ".md"
 }
 
-func (f *MdBook) ToLinkPath(p string, kind string) (string, error) {
+func (f *MdBook) ToLinkPath(p string, kind string) string {
 	return f.ToFilePath(p, kind)
 }
 
@@ -94,10 +94,7 @@ func (f *MdBook) writeSummary(p *document.Package, dir string, proc *document.Pr
 func (f *MdBook) renderSummary(p *document.Package, proc *document.Processor) (string, error) {
 	s := summary{}
 
-	pkgFile, err := f.ToLinkPath("", "package")
-	if err != nil {
-		return "", err
-	}
+	pkgFile := f.ToLinkPath("", "package")
 	s.Summary = fmt.Sprintf("[`%s`](%s)", p.GetName(), pkgFile)
 
 	pkgs := strings.Builder{}
@@ -150,11 +147,7 @@ func (f *MdBook) renderPackage(pkg *document.Package, t *template.Template, link
 	newPath := append([]string{}, linkPath...)
 	newPath = append(newPath, pkg.GetFileName())
 
-	pkgFile, err := f.ToLinkPath(path.Join(newPath...), "package")
-	if err != nil {
-		return err
-	}
-
+	pkgFile := f.ToLinkPath(path.Join(newPath...), "package")
 	fmt.Fprintf(out, "%-*s- [`%s`](%s))\n", 2*len(linkPath), "", pkg.GetName(), pkgFile)
 	for _, p := range pkg.Packages {
 		if err := f.renderPackage(p, t, newPath, out); err != nil {
@@ -194,10 +187,7 @@ func (f *MdBook) renderModule(mod *document.Module, linkPath []string, out *stri
 
 	pathStr := path.Join(newPath...)
 
-	modFile, err := f.ToLinkPath(pathStr, "module")
-	if err != nil {
-		return err
-	}
+	modFile := f.ToLinkPath(pathStr, "module")
 	fmt.Fprintf(out, "%-*s- [`%s`](%s)\n", 2*(len(newPath)-1), "", mod.GetName(), modFile)
 
 	childDepth := 2*(len(newPath)-1) + 2
@@ -220,10 +210,7 @@ func (f *MdBook) renderModule(mod *document.Module, linkPath []string, out *stri
 }
 
 func (f *MdBook) renderModuleMember(mem document.Named, pathStr string, depth int, out io.Writer) error {
-	memPath, err := f.ToLinkPath(path.Join(pathStr, mem.GetFileName(), ""), "")
-	if err != nil {
-		return err
-	}
+	memPath := f.ToLinkPath(path.Join(pathStr, mem.GetFileName(), ""), "")
 	fmt.Fprintf(out, "%-*s- [`%s`](%s)\n", depth, "", mem.GetName(), memPath)
 	return nil
 }
