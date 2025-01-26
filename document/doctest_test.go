@@ -1,6 +1,8 @@
 package document
 
 import (
+	"os"
+	"path"
 	"strings"
 	"testing"
 
@@ -80,4 +82,33 @@ func TestExtractDocTests(t *testing.T) {
 		},
 		Global: []string{"struct Test:", "    pass"},
 	})
+}
+
+func TestExtractTestsMarkdown(t *testing.T) {
+	inDir := t.TempDir()
+	outDir := t.TempDir()
+	testDir := t.TempDir()
+	_ = outDir
+
+	config := Config{
+		InputFiles: []string{inDir},
+		OutputDir:  outDir,
+		TestOutput: testDir,
+		Strict:     true,
+	}
+
+	err := os.WriteFile(path.Join(inDir, "_index.md"), []byte(
+		"```mojo {doctest=\"test1\"}\n"+
+			"var a = 0\n"+
+			"```\n",
+	), 0666)
+	assert.Nil(t, err)
+
+	err = ExtractTestsMarkdown(&config, &TestFormatter{}, inDir, true)
+	assert.Nil(t, err)
+
+	_, err = os.Stat(path.Join(outDir, "_index.md"))
+	assert.Nil(t, err)
+	_, err = os.Stat(path.Join(testDir, "_index_test1_test.mojo"))
+	assert.Nil(t, err)
 }
