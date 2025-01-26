@@ -5,6 +5,10 @@
 * A folder can be given as input, for all JSON files getting processed recursively (#118)
 * With an input folder, doc-tests are also extracted from Markdown files (#119)
 
+### Documentation
+
+* Adds user guide section on pre- and post-processing bash scripts (#125)
+
 ### Bugfixes
 
 * Fixes #80: short link labels for module aliases (#121)
