@@ -16,5 +16,5 @@ This guide explains how to use Modo🧯's features:
 - [Cross-references](cross-refs) &mdash; Cross-referencing in the API docs.
 - [Re-exports](re-exports) &mdash; Restructure package according to re-exports.
 - [Doc testing](doctests) &mdash; Extract doc tests from code examples in the API docs.
-- [Bash commands](bash) &mdash; Configure bash commands to before and after processing.
+- [Bash scripts](scripts) &mdash; Configure bash scripts to run before and after processing.
 - [Templates](templates) &mdash; Use templates to customize Modo🧯's output.

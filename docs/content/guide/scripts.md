@@ -1,18 +1,18 @@
 ---
-title: Bash commands
+title: Bash scripts
 type: docs
-summary: Configure bash commands to before and after processing.
+summary: Configure bash scripts to run before and after processing.
 weight: 7
 ---
 
-Modo🧯 can be configured to automatically run bash commands before and/or after processing.
+Modo🧯 can be configured to automatically run bash scripts before and/or after processing.
 
 This feature can be used to run all necessary steps with a single `modo build` or `modo test` command.
 Particularly, `mojo doc` can be executed before processing, and `mojo test` after extracting [doc-tests](../doctests).
 
 ## Configuration
 
-The `modo.yaml` [config file](../config) provides the following fields for bash commands:
+The `modo.yaml` [config file](../config) provides the following fields for bash scripts:
 
 - `pre-run`: runs before `build` as well as `test`.
 - `pre-build`: runs before `build`.
@@ -21,8 +21,8 @@ The `modo.yaml` [config file](../config) provides the following fields for bash 
 - `post-build`: runs after `build`.
 - `post-run`: runs after `build` as well as `test`.
 
-Each of those takes an array of bash commands.
-Each bash command can be comprised of multiple lines.
+Each of those takes an array of bash scripts.
+Each bash script can be comprised of multiple commands.
 
 Here is an example that runs `mojo doc` before builds and tests:
 
@@ -41,12 +41,12 @@ post-test:
     echo Done.
 ```
 
-Here, we use a single command that consists of 3 lines.
+Here, we use a single script that consists of 3 commands.
 
 ## Error trap
 
-Each (potentially multi-line) command starts a new bash process.
+Each script starts a new bash process.
 Each process is initialized with an error trap via `set -e`.
-This means that any failing line (or sub-command) causes the command to fail with that error.
+This means that any failing command causes the script to fail with that error.
 
-To let sub-command errors pass, use `set +e` as the first line of your command.
+To let errors of individual commands pass, use `set +e` as the first line of your script.
