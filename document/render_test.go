@@ -290,7 +290,7 @@ func TestRenderDry(t *testing.T) {
 	doc, err := FromJson(data)
 	assert.Nil(t, err)
 
-	err = formatter.Render(doc, &config, "")
+	err = Render(doc, &config, &formatter, "")
 	assert.Nil(t, err)
 
 	tmpFiles, err := filterFiles(tmpDir)
@@ -316,7 +316,7 @@ func TestRenderFiles(t *testing.T) {
 	doc, err := FromJson(data)
 	assert.Nil(t, err)
 
-	err = formatter.Render(doc, &config, "")
+	err = Render(doc, &config, &formatter, "")
 	assert.Nil(t, err)
 
 	ExtractTestsMarkdown(&config, &formatter, config.InputFiles[0], true)

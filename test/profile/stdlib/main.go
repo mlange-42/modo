@@ -55,7 +55,8 @@ func run(file string, iters int) {
 		if err != nil {
 			panic(err)
 		}
-		err = formatter.Render(doc, &config, "")
+
+		err = document.Render(doc, &config, &formatter, "")
 		if err != nil {
 			panic(err)
 		}

@@ -106,7 +106,7 @@ func runBuildOnce(file string, args *document.Config, form document.Formatter, s
 	if err != nil {
 		return err
 	}
-	err = form.Render(docs, args, subdir)
+	err = document.Render(docs, args, form, subdir)
 	if err != nil {
 		return err
 	}
