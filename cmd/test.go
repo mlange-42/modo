@@ -73,7 +73,7 @@ func runTest(args *document.Config) error {
 		}
 	}
 
-	if err := runOnFilesOrDir(runTestOnce, args, nil); err != nil {
+	if err := runFilesOrDir(runTestOnce, args, nil); err != nil {
 		return err
 	}
 
@@ -87,11 +87,14 @@ func runTest(args *document.Config) error {
 }
 
 func runTestOnce(file string, args *document.Config, _ document.Formatter, subdir string, isFile, isDir bool) error {
+	if isDir {
+		return runDir(file, args, nil, runTestOnce)
+	}
 	docs, err := readDocs(file)
 	if err != nil {
 		return err
 	}
-	if err := document.ExtractTests(docs, args, &format.Plain{}, ""); err != nil {
+	if err := document.ExtractTests(docs, args, &format.Plain{}, subdir); err != nil {
 		return err
 	}
 	return nil

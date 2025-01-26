@@ -6,6 +6,8 @@ import (
 	"io"
 	"os"
 	"os/exec"
+	"path"
+	"path/filepath"
 	"strings"
 
 	"github.com/mlange-42/modo/document"
@@ -103,9 +105,11 @@ func mountProject(v *viper.Viper, paths []string) error {
 
 type command = func(file string, args *document.Config, form document.Formatter, subdir string, isFile, isDir bool) error
 
-func runOnFilesOrDir(cmd command, args *document.Config, form document.Formatter) error {
-	if err := form.Accepts(args.InputFiles); err != nil {
-		return err
+func runFilesOrDir(cmd command, args *document.Config, form document.Formatter) error {
+	if form != nil {
+		if err := form.Accepts(args.InputFiles); err != nil {
+			return err
+		}
 	}
 
 	if len(args.InputFiles) == 0 || (len(args.InputFiles) == 1 && args.InputFiles[0] == "") {
@@ -140,4 +144,25 @@ func runOnFilesOrDir(cmd command, args *document.Config, form document.Formatter
 		}
 	}
 	return nil
+}
+
+func runDir(baseDir string, args *document.Config, form document.Formatter, runFile command) error {
+	baseDir = filepath.Clean(baseDir)
+
+	err := filepath.WalkDir(baseDir,
+		func(p string, info os.DirEntry, err error) error {
+			if err != nil {
+				return err
+			}
+			if info.IsDir() {
+				return nil
+			}
+			if !strings.HasSuffix(strings.ToLower(p), ".json") {
+				return nil
+			}
+			cleanDir, _ := filepath.Split(path.Clean(p))
+			relDir := filepath.Clean(strings.TrimPrefix(cleanDir, baseDir))
+			return runFile(p, args, form, relDir, true, false)
+		})
+	return err
 }
