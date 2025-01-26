@@ -11,6 +11,10 @@ var c = add(a, b)
 ```
 
 
+## Aliases
+
+- `ModAlias = Int`
+
 ## Structs
 
 - [`Struct`](Struct-.md)

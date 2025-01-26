@@ -7,13 +7,13 @@ Mojo struct
 struct Struct[StructParameter: Intable]
 ```
 
-[`test.ModuleAlias`](_index.md#aliases).
+[`ModuleAlias`](_index.md#aliases).
 
 [`Struct.struct_method`](Struct-.md#struct_method)
 
 ## Aliases
 
-- `StructAlias = StructParameter`: [`test.ModuleAlias`](_index.md#aliases). [`Struct.struct_method`](Struct-.md#struct_method)
+- `StructAlias = StructParameter`: [`ModuleAlias`](_index.md#aliases). [`Struct.struct_method`](Struct-.md#struct_method)
 
 ## Parameters
 
@@ -21,7 +21,7 @@ struct Struct[StructParameter: Intable]
 
 ## Fields
 
-- **struct_field** (`Int`): [`test.ModuleAlias`](_index.md#aliases). [`Struct.struct_method`](Struct-.md#struct_method)
+- **struct_field** (`Int`): [`ModuleAlias`](_index.md#aliases). [`Struct.struct_method`](Struct-.md#struct_method)
 
 ## Implemented traits
 
@@ -35,7 +35,7 @@ struct Struct[StructParameter: Intable]
 struct_method[T: Intable](self, arg: StructParameter) -> Int
 ```
 
-[`test.ModuleAlias`](_index.md#aliases).
+[`ModuleAlias`](_index.md#aliases).
 
 [`Struct.struct_method`](Struct-.md#struct_method)
 

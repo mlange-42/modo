@@ -7,6 +7,10 @@ Mojo struct
 struct Struct
 ```
 
+## Aliases
+
+- `StructAlias = Int`
+
 ## Implemented traits
 
 `AnyType`, `UnknownDestructibility`

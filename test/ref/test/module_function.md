@@ -6,7 +6,7 @@ Mojo function
 module_function[FunctionParameter: Intable](arg: Int) -> Int
 ```
 
-[`test.ModuleAlias`](_index.md#aliases).
+[`ModuleAlias`](_index.md#aliases).
 
 [`Struct.struct_method`](Struct-.md#struct_method)
 
