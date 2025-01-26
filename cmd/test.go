@@ -42,7 +42,7 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 		},
 	}
 
-	root.Flags().StringSliceP("input", "i", []string{}, "'mojo doc' JSON file to process. Reads from STDIN if not specified")
+	root.Flags().StringSliceP("input", "i", []string{}, "'mojo doc' JSON file to process. Reads from STDIN if not specified.\nIf a single directory is given, it is processed recursively")
 	root.Flags().StringP("tests", "t", "", "Target folder to extract doctests for 'mojo test'")
 	root.Flags().BoolP("case-insensitive", "C", false, "Build for systems that are not case-sensitive regarding file names.\nAppends hyphen (-) to capitalized file names")
 	root.Flags().BoolP("strict", "S", false, "Strict mode. Errors instead of warnings")

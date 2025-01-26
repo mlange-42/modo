@@ -41,7 +41,7 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 		},
 	}
 
-	root.Flags().StringSliceP("input", "i", []string{}, "'mojo doc' JSON file to process. Reads from STDIN if not specified")
+	root.Flags().StringSliceP("input", "i", []string{}, "'mojo doc' JSON file to process. Reads from STDIN if not specified.\nIf a single directory is given, it is processed recursively")
 	root.Flags().StringP("output", "o", "", "Output folder for generated Markdown files")
 	root.Flags().StringP("tests", "t", "", "Target folder to extract doctests for 'mojo test'.\nSee also command 'modo test' (default no doctests)")
 	root.Flags().StringP("format", "f", "plain", "Output format. One of (plain|mdbook|hugo)")
