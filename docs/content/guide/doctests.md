@@ -102,14 +102,14 @@ fn test_add() raises:
     assert_equal(result, 3)
 ```
 
-## Testing Markdown files
+## Markdown files
 
 A completely valid Modo🧯 use case is a site with not just API docs, but also other documentation.
 Thus, code examples in Markdown files that are not produced by Modo🧯 can also be processed for doctests.
 
 For that sake, Modo🧯 can use an entire directory as input, instead of one or more JSON files.
 The input directory should be structured like the intended output, with API docs folders replaced by `mojo doc` JSON files.
-Here is an example for a Hugo site with a user guide and API docs:
+Here is an example for a Hugo site with a user guide and API docs for `mypkg`:
 
 {{< filetree/container >}}
   {{< filetree/folder name="docs-in" >}}
@@ -128,3 +128,5 @@ With a directory as input, Modo🧯 does the following:
 - For each JSON file (`.json`), generate API docs, extract doctests, and write Markdown to the output folder and tests to the tests folder.
 - For each Markdown (`.md`) file, extract doctests, and write processed Markdown to the output folder and tests to the tests folder.
 - For any other files, copy them to the output folder.
+
+Note that this feature is not available with the [mdBook](../formats#mdbook) format.
