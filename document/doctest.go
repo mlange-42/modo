@@ -32,33 +32,7 @@ func (proc *Processor) extractDocTestsMarkdown(baseDir string) error {
 			if info.IsDir() {
 				return nil
 			}
-			if strings.HasSuffix(strings.ToLower(p), ".json") {
-				return nil
-			}
-			cleanPath := path.Clean(p)
-			relPath := filepath.Clean(strings.TrimPrefix(cleanPath, baseDir))
-			targetPath := filepath.Join(outDir, relPath)
-			targetDir, _ := filepath.Split(targetPath)
-
-			err = proc.mkDirs(targetDir)
-			if err != nil {
-				return err
-			}
-
-			content, err := os.ReadFile(cleanPath)
-			contentStr := string(content)
-			if strings.HasSuffix(strings.ToLower(p), ".md") {
-				var err error
-				contentStr, err = proc.extractTests(contentStr, []string{strings.TrimSuffix(relPath, ".md")}, 1)
-				if err != nil {
-					return err
-				}
-			}
-
-			if err != nil {
-				return err
-			}
-			return proc.WriteFile(targetPath, contentStr)
+			return proc.extractMarkdown(p, baseDir, outDir)
 		})
 	if err != nil {
 		return err
@@ -70,6 +44,36 @@ func (proc *Processor) extractDocTestsMarkdown(baseDir string) error {
 		}
 	}
 	return nil
+}
+
+func (proc *Processor) extractMarkdown(file, baseDir, outDir string) error {
+	if strings.HasSuffix(strings.ToLower(file), ".json") {
+		return nil
+	}
+
+	cleanPath := path.Clean(file)
+	relPath := filepath.Clean(strings.TrimPrefix(cleanPath, baseDir))
+	targetPath := filepath.Join(outDir, relPath)
+	targetDir, _ := filepath.Split(targetPath)
+
+	content, err := os.ReadFile(cleanPath)
+	if err != nil {
+		return err
+	}
+	contentStr := string(content)
+	if strings.HasSuffix(strings.ToLower(file), ".md") {
+		var err error
+		contentStr, err = proc.extractTests(contentStr, []string{strings.TrimSuffix(relPath, ".md")}, 1)
+		if err != nil {
+			return err
+		}
+	}
+
+	err = proc.mkDirs(targetDir)
+	if err != nil {
+		return err
+	}
+	return proc.WriteFile(targetPath, contentStr)
 }
 
 func (proc *Processor) writeDocTests(dir string) error {
