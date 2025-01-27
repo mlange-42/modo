@@ -17,7 +17,7 @@ Exports:
  - mod.func
 
 ` +
-		"```python\n" +
+		"```mojo\n" +
 		`Exports:
  - xxx.Struct
  - xxx.Trait
@@ -52,7 +52,7 @@ Text
 
 
 `+
-		"```python\n"+
+		"```mojo\n"+
 		`Exports:
  - xxx.Struct
  - xxx.Trait

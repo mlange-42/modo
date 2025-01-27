@@ -1,5 +1,5 @@
 {{define "signature_struct" -}}
-```python
+```mojo
 {{if .Convention}}@{{.Convention}}{{end}}
 {{if .Signature}}{{.Signature}}{{else}}{{.Name}}{{end}}
 ```

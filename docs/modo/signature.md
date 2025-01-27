@@ -1,5 +1,5 @@
 {{define "signature" -}}
-```python
+```mojo
 {{if .Signature}}{{.Signature}}{{else}}{{.Name}}{{end}}
 ```
 {{- end}}
