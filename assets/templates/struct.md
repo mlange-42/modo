@@ -2,10 +2,7 @@ Mojo struct
 
 # `{{.Name}}`
 
-```mojo
-{{if .Convention}}@{{.Convention}}{{end}}
-{{if .Signature}}{{.Signature}}{{else}}{{.Name}}{{end}}
-```
+{{template "signature" . -}}
 
 {{template "summary" . -}}
 {{template "description" . -}}
