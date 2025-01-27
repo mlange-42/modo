@@ -43,6 +43,13 @@ post-test:
 
 Here, we use a single script that consists of 3 commands.
 
+## Skipping scripts
+
+Using the flag `--bare` (`-B`), shell commands can be skipped
+so that only the Modo🧯 command is executed.
+This can be useful to skip scripts that are intended for the CI
+when working locally.
+
 ## Error trap
 
 Each script starts a new bash process.
