@@ -1,7 +1,7 @@
 name: Publish
 
 env:
-  HUGO_VERSION: 0.140.2
+  HUGO_VERSION: mojo-lexer # 0.140.2
 
 on:
   push:
@@ -33,12 +33,22 @@ jobs:
           source /home/runner/.bash_profile
           cd docs/example
           magic install --locked
-
-      - name: Setup Hugo
-        uses: peaceiris/actions-hugo@v3
-        with:
-          hugo-version: '${{env.HUGO_VERSION}}'
-          extended: true
+        
+      - name: Clone Hugo
+        run: |
+          git clone https://github.com/mlange-42/hugo.git
+          cd hugo
+          git checkout ${{env.MODO_VERSION}}
+      - name: Install Hugo
+        run: |
+          cd hugo
+          go install .
+      
+      #- name: Setup Hugo
+      #  uses: peaceiris/actions-hugo@v3
+      #  with:
+      #    hugo-version: '${{env.HUGO_VERSION}}'
+      #    extended: true
 
       - name: Run Modo # includes `mojo doc` and `mojo test`
         run: |
