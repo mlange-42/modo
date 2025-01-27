@@ -38,7 +38,7 @@ jobs:
         run: |
           git clone https://github.com/mlange-42/hugo.git
           cd hugo
-          git checkout ${{env.MODO_VERSION}}
+          git checkout ${{env.HUGO_VERSION}}
       - name: Install Hugo
         run: |
           cd hugo
