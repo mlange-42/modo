@@ -5,5 +5,5 @@ Mojo trait
 {{template "summary" . -}}
 {{template "description" . -}}
 {{template "fields" . -}}
-{{template "parentTraits" . -}}
+{{template "parent_traits" . -}}
 {{template "methods" . -}}

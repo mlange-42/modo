@@ -2,12 +2,12 @@ Mojo struct
 
 # `{{.Name}}`
 
-{{template "signature" . -}}
+{{template "signature_struct" .}}
 
 {{template "summary" . -}}
 {{template "description" . -}}
 {{template "aliases" . -}}
 {{template "parameters" . -}}
 {{template "fields" . -}}
-{{template "parentTraits" . -}}
+{{template "parent_traits" . -}}
 {{template "methods" . -}}

@@ -1,7 +1,5 @@
 {{define "overload" -}}
-```mojo
-{{.Signature}}
-```
+{{template "signature" .}}
 
 {{`{{<html>}}`}}<details>
 <summary>{{`{{</html>}}`}}{{template "summary" . -}}{{`{{<html>}}`}}</summary>{{`{{</html>}}`}}

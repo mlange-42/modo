@@ -1,5 +1,5 @@
 {{define "overload" -}}
-{{template "signature" . -}}
+{{template "signature" .}}
 
 {{template "summary" . -}}
 {{template "description" . -}}
