@@ -16,6 +16,7 @@
 ### Other
 
 * Doctests are written in a sub-folder for each package (#116)
+* Moves signatures to a separate template (#128)
 
 ## [[v0.8.1]](https://github.com/mlange-42/modo/compare/v0.8.0...v0.8.1)
 

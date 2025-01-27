@@ -60,7 +60,7 @@ struct MyStruct:
 Combining multiple code blocks using these attributes allows for flexible tests with hidden setup, teardown and assertions.
 Here is a full example:
 
-````mojo {class="no-wrap"}
+````python {class="no-wrap"}
 fn add(a: Int, b: Int) -> Int:
     """
     Function `add` sums up its arguments.
@@ -86,14 +86,14 @@ This generates the following docs content:
 ----
 Function `add` sums up its arguments.
 
-```mojo {doctest="add"}
+```python {doctest="add"}
 var result = add(1, 2)
 ```
 ----
 
 Further, Modo🧯 creates a test file with this content:
 
-```mojo
+```python
 from testing import assert_equal
 from mypkg import add
 
