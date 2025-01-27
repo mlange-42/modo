@@ -4,7 +4,7 @@ A sub-package.
 Exports [.submodule] to include all its members.
 The docsting looks like this:
 
-```python
+```mojo
 \"\"\"
 A sub-package.
 
