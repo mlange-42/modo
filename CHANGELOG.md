@@ -16,6 +16,7 @@
 ### Other
 
 * Includes `fn`/`def` and `@staticmethod` in function and method signatures (#139)
+* Improves message on script errors with hint to flag `--bare` (#144)
 
 ## [[v0.9.0]](https://github.com/mlange-42/modo/compare/v0.8.1...v0.9.0)
 
