@@ -15,7 +15,7 @@ const globalAttr = "global"
 
 func (proc *Processor) extractDocTests() error {
 	proc.docTests = []*docTest{}
-	return proc.walkDocs(proc.Docs, proc.extractTests, func(elem Named) string {
+	return proc.walkAllDocStrings(proc.Docs, proc.extractTests, func(elem Named) string {
 		return elem.GetFileName()
 	})
 }

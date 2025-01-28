@@ -3,11 +3,11 @@ package document
 type walkFunc = func(text string, elems []string, modElems int) (string, error)
 type nameFunc = func(elem Named) string
 
-func (proc *Processor) walkDocs(docs *Docs, fn walkFunc, nameFn nameFunc) error {
-	return proc.walkDocsPackage(docs.Decl, []string{}, fn, nameFn)
+func (proc *Processor) walkAllDocStrings(docs *Docs, fn walkFunc, nameFn nameFunc) error {
+	return proc.walkAllDocStringsPackage(docs.Decl, []string{}, fn, nameFn)
 }
 
-func (proc *Processor) walkDocsPackage(p *Package, elems []string, fn walkFunc, nameFn nameFunc) error {
+func (proc *Processor) walkAllDocStringsPackage(p *Package, elems []string, fn walkFunc, nameFn nameFunc) error {
 	newElems := appendNew(elems, nameFn(p))
 
 	var err error
@@ -19,40 +19,40 @@ func (proc *Processor) walkDocsPackage(p *Package, elems []string, fn walkFunc, 
 	}
 
 	for _, pkg := range p.Packages {
-		if err := proc.walkDocsPackage(pkg, newElems, fn, nameFn); err != nil {
+		if err := proc.walkAllDocStringsPackage(pkg, newElems, fn, nameFn); err != nil {
 			return err
 		}
 	}
 	for _, mod := range p.Modules {
-		if err := proc.walkDocsModule(mod, newElems, fn, nameFn); err != nil {
+		if err := proc.walkAllDocStringsModule(mod, newElems, fn, nameFn); err != nil {
 			return err
 		}
 	}
 
 	for _, a := range p.Aliases {
-		if err := proc.walkDocsModuleAlias(a, newElems, fn, nameFn); err != nil {
+		if err := proc.walkAllDocStringsModuleAlias(a, newElems, fn, nameFn); err != nil {
 			return err
 		}
 	}
 	for _, f := range p.Functions {
-		if err := proc.walkDocsFunction(f, newElems, fn, nameFn); err != nil {
+		if err := proc.walkAllDocStringsFunction(f, newElems, fn, nameFn); err != nil {
 			return err
 		}
 	}
 	for _, s := range p.Structs {
-		if err := proc.walkDocsStruct(s, newElems, fn, nameFn); err != nil {
+		if err := proc.walkAllDocStringsStruct(s, newElems, fn, nameFn); err != nil {
 			return err
 		}
 	}
 	for _, tr := range p.Traits {
-		if err := proc.walkDocsTrait(tr, newElems, fn, nameFn); err != nil {
+		if err := proc.walkAllDocStringsTrait(tr, newElems, fn, nameFn); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func (proc *Processor) walkDocsModule(m *Module, elems []string, fn walkFunc, nameFn nameFunc) error {
+func (proc *Processor) walkAllDocStringsModule(m *Module, elems []string, fn walkFunc, nameFn nameFunc) error {
 	newElems := appendNew(elems, nameFn(m))
 
 	var err error
@@ -64,29 +64,29 @@ func (proc *Processor) walkDocsModule(m *Module, elems []string, fn walkFunc, na
 	}
 
 	for _, a := range m.Aliases {
-		if err := proc.walkDocsModuleAlias(a, newElems, fn, nameFn); err != nil {
+		if err := proc.walkAllDocStringsModuleAlias(a, newElems, fn, nameFn); err != nil {
 			return err
 		}
 	}
 	for _, f := range m.Functions {
-		if err := proc.walkDocsFunction(f, newElems, fn, nameFn); err != nil {
+		if err := proc.walkAllDocStringsFunction(f, newElems, fn, nameFn); err != nil {
 			return err
 		}
 	}
 	for _, s := range m.Structs {
-		if err := proc.walkDocsStruct(s, newElems, fn, nameFn); err != nil {
+		if err := proc.walkAllDocStringsStruct(s, newElems, fn, nameFn); err != nil {
 			return err
 		}
 	}
 	for _, tr := range m.Traits {
-		if err := proc.walkDocsTrait(tr, newElems, fn, nameFn); err != nil {
+		if err := proc.walkAllDocStringsTrait(tr, newElems, fn, nameFn); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func (proc *Processor) walkDocsStruct(s *Struct, elems []string, fn walkFunc, nameFn nameFunc) error {
+func (proc *Processor) walkAllDocStringsStruct(s *Struct, elems []string, fn walkFunc, nameFn nameFunc) error {
 	newElems := appendNew(elems, nameFn(s))
 
 	var err error
@@ -125,7 +125,7 @@ func (proc *Processor) walkDocsStruct(s *Struct, elems []string, fn walkFunc, na
 		}
 	}
 	for _, f := range s.Functions {
-		if err := proc.walkDocsMethod(f, newElems, fn, nameFn); err != nil {
+		if err := proc.walkAllDocStringsMethod(f, newElems, fn, nameFn); err != nil {
 			return err
 		}
 	}
@@ -133,7 +133,7 @@ func (proc *Processor) walkDocsStruct(s *Struct, elems []string, fn walkFunc, na
 	return nil
 }
 
-func (proc *Processor) walkDocsTrait(tr *Trait, elems []string, fn walkFunc, nameFn nameFunc) error {
+func (proc *Processor) walkAllDocStringsTrait(tr *Trait, elems []string, fn walkFunc, nameFn nameFunc) error {
 	newElems := appendNew(elems, nameFn(tr))
 
 	var err error
@@ -163,7 +163,7 @@ func (proc *Processor) walkDocsTrait(tr *Trait, elems []string, fn walkFunc, nam
 		}
 	}
 	for _, f := range tr.Functions {
-		if err := proc.walkDocsMethod(f, newElems, fn, nameFn); err != nil {
+		if err := proc.walkAllDocStringsMethod(f, newElems, fn, nameFn); err != nil {
 			return err
 		}
 	}
@@ -171,7 +171,7 @@ func (proc *Processor) walkDocsTrait(tr *Trait, elems []string, fn walkFunc, nam
 	return nil
 }
 
-func (proc *Processor) walkDocsFunction(f *Function, elems []string, fn walkFunc, nameFn nameFunc) error {
+func (proc *Processor) walkAllDocStringsFunction(f *Function, elems []string, fn walkFunc, nameFn nameFunc) error {
 	newElems := appendNew(elems, nameFn(f))
 
 	var err error
@@ -203,7 +203,7 @@ func (proc *Processor) walkDocsFunction(f *Function, elems []string, fn walkFunc
 	}
 
 	for _, o := range f.Overloads {
-		err := proc.walkDocsFunction(o, elems, fn, nameFn)
+		err := proc.walkAllDocStringsFunction(o, elems, fn, nameFn)
 		if err != nil {
 			return err
 		}
@@ -212,7 +212,7 @@ func (proc *Processor) walkDocsFunction(f *Function, elems []string, fn walkFunc
 	return nil
 }
 
-func (proc *Processor) walkDocsModuleAlias(a *Alias, elems []string, fn walkFunc, nameFn nameFunc) error {
+func (proc *Processor) walkAllDocStringsModuleAlias(a *Alias, elems []string, fn walkFunc, nameFn nameFunc) error {
 	newElems := appendNew(elems, nameFn(a))
 
 	var err error
@@ -228,7 +228,7 @@ func (proc *Processor) walkDocsModuleAlias(a *Alias, elems []string, fn walkFunc
 	return nil
 }
 
-func (proc *Processor) walkDocsMethod(f *Function, elems []string, fn walkFunc, nameFn nameFunc) error {
+func (proc *Processor) walkAllDocStringsMethod(f *Function, elems []string, fn walkFunc, nameFn nameFunc) error {
 	var err error
 	if f.Summary, err = fn(f.Summary, elems, len(elems)-1); err != nil {
 		return err
@@ -258,7 +258,7 @@ func (proc *Processor) walkDocsMethod(f *Function, elems []string, fn walkFunc, 
 	}
 
 	for _, o := range f.Overloads {
-		err := proc.walkDocsMethod(o, elems, fn, nameFn)
+		err := proc.walkAllDocStringsMethod(o, elems, fn, nameFn)
 		if err != nil {
 			return err
 		}
