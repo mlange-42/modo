@@ -11,7 +11,7 @@ output: {{if .OutputDir}}{{.OutputDir}}{{else}}docs/{{end}}
 
 # Output directory for doc-tests.
 # Remove or set to "" to disable doc-tests.
-tests: doctest/
+tests: {{if .TestsDir}}{{.TestsDir}}{{else}}doctest/{{end}}
 
 # Output format. One of (plain|hugo|mdbook).
 format: {{if .RenderFormat}}{{.RenderFormat}}{{else}}plain{{end}}
