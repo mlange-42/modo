@@ -86,13 +86,11 @@ func renderWith(config *Config, proc *Processor, subdir string) error {
 	if err := proc.Formatter.WriteAuxiliary(proc.ExportDocs.Decl, outPath, proc); err != nil {
 		return err
 	}
-
 	if config.ReportMissing {
-		if err := reportMissing(missing, stats, config.Strict); err != nil {
+		if err := reportMissing(proc.Docs.Decl.Name, missing, stats, config.Strict); err != nil {
 			return err
 		}
 	}
-
 	return nil
 }
 
@@ -201,15 +199,15 @@ func linkAndWrite(text string, dir []string, modElems int, kind string, proc *Pr
 	return proc.WriteFile(outFile, text)
 }
 
-func reportMissing(missing []missingDocs, stats missingStats, strict bool) error {
+func reportMissing(pkg string, missing []missingDocs, stats missingStats, strict bool) error {
 	if len(missing) == 0 {
-		fmt.Println("Docstring coverage: 100%")
+		fmt.Printf("Docstring coverage of package %s: 100%%\n", pkg)
 		return nil
 	}
 	for _, m := range missing {
 		fmt.Printf("WARNING: missing %s in %s\n", m.What, m.Who)
 	}
-	fmt.Printf("Docstring coverage: %.1f%%\n", 100.0*float64(stats.Total-stats.Missing)/float64(stats.Total))
+	fmt.Printf("Docstring coverage package %s: %.1f%%\n", pkg, 100.0*float64(stats.Total-stats.Missing)/float64(stats.Total))
 	if strict {
 		return fmt.Errorf("missing docstrings in strict mode")
 	}

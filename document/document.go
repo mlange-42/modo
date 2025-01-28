@@ -35,7 +35,10 @@ type Package struct {
 }
 
 func (p *Package) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
-	newPath := fmt.Sprintf("%s.%s", path, p.Name)
+	newPath := p.Name
+	if len(path) > 0 {
+		newPath = fmt.Sprintf("%s.%s", path, p.Name)
+	}
 	missing = p.MemberSummary.CheckMissing(newPath, stats)
 	for _, e := range p.Packages {
 		missing = append(missing, e.CheckMissing(newPath, stats)...)
@@ -241,6 +244,12 @@ type Arg struct {
 }
 
 func (a *Arg) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
+	if a.Name == "self" && a.Type == "Self" {
+		return nil
+	}
+	if a.Convention == "out" {
+		return nil
+	}
 	if a.Description == "" {
 		missing = append(missing, missingDocs{fmt.Sprintf("%s.%s", path, a.Name), "description"})
 		stats.Missing++

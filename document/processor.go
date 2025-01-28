@@ -1,6 +1,7 @@
 package document
 
 import (
+	"fmt"
 	"os"
 	"path"
 	"strings"
@@ -84,6 +85,7 @@ func (proc *Processor) ExtractTests(subdir string) error {
 		return err
 	}
 	if proc.Config.TestOutput != "" {
+		fmt.Printf("Extracted %d test(s) from package %s.\n", len(proc.docTests), proc.Docs.Decl.Name)
 		outPath := path.Join(proc.Config.TestOutput, subdir, proc.Docs.Decl.Name)
 		err = proc.writeDocTests(outPath)
 		if err != nil {

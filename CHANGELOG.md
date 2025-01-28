@@ -2,7 +2,7 @@
 
 ### Features
 
-* Adds flag/config entry `report-missing` to report missing docstrings and coverage (#136)
+* Adds flag/config entry `report-missing` to report missing docstrings and coverage (#136, #137)
 
 ### Documentation
 
