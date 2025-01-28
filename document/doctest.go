@@ -38,6 +38,7 @@ func (proc *Processor) extractDocTestsMarkdown(baseDir string, build bool) error
 		return err
 	}
 	if proc.Config.TestOutput != "" {
+		fmt.Printf("Extracted %d test(s) from Markdown files.\n", len(proc.docTests))
 		err = proc.writeDocTests(proc.Config.TestOutput)
 		if err != nil {
 			return err
@@ -104,7 +105,6 @@ func (proc *Processor) writeDocTests(dir string) error {
 			return err
 		}
 	}
-	fmt.Printf("Extracted %d tests.\n", len(proc.docTests))
 	return nil
 }
 
