@@ -17,6 +17,9 @@ import (
 const configFile = "modo"
 const setExitOnError = "set -e"
 
+const initFileText = "__init__.mojo"
+const initFileEmoji = "__init__.🔥"
+
 func runCommand(command string) error {
 	commandWithExit := fmt.Sprintf("%s\n%s", setExitOnError, command)
 	cmd := exec.Command("bash", "-c", commandWithExit)
@@ -56,13 +59,41 @@ func read(file string) ([]byte, error) {
 	}
 }
 
-func fileExists(file string) (bool, error) {
-	if _, err := os.Stat(file); err == nil {
-		return true, nil
+func fileExists(file string) (exists, isDir bool, err error) {
+	var s os.FileInfo
+	if s, err = os.Stat(file); err == nil {
+		exists = true
+		isDir = s.IsDir()
+		return
 	} else if !errors.Is(err, os.ErrNotExist) {
-		return false, err
+		return
 	}
-	return false, nil
+	err = nil
+	return
+}
+
+func isPackage(dir string) (isPackage bool, err error) {
+	pkgFile := path.Join(dir, initFileText)
+	initExists, initIsDir, err := fileExists(pkgFile)
+	if err != nil {
+		return
+	}
+	if initExists && !initIsDir {
+		isPackage = true
+		return
+	}
+
+	pkgFile = path.Join(dir, initFileEmoji)
+	initExists, initIsDir, err = fileExists(pkgFile)
+	if err != nil {
+		return
+	}
+	if initExists && !initIsDir {
+		isPackage = true
+		return
+	}
+
+	return
 }
 
 func mountProject(v *viper.Viper, paths []string) error {
@@ -76,13 +107,13 @@ func mountProject(v *viper.Viper, paths []string) error {
 	}
 
 	filePath := configFile + ".yaml"
-	exists, err := fileExists(filePath)
+	exists, isDir, err := fileExists(filePath)
 	if err != nil {
 		return err
 	}
-	if !exists {
+	if !exists || isDir {
 		if withConfig {
-			return fmt.Errorf("no '%s' found in path '%s'", filePath, p)
+			return fmt.Errorf("no config file '%s' found in path '%s'", filePath, p)
 		}
 		return nil
 	}
@@ -165,4 +196,19 @@ func runDir(baseDir string, args *document.Config, form document.Formatter, runF
 			return runFile(p, args, form, relDir, true, false)
 		})
 	return err
+}
+
+func mkDirs(path string) error {
+	if err := os.MkdirAll(path, os.ModePerm); err != nil && !os.IsExist(err) {
+		return err
+	}
+	return nil
+}
+
+func GetCwdName() (string, error) {
+	cwd, err := os.Getwd()
+	if err != nil {
+		return cwd, err
+	}
+	return filepath.Base(cwd), nil
 }

@@ -3,6 +3,9 @@
 ### Features
 
 * Adds flag/config entry `report-missing` to report missing docstrings and coverage (#136, #137)
+* Command `init` tries to find packages to set up an instantly working project (#141)
+* Command `init` adds pre- and post-processing scripts to `modo.yaml` file (#141)
+* Command `init` creates a `docs` directory with sub-directories reflecting the recommended structure (#141)
 
 ### Documentation
 
