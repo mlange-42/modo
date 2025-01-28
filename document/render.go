@@ -72,8 +72,9 @@ func renderWith(config *Config, proc *Processor, subdir string) error {
 	caseSensitiveSystem = !config.CaseInsensitive
 
 	var missing []missingDocs
+	var stats missingStats
 	if config.ReportMissing {
-		missing = proc.Docs.Decl.CheckMissing("")
+		missing = proc.Docs.Decl.CheckMissing("", &stats)
 	}
 	if err := proc.PrepareDocs(subdir); err != nil {
 		return err
@@ -86,8 +87,10 @@ func renderWith(config *Config, proc *Processor, subdir string) error {
 		return err
 	}
 
-	if err := reportMissing(missing, config.Strict); err != nil {
-		return err
+	if config.ReportMissing {
+		if err := reportMissing(missing, stats, config.Strict); err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -198,13 +201,15 @@ func linkAndWrite(text string, dir []string, modElems int, kind string, proc *Pr
 	return proc.WriteFile(outFile, text)
 }
 
-func reportMissing(missing []missingDocs, strict bool) error {
+func reportMissing(missing []missingDocs, stats missingStats, strict bool) error {
 	if len(missing) == 0 {
+		fmt.Println("Docstring coverage: 100%")
 		return nil
 	}
 	for _, m := range missing {
 		fmt.Printf("WARNING: missing %s in %s\n", m.What, m.Who)
 	}
+	fmt.Printf("Docstring coverage: %.1f%%\n", 100.0*float64(stats.Total-stats.Missing)/float64(stats.Total))
 	if strict {
 		return fmt.Errorf("missing docstrings in strict mode")
 	}

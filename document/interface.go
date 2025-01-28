@@ -9,6 +9,11 @@ type missingDocs struct {
 	What string
 }
 
+type missingStats struct {
+	Total   int
+	Missing int
+}
+
 //type missingChecker interface {
 //	CheckMissing(path string) (missing []missingDocs)
 //}
@@ -72,10 +77,12 @@ func (m *MemberSummary) GetSummary() string {
 	return m.Summary
 }
 
-func (m *MemberSummary) CheckMissing(path string) (missing []missingDocs) {
+func (m *MemberSummary) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
 	if m.Summary == "" {
 		missing = append(missing, missingDocs{path, "description"})
+		stats.Missing++
 	}
+	stats.Total++
 	return missing
 }
 

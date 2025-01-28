@@ -34,26 +34,26 @@ type Package struct {
 	exports            []*packageExport `yaml:"-" json:"-"`                   // Additional field for package re-exports
 }
 
-func (p *Package) CheckMissing(path string) (missing []missingDocs) {
+func (p *Package) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
 	newPath := fmt.Sprintf("%s.%s", path, p.Name)
-	missing = p.MemberSummary.CheckMissing(newPath)
+	missing = p.MemberSummary.CheckMissing(newPath, stats)
 	for _, e := range p.Packages {
-		missing = append(missing, e.CheckMissing(newPath)...)
+		missing = append(missing, e.CheckMissing(newPath, stats)...)
 	}
 	for _, e := range p.Modules {
-		missing = append(missing, e.CheckMissing(newPath)...)
+		missing = append(missing, e.CheckMissing(newPath, stats)...)
 	}
 	for _, e := range p.Aliases {
-		missing = append(missing, e.CheckMissing(newPath)...)
+		missing = append(missing, e.CheckMissing(newPath, stats)...)
 	}
 	for _, e := range p.Structs {
-		missing = append(missing, e.CheckMissing(newPath)...)
+		missing = append(missing, e.CheckMissing(newPath, stats)...)
 	}
 	for _, e := range p.Traits {
-		missing = append(missing, e.CheckMissing(newPath)...)
+		missing = append(missing, e.CheckMissing(newPath, stats)...)
 	}
 	for _, e := range p.Functions {
-		missing = append(missing, e.CheckMissing(newPath)...)
+		missing = append(missing, e.CheckMissing(newPath, stats)...)
 	}
 	return missing
 }
@@ -79,20 +79,20 @@ type Module struct {
 	Traits        []*Trait
 }
 
-func (m *Module) CheckMissing(path string) (missing []missingDocs) {
+func (m *Module) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
 	newPath := fmt.Sprintf("%s.%s", path, m.Name)
-	missing = m.MemberSummary.CheckMissing(newPath)
+	missing = m.MemberSummary.CheckMissing(newPath, stats)
 	for _, e := range m.Aliases {
-		missing = append(missing, e.CheckMissing(newPath)...)
+		missing = append(missing, e.CheckMissing(newPath, stats)...)
 	}
 	for _, e := range m.Structs {
-		missing = append(missing, e.CheckMissing(newPath)...)
+		missing = append(missing, e.CheckMissing(newPath, stats)...)
 	}
 	for _, e := range m.Traits {
-		missing = append(missing, e.CheckMissing(newPath)...)
+		missing = append(missing, e.CheckMissing(newPath, stats)...)
 	}
 	for _, e := range m.Functions {
-		missing = append(missing, e.CheckMissing(newPath)...)
+		missing = append(missing, e.CheckMissing(newPath, stats)...)
 	}
 	return missing
 }
@@ -106,9 +106,9 @@ type Alias struct {
 	Deprecated    string
 }
 
-func (a *Alias) CheckMissing(path string) (missing []missingDocs) {
+func (a *Alias) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
 	newPath := fmt.Sprintf("%s.%s", path, a.Name)
-	return a.MemberSummary.CheckMissing(newPath)
+	return a.MemberSummary.CheckMissing(newPath, stats)
 }
 
 type Struct struct {
@@ -127,20 +127,20 @@ type Struct struct {
 	Signature     string
 }
 
-func (s *Struct) CheckMissing(path string) (missing []missingDocs) {
+func (s *Struct) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
 	newPath := fmt.Sprintf("%s.%s", path, s.Name)
-	missing = s.MemberSummary.CheckMissing(newPath)
+	missing = s.MemberSummary.CheckMissing(newPath, stats)
 	for _, e := range s.Aliases {
-		missing = append(missing, e.CheckMissing(newPath)...)
+		missing = append(missing, e.CheckMissing(newPath, stats)...)
 	}
 	for _, e := range s.Fields {
-		missing = append(missing, e.CheckMissing(newPath)...)
+		missing = append(missing, e.CheckMissing(newPath, stats)...)
 	}
 	for _, e := range s.Parameters {
-		missing = append(missing, e.CheckMissing(newPath)...)
+		missing = append(missing, e.CheckMissing(newPath, stats)...)
 	}
 	for _, e := range s.Functions {
-		missing = append(missing, e.CheckMissing(newPath)...)
+		missing = append(missing, e.CheckMissing(newPath, stats)...)
 	}
 	return missing
 }
@@ -166,26 +166,30 @@ type Function struct {
 	Parameters           []*Parameter
 }
 
-func (f *Function) CheckMissing(path string) (missing []missingDocs) {
+func (f *Function) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
 	if len(f.Overloads) == 0 {
 		newPath := fmt.Sprintf("%s.%s", path, f.Name)
-		missing = f.MemberSummary.CheckMissing(newPath)
+		missing = f.MemberSummary.CheckMissing(newPath, stats)
 		if f.Raises && f.RaisesDoc == "" {
 			missing = append(missing, missingDocs{newPath, "raises docs"})
+			stats.Missing++
 		}
 		if f.ReturnType != "" && f.ReturnsDoc == "" {
 			missing = append(missing, missingDocs{newPath, "return docs"})
+			stats.Missing++
 		}
+		stats.Total += 2
+
 		for _, e := range f.Parameters {
-			missing = append(missing, e.CheckMissing(newPath)...)
+			missing = append(missing, e.CheckMissing(newPath, stats)...)
 		}
 		for _, e := range f.Args {
-			missing = append(missing, e.CheckMissing(newPath)...)
+			missing = append(missing, e.CheckMissing(newPath, stats)...)
 		}
 		return missing
 	}
 	for _, o := range f.Overloads {
-		missing = append(missing, o.CheckMissing(path)...)
+		missing = append(missing, o.CheckMissing(path, stats)...)
 	}
 	return missing
 }
@@ -198,9 +202,9 @@ type Field struct {
 	Type          string
 }
 
-func (f *Field) CheckMissing(path string) (missing []missingDocs) {
+func (f *Field) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
 	newPath := fmt.Sprintf("%s.%s", path, f.Name)
-	return f.MemberSummary.CheckMissing(newPath)
+	return f.MemberSummary.CheckMissing(newPath, stats)
 }
 
 type Trait struct {
@@ -214,14 +218,14 @@ type Trait struct {
 	Deprecated    string
 }
 
-func (t *Trait) CheckMissing(path string) (missing []missingDocs) {
+func (t *Trait) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
 	newPath := fmt.Sprintf("%s.%s", path, t.Name)
-	missing = t.MemberSummary.CheckMissing(newPath)
+	missing = t.MemberSummary.CheckMissing(newPath, stats)
 	for _, e := range t.Fields {
-		missing = append(missing, e.CheckMissing(newPath)...)
+		missing = append(missing, e.CheckMissing(newPath, stats)...)
 	}
 	for _, e := range t.Functions {
-		missing = append(missing, e.CheckMissing(newPath)...)
+		missing = append(missing, e.CheckMissing(newPath, stats)...)
 	}
 	return missing
 }
@@ -236,10 +240,12 @@ type Arg struct {
 	Default     string
 }
 
-func (a *Arg) CheckMissing(path string) (missing []missingDocs) {
+func (a *Arg) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
 	if a.Description == "" {
 		missing = append(missing, missingDocs{fmt.Sprintf("%s.%s", path, a.Name), "description"})
+		stats.Missing++
 	}
+	stats.Total++
 	return missing
 }
 
@@ -252,10 +258,12 @@ type Parameter struct {
 	Default     string
 }
 
-func (p *Parameter) CheckMissing(path string) (missing []missingDocs) {
+func (p *Parameter) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
 	if p.Description == "" {
 		missing = append(missing, missingDocs{fmt.Sprintf("%s.%s", path, p.Name), "description"})
+		stats.Missing++
 	}
+	stats.Total++
 	return missing
 }
 
