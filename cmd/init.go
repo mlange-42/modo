@@ -118,37 +118,74 @@ func findSources(f string) ([]packageSource, error) {
 		return nil, err
 	}
 
+	var allDirs []string
 	if srcExists && srcIsDir {
-		pkgFile := path.Join(srcDir, initFile)
+		allDirs = append(allDirs, srcDir)
+	} else {
+		infos, err := os.ReadDir(".")
+		if err != nil {
+			return nil, err
+		}
+		for _, info := range infos {
+			if info.IsDir() {
+				allDirs = append(allDirs, info.Name())
+			}
+		}
+	}
+
+	nestedSrc := false
+
+	for _, dir := range allDirs {
+		pkgFile := path.Join(dir, initFile)
 		initExists, initIsDir, err := fileExists(pkgFile)
 		if err != nil {
 			return nil, err
 		}
 		if initExists && !initIsDir {
+			// Package is `<dir>/__init__.mojo`
 			file, err := GetCwdName()
 			if err != nil {
 				return nil, err
 			}
-			sources = append(sources, packageSource{file, srcDir})
-		} else {
-			infos, err := os.ReadDir(srcDir)
+			sources = append(sources, packageSource{file, dir})
+			continue
+		}
+		if dir != srcDir {
+			pkgFile := path.Join(dir, srcDir, initFile)
+			initExists, initIsDir, err := fileExists(pkgFile)
 			if err != nil {
 				return nil, err
 			}
-			for _, info := range infos {
-				if info.IsDir() {
-					pkgFile := path.Join(srcDir, info.Name(), initFile)
-					initExists, initIsDir, err := fileExists(pkgFile)
-					if err != nil {
-						return nil, err
-					}
-					if initExists && !initIsDir {
-						sources = append(sources, packageSource{info.Name(), path.Join(srcDir, info.Name())})
-					}
+			if initExists && !initIsDir {
+				// Package is `<dir>/src/__init__.mojo`
+				nestedSrc = true
+				sources = append(sources, packageSource{dir, path.Join(dir, srcDir)})
+			}
+			continue
+		}
+		infos, err := os.ReadDir(dir)
+		if err != nil {
+			return nil, err
+		}
+		for _, info := range infos {
+			if info.IsDir() {
+				pkgFile := path.Join(dir, info.Name(), initFile)
+				initExists, initIsDir, err := fileExists(pkgFile)
+				if err != nil {
+					return nil, err
+				}
+				if initExists && !initIsDir {
+					// Package is `src/<dir>/__init__.mojo`
+					sources = append(sources, packageSource{info.Name(), path.Join(dir, info.Name())})
 				}
 			}
 		}
 	}
+
+	if nestedSrc && len(sources) > 1 {
+		fmt.Println("WARNING: with folder structure <pkg>/src/__init__.mojo, only a single package is supported")
+	}
+
 	if len(sources) == 0 {
 		sources = []packageSource{{"mypkg", path.Join(srcDir, "mypkg")}}
 		fmt.Printf("WARNING: no package sources found; using %s\n", sources[0].Path)
