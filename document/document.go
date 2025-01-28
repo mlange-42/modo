@@ -3,7 +3,7 @@ package document
 import (
 	"bytes"
 	"encoding/json"
-	"unicode"
+	"fmt"
 
 	"gopkg.in/yaml.v3"
 )
@@ -34,6 +34,30 @@ type Package struct {
 	exports            []*packageExport `yaml:"-" json:"-"`                   // Additional field for package re-exports
 }
 
+func (p *Package) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
+	newPath := fmt.Sprintf("%s.%s", path, p.Name)
+	missing = p.MemberSummary.CheckMissing(newPath, stats)
+	for _, e := range p.Packages {
+		missing = append(missing, e.CheckMissing(newPath, stats)...)
+	}
+	for _, e := range p.Modules {
+		missing = append(missing, e.CheckMissing(newPath, stats)...)
+	}
+	for _, e := range p.Aliases {
+		missing = append(missing, e.CheckMissing(newPath, stats)...)
+	}
+	for _, e := range p.Structs {
+		missing = append(missing, e.CheckMissing(newPath, stats)...)
+	}
+	for _, e := range p.Traits {
+		missing = append(missing, e.CheckMissing(newPath, stats)...)
+	}
+	for _, e := range p.Functions {
+		missing = append(missing, e.CheckMissing(newPath, stats)...)
+	}
+	return missing
+}
+
 func (p *Package) linkedCopy() *Package {
 	return &Package{
 		MemberName:        newName(p.Name),
@@ -55,6 +79,24 @@ type Module struct {
 	Traits        []*Trait
 }
 
+func (m *Module) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
+	newPath := fmt.Sprintf("%s.%s", path, m.Name)
+	missing = m.MemberSummary.CheckMissing(newPath, stats)
+	for _, e := range m.Aliases {
+		missing = append(missing, e.CheckMissing(newPath, stats)...)
+	}
+	for _, e := range m.Structs {
+		missing = append(missing, e.CheckMissing(newPath, stats)...)
+	}
+	for _, e := range m.Traits {
+		missing = append(missing, e.CheckMissing(newPath, stats)...)
+	}
+	for _, e := range m.Functions {
+		missing = append(missing, e.CheckMissing(newPath, stats)...)
+	}
+	return missing
+}
+
 type Alias struct {
 	MemberKind    `yaml:",inline"`
 	MemberName    `yaml:",inline"`
@@ -62,6 +104,11 @@ type Alias struct {
 	Description   string
 	Value         string
 	Deprecated    string
+}
+
+func (a *Alias) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
+	newPath := fmt.Sprintf("%s.%s", path, a.Name)
+	return a.MemberSummary.CheckMissing(newPath, stats)
 }
 
 type Struct struct {
@@ -78,6 +125,24 @@ type Struct struct {
 	Parameters    []*Parameter
 	ParentTraits  []string
 	Signature     string
+}
+
+func (s *Struct) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
+	newPath := fmt.Sprintf("%s.%s", path, s.Name)
+	missing = s.MemberSummary.CheckMissing(newPath, stats)
+	for _, e := range s.Aliases {
+		missing = append(missing, e.CheckMissing(newPath, stats)...)
+	}
+	for _, e := range s.Fields {
+		missing = append(missing, e.CheckMissing(newPath, stats)...)
+	}
+	for _, e := range s.Parameters {
+		missing = append(missing, e.CheckMissing(newPath, stats)...)
+	}
+	for _, e := range s.Functions {
+		missing = append(missing, e.CheckMissing(newPath, stats)...)
+	}
+	return missing
 }
 
 type Function struct {
@@ -101,12 +166,45 @@ type Function struct {
 	Parameters           []*Parameter
 }
 
+func (f *Function) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
+	if len(f.Overloads) == 0 {
+		newPath := fmt.Sprintf("%s.%s", path, f.Name)
+		missing = f.MemberSummary.CheckMissing(newPath, stats)
+		if f.Raises && f.RaisesDoc == "" {
+			missing = append(missing, missingDocs{newPath, "raises docs"})
+			stats.Missing++
+		}
+		if f.ReturnType != "" && f.ReturnsDoc == "" {
+			missing = append(missing, missingDocs{newPath, "return docs"})
+			stats.Missing++
+		}
+		stats.Total += 2
+
+		for _, e := range f.Parameters {
+			missing = append(missing, e.CheckMissing(newPath, stats)...)
+		}
+		for _, e := range f.Args {
+			missing = append(missing, e.CheckMissing(newPath, stats)...)
+		}
+		return missing
+	}
+	for _, o := range f.Overloads {
+		missing = append(missing, o.CheckMissing(path, stats)...)
+	}
+	return missing
+}
+
 type Field struct {
 	MemberKind    `yaml:",inline"`
 	MemberName    `yaml:",inline"`
 	MemberSummary `yaml:",inline"`
 	Description   string
 	Type          string
+}
+
+func (f *Field) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
+	newPath := fmt.Sprintf("%s.%s", path, f.Name)
+	return f.MemberSummary.CheckMissing(newPath, stats)
 }
 
 type Trait struct {
@@ -120,6 +218,18 @@ type Trait struct {
 	Deprecated    string
 }
 
+func (t *Trait) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
+	newPath := fmt.Sprintf("%s.%s", path, t.Name)
+	missing = t.MemberSummary.CheckMissing(newPath, stats)
+	for _, e := range t.Fields {
+		missing = append(missing, e.CheckMissing(newPath, stats)...)
+	}
+	for _, e := range t.Functions {
+		missing = append(missing, e.CheckMissing(newPath, stats)...)
+	}
+	return missing
+}
+
 type Arg struct {
 	MemberKind  `yaml:",inline"`
 	MemberName  `yaml:",inline"`
@@ -130,6 +240,15 @@ type Arg struct {
 	Default     string
 }
 
+func (a *Arg) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
+	if a.Description == "" {
+		missing = append(missing, missingDocs{fmt.Sprintf("%s.%s", path, a.Name), "description"})
+		stats.Missing++
+	}
+	stats.Total++
+	return missing
+}
+
 type Parameter struct {
 	MemberKind  `yaml:",inline"`
 	MemberName  `yaml:",inline"`
@@ -137,6 +256,15 @@ type Parameter struct {
 	Type        string
 	PassingKind string
 	Default     string
+}
+
+func (p *Parameter) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
+	if p.Description == "" {
+		missing = append(missing, missingDocs{fmt.Sprintf("%s.%s", path, p.Name), "description"})
+		stats.Missing++
+	}
+	stats.Total++
+	return missing
 }
 
 func FromJson(data []byte) (*Docs, error) {
@@ -190,83 +318,4 @@ func (d *Docs) ToYaml() ([]byte, error) {
 		return nil, err
 	}
 	return b.Bytes(), nil
-}
-
-type Kinded interface {
-	GetKind() string
-}
-
-type Named interface {
-	GetName() string
-	GetFileName() string
-}
-
-type Summarized interface {
-	GetSummary() string
-}
-
-type MemberKind struct {
-	Kind string
-}
-
-func newKind(kind string) MemberKind {
-	return MemberKind{Kind: kind}
-}
-
-func (k *MemberKind) GetKind() string {
-	return k.Kind
-}
-
-type MemberName struct {
-	Name string
-}
-
-func newName(name string) MemberName {
-	return MemberName{Name: name}
-}
-
-func (k *MemberName) GetName() string {
-	return k.Name
-}
-
-func (k *MemberName) GetFileName() string {
-	if caseSensitiveSystem {
-		return k.Name
-	}
-	if isCap(k.Name) {
-		return k.Name + capitalFileMarker
-	}
-	return k.Name
-}
-
-type MemberSummary struct {
-	Summary string
-}
-
-func newSummary(summary string) *MemberSummary {
-	return &MemberSummary{Summary: summary}
-}
-
-func (k *MemberSummary) GetSummary() string {
-	return k.Summary
-}
-
-type MemberDescription struct {
-	Description string
-}
-
-func newDescription(description string) *MemberDescription {
-	return &MemberDescription{Description: description}
-}
-
-func (k *MemberDescription) GetDescription() string {
-	return k.Description
-}
-
-func isCap(s string) bool {
-	if len(s) == 0 {
-		return false
-	}
-	firstRune := []rune(s)[0]
-	return unicode.IsUpper(firstRune)
 }

@@ -1,5 +1,9 @@
 ## [[unpublished]](https://github.com/mlange-42/modo/compare/v0.9.0...main)
 
+### Features
+
+* Adds flag/config entry `report-missing` to report missing docstrings and coverage (#136)
+
 ### Documentation
 
 * Restructures `docs/` to serve as full Hugo example that uses all features (#134)

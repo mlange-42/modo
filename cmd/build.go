@@ -47,6 +47,7 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 	root.Flags().StringP("format", "f", "plain", "Output format. One of (plain|mdbook|hugo)")
 	root.Flags().BoolP("exports", "e", false, "Process according to 'Exports:' sections in packages")
 	root.Flags().BoolP("short-links", "s", false, "Render shortened link labels, stripping packages and modules")
+	root.Flags().BoolP("report-missing", "M", false, "Report missing docstings and coverage")
 	root.Flags().BoolP("case-insensitive", "C", false, "Build for systems that are not case-sensitive regarding file names.\nAppends hyphen (-) to capitalized file names")
 	root.Flags().BoolP("strict", "S", false, "Strict mode. Errors instead of warnings")
 	root.Flags().BoolP("dry-run", "D", false, "Dry-run without any file output")

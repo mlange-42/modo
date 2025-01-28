@@ -308,6 +308,7 @@ func TestRenderFiles(t *testing.T) {
 		UseExports:      true,
 		ShortLinks:      true,
 		CaseInsensitive: true,
+		ReportMissing:   true,
 	}
 	formatter := TestFormatter{}
 

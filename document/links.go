@@ -20,7 +20,7 @@ func init() {
 }
 
 func (proc *Processor) processLinks(docs *Docs) error {
-	return proc.walkDocs(docs, proc.replaceRefs, func(elem Named) string {
+	return proc.walkAllDocStrings(docs, proc.replaceRefs, func(elem Named) string {
 		return elem.GetName()
 	})
 }
