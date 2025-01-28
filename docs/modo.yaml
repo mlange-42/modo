@@ -1,5 +1,6 @@
-input: docs/src/
-output: docs/content/
+input:
+  - docs/src/
+output: docs/site/content/
 tests: doctest/
 format: hugo
 exports: true
@@ -12,8 +13,7 @@ templates:
 pre-run:
   - |
     echo Running 'mojo doc'...
-    cd example
-    magic run mojo doc -o docs/src/mypkg.json src/mypkg
+    magic run mojo doc -o docs/src/mypkg.json src/mypkg/
     echo Done.
 
 # Shell commands to run before build.

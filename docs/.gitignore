@@ -8,6 +8,5 @@
 *.json
 
 # docs
-/docs/site/content
-/docs/src/*.json
-/doctest/
+docs/src/*.json
+doctest/
