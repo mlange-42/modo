@@ -3,6 +3,10 @@ languageCode: en-us
 title: Modo🧯
 disablePathToLower: true
 
+markup:
+  highlight:
+    style: github-dark
+
 module:
   imports:
     - path: github.com/imfing/hextra
@@ -29,7 +33,3 @@ params:
   navbar:
     displayTitle: true
     displayLogo: false
-
-markup:
-  highlight:
-    style: onedark
