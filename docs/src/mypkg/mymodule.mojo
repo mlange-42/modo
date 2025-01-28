@@ -64,3 +64,7 @@ struct MyPair[T: Intable]:
             When called with an unknown `fmt` argument.
         """
         return ""
+
+    @staticmethod
+    fn static_method(self):
+        pass

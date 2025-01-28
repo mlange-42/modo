@@ -3,7 +3,7 @@ Mojo function
 # `module_function`
 
 ```mojo
-module_function[FunctionParameter: Intable](arg: Int) -> Int
+fn module_function[FunctionParameter: Intable](arg: Int) -> Int
 ```
 
 [`ModuleAlias`](_index.md#aliases).
