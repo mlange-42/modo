@@ -6,6 +6,7 @@
 * Command `init` tries to find packages to set up an instantly working project (#141)
 * Command `init` adds pre- and post-processing scripts to `modo.yaml` file (#141)
 * Command `init` creates a `docs` directory with sub-directories reflecting the recommended structure (#141)
+* Command `init` has flag `--docs` to change the intended documentation directory (#142)
 
 ### Documentation
 

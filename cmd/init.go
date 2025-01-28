@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"os"
 	"path"
+	"strings"
 	"text/template"
 
 	"github.com/mlange-42/modo/assets"
@@ -13,7 +14,6 @@ import (
 )
 
 const srcDir = "src"
-const docsDir = "docs"
 const docsInDir = "src"
 const docsOutDir = "site"
 const testsDir = "doctest"
@@ -35,6 +35,7 @@ type packageSource struct {
 
 func initCommand() (*cobra.Command, error) {
 	var format string
+	var docsDir string
 
 	root := &cobra.Command{
 		Use:   "init",
@@ -56,16 +57,18 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 			if format == "" {
 				format = "plain"
 			}
-			return initProject(format)
+			docsDir = strings.ReplaceAll(docsDir, "\\", "/")
+			return initProject(docsDir, format)
 		},
 	}
 
 	root.Flags().StringVarP(&format, "format", "f", "plain", "Output format. One of (plain|mdbook|hugo)")
+	root.Flags().StringVarP(&docsDir, "docs", "d", "docs", "Folder for documentation")
 
 	return root, nil
 }
 
-func initProject(f string) error {
+func initProject(docsDir, f string) error {
 	_, err := format.GetFormatter(f)
 	if err != nil {
 		return err
@@ -82,11 +85,11 @@ func initProject(f string) error {
 	if err != nil {
 		return err
 	}
-	inDir, outDir, err := createDocs(f, sources)
+	inDir, outDir, err := createDocs(docsDir, f, sources)
 	if err != nil {
 		return err
 	}
-	preRun, err := createPreRun(f, sources)
+	preRun, err := createPreRun(docsDir, f, sources)
 	if err != nil {
 		return err
 	}
@@ -202,7 +205,7 @@ func findSources(f string) ([]packageSource, string, error) {
 	return sources, warning, nil
 }
 
-func createDocs(f string, sources []packageSource) (inDir, outDir string, err error) {
+func createDocs(docsDir, f string, sources []packageSource) (inDir, outDir string, err error) {
 	inDir = path.Join(docsDir, docsInDir)
 	outDir = path.Join(docsDir, docsOutDir)
 	if f == "hugo" {
@@ -239,7 +242,7 @@ func createDocs(f string, sources []packageSource) (inDir, outDir string, err er
 	return
 }
 
-func createPreRun(f string, sources []packageSource) (string, error) {
+func createPreRun(docsDir, f string, sources []packageSource) (string, error) {
 	s := "|\n    echo Running 'mojo test'...\n"
 
 	inDir := docsDir
