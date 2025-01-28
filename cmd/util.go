@@ -212,3 +212,7 @@ func GetCwdName() (string, error) {
 	}
 	return filepath.Base(cwd), nil
 }
+
+func commandError(commandType string, err error) error {
+	return fmt.Errorf("in script %s: %s\nTo skip pre- and post-processing scripts, use flag '--bare'", commandType, err)
+}

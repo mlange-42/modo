@@ -105,20 +105,20 @@ func runTestOnce(file string, args *document.Config, _ document.Formatter, subdi
 
 func runPreTestCommands(cfg *document.Config) error {
 	if err := runCommands(cfg.PreRun); err != nil {
-		return err
+		return commandError("pre-run", err)
 	}
 	if err := runCommands(cfg.PreTest); err != nil {
-		return err
+		return commandError("pre-test", err)
 	}
 	return nil
 }
 
 func runPostTestCommands(cfg *document.Config) error {
 	if err := runCommands(cfg.PostTest); err != nil {
-		return err
+		return commandError("post-test", err)
 	}
 	if err := runCommands(cfg.PostRun); err != nil {
-		return err
+		return commandError("post-run", err)
 	}
 	return nil
 }
