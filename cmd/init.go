@@ -20,6 +20,7 @@ const testsDir = "doctest"
 const initFile = "__init__.mojo"
 
 type config struct {
+	Warning      string
 	InputFiles   []string
 	OutputDir    string
 	TestsDir     string
@@ -78,7 +79,7 @@ func initProject(f string) error {
 	if err != nil {
 		return err
 	}
-	sources, err := findSources(f)
+	sources, warning, err := findSources(f)
 	if err != nil {
 		return err
 	}
@@ -91,6 +92,7 @@ func initProject(f string) error {
 		return err
 	}
 	config := config{
+		Warning:      warning,
 		InputFiles:   []string{inDir},
 		OutputDir:    outDir,
 		TestsDir:     testsDir,
@@ -111,11 +113,12 @@ func initProject(f string) error {
 	return nil
 }
 
-func findSources(f string) ([]packageSource, error) {
+func findSources(f string) ([]packageSource, string, error) {
+	warning := ""
 	sources := []packageSource{}
 	srcExists, srcIsDir, err := fileExists(srcDir)
 	if err != nil {
-		return nil, err
+		return nil, warning, err
 	}
 
 	var allDirs []string
@@ -124,7 +127,7 @@ func findSources(f string) ([]packageSource, error) {
 	} else {
 		infos, err := os.ReadDir(".")
 		if err != nil {
-			return nil, err
+			return nil, warning, err
 		}
 		for _, info := range infos {
 			if info.IsDir() {
@@ -139,13 +142,17 @@ func findSources(f string) ([]packageSource, error) {
 		pkgFile := path.Join(dir, initFile)
 		initExists, initIsDir, err := fileExists(pkgFile)
 		if err != nil {
-			return nil, err
+			return nil, warning, err
 		}
 		if initExists && !initIsDir {
 			// Package is `<dir>/__init__.mojo`
-			file, err := GetCwdName()
-			if err != nil {
-				return nil, err
+			file := dir
+			if file == srcDir {
+				// Package is `src/__init__.mojo`
+				file, err = GetCwdName()
+				if err != nil {
+					return nil, warning, err
+				}
 			}
 			sources = append(sources, packageSource{file, []string{dir}})
 			continue
@@ -154,7 +161,7 @@ func findSources(f string) ([]packageSource, error) {
 			pkgFile := path.Join(dir, srcDir, initFile)
 			initExists, initIsDir, err := fileExists(pkgFile)
 			if err != nil {
-				return nil, err
+				return nil, warning, err
 			}
 			if initExists && !initIsDir {
 				// Package is `<dir>/src/__init__.mojo`
@@ -165,14 +172,14 @@ func findSources(f string) ([]packageSource, error) {
 		}
 		infos, err := os.ReadDir(dir)
 		if err != nil {
-			return nil, err
+			return nil, warning, err
 		}
 		for _, info := range infos {
 			if info.IsDir() {
 				pkgFile := path.Join(dir, info.Name(), initFile)
 				initExists, initIsDir, err := fileExists(pkgFile)
 				if err != nil {
-					return nil, err
+					return nil, warning, err
 				}
 				if initExists && !initIsDir {
 					// Package is `src/<dir>/__init__.mojo`
@@ -183,17 +190,20 @@ func findSources(f string) ([]packageSource, error) {
 	}
 
 	if nestedSrc && len(sources) > 1 {
-		fmt.Println("WARNING: with folder structure <pkg>/src/__init__.mojo, only a single package is supported")
+		warning = "WARNING: with folder structure <pkg>/src/__init__.mojo, only a single package is supported"
+		fmt.Println(warning)
 	}
 
 	if len(sources) == 0 {
 		sources = []packageSource{{"mypkg", []string{srcDir, "mypkg"}}}
-		fmt.Printf("WARNING: no package sources found; using %s\n", path.Join(sources[0].Path...))
+		warning = fmt.Sprintf("WARNING: no package sources found; using %s", path.Join(sources[0].Path...))
+		fmt.Println(warning)
 	} else if f == "mdbook" && len(sources) > 1 {
-		fmt.Printf("WARNING: mdbook format can only use a single package but %d were found; using %s\n", len(sources), path.Join(sources[0].Path...))
+		warning = fmt.Sprintf("WARNING: mdbook format can only use a single package but %d were found; using %s", len(sources), path.Join(sources[0].Path...))
 		sources = sources[:1]
+		fmt.Println(warning)
 	}
-	return sources, nil
+	return sources, warning, nil
 }
 
 func createDocs(f string, sources []packageSource) (inDir, outDir string, err error) {
