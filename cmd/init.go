@@ -30,7 +30,7 @@ type config struct {
 
 type packageSource struct {
 	Name string
-	Path string
+	Path []string
 }
 
 func initCommand() (*cobra.Command, error) {
@@ -147,7 +147,7 @@ func findSources(f string) ([]packageSource, error) {
 			if err != nil {
 				return nil, err
 			}
-			sources = append(sources, packageSource{file, dir})
+			sources = append(sources, packageSource{file, []string{dir}})
 			continue
 		}
 		if dir != srcDir {
@@ -159,7 +159,7 @@ func findSources(f string) ([]packageSource, error) {
 			if initExists && !initIsDir {
 				// Package is `<dir>/src/__init__.mojo`
 				nestedSrc = true
-				sources = append(sources, packageSource{dir, path.Join(dir, srcDir)})
+				sources = append(sources, packageSource{dir, []string{dir, srcDir}})
 			}
 			continue
 		}
@@ -176,7 +176,7 @@ func findSources(f string) ([]packageSource, error) {
 				}
 				if initExists && !initIsDir {
 					// Package is `src/<dir>/__init__.mojo`
-					sources = append(sources, packageSource{info.Name(), path.Join(dir, info.Name())})
+					sources = append(sources, packageSource{info.Name(), []string{dir, info.Name()}})
 				}
 			}
 		}
@@ -187,10 +187,10 @@ func findSources(f string) ([]packageSource, error) {
 	}
 
 	if len(sources) == 0 {
-		sources = []packageSource{{"mypkg", path.Join(srcDir, "mypkg")}}
-		fmt.Printf("WARNING: no package sources found; using %s\n", sources[0].Path)
+		sources = []packageSource{{"mypkg", []string{srcDir, "mypkg"}}}
+		fmt.Printf("WARNING: no package sources found; using %s\n", path.Join(sources[0].Path...))
 	} else if f == "mdbook" && len(sources) > 1 {
-		fmt.Printf("WARNING: mdbook format can only use a single package but %d were found; using %s\n", len(sources), sources[0].Path)
+		fmt.Printf("WARNING: mdbook format can only use a single package but %d were found; using %s\n", len(sources), path.Join(sources[0].Path...))
 		sources = sources[:1]
 	}
 	return sources, nil
@@ -241,7 +241,7 @@ func createPreRun(f string, sources []packageSource) (string, error) {
 		inDir = path.Join(docsDir, docsInDir)
 	}
 	for _, src := range sources {
-		s += fmt.Sprintf("    magic run mojo doc -o %s.json %s\n", path.Join(inDir, src.Name), src.Path)
+		s += fmt.Sprintf("    magic run mojo doc -o %s.json %s\n", path.Join(inDir, src.Name), path.Join(src.Path...))
 	}
 
 	s += "    echo Done."
@@ -249,9 +249,11 @@ func createPreRun(f string, sources []packageSource) (string, error) {
 }
 
 func createPostTest(sources []packageSource) string {
-	src := srcDir
-	if len(sources) == 1 && sources[0].Path == srcDir {
+	var src string
+	if len(sources[0].Path) == 1 {
 		src = "."
+	} else {
+		src = sources[0].Path[0]
 	}
 
 	return fmt.Sprintf(`|
