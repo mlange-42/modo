@@ -109,7 +109,7 @@ func initProject(f string) error {
 		return err
 	}
 
-	fmt.Println("Modo project initialized.")
+	fmt.Println("Modo project initialized.\nSee file 'modo.yaml' for configuration.")
 	return nil
 }
 
