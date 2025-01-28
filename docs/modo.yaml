@@ -5,6 +5,7 @@ tests: doctest/
 format: hugo
 exports: true
 short-links: true
+report-missing: true
 case-insensitive: true
 templates:
   - docs/templates/

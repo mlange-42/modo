@@ -1,18 +1,13 @@
 input: 
   - docs/
-
 output: out/
-
+tests: doctest/
 format: plain
 
-tests: doctest/
-
 exports: true
-
 short-links: true
-
+report-missing: true
 case-insensitive: true
-
 
 pre-run:
   - echo Starting...

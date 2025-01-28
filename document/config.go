@@ -14,6 +14,7 @@ type Config struct {
 	RenderFormat    string   `mapstructure:"format" yaml:"format"`
 	UseExports      bool     `mapstructure:"exports" yaml:"exports"`
 	ShortLinks      bool     `mapstructure:"short-links" yaml:"short-links"`
+	ReportMissing   bool     `mapstructure:"report-missing" yaml:"report-missing"`
 	Strict          bool     `mapstructure:"strict" yaml:"strict"`
 	DryRun          bool     `mapstructure:"dry-run" yaml:"dry-run"`
 	CaseInsensitive bool     `mapstructure:"case-insensitive" yaml:"case-insensitive"`

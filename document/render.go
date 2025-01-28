@@ -2,14 +2,8 @@ package document
 
 import (
 	"fmt"
-	"io/fs"
-	"os"
 	"path"
-	"path/filepath"
 	"strings"
-	"text/template"
-
-	"github.com/mlange-42/modo/assets"
 )
 
 func Render(docs *Docs, config *Config, form Formatter, subdir string) error {
@@ -76,6 +70,11 @@ func ExtractTestsMarkdown(config *Config, form Formatter, baseDir string, build 
 
 func renderWith(config *Config, proc *Processor, subdir string) error {
 	caseSensitiveSystem = !config.CaseInsensitive
+
+	var missing []missingDocs
+	if config.ReportMissing {
+		missing = proc.Docs.Decl.CheckMissing("")
+	}
 	if err := proc.PrepareDocs(subdir); err != nil {
 		return err
 	}
@@ -86,6 +85,11 @@ func renderWith(config *Config, proc *Processor, subdir string) error {
 	if err := proc.Formatter.WriteAuxiliary(proc.ExportDocs.Decl, outPath, proc); err != nil {
 		return err
 	}
+
+	if err := reportMissing(missing, config.Strict); err != nil {
+		return err
+	}
+
 	return nil
 }
 
@@ -185,72 +189,6 @@ func renderList[T interface {
 	return nil
 }
 
-func LoadTemplates(f Formatter, additional ...string) (*template.Template, error) {
-	allTemplates, err := findTemplatesFS()
-	if err != nil {
-		return nil, err
-	}
-	templ := template.New("all")
-	templ = templ.Funcs(template.FuncMap{
-		"toLink": f.ToLinkPath,
-	})
-	templ, err = templ.ParseFS(assets.Templates, allTemplates...)
-	if err != nil {
-		return nil, err
-	}
-
-	for _, dir := range additional {
-		if dir == "" {
-			continue
-		}
-		moreTemplates, err := findTemplates(dir)
-		if err != nil {
-			return nil, err
-		}
-		templ, err = templ.ParseFiles(moreTemplates...)
-		if err != nil {
-			return nil, err
-		}
-	}
-	return templ, nil
-}
-
-func findTemplatesFS() ([]string, error) {
-	allTemplates := []string{}
-	err := fs.WalkDir(assets.Templates, ".",
-		func(path string, info os.DirEntry, err error) error {
-			if err != nil {
-				return err
-			}
-			if !info.IsDir() {
-				allTemplates = append(allTemplates, path)
-			}
-			return nil
-		})
-	if err != nil {
-		return nil, err
-	}
-	return allTemplates, nil
-}
-
-func findTemplates(dir string) ([]string, error) {
-	allTemplates := []string{}
-	err := filepath.WalkDir(dir,
-		func(path string, info os.DirEntry, err error) error {
-			if err != nil {
-				return err
-			}
-			if !info.IsDir() {
-				allTemplates = append(allTemplates, path)
-			}
-			return nil
-		})
-	if err != nil {
-		return nil, err
-	}
-	return allTemplates, nil
-}
-
 func linkAndWrite(text string, dir []string, modElems int, kind string, proc *Processor) error {
 	text, err := proc.ReplacePlaceholders(text, dir[1:], modElems-1)
 	if err != nil {
@@ -258,4 +196,17 @@ func linkAndWrite(text string, dir []string, modElems int, kind string, proc *Pr
 	}
 	outFile := proc.Formatter.ToFilePath(path.Join(dir...), kind)
 	return proc.WriteFile(outFile, text)
+}
+
+func reportMissing(missing []missingDocs, strict bool) error {
+	if len(missing) == 0 {
+		return nil
+	}
+	for _, m := range missing {
+		fmt.Printf("WARNING: missing %s in %s\n", m.What, m.Who)
+	}
+	if strict {
+		return fmt.Errorf("missing docstrings in strict mode")
+	}
+	return nil
 }

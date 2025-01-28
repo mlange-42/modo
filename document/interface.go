@@ -1,15 +1,17 @@
 package document
 
-import "unicode"
+import (
+	"unicode"
+)
 
 type missingDocs struct {
 	Who  string
 	What string
 }
 
-type missingChecker interface {
-	CheckMissing(path string) (missing []missingDocs)
-}
+//type missingChecker interface {
+//	CheckMissing(path string) (missing []missingDocs)
+//}
 
 type Kinded interface {
 	GetKind() string
@@ -72,7 +74,7 @@ func (m *MemberSummary) GetSummary() string {
 
 func (m *MemberSummary) CheckMissing(path string) (missing []missingDocs) {
 	if m.Summary == "" {
-		missing = append(missing, missingDocs{path, "summary"})
+		missing = append(missing, missingDocs{path, "description"})
 	}
 	return missing
 }

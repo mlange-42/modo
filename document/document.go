@@ -106,6 +106,11 @@ type Alias struct {
 	Deprecated    string
 }
 
+func (a *Alias) CheckMissing(path string) (missing []missingDocs) {
+	newPath := fmt.Sprintf("%s.%s", path, a.Name)
+	return a.MemberSummary.CheckMissing(newPath)
+}
+
 type Struct struct {
 	MemberKind    `yaml:",inline"`
 	MemberName    `yaml:",inline"`
@@ -166,10 +171,16 @@ func (f *Function) CheckMissing(path string) (missing []missingDocs) {
 		newPath := fmt.Sprintf("%s.%s", path, f.Name)
 		missing = f.MemberSummary.CheckMissing(newPath)
 		if f.Raises && f.RaisesDoc == "" {
-			missing = append(missing, missingDocs{newPath, "raises"})
+			missing = append(missing, missingDocs{newPath, "raises docs"})
 		}
 		if f.ReturnType != "" && f.ReturnsDoc == "" {
-			missing = append(missing, missingDocs{newPath, "return"})
+			missing = append(missing, missingDocs{newPath, "return docs"})
+		}
+		for _, e := range f.Parameters {
+			missing = append(missing, e.CheckMissing(newPath)...)
+		}
+		for _, e := range f.Args {
+			missing = append(missing, e.CheckMissing(newPath)...)
 		}
 		return missing
 	}
@@ -185,6 +196,11 @@ type Field struct {
 	MemberSummary `yaml:",inline"`
 	Description   string
 	Type          string
+}
+
+func (f *Field) CheckMissing(path string) (missing []missingDocs) {
+	newPath := fmt.Sprintf("%s.%s", path, f.Name)
+	return f.MemberSummary.CheckMissing(newPath)
 }
 
 type Trait struct {
