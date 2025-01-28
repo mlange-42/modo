@@ -234,7 +234,7 @@ func createDocs(args *initArgs, sources []packageSource) (inDir, outDir string, 
 		file := sources[0].Name + ".json"
 		inDir = path.Join(dir, file)
 		outDir = dir
-		gitignore = append(gitignore, fmt.Sprintf("/%s/", file))
+		gitignore = append(gitignore, fmt.Sprintf("/%s", file))
 	} else {
 		gitignore = append(gitignore,
 			fmt.Sprintf("/%s/*.json", docsInDir),
