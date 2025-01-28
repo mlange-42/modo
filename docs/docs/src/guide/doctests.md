@@ -60,7 +60,7 @@ struct MyStruct:
 Combining multiple code blocks using these attributes allows for flexible tests with hidden setup, teardown and assertions.
 Here is a full example:
 
-````mojo {class="no-wrap"}
+````mojo {doctest="add" global=true class="no-wrap"}
 fn add(a: Int, b: Int) -> Int:
     """
     Function `add` sums up its arguments.
@@ -81,12 +81,18 @@ fn add(a: Int, b: Int) -> Int:
     return a + b
 ````
 
+````mojo {doctest="add" hide=true}
+var result = add(1, 2)
+if result != 3:
+    raise Error("test failed")
+```
+
 This generates the following docs content:
 
 ----
 Function `add` sums up its arguments.
 
-```mojo {doctest="add"}
+```mojo
 var result = add(1, 2)
 ```
 ----

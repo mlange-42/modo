@@ -28,7 +28,6 @@ pre-test: []
 post-test:
   - |
     echo Running 'mojo test'...
-    cd example
     magic run mojo test -I src/ doctest/
     echo Done.
 
