@@ -28,6 +28,11 @@ type config struct {
 	PostTest     []string
 }
 
+type packageSource struct {
+	Name string
+	Path string
+}
+
 func initCommand() (*cobra.Command, error) {
 	var format string
 
@@ -106,8 +111,8 @@ func initProject(f string) error {
 	return nil
 }
 
-func findSources(f string) ([]string, error) {
-	sources := []string{}
+func findSources(f string) ([]packageSource, error) {
+	sources := []packageSource{}
 	srcExists, srcIsDir, err := fileExists(srcDir)
 	if err != nil {
 		return nil, err
@@ -120,7 +125,11 @@ func findSources(f string) ([]string, error) {
 			return nil, err
 		}
 		if initExists && !initIsDir {
-			sources = append(sources, "")
+			file, err := GetCwdName()
+			if err != nil {
+				return nil, err
+			}
+			sources = append(sources, packageSource{file, srcDir})
 		} else {
 			infos, err := os.ReadDir(srcDir)
 			if err != nil {
@@ -134,37 +143,30 @@ func findSources(f string) ([]string, error) {
 						return nil, err
 					}
 					if initExists && !initIsDir {
-						sources = append(sources, info.Name())
+						sources = append(sources, packageSource{info.Name(), path.Join(srcDir, info.Name())})
 					}
 				}
 			}
 		}
 	}
 	if len(sources) == 0 {
-		sources = []string{"mypkg"}
-		fmt.Printf("WARNING: no package sources found; using %s\n", path.Join(srcDir, sources[0]))
+		sources = []packageSource{{"mypkg", path.Join(srcDir, "mypkg")}}
+		fmt.Printf("WARNING: no package sources found; using %s\n", sources[0].Path)
 	} else if f == "mdbook" && len(sources) > 1 {
-		fmt.Printf("WARNING: mdbook format can only use a single package but %d were found; using %s\n", len(sources), path.Join(srcDir, sources[0]))
+		fmt.Printf("WARNING: mdbook format can only use a single package but %d were found; using %s\n", len(sources), sources[0].Path)
 		sources = sources[:1]
 	}
 	return sources, nil
 }
 
-func createDocs(f string, sources []string) (inDir, outDir string, err error) {
+func createDocs(f string, sources []packageSource) (inDir, outDir string, err error) {
 	inDir = path.Join(docsDir, docsInDir)
 	outDir = path.Join(docsDir, docsOutDir)
 	if f == "hugo" {
 		outDir = path.Join(outDir, "content")
 	}
 	if f == "mdbook" {
-		file := sources[0]
-		if file == "" {
-			file, err = GetCwdName()
-			if err != nil {
-				return
-			}
-		}
-		inDir = path.Join(docsDir, file+".json")
+		inDir = path.Join(docsDir, sources[0].Name+".json")
 		outDir = path.Join(docsDir)
 	}
 
@@ -194,7 +196,7 @@ func createDocs(f string, sources []string) (inDir, outDir string, err error) {
 	return
 }
 
-func createPreRun(f string, sources []string) (string, error) {
+func createPreRun(f string, sources []packageSource) (string, error) {
 	s := "|\n    echo Running 'mojo test'...\n"
 
 	inDir := docsDir
@@ -202,24 +204,16 @@ func createPreRun(f string, sources []string) (string, error) {
 		inDir = path.Join(docsDir, docsInDir)
 	}
 	for _, src := range sources {
-		file := src
-		if file == "" {
-			var err error
-			file, err = GetCwdName()
-			if err != nil {
-				return "", err
-			}
-		}
-		s += fmt.Sprintf("    magic run mojo doc -o %s.json %s\n", path.Join(inDir, file), path.Join(srcDir, src))
+		s += fmt.Sprintf("    magic run mojo doc -o %s.json %s\n", path.Join(inDir, src.Name), src.Path)
 	}
 
 	s += "    echo Done."
 	return s, nil
 }
 
-func createPostTest(sources []string) string {
+func createPostTest(sources []packageSource) string {
 	src := srcDir
-	if len(sources) == 1 && sources[0] == "" {
+	if len(sources) == 1 && sources[0].Path == srcDir {
 		src = "."
 	}
 
