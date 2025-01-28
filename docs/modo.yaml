@@ -1,19 +1,19 @@
-input: example/example.json
-output: content/
+input: docs/src/
+output: docs/content/
 tests: doctest/
 format: hugo
 exports: true
 short-links: true
 case-insensitive: true
 templates:
-  - modo/
+  - docs/templates/
 
 # Shell commands to run before build as well as test.
 pre-run:
   - |
     echo Running 'mojo doc'...
     cd example
-    magic run mojo doc -o example.json src/mypkg
+    magic run mojo doc -o docs/src/mypkg.json src/mypkg
     echo Done.
 
 # Shell commands to run before build.
@@ -29,7 +29,7 @@ post-test:
   - |
     echo Running 'mojo test'...
     cd example
-    magic run mojo test -I src/ ../doctest/
+    magic run mojo test -I src/ doctest/
     echo Done.
 
 # Shell commands to run after build.

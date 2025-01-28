@@ -1,5 +1,13 @@
-/public/
-/content/mypkg/
-/content/stdlib/
+
+# pixi environments
+.pixi
+*.egg-info
+# magic environments
+.magic
+# mojo doc output
+*.json
+
+# docs
+/docs/site/content
+/docs/src/*.json
 /doctest/
-/*.lock
