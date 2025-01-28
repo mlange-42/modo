@@ -3,7 +3,6 @@ package document
 import (
 	"bytes"
 	"encoding/json"
-	"unicode"
 
 	"gopkg.in/yaml.v3"
 )
@@ -101,6 +100,17 @@ type Function struct {
 	Parameters           []*Parameter
 }
 
+func (f *Function) CheckMissing() (missing []string) {
+	missing = f.MemberSummary.CheckMissing()
+	if f.Raises && f.RaisesDoc == "" {
+		missing = append(missing, "raises")
+	}
+	if f.ReturnType != "" && f.ReturnsDoc == "" {
+		missing = append(missing, "return")
+	}
+	return missing
+}
+
 type Field struct {
 	MemberKind    `yaml:",inline"`
 	MemberName    `yaml:",inline"`
@@ -130,6 +140,13 @@ type Arg struct {
 	Default     string
 }
 
+func (a *Arg) CheckMissing() (missing []string) {
+	if a.Description == "" {
+		missing = append(missing, "description")
+	}
+	return missing
+}
+
 type Parameter struct {
 	MemberKind  `yaml:",inline"`
 	MemberName  `yaml:",inline"`
@@ -137,6 +154,13 @@ type Parameter struct {
 	Type        string
 	PassingKind string
 	Default     string
+}
+
+func (p *Parameter) CheckMissing() (missing []string) {
+	if p.Description == "" {
+		missing = append(missing, "description")
+	}
+	return missing
 }
 
 func FromJson(data []byte) (*Docs, error) {
@@ -190,83 +214,4 @@ func (d *Docs) ToYaml() ([]byte, error) {
 		return nil, err
 	}
 	return b.Bytes(), nil
-}
-
-type Kinded interface {
-	GetKind() string
-}
-
-type Named interface {
-	GetName() string
-	GetFileName() string
-}
-
-type Summarized interface {
-	GetSummary() string
-}
-
-type MemberKind struct {
-	Kind string
-}
-
-func newKind(kind string) MemberKind {
-	return MemberKind{Kind: kind}
-}
-
-func (k *MemberKind) GetKind() string {
-	return k.Kind
-}
-
-type MemberName struct {
-	Name string
-}
-
-func newName(name string) MemberName {
-	return MemberName{Name: name}
-}
-
-func (k *MemberName) GetName() string {
-	return k.Name
-}
-
-func (k *MemberName) GetFileName() string {
-	if caseSensitiveSystem {
-		return k.Name
-	}
-	if isCap(k.Name) {
-		return k.Name + capitalFileMarker
-	}
-	return k.Name
-}
-
-type MemberSummary struct {
-	Summary string
-}
-
-func newSummary(summary string) *MemberSummary {
-	return &MemberSummary{Summary: summary}
-}
-
-func (k *MemberSummary) GetSummary() string {
-	return k.Summary
-}
-
-type MemberDescription struct {
-	Description string
-}
-
-func newDescription(description string) *MemberDescription {
-	return &MemberDescription{Description: description}
-}
-
-func (k *MemberDescription) GetDescription() string {
-	return k.Description
-}
-
-func isCap(s string) bool {
-	if len(s) == 0 {
-		return false
-	}
-	firstRune := []rune(s)[0]
-	return unicode.IsUpper(firstRune)
 }
