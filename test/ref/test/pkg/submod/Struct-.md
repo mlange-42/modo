@@ -32,7 +32,7 @@ struct Struct[StructParameter: Intable]
 ### `struct_method`
 
 ```mojo
-struct_method(self, arg: StructParameter) -> Int
+fn struct_method(self, arg: StructParameter) -> Int
 ```
 
 **Args:**

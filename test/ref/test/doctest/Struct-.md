@@ -20,7 +20,7 @@ struct Struct
 ### `func`
 
 ```mojo
-func(self)
+fn func(self)
 ```
 
 Doctests in a struct member.

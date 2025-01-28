@@ -15,7 +15,7 @@ Mojo trait
 ### `trait_method`
 
 ```mojo
-trait_method[T: Intable](self: _Self, arg: T) -> Int
+fn trait_method[T: Intable](self: _Self, arg: T) -> Int
 ```
 
 [`ModuleAlias`](_index.md#aliases).

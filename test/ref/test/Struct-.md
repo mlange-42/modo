@@ -32,7 +32,7 @@ struct Struct[StructParameter: Intable]
 ### `struct_method`
 
 ```mojo
-struct_method[T: Intable](self, arg: StructParameter) -> Int
+fn struct_method[T: Intable](self, arg: StructParameter) -> Int
 ```
 
 [`ModuleAlias`](_index.md#aliases).
