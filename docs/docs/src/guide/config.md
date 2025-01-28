@@ -74,6 +74,9 @@ exports: true
 # Use shortened cross-ref link labels.
 short-links: true
 
+# Report missing docstings and coverage.
+report-missing: true
+
 # Break with error on any warning.
 strict: false
 
