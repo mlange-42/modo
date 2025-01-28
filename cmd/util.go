@@ -56,13 +56,17 @@ func read(file string) ([]byte, error) {
 	}
 }
 
-func fileExists(file string) (bool, error) {
-	if _, err := os.Stat(file); err == nil {
-		return true, nil
+func fileExists(file string) (exists, isDir bool, err error) {
+	var s os.FileInfo
+	if s, err = os.Stat(file); err == nil {
+		exists = true
+		isDir = s.IsDir()
+		return
 	} else if !errors.Is(err, os.ErrNotExist) {
-		return false, err
+		return
 	}
-	return false, nil
+	err = nil
+	return
 }
 
 func mountProject(v *viper.Viper, paths []string) error {
@@ -76,13 +80,13 @@ func mountProject(v *viper.Viper, paths []string) error {
 	}
 
 	filePath := configFile + ".yaml"
-	exists, err := fileExists(filePath)
+	exists, isDir, err := fileExists(filePath)
 	if err != nil {
 		return err
 	}
-	if !exists {
+	if !exists || isDir {
 		if withConfig {
-			return fmt.Errorf("no '%s' found in path '%s'", filePath, p)
+			return fmt.Errorf("no config file '%s' found in path '%s'", filePath, p)
 		}
 		return nil
 	}
@@ -165,4 +169,11 @@ func runDir(baseDir string, args *document.Config, form document.Formatter, runF
 			return runFile(p, args, form, relDir, true, false)
 		})
 	return err
+}
+
+func mkDirs(path string) error {
+	if err := os.MkdirAll(path, os.ModePerm); err != nil && !os.IsExist(err) {
+		return err
+	}
+	return nil
 }
