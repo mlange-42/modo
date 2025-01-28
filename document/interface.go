@@ -2,8 +2,13 @@ package document
 
 import "unicode"
 
+type missingDocs struct {
+	Who  string
+	What string
+}
+
 type missingChecker interface {
-	CheckMissing() (missing []string)
+	CheckMissing(path string) (missing []missingDocs)
 }
 
 type Kinded interface {
@@ -65,9 +70,9 @@ func (m *MemberSummary) GetSummary() string {
 	return m.Summary
 }
 
-func (m *MemberSummary) CheckMissing() (missing []string) {
+func (m *MemberSummary) CheckMissing(path string) (missing []missingDocs) {
 	if m.Summary == "" {
-		missing = append(missing, "summary")
+		missing = append(missing, missingDocs{path, "summary"})
 	}
 	return missing
 }

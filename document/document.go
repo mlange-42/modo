@@ -3,6 +3,7 @@ package document
 import (
 	"bytes"
 	"encoding/json"
+	"fmt"
 
 	"gopkg.in/yaml.v3"
 )
@@ -33,6 +34,30 @@ type Package struct {
 	exports            []*packageExport `yaml:"-" json:"-"`                   // Additional field for package re-exports
 }
 
+func (p *Package) CheckMissing(path string) (missing []missingDocs) {
+	newPath := fmt.Sprintf("%s.%s", path, p.Name)
+	missing = p.MemberSummary.CheckMissing(newPath)
+	for _, e := range p.Packages {
+		missing = append(missing, e.CheckMissing(newPath)...)
+	}
+	for _, e := range p.Modules {
+		missing = append(missing, e.CheckMissing(newPath)...)
+	}
+	for _, e := range p.Aliases {
+		missing = append(missing, e.CheckMissing(newPath)...)
+	}
+	for _, e := range p.Structs {
+		missing = append(missing, e.CheckMissing(newPath)...)
+	}
+	for _, e := range p.Traits {
+		missing = append(missing, e.CheckMissing(newPath)...)
+	}
+	for _, e := range p.Functions {
+		missing = append(missing, e.CheckMissing(newPath)...)
+	}
+	return missing
+}
+
 func (p *Package) linkedCopy() *Package {
 	return &Package{
 		MemberName:        newName(p.Name),
@@ -52,6 +77,24 @@ type Module struct {
 	Functions     []*Function
 	Structs       []*Struct
 	Traits        []*Trait
+}
+
+func (m *Module) CheckMissing(path string) (missing []missingDocs) {
+	newPath := fmt.Sprintf("%s.%s", path, m.Name)
+	missing = m.MemberSummary.CheckMissing(newPath)
+	for _, e := range m.Aliases {
+		missing = append(missing, e.CheckMissing(newPath)...)
+	}
+	for _, e := range m.Structs {
+		missing = append(missing, e.CheckMissing(newPath)...)
+	}
+	for _, e := range m.Traits {
+		missing = append(missing, e.CheckMissing(newPath)...)
+	}
+	for _, e := range m.Functions {
+		missing = append(missing, e.CheckMissing(newPath)...)
+	}
+	return missing
 }
 
 type Alias struct {
@@ -79,6 +122,24 @@ type Struct struct {
 	Signature     string
 }
 
+func (s *Struct) CheckMissing(path string) (missing []missingDocs) {
+	newPath := fmt.Sprintf("%s.%s", path, s.Name)
+	missing = s.MemberSummary.CheckMissing(newPath)
+	for _, e := range s.Aliases {
+		missing = append(missing, e.CheckMissing(newPath)...)
+	}
+	for _, e := range s.Fields {
+		missing = append(missing, e.CheckMissing(newPath)...)
+	}
+	for _, e := range s.Parameters {
+		missing = append(missing, e.CheckMissing(newPath)...)
+	}
+	for _, e := range s.Functions {
+		missing = append(missing, e.CheckMissing(newPath)...)
+	}
+	return missing
+}
+
 type Function struct {
 	MemberKind           `yaml:",inline"`
 	MemberName           `yaml:",inline"`
@@ -100,13 +161,20 @@ type Function struct {
 	Parameters           []*Parameter
 }
 
-func (f *Function) CheckMissing() (missing []string) {
-	missing = f.MemberSummary.CheckMissing()
-	if f.Raises && f.RaisesDoc == "" {
-		missing = append(missing, "raises")
+func (f *Function) CheckMissing(path string) (missing []missingDocs) {
+	if len(f.Overloads) == 0 {
+		newPath := fmt.Sprintf("%s.%s", path, f.Name)
+		missing = f.MemberSummary.CheckMissing(newPath)
+		if f.Raises && f.RaisesDoc == "" {
+			missing = append(missing, missingDocs{newPath, "raises"})
+		}
+		if f.ReturnType != "" && f.ReturnsDoc == "" {
+			missing = append(missing, missingDocs{newPath, "return"})
+		}
+		return missing
 	}
-	if f.ReturnType != "" && f.ReturnsDoc == "" {
-		missing = append(missing, "return")
+	for _, o := range f.Overloads {
+		missing = append(missing, o.CheckMissing(path)...)
 	}
 	return missing
 }
@@ -130,6 +198,18 @@ type Trait struct {
 	Deprecated    string
 }
 
+func (t *Trait) CheckMissing(path string) (missing []missingDocs) {
+	newPath := fmt.Sprintf("%s.%s", path, t.Name)
+	missing = t.MemberSummary.CheckMissing(newPath)
+	for _, e := range t.Fields {
+		missing = append(missing, e.CheckMissing(newPath)...)
+	}
+	for _, e := range t.Functions {
+		missing = append(missing, e.CheckMissing(newPath)...)
+	}
+	return missing
+}
+
 type Arg struct {
 	MemberKind  `yaml:",inline"`
 	MemberName  `yaml:",inline"`
@@ -140,9 +220,9 @@ type Arg struct {
 	Default     string
 }
 
-func (a *Arg) CheckMissing() (missing []string) {
+func (a *Arg) CheckMissing(path string) (missing []missingDocs) {
 	if a.Description == "" {
-		missing = append(missing, "description")
+		missing = append(missing, missingDocs{fmt.Sprintf("%s.%s", path, a.Name), "description"})
 	}
 	return missing
 }
@@ -156,9 +236,9 @@ type Parameter struct {
 	Default     string
 }
 
-func (p *Parameter) CheckMissing() (missing []string) {
+func (p *Parameter) CheckMissing(path string) (missing []missingDocs) {
 	if p.Description == "" {
-		missing = append(missing, "description")
+		missing = append(missing, missingDocs{fmt.Sprintf("%s.%s", path, p.Name), "description"})
 	}
 	return missing
 }
