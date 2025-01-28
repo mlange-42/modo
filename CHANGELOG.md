@@ -1,3 +1,9 @@
+## [[unpublished]](https://github.com/mlange-42/modo/compare/v0.9.0...main)
+
+### Documentation
+
+* Restructures `docs/` to serve as full Hugo example that uses all features (#134)
+
 ## [[v0.9.0]](https://github.com/mlange-42/modo/compare/v0.8.1...v0.9.0)
 
 ### Features
