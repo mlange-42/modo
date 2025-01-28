@@ -33,14 +33,19 @@ type config struct {
 	PostTest     []string
 }
 
+type initArgs struct {
+	Format        string
+	DocsDirectory string
+	NoFolders     bool
+}
+
 type packageSource struct {
 	Name string
 	Path []string
 }
 
 func initCommand() (*cobra.Command, error) {
-	var format string
-	var docsDir string
+	initArgs := initArgs{}
 
 	root := &cobra.Command{
 		Use:   "init",
@@ -59,22 +64,23 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 			if exists {
 				return fmt.Errorf("config file %s already exists", file)
 			}
-			if format == "" {
-				format = "plain"
+			if initArgs.Format == "" {
+				initArgs.Format = "plain"
 			}
-			docsDir = strings.ReplaceAll(docsDir, "\\", "/")
-			return initProject(docsDir, format)
+			initArgs.DocsDirectory = strings.ReplaceAll(initArgs.DocsDirectory, "\\", "/")
+			return initProject(&initArgs)
 		},
 	}
 
-	root.Flags().StringVarP(&format, "format", "f", "plain", "Output format. One of (plain|mdbook|hugo)")
-	root.Flags().StringVarP(&docsDir, "docs", "d", "docs", "Folder for documentation")
+	root.Flags().StringVarP(&initArgs.Format, "format", "f", "plain", "Output format. One of (plain|mdbook|hugo)")
+	root.Flags().StringVarP(&initArgs.DocsDirectory, "docs", "d", "docs", "Folder for documentation")
+	root.Flags().BoolVarP(&initArgs.NoFolders, "no-folders", "F", false, "Don't create any folders")
 
 	return root, nil
 }
 
-func initProject(docsDir, f string) error {
-	_, err := format.GetFormatter(f)
+func initProject(initArgs *initArgs) error {
+	_, err := format.GetFormatter(initArgs.Format)
 	if err != nil {
 		return err
 	}
@@ -86,15 +92,15 @@ func initProject(docsDir, f string) error {
 	if err != nil {
 		return err
 	}
-	sources, warning, err := findSources(f)
+	sources, warning, err := findSources(initArgs.Format)
 	if err != nil {
 		return err
 	}
-	inDir, outDir, err := createDocs(docsDir, f, sources)
+	inDir, outDir, err := createDocs(initArgs, sources)
 	if err != nil {
 		return err
 	}
-	preRun, err := createPreRun(docsDir, f, sources)
+	preRun, err := createPreRun(initArgs.DocsDirectory, initArgs.Format, sources)
 	if err != nil {
 		return err
 	}
@@ -103,7 +109,7 @@ func initProject(docsDir, f string) error {
 		InputFiles:   []string{inDir},
 		OutputDir:    outDir,
 		TestsDir:     testsDir,
-		RenderFormat: f,
+		RenderFormat: initArgs.Format,
 		PreRun:       []string{preRun},
 		PostTest:     []string{createPostTest(sources)},
 	}
@@ -210,27 +216,32 @@ func findSources(f string) ([]packageSource, string, error) {
 	return sources, warning, nil
 }
 
-func createDocs(docsDir, f string, sources []packageSource) (inDir, outDir string, err error) {
-	inDir = path.Join(docsDir, docsInDir)
-	outDir = path.Join(docsDir, docsOutDir)
-	if f == "hugo" {
+func createDocs(args *initArgs, sources []packageSource) (inDir, outDir string, err error) {
+	dir := args.DocsDirectory
+	inDir = path.Join(dir, docsInDir)
+	outDir = path.Join(dir, docsOutDir)
+	if args.Format == "hugo" {
 		outDir = path.Join(outDir, "content")
 	}
-	if f == "mdbook" {
-		inDir = path.Join(docsDir, sources[0].Name+".json")
-		outDir = path.Join(docsDir)
+	if args.Format == "mdbook" {
+		inDir = path.Join(dir, sources[0].Name+".json")
+		outDir = path.Join(dir)
 	}
 
-	docsExists, _, err := fileExists(docsDir)
+	if args.NoFolders {
+		return
+	}
+
+	docsExists, _, err := fileExists(dir)
 	if err != nil {
 		return
 	}
 	if docsExists {
-		fmt.Printf("WARNING: folder %s already exists, skip creating\n", docsDir)
+		fmt.Printf("WARNING: folder %s already exists, skip creating\n", dir)
 		return
 	}
 
-	if f != "mdbook" {
+	if args.Format != "mdbook" {
 		if err = mkDirs(inDir); err != nil {
 			return
 		}
