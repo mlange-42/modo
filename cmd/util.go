@@ -177,3 +177,11 @@ func mkDirs(path string) error {
 	}
 	return nil
 }
+
+func GetCwdName() (string, error) {
+	cwd, err := os.Getwd()
+	if err != nil {
+		return cwd, err
+	}
+	return filepath.Base(cwd), nil
+}

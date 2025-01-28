@@ -73,24 +73,25 @@ func initProject(f string) error {
 	if err != nil {
 		return err
 	}
-
 	sources, err := findSources(f)
 	if err != nil {
 		return err
 	}
-
 	inDir, outDir, err := createDocs(f, sources)
 	if err != nil {
 		return err
 	}
-
+	preRun, err := createPreRun(f, sources)
+	if err != nil {
+		return err
+	}
 	config := config{
 		InputFiles:   []string{inDir},
 		OutputDir:    outDir,
 		TestsDir:     testsDir,
 		RenderFormat: f,
-		PreRun:       []string{createPreRun(f, sources)},
-		PostTest:     []string{createPostTest()},
+		PreRun:       []string{preRun},
+		PostTest:     []string{createPostTest(sources)},
 	}
 
 	b := bytes.Buffer{}
@@ -111,20 +112,30 @@ func findSources(f string) ([]string, error) {
 	if err != nil {
 		return nil, err
 	}
+
 	if srcExists && srcIsDir {
-		infos, err := os.ReadDir(srcDir)
+		pkgFile := path.Join(srcDir, initFile)
+		initExists, initIsDir, err := fileExists(pkgFile)
 		if err != nil {
 			return nil, err
 		}
-		for _, info := range infos {
-			if info.IsDir() {
-				pkgFile := path.Join(srcDir, info.Name(), initFile)
-				initExists, initIsDir, err := fileExists(pkgFile)
-				if err != nil {
-					return nil, err
-				}
-				if initExists && !initIsDir {
-					sources = append(sources, info.Name())
+		if initExists && !initIsDir {
+			sources = append(sources, "")
+		} else {
+			infos, err := os.ReadDir(srcDir)
+			if err != nil {
+				return nil, err
+			}
+			for _, info := range infos {
+				if info.IsDir() {
+					pkgFile := path.Join(srcDir, info.Name(), initFile)
+					initExists, initIsDir, err := fileExists(pkgFile)
+					if err != nil {
+						return nil, err
+					}
+					if initExists && !initIsDir {
+						sources = append(sources, info.Name())
+					}
 				}
 			}
 		}
@@ -146,7 +157,14 @@ func createDocs(f string, sources []string) (inDir, outDir string, err error) {
 		outDir = path.Join(outDir, "content")
 	}
 	if f == "mdbook" {
-		inDir = path.Join(docsDir, sources[0]+".json")
+		file := sources[0]
+		if file == "" {
+			file, err = GetCwdName()
+			if err != nil {
+				return
+			}
+		}
+		inDir = path.Join(docsDir, file+".json")
 		outDir = path.Join(docsDir)
 	}
 
@@ -176,7 +194,7 @@ func createDocs(f string, sources []string) (inDir, outDir string, err error) {
 	return
 }
 
-func createPreRun(f string, sources []string) string {
+func createPreRun(f string, sources []string) (string, error) {
 	s := "|\n    echo Running 'mojo test'...\n"
 
 	inDir := docsDir
@@ -184,16 +202,29 @@ func createPreRun(f string, sources []string) string {
 		inDir = path.Join(docsDir, docsInDir)
 	}
 	for _, src := range sources {
-		s += fmt.Sprintf("    magic run mojo doc -o %s.json %s\n", path.Join(inDir, src), path.Join(srcDir, src))
+		file := src
+		if file == "" {
+			var err error
+			file, err = GetCwdName()
+			if err != nil {
+				return "", err
+			}
+		}
+		s += fmt.Sprintf("    magic run mojo doc -o %s.json %s\n", path.Join(inDir, file), path.Join(srcDir, src))
 	}
 
 	s += "    echo Done."
-	return s
+	return s, nil
 }
 
-func createPostTest() string {
+func createPostTest(sources []string) string {
+	src := srcDir
+	if len(sources) == 1 && sources[0] == "" {
+		src = "."
+	}
+
 	return fmt.Sprintf(`|
     echo Running 'mojo test'...
-    magic run mojo test -I %s/ %s/
-    echo Done.`, srcDir, testsDir)
+    magic run mojo test -I %s %s
+    echo Done.`, src, testsDir)
 }
