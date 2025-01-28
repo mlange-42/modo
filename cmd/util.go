@@ -17,6 +17,8 @@ import (
 const configFile = "modo"
 const setExitOnError = "set -e"
 
+const initFile = "__init__.mojo"
+
 func runCommand(command string) error {
 	commandWithExit := fmt.Sprintf("%s\n%s", setExitOnError, command)
 	cmd := exec.Command("bash", "-c", commandWithExit)
@@ -66,6 +68,19 @@ func fileExists(file string) (exists, isDir bool, err error) {
 		return
 	}
 	err = nil
+	return
+}
+
+func isPackage(dir string) (isPackage bool, err error) {
+	pkgFile := path.Join(dir, initFile)
+	initExists, initIsDir, err := fileExists(pkgFile)
+	if err != nil {
+		return
+	}
+	if initExists && !initIsDir {
+		isPackage = true
+		return
+	}
 	return
 }
 

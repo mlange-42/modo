@@ -17,7 +17,6 @@ const docsDir = "docs"
 const docsInDir = "src"
 const docsOutDir = "site"
 const testsDir = "doctest"
-const initFile = "__init__.mojo"
 
 type config struct {
 	Warning      string
@@ -139,12 +138,11 @@ func findSources(f string) ([]packageSource, string, error) {
 	nestedSrc := false
 
 	for _, dir := range allDirs {
-		pkgFile := path.Join(dir, initFile)
-		initExists, initIsDir, err := fileExists(pkgFile)
+		isPkg, err := isPackage(dir)
 		if err != nil {
 			return nil, warning, err
 		}
-		if initExists && !initIsDir {
+		if isPkg {
 			// Package is `<dir>/__init__.mojo`
 			file := dir
 			if file == srcDir {
@@ -158,12 +156,11 @@ func findSources(f string) ([]packageSource, string, error) {
 			continue
 		}
 		if dir != srcDir {
-			pkgFile := path.Join(dir, srcDir, initFile)
-			initExists, initIsDir, err := fileExists(pkgFile)
+			isPkg, err := isPackage(path.Join(dir, srcDir))
 			if err != nil {
 				return nil, warning, err
 			}
-			if initExists && !initIsDir {
+			if isPkg {
 				// Package is `<dir>/src/__init__.mojo`
 				nestedSrc = true
 				sources = append(sources, packageSource{dir, []string{dir, srcDir}})
@@ -176,12 +173,11 @@ func findSources(f string) ([]packageSource, string, error) {
 		}
 		for _, info := range infos {
 			if info.IsDir() {
-				pkgFile := path.Join(dir, info.Name(), initFile)
-				initExists, initIsDir, err := fileExists(pkgFile)
+				isPkg, err := isPackage(path.Join(dir, info.Name()))
 				if err != nil {
 					return nil, warning, err
 				}
-				if initExists && !initIsDir {
+				if isPkg {
 					// Package is `src/<dir>/__init__.mojo`
 					sources = append(sources, packageSource{info.Name(), []string{dir, info.Name()}})
 				}
