@@ -16,7 +16,8 @@ import (
 const srcDir = "src"
 const docsInDir = "src"
 const docsOutDir = "site"
-const testsDir = "doctest"
+const testsDir = "test"
+const gitignoreFile = ".gitignore"
 
 const landingPageContent = `# Landing page
 
@@ -108,10 +109,10 @@ func initProject(initArgs *initArgs) error {
 		Warning:      warning,
 		InputFiles:   []string{inDir},
 		OutputDir:    outDir,
-		TestsDir:     testsDir,
+		TestsDir:     path.Join(initArgs.DocsDirectory, testsDir),
 		RenderFormat: initArgs.Format,
 		PreRun:       []string{preRun},
-		PostTest:     []string{createPostTest(sources)},
+		PostTest:     []string{createPostTest(initArgs.DocsDirectory, sources)},
 	}
 
 	b := bytes.Buffer{}
@@ -217,20 +218,35 @@ func findSources(f string) ([]packageSource, string, error) {
 }
 
 func createDocs(args *initArgs, sources []packageSource) (inDir, outDir string, err error) {
+	var gitignore []string
+
 	dir := args.DocsDirectory
 	inDir = path.Join(dir, docsInDir)
 	outDir = path.Join(dir, docsOutDir)
+	testOurDir := path.Join(dir, testsDir)
 	if args.Format == "hugo" {
 		outDir = path.Join(outDir, "content")
-	}
-	if args.Format == "mdbook" {
-		inDir = path.Join(dir, sources[0].Name+".json")
-		outDir = path.Join(dir)
+		gitignore = append(gitignore,
+			fmt.Sprintf("/%s/*.json", docsInDir),
+			fmt.Sprintf("/%s/%s/", docsOutDir, "content"),
+		)
+	} else if args.Format == "mdbook" {
+		file := sources[0].Name + ".json"
+		inDir = path.Join(dir, file)
+		outDir = dir
+		gitignore = append(gitignore, fmt.Sprintf("/%s", file))
+	} else {
+		gitignore = append(gitignore,
+			fmt.Sprintf("/%s/*.json", docsInDir),
+			fmt.Sprintf("/%s/", docsOutDir),
+		)
 	}
 
 	if args.NoFolders {
 		return
 	}
+
+	gitignore = append(gitignore, fmt.Sprintf("/%s/", testsDir))
 
 	docsExists, _, err := fileExists(dir)
 	if err != nil {
@@ -252,10 +268,18 @@ func createDocs(args *initArgs, sources []packageSource) (inDir, outDir string, 
 	if err = mkDirs(outDir); err != nil {
 		return
 	}
-	if err = mkDirs(testsDir); err != nil {
+	if err = mkDirs(testOurDir); err != nil {
+		return
+	}
+	if err = writeGitIgnore(dir, gitignore); err != nil {
 		return
 	}
 	return
+}
+
+func writeGitIgnore(dir string, gitignore []string) error {
+	s := strings.Join(gitignore, "\n") + "\n"
+	return os.WriteFile(path.Join(dir, gitignoreFile), []byte(s), 0644)
 }
 
 func createPreRun(docsDir, f string, sources []packageSource) (string, error) {
@@ -273,7 +297,8 @@ func createPreRun(docsDir, f string, sources []packageSource) (string, error) {
 	return s, nil
 }
 
-func createPostTest(sources []packageSource) string {
+func createPostTest(docsDir string, sources []packageSource) string {
+	testOurDir := path.Join(docsDir, testsDir)
 	var src string
 	if len(sources[0].Path) == 1 {
 		src = "."
@@ -284,5 +309,5 @@ func createPostTest(sources []packageSource) string {
 	return fmt.Sprintf(`|
     echo Running 'mojo test'...
     magic run mojo test -I %s %s
-    echo Done.`, src, testsDir)
+    echo Done.`, src, testOurDir)
 }
