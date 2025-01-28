@@ -18,6 +18,11 @@ const docsInDir = "src"
 const docsOutDir = "site"
 const testsDir = "doctest"
 
+const landingPageContent = `# Landing page
+
+JSON created by mojo doc should be placed next to this file.
+`
+
 type config struct {
 	Warning      string
 	InputFiles   []string
@@ -229,7 +234,7 @@ func createDocs(docsDir, f string, sources []packageSource) (inDir, outDir strin
 		if err = mkDirs(inDir); err != nil {
 			return
 		}
-		if err = os.WriteFile(path.Join(inDir, "_index.md"), []byte("# Landing page\n"), 0644); err != nil {
+		if err = os.WriteFile(path.Join(inDir, "_index.md"), []byte(landingPageContent), 0644); err != nil {
 			return
 		}
 	}
