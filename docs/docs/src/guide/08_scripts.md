@@ -2,7 +2,7 @@
 title: Bash scripts
 type: docs
 summary: Configure bash scripts to run before and after processing.
-weight: 7
+weight: 80
 ---
 
 Modo🧯 can be configured to automatically run bash scripts before and/or after processing.
@@ -24,24 +24,28 @@ The `modo.yaml` [config file](../config) provides the following fields for bash 
 Each of those takes an array of bash scripts.
 Each bash script can be comprised of multiple commands.
 
-Here is an example that runs `mojo doc` before builds and tests:
+Here is an example that shows how `mojo doc` is executed in the default setup before build and test:
 
 ```yaml
+# Bash commands to run before build as well as test.
 pre-run:
-  - mojo doc -o api.json src/
-```
-
-And here is how to run `mojo test` after doc-tests extraction:
-
-```yaml
-post-test:
   - |
-    echo Running 'mojo test'...
-    mojo test -I . doctest/
+    echo Running 'mojo doc'...
+    magic run mojo doc -o docs/src/mypkg.json src/mypkg
     echo Done.
 ```
 
-Here, we use a single script that consists of 3 commands.
+And here is how `mojo test` is executed in the default setup after doc-tests extraction:
+
+```yaml
+# Bash scripts to run after test.
+# Also runs after build if 'tests' is given.
+post-test:
+  - |
+    echo Running 'mojo test'...
+    magic run mojo test -I src docs/test
+    echo Done.
+```
 
 ## Skipping scripts
 
