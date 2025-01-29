@@ -295,7 +295,8 @@ func createDocs(args *initArgs, templ *template.Template, sources []packageSourc
 		return
 	}
 	if docsExists {
-		err = fmt.Errorf("documentation folder '%s' already exists.\nUse flag --docs to use a different folder", dir)
+		err = fmt.Errorf("documentation folder '%s' already exists.\n"+
+			"Use flag --docs to use a different folder, --no-folders to skip folders setup", dir)
 		return
 	}
 
