@@ -11,6 +11,7 @@ import (
 	"github.com/mlange-42/modo/assets"
 	"github.com/mlange-42/modo/format"
 	"github.com/spf13/cobra"
+	"gopkg.in/ini.v1"
 )
 
 const srcDir = "src"
@@ -29,8 +30,6 @@ title: Landing page
 type: docs
 ---
 
-# Landing page
-
 JSON created by mojo doc should be placed next to this file.
 `
 
@@ -48,6 +47,13 @@ type initArgs struct {
 	Format        string
 	DocsDirectory string
 	NoFolders     bool
+}
+
+type hugoConfig struct {
+	Title  string
+	Repo   string
+	Module string
+	Pages  string
 }
 
 type packageSource struct {
@@ -341,4 +347,61 @@ func createPostTest(docsDir string, sources []packageSource) string {
     echo Running 'mojo test'...
     magic run mojo test -I %s %s
     echo Done.`, src, testOurDir)
+}
+
+func getGitOrigin(outDir string) (*hugoConfig, error) {
+	gitFiles := []string{
+		".git/config",
+		"../.git/config",
+	}
+
+	var content *ini.File
+	found := false
+	for _, f := range gitFiles {
+		exists, isDir, err := fileExists(f)
+		if err != nil {
+			return nil, err
+		}
+		if !exists || isDir {
+			continue
+		}
+		content, err = ini.Load(f)
+		if err != nil {
+			return nil, err
+		}
+		found = true
+		break
+	}
+
+	url := "https://github.com/your/package"
+	if found {
+		section := content.Section(`remote "origin"`)
+		if section != nil {
+			value := section.Key("url")
+			if value != nil {
+				url = strings.TrimSuffix(value.String(), ".git")
+			}
+		}
+	}
+	title, pages := repoToTitleEndPages(url)
+	module := strings.ReplaceAll(strings.ReplaceAll(url, "https://", ""), "http://", "")
+	module = fmt.Sprintf("%s/%s", module, outDir)
+
+	return &hugoConfig{
+		Title:  title,
+		Repo:   url,
+		Pages:  pages,
+		Module: module,
+	}, nil
+}
+
+func repoToTitleEndPages(repo string) (string, string) {
+	if !strings.HasPrefix(repo, "https://github.com/") {
+		parts := strings.Split(repo, "/")
+		title := parts[len(parts)-1]
+		return title, fmt.Sprintf("https://%s.com", title)
+	}
+	repo = strings.TrimPrefix(repo, "https://github.com/")
+	parts := strings.Split(repo, "/")
+	return parts[1], fmt.Sprintf("https://%s.github.io/%s/", parts[0], parts[1])
 }
