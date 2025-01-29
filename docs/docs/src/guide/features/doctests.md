@@ -2,7 +2,7 @@
 title: Doc-tests
 type: docs
 summary: Extract doc tests from code examples in the API docs.
-weight: 60
+weight: 30
 ---
 
 To keep code examples in docstrings up to date, Modo🧯 can generate test files for `mojo test` from them.

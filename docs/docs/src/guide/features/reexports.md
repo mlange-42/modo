@@ -2,7 +2,7 @@
 title: Re-exports
 type: docs
 summary: Restructure package according to re-exports.
-weight: 70
+weight: 20
 ---
 
 In Mojo🔥, package-level re-exports (or rather, imports) can be used
