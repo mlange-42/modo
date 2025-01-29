@@ -286,7 +286,7 @@ func writeGitIgnore(dir string, gitignore []string) error {
 }
 
 func createPreRun(docsDir, f string, sources []packageSource) (string, error) {
-	s := "|\n    echo Running 'mojo test'...\n"
+	s := "|\n    echo Running 'mojo doc'...\n"
 
 	inDir := docsDir
 	if f != "mdbook" {
