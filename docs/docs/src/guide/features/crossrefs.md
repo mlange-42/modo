@@ -2,7 +2,8 @@
 title: Cross-references
 type: docs
 summary: Cross-referencing in the API docs.
-weight: 4
+prev: features
+weight: 10
 ---
 
 Modo🧯 supports cross-refs within the documentation of a project.

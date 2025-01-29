@@ -2,24 +2,18 @@
 title: Doc-tests
 type: docs
 summary: Extract doc tests from code examples in the API docs.
-weight: 6
+weight: 30
 ---
 
 To keep code examples in docstrings up to date, Modo🧯 can generate test files for `mojo test` from them.
-Doctests are enabled by `tests` in the `modo.yaml` or flag `--tests`, which take an output directory for test files as an argument:
+Doctests are enabled by `tests` in the `modo.yaml` or flag `--tests`. Doctests are enabled by default.
+Further, the default setup also contains a post-processing [script](../scripts) that runs `mojo test`.
 
-```{class="no-wrap"}
-modo build --tests doctest/       # render to Markdown and extract doctests
-mojo test -I . doctest/           # run the doctests
+Alternatively to `modo build`, Modo🧯's `test` command can be used to extract tests without building the Markdown docs:
+
+```shell {class="no-wrap"}
+modo test           # only extract doctests
 ```
-
-Alternatively, Modo🧯's `test` command can be used to extract tests without building the Markdown docs:
-
-```{class="no-wrap"}
-modo test --tests doctest/        # only extract doctests
-```
-
-In both cases, flag `--tests` can be omitted if `tests: doctest/` is set in the `modo.yaml` file.
 
 ## Tested blocks
 
@@ -81,11 +75,6 @@ fn add(a: Int, b: Int) -> Int:
     return a + b
 ````
 
-````mojo {doctest="add" hide=true}
-var result = add(1, 2)
-if result != 3:
-    raise Error("test failed")
-```
 
 This generates the following docs content:
 
@@ -118,14 +107,16 @@ The input directory should be structured like the intended output, with API docs
 Here is an example for a Hugo site with a user guide and API docs for `mypkg`:
 
 {{< filetree/container >}}
-  {{< filetree/folder name="docs-in" >}}
-    {{< filetree/folder name="guide" >}}
+  {{< filetree/folder name="docs" >}}
+    {{< filetree/folder name="src" >}}
+      {{< filetree/folder name="guide" state="closed" >}}
+        {{< filetree/file name="_index.md" >}}
+        {{< filetree/file name="installation.md" >}}
+        {{< filetree/file name="usage.md" >}}
+      {{< /filetree/folder >}}
       {{< filetree/file name="_index.md" >}}
-      {{< filetree/file name="installation.md" >}}
-      {{< filetree/file name="usage.md" >}}
+      {{< filetree/file name="mypkg.json" >}}
     {{< /filetree/folder >}}
-    {{< filetree/file name="_index.md" >}}
-    {{< filetree/file name="mypkg.json" >}}
   {{< /filetree/folder >}}
 {{< /filetree/container >}}
 
@@ -135,4 +126,4 @@ With a directory as input, Modo🧯 does the following:
 - For each Markdown (`.md`) file, extract doctests, and write processed Markdown to the output folder and tests to the tests folder.
 - For any other files, copy them to the output folder.
 
-Note that this feature is not available with the [mdBook](../formats#mdbook) format.
+Note that this feature is not available with the [mdBook](../../formats#mdbook) format.

@@ -14,4 +14,8 @@ weight: 500
 {{- end}}
 params:
   breadcrumb: {{.Name}}
+{{if and (eq .Name "mypkg") (eq .Kind "package") -}}
+sidebar:
+  open: true
+{{- end}}
 ---

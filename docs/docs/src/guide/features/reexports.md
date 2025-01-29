@@ -2,7 +2,7 @@
 title: Re-exports
 type: docs
 summary: Restructure package according to re-exports.
-weight: 5
+weight: 20
 ---
 
 In Mojo🔥, package-level re-exports (or rather, imports) can be used
@@ -39,5 +39,5 @@ For exporting members from a sub-package (like `Cat` and `Doc`), the sub-package
 
 Re-exported modules (like `plants.vascular`) are fully included with all members.
 
-[Cross-references](../cross-refs) should still use the original structure of the package.
+[Cross-references](../crossrefs) should still use the original structure of the package.
 They are automatically transformed to match the altered structure.
