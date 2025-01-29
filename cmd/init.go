@@ -423,14 +423,19 @@ func getGitOrigin(outDir string) (*hugoConfig, error) {
 	}
 
 	url := "https://github.com/your/package"
+	ok := false
 	if found {
 		section := content.Section(`remote "origin"`)
 		if section != nil {
 			value := section.Key("url")
 			if value != nil {
 				url = strings.TrimSuffix(value.String(), ".git")
+				ok = true
 			}
 		}
+	}
+	if !ok {
+		fmt.Printf("WARNING: No Git repository or no remote 'origin' found.\n         Using dummy %s\n", url)
 	}
 	title, pages := repoToTitleEndPages(url)
 	module := strings.ReplaceAll(strings.ReplaceAll(url, "https://", ""), "http://", "")
