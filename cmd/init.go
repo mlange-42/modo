@@ -24,6 +24,16 @@ const landingPageContent = `# Landing page
 JSON created by mojo doc should be placed next to this file.
 `
 
+const landingPageContentHugo = `---
+title: Landing page
+type: docs
+---
+
+# Landing page
+
+JSON created by mojo doc should be placed next to this file.
+`
+
 type config struct {
 	Warning      string
 	InputFiles   []string
@@ -276,7 +286,13 @@ func createDocs(args *initArgs, sources []packageSource) (inDir, outDir string, 
 		if err = mkDirs(inDir); err != nil {
 			return
 		}
-		if err = os.WriteFile(path.Join(inDir, "_index.md"), []byte(landingPageContent), 0644); err != nil {
+		var content string
+		if args.Format == "hugo" {
+			content = landingPageContentHugo
+		} else {
+			content = landingPageContent
+		}
+		if err = os.WriteFile(path.Join(inDir, "_index.md"), []byte(content), 0644); err != nil {
 			return
 		}
 	}
