@@ -9,6 +9,7 @@
 * Command `init` has flag `--docs` to change the intended documentation directory (#142)
 * Command `init` has flag `--no-folders` to skip creation of directories (#143)
 * Command `init` writes a `.gitignore` file to the docs folder (#145)
+* With format `hugo`, set up site with `hugo.yaml` and `go.mod` (#155)
 
 ### Documentation
 

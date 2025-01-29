@@ -11,6 +11,7 @@ import (
 	"github.com/mlange-42/modo/assets"
 	"github.com/mlange-42/modo/format"
 	"github.com/spf13/cobra"
+	"gopkg.in/ini.v1"
 )
 
 const srcDir = "src"
@@ -22,6 +23,9 @@ const gitignoreFile = ".gitignore"
 const landingPageContent = `# Landing page
 
 JSON created by mojo doc should be placed next to this file.
+
+Additional documentation files go here, too.
+They will be processed for doc-tests and copied to folder 'site'.
 `
 
 const landingPageContentHugo = `---
@@ -29,9 +33,10 @@ title: Landing page
 type: docs
 ---
 
-# Landing page
-
 JSON created by mojo doc should be placed next to this file.
+
+Additional documentation files go here, too.
+They will be processed for doc-tests and copied to folder 'site/content'.
 `
 
 type config struct {
@@ -50,6 +55,13 @@ type initArgs struct {
 	NoFolders     bool
 }
 
+type hugoConfig struct {
+	Title  string
+	Repo   string
+	Module string
+	Pages  string
+}
+
 type packageSource struct {
 	Name string
 	Path []string
@@ -59,14 +71,17 @@ func initCommand() (*cobra.Command, error) {
 	initArgs := initArgs{}
 
 	root := &cobra.Command{
-		Use:   "init",
-		Short: "Generate a Modo config file in the current directory",
-		Long: `Generate a Modo config file in the current directory.
+		Use:   "init FORMAT",
+		Short: "Set up a Modo project in the current directory",
+		Long: `Set up a Modo project in the current directory.
 
+The format argument is required and must be one of (plain|mdbook|hugo).
 Complete documentation at https://mlange-42.github.io/modo/`,
-		Args:         cobra.ExactArgs(0),
+		Args:         cobra.ExactArgs(1),
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			initArgs.Format = args[0]
+
 			file := configFile + ".yaml"
 			exists, _, err := fileExists(file)
 			if err != nil {
@@ -83,7 +98,6 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 		},
 	}
 
-	root.Flags().StringVarP(&initArgs.Format, "format", "f", "plain", "Output format. One of (plain|mdbook|hugo)")
 	root.Flags().StringVarP(&initArgs.DocsDirectory, "docs", "d", "docs", "Folder for documentation")
 	root.Flags().BoolVarP(&initArgs.NoFolders, "no-folders", "F", false, "Don't create any folders")
 
@@ -102,7 +116,7 @@ func initProject(initArgs *initArgs) error {
 	file := configFile + ".yaml"
 
 	templ := template.New("all")
-	templ, err = templ.ParseFS(assets.Config, path.Join("config", file))
+	templ, err = templ.ParseFS(assets.Config, "**/*")
 	if err != nil {
 		return err
 	}
@@ -110,7 +124,7 @@ func initProject(initArgs *initArgs) error {
 	if err != nil {
 		return err
 	}
-	inDir, outDir, err := createDocs(initArgs, sources)
+	inDir, outDir, err := createDocs(initArgs, templ, sources)
 	if err != nil {
 		return err
 	}
@@ -230,7 +244,7 @@ func findSources(f string) ([]packageSource, string, error) {
 	return sources, warning, nil
 }
 
-func createDocs(args *initArgs, sources []packageSource) (inDir, outDir string, err error) {
+func createDocs(args *initArgs, templ *template.Template, sources []packageSource) (inDir, outDir string, err error) {
 	var gitignore []string
 
 	dir := args.DocsDirectory
@@ -305,7 +319,48 @@ func createDocs(args *initArgs, sources []packageSource) (inDir, outDir string, 
 	if err = writeGitIgnore(dir, gitignore); err != nil {
 		return
 	}
+	if args.Format == "hugo" {
+		if err = createHugoFiles(dir, path.Join(dir, docsOutDir), templ); err != nil {
+			return
+		}
+	}
 	return
+}
+
+func createHugoFiles(docDir, hugoDir string, templ *template.Template) error {
+	config, err := getGitOrigin(docDir)
+	if err != nil {
+		return err
+	}
+
+	files := [][]string{
+		{"hugo.yaml", "hugo.yaml"},
+		{"hugo.mod", "go.mod"},
+		{"hugo.sum", "go.sum"},
+	}
+	for _, f := range files {
+		outFile := path.Join(hugoDir, f[1])
+		exists, _, err := fileExists(outFile)
+		if err != nil {
+			return err
+		}
+		if exists {
+			fmt.Printf("WARNING: Hugo file %s already exists, skip creating\n", outFile)
+			return nil
+		}
+	}
+
+	for _, f := range files {
+		outFile := path.Join(hugoDir, f[1])
+		b := bytes.Buffer{}
+		if err := templ.ExecuteTemplate(&b, f[0], &config); err != nil {
+			return err
+		}
+		if err := os.WriteFile(outFile, b.Bytes(), 0644); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func writeGitIgnore(dir string, gitignore []string) error {
@@ -341,4 +396,61 @@ func createPostTest(docsDir string, sources []packageSource) string {
     echo Running 'mojo test'...
     magic run mojo test -I %s %s
     echo Done.`, src, testOurDir)
+}
+
+func getGitOrigin(outDir string) (*hugoConfig, error) {
+	gitFiles := []string{
+		".git/config",
+		"../.git/config",
+	}
+
+	var content *ini.File
+	found := false
+	for _, f := range gitFiles {
+		exists, isDir, err := fileExists(f)
+		if err != nil {
+			return nil, err
+		}
+		if !exists || isDir {
+			continue
+		}
+		content, err = ini.Load(f)
+		if err != nil {
+			return nil, err
+		}
+		found = true
+		break
+	}
+
+	url := "https://github.com/your/package"
+	if found {
+		section := content.Section(`remote "origin"`)
+		if section != nil {
+			value := section.Key("url")
+			if value != nil {
+				url = strings.TrimSuffix(value.String(), ".git")
+			}
+		}
+	}
+	title, pages := repoToTitleEndPages(url)
+	module := strings.ReplaceAll(strings.ReplaceAll(url, "https://", ""), "http://", "")
+	module = fmt.Sprintf("%s/%s", module, outDir)
+
+	return &hugoConfig{
+		Title:  title,
+		Repo:   url,
+		Pages:  pages,
+		Module: module,
+	}, nil
+}
+
+func repoToTitleEndPages(repo string) (string, string) {
+	if !strings.HasPrefix(repo, "https://github.com/") {
+		parts := strings.Split(repo, "/")
+		title := parts[len(parts)-1]
+		return title, fmt.Sprintf("https://%s.com", title)
+	}
+	repo = strings.TrimPrefix(repo, "https://github.com/")
+	parts := strings.Split(repo, "/")
+	return parts[1], fmt.Sprintf("https://%s.github.io/%s/", parts[0], parts[1])
 }
