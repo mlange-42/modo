@@ -2,6 +2,7 @@
 title: Templates
 type: docs
 summary: Use templates to customize Modo🧯's output.
+next: mypkg
 weight: 50
 ---
 

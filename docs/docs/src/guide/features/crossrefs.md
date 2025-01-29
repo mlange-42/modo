@@ -2,6 +2,7 @@
 title: Cross-references
 type: docs
 summary: Cross-referencing in the API docs.
+prev: features
 weight: 10
 ---
 

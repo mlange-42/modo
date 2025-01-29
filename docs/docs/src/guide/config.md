@@ -2,6 +2,7 @@
 title: Configuration
 type: docs
 summary: Configuration via `modo.yaml` and CLI flags.
+next: features
 weight: 40
 ---
 Modo🧯 can run based on a [config file](#config-file) or [standalone](#standalone).

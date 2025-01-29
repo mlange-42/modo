@@ -2,8 +2,8 @@
 title: Features
 type: docs
 summary: Modo🧯's features beyond generating Markdown.
+next: crossrefs
 weight: 100
-next: 05_cross-refs
 ---
 
 Modo🧯's features beyond generating Markdown:

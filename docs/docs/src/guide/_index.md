@@ -3,7 +3,7 @@ title: User guide
 type: docs
 summary: Modo🧯's user guide.
 weight: -1
-next: 01_install
+next: install
 sidebar:
   open: true
 ---
