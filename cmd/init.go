@@ -330,13 +330,25 @@ func createHugoFiles(docDir, hugoDir string, templ *template.Template) error {
 		{"hugo.mod", "go.mod"},
 		{"hugo.sum", "go.sum"},
 	}
+	for _, f := range files {
+		outFile := path.Join(hugoDir, f[1])
+		exists, _, err := fileExists(outFile)
+		if err != nil {
+			return err
+		}
+		if exists {
+			fmt.Printf("WARNING: Hugo file %s already exists, skip creating\n", outFile)
+			return nil
+		}
+	}
 
 	for _, f := range files {
+		outFile := path.Join(hugoDir, f[1])
 		b := bytes.Buffer{}
 		if err := templ.ExecuteTemplate(&b, f[0], &config); err != nil {
 			return err
 		}
-		if err := os.WriteFile(path.Join(hugoDir, f[1]), b.Bytes(), 0644); err != nil {
+		if err := os.WriteFile(outFile, b.Bytes(), 0644); err != nil {
 			return err
 		}
 	}
