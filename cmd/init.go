@@ -23,6 +23,9 @@ const gitignoreFile = ".gitignore"
 const landingPageContent = `# Landing page
 
 JSON created by mojo doc should be placed next to this file.
+
+Additional documentation files go here, too.
+They will be processed for doc-tests and copied to folder 'site'.
 `
 
 const landingPageContentHugo = `---
@@ -31,6 +34,9 @@ type: docs
 ---
 
 JSON created by mojo doc should be placed next to this file.
+
+Additional documentation files go here, too.
+They will be processed for doc-tests and copied to folder 'site/content'.
 `
 
 type config struct {
@@ -65,14 +71,17 @@ func initCommand() (*cobra.Command, error) {
 	initArgs := initArgs{}
 
 	root := &cobra.Command{
-		Use:   "init",
-		Short: "Generate a Modo config file in the current directory",
-		Long: `Generate a Modo config file in the current directory.
+		Use:   "init FORMAT",
+		Short: "Set up a Modo project in the current directory",
+		Long: `Set up a Modo project in the current directory.
 
+The format argument is required and must be one of (plain|mdbook|hugo).
 Complete documentation at https://mlange-42.github.io/modo/`,
-		Args:         cobra.ExactArgs(0),
+		Args:         cobra.ExactArgs(1),
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
+			initArgs.Format = args[0]
+
 			file := configFile + ".yaml"
 			exists, _, err := fileExists(file)
 			if err != nil {
@@ -89,7 +98,6 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 		},
 	}
 
-	root.Flags().StringVarP(&initArgs.Format, "format", "f", "plain", "Output format. One of (plain|mdbook|hugo)")
 	root.Flags().StringVarP(&initArgs.DocsDirectory, "docs", "d", "docs", "Folder for documentation")
 	root.Flags().BoolVarP(&initArgs.NoFolders, "no-folders", "F", false, "Don't create any folders")
 
