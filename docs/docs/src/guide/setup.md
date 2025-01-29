@@ -5,7 +5,7 @@ summary: Setting up a Mojo🔥 project for Modo🧯.
 weight: 20
 ---
 
-The command `init` can be used prepare an existing Mojo🔥 project for instant usage
+The command `init` serves to prepare an existing Mojo🔥 project for instant usage
 with Modo🧯 and a static site generator (SSG).
 
 ## Hugo example
@@ -32,6 +32,8 @@ hugo serve -s docs/site/
 If your project has a GitHub repository, Modo🧯 will set up the project so
 that it can be deployed to GitHub Pages instantly.
 
+For more details, see the [Hugo format](../formats#hugo).
+
 ## mdBook example
 
 Similarly, with [mdBook](https://github.com/rust-lang/mdBook) as SSG, these three commands should be sufficient to view your API docs in a web browser:
@@ -47,6 +49,8 @@ For more details on the generated directory structure and files, see chapter [fo
 ## Detected packages
 
 Below are the possible project layouts the `init` command can work with.
+
+Single package only:
 
 {{<html>}}<div style="display: flex;"><div style="flex: 50%;">{{</html>}}
 
@@ -71,6 +75,8 @@ Below are the possible project layouts the `init` command can work with.
 {{< /filetree/container >}}
 
 {{<html>}}</div></div>{{</html>}}
+
+One or more packages:
 
 {{<html>}}<div style="display: flex;"><div style="flex: 50%;">{{</html>}}
 
