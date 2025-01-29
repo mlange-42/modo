@@ -2,7 +2,6 @@
 title: Project setup
 type: docs
 summary: Setting up a Mojo🔥 project for Modo🧯.
-prev: guide
 weight: 20
 ---
 
@@ -20,7 +19,7 @@ modo init hugo
 ```
 
 Modo🧯 analyzes the structure of your project and tries to find Mojo🔥 packages.
-It then sets up a `modo.yaml` file and a directory `docs`, containing a minimal Hugo project as well as sub-directories for auxiliary documentation files and extracted [doc-tests](../doctests).
+It then sets up a [`modo.yaml`](../03_config) file and a directory `docs`, containing a minimal Hugo project as well as sub-directories for auxiliary documentation files and extracted [doc-tests](../doctests).
 
 After that, you should be able to instantly generate your API docs with Modo🧯
 and render them with Hugo:
