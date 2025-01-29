@@ -77,6 +77,9 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 	root.Flags().StringVarP(&initArgs.DocsDirectory, "docs", "d", "docs", "Folder for documentation")
 	root.Flags().BoolVarP(&initArgs.NoFolders, "no-folders", "F", false, "Don't create any folders")
 
+	root.Flags().SortFlags = false
+	root.MarkFlagDirname("docs")
+
 	return root, nil
 }
 
