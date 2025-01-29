@@ -1,7 +1,7 @@
 name: Test stdlib nightly
 
 env:
-  STDLIB_VERSION: nightly
+  STDLIB_VERSION: main
 
 on:
   schedule:
