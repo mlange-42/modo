@@ -3,13 +3,11 @@ package format
 import (
 	"fmt"
 	"io"
-	"io/fs"
 	"os"
 	"path"
 	"strings"
 	"text/template"
 
-	"github.com/mlange-42/modo/assets"
 	"github.com/mlange-42/modo/document"
 )
 
@@ -38,12 +36,6 @@ func (f *MdBook) ProcessMarkdown(element any, text string, proc *document.Proces
 
 func (f *MdBook) WriteAuxiliary(p *document.Package, dir string, proc *document.Processor) error {
 	if err := f.writeSummary(p, dir, proc); err != nil {
-		return err
-	}
-	if err := f.writeToml(p, dir, proc); err != nil {
-		return err
-	}
-	if err := f.writeCss(dir, proc); err != nil {
 		return err
 	}
 	return nil
@@ -208,47 +200,5 @@ func (f *MdBook) renderModule(mod *document.Module, linkPath []string, out *stri
 func (f *MdBook) renderModuleMember(mem document.Named, pathStr string, depth int, out io.Writer) error {
 	memPath := f.ToLinkPath(path.Join(pathStr, mem.GetFileName(), ""), "")
 	fmt.Fprintf(out, "%-*s- [`%s`](%s)\n", depth, "", mem.GetName(), memPath)
-	return nil
-}
-
-func (f *MdBook) writeToml(p *document.Package, dir string, proc *document.Processor) error {
-	toml, err := f.renderToml(p, proc.Template)
-	if err != nil {
-		return err
-	}
-	if proc.Config.DryRun {
-		return nil
-	}
-	tomlPath := path.Join(dir, "book.toml")
-	if err := os.WriteFile(tomlPath, []byte(toml), 0644); err != nil {
-		return err
-	}
-	return nil
-}
-
-func (f *MdBook) renderToml(p *document.Package, t *template.Template) (string, error) {
-	b := strings.Builder{}
-	if err := t.ExecuteTemplate(&b, "book.toml", p); err != nil {
-		return "", err
-	}
-	return b.String(), nil
-}
-
-func (f *MdBook) writeCss(dir string, proc *document.Processor) error {
-	cssDir := path.Join(dir, "css")
-	if !proc.Config.DryRun {
-		if err := os.MkdirAll(cssDir, os.ModePerm); err != nil && !os.IsExist(err) {
-			return err
-		}
-	}
-	css, err := fs.ReadFile(assets.CSS, "css/mdbook.css")
-	if err != nil {
-		return err
-	}
-	if !proc.Config.DryRun {
-		if err := os.WriteFile(path.Join(cssDir, "custom.css"), css, 0644); err != nil {
-			return err
-		}
-	}
 	return nil
 }
