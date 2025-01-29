@@ -14,6 +14,7 @@
 ### Documentation
 
 * Restructures `docs/` to serve as full Hugo example that uses all features (#134)
+* Rewrites the user guide for the new workflow with batteries-included `init` (#161)
 
 ### Other
 
