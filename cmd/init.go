@@ -108,7 +108,7 @@ func initProject(initArgs *initArgs) error {
 	file := configFile + ".yaml"
 
 	templ := template.New("all")
-	templ, err = templ.ParseFS(assets.Config, path.Join("config", file))
+	templ, err = templ.ParseFS(assets.Config, "config/**/*")
 	if err != nil {
 		return err
 	}
@@ -116,7 +116,7 @@ func initProject(initArgs *initArgs) error {
 	if err != nil {
 		return err
 	}
-	inDir, outDir, err := createDocs(initArgs, sources)
+	inDir, outDir, err := createDocs(initArgs, templ, sources)
 	if err != nil {
 		return err
 	}
@@ -236,7 +236,7 @@ func findSources(f string) ([]packageSource, string, error) {
 	return sources, warning, nil
 }
 
-func createDocs(args *initArgs, sources []packageSource) (inDir, outDir string, err error) {
+func createDocs(args *initArgs, templ *template.Template, sources []packageSource) (inDir, outDir string, err error) {
 	var gitignore []string
 
 	dir := args.DocsDirectory
@@ -311,7 +311,36 @@ func createDocs(args *initArgs, sources []packageSource) (inDir, outDir string, 
 	if err = writeGitIgnore(dir, gitignore); err != nil {
 		return
 	}
+	if args.Format == "hugo" {
+		if err = createHugoFiles(dir, outDir, templ); err != nil {
+			return
+		}
+	}
 	return
+}
+
+func createHugoFiles(docDir, hugoDir string, templ *template.Template) error {
+	config, err := getGitOrigin(docDir)
+	if err != nil {
+		return err
+	}
+
+	files := [][]string{
+		{"hugo.yaml", "hugo.yaml"},
+		{"hugo.mod", "go.mod"},
+		{"hugo.sum", "go.sum"},
+	}
+
+	for _, f := range files {
+		b := bytes.Buffer{}
+		if err := templ.ExecuteTemplate(&b, f[0], &config); err != nil {
+			return err
+		}
+		if err := os.WriteFile(path.Join(hugoDir, f[1]), b.Bytes(), 0644); err != nil {
+			return err
+		}
+	}
+	return nil
 }
 
 func writeGitIgnore(dir string, gitignore []string) error {
