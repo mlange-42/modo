@@ -1,8 +1,8 @@
 package document
 
 import (
+	"errors"
 	"fmt"
-	"io/fs"
 	"os"
 	"path/filepath"
 	"text/template"
@@ -27,15 +27,11 @@ func warnOrError(strict bool, pattern string, args ...any) error {
 }
 
 func LoadTemplates(f Formatter, additional ...string) (*template.Template, error) {
-	allTemplates, err := findTemplatesFS()
-	if err != nil {
-		return nil, err
-	}
 	templ := template.New("all")
 	templ = templ.Funcs(template.FuncMap{
 		"toLink": f.ToLinkPath,
 	})
-	templ, err = templ.ParseFS(assets.Templates, allTemplates...)
+	templ, err := templ.ParseFS(assets.Templates, "templates/*.*", "templates/**/*.*")
 	if err != nil {
 		return nil, err
 	}
@@ -43,6 +39,13 @@ func LoadTemplates(f Formatter, additional ...string) (*template.Template, error
 	for _, dir := range additional {
 		if dir == "" {
 			continue
+		}
+		exists, isDir, err := fileExists(dir)
+		if err != nil {
+			return nil, err
+		}
+		if !exists || !isDir {
+			return nil, fmt.Errorf("template directory '%s' does not exist", dir)
 		}
 		moreTemplates, err := findTemplates(dir)
 		if err != nil {
@@ -56,22 +59,17 @@ func LoadTemplates(f Formatter, additional ...string) (*template.Template, error
 	return templ, nil
 }
 
-func findTemplatesFS() ([]string, error) {
-	allTemplates := []string{}
-	err := fs.WalkDir(assets.Templates, ".",
-		func(path string, info os.DirEntry, err error) error {
-			if err != nil {
-				return err
-			}
-			if !info.IsDir() {
-				allTemplates = append(allTemplates, path)
-			}
-			return nil
-		})
-	if err != nil {
-		return nil, err
+func fileExists(file string) (exists, isDir bool, err error) {
+	var s os.FileInfo
+	if s, err = os.Stat(file); err == nil {
+		exists = true
+		isDir = s.IsDir()
+		return
+	} else if !errors.Is(err, os.ErrNotExist) {
+		return
 	}
-	return allTemplates, nil
+	err = nil
+	return
 }
 
 func findTemplates(dir string) ([]string, error) {
