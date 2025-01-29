@@ -7,7 +7,7 @@ weight: 30
 
 To keep code examples in docstrings up to date, Modo🧯 can generate test files for `mojo test` from them.
 Doctests are enabled by `tests` in the `modo.yaml` or flag `--tests`. Doctests are enabled by default.
-Further, the default setup also contains a post-processing [script](../08_scripts) that runs `mojo test`.
+Further, the default setup also contains a post-processing [script](../scripts) that runs `mojo test`.
 
 Alternatively to `modo build`, Modo🧯's `test` command can be used to extract tests without building the Markdown docs:
 
@@ -126,4 +126,4 @@ With a directory as input, Modo🧯 does the following:
 - For each Markdown (`.md`) file, extract doctests, and write processed Markdown to the output folder and tests to the tests folder.
 - For any other files, copy them to the output folder.
 
-Note that this feature is not available with the [mdBook](../formats#mdbook) format.
+Note that this feature is not available with the [mdBook](../../formats#mdbook) format.

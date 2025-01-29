@@ -12,7 +12,7 @@ Particularly, `mojo doc` can be executed before processing, and `mojo test` afte
 
 ## Configuration
 
-The `modo.yaml` [config file](../config) provides the following fields for bash scripts:
+The `modo.yaml` [config file](../../config) provides the following fields for bash scripts:
 
 - `pre-run`: runs before `build` as well as `test`.
 - `pre-build`: runs before `build`.
