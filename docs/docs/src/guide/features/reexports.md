@@ -6,7 +6,7 @@ weight: 20
 ---
 
 In Mojo🔥, package-level re-exports (or rather, imports) can be used
-to flatten the structure of a package and shorten import paths for users.
+to flatten the structure of a package and to shorten import paths for users.
 
 Modo🧯 can structure documentation output according to re-exports
 by using `exports: true` in the config, or flag `--exports`.

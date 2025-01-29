@@ -18,7 +18,7 @@ modo test           # only extract doctests
 ## Tested blocks
 
 Code block attributes are used to identify code blocks to be tested.
-Any block that should be included in the tests needs a name:
+Any block that should be included in the tests needs a `doctest` identifier:
 
 ````{class="no-wrap"}
 ```mojo {doctest="mytest"}
@@ -26,11 +26,11 @@ var a = 0
 ```
 ````
 
-Multiple code blocks with the same name are concatenated.
+Multiple code blocks with the same identifier are concatenated.
 
 ## Hidden blocks
 
-Individual blocks can be hidden with an attribute `hide=true`:
+Individual blocks can be hidden with `hide=true`:
 
 ````{class="no-wrap"}
 ```mojo {doctest="mytest" hide=true}
@@ -40,7 +40,7 @@ Individual blocks can be hidden with an attribute `hide=true`:
 
 ## Global blocks
 
-Further, for code examples that can't be put into a test function, attribute `global=true` can be used:
+Further, for code examples that can't be put into a test function, `global=true` can be used:
 
 ````{class="no-wrap"}
 ```mojo {doctest="mytest" global=true}
@@ -51,7 +51,7 @@ struct MyStruct:
 
 ## Full example
 
-Combining multiple code blocks using these attributes allows for flexible tests with hidden setup, teardown and assertions.
+Combining multiple code blocks using these attributes allows for flexible tests with imports, hidden setup, teardown and assertions.
 Here is a full example:
 
 ````mojo {doctest="add" global=true class="no-wrap"}
