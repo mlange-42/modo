@@ -108,7 +108,7 @@ func initProject(initArgs *initArgs) error {
 	file := configFile + ".yaml"
 
 	templ := template.New("all")
-	templ, err = templ.ParseFS(assets.Config, "config/**/*")
+	templ, err = templ.ParseFS(assets.Config, "**/*")
 	if err != nil {
 		return err
 	}
@@ -312,7 +312,7 @@ func createDocs(args *initArgs, templ *template.Template, sources []packageSourc
 		return
 	}
 	if args.Format == "hugo" {
-		if err = createHugoFiles(dir, outDir, templ); err != nil {
+		if err = createHugoFiles(dir, path.Join(dir, docsOutDir), templ); err != nil {
 			return
 		}
 	}
