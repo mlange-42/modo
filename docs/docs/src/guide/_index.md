@@ -12,11 +12,11 @@ This guide explains how to use Modo🧯's features:
 
 - [Installation](01_install) &mdash; Installation options for Modo🧯.
 - [Project setup](02_setup) &mdash; Setting up a Mojo🔥 project for Modo🧯.
-- [Configuration](03_config) &mdash; The `modo.yaml` file and command line flags.
+- [Output formats](03_formats) &mdash; Modo🧯's output formats.
+- [Configuration](04_config) &mdash; The `modo.yaml` file and command line flags.
 
 ----
 
-- [Output formats](formats) &mdash; Modo🧯's output formats.
 - [Cross-references](cross-refs) &mdash; Cross-referencing in the API docs.
 - [Re-exports](re-exports) &mdash; Restructure package according to re-exports.
 - [Doc testing](doctests) &mdash; Extract doc tests from code examples in the API docs.

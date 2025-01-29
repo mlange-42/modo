@@ -2,7 +2,7 @@
 title: Configuration
 type: docs
 summary: Configuration via `modo.yaml` and CLI flags.
-weight: 30
+weight: 40
 ---
 Modo🧯 can run based on a [config file](#config-file) or [standalone](#standalone).
 
@@ -15,14 +15,14 @@ The content of the generated file is shown [at the bottom](#config-file-referenc
 When `modo build` or `modo test` are executed in a folder containing a `modo.yaml`,
 the file is used for configuration and no command like flags are required:
 
-```{class="no-wrap"}
+```shell {class="no-wrap"}
 modo build
 ```
 
 However, command line flags can still be used to overwrite the values that were read from the file.
 As an example, this is how to turn off warnings for missing docstrings:
 
-```{class="no-wrap"}
+```shell {class="no-wrap"}
 modo build --report-missing=false
 ```
 
@@ -36,7 +36,7 @@ If there is no such file in the current directory,
 an empty configuration is used.
 Command line flags must be used for any configuration:
 
-```{class="no-wrap"}
+```shell {class="no-wrap"}
 modo build -i api.json -o docs/
 ```
 

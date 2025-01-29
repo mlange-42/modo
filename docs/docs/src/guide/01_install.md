@@ -12,7 +12,7 @@ Modo🧯 offers different installation options.
 Modo🧯 is available on PyPI as [`pymodo`](https://pypi.org/project/pymodo/).
 Install it with pip:
 
-```{class="no-wrap"}
+```shell {class="no-wrap"}
 pip install pymodo
 ```
 
@@ -23,7 +23,7 @@ pip install pymodo
 
 With [Go](https://go.dev) installed, you can install Modo🧯 like this:
 
-```{class="no-wrap"}
+```shell {class="no-wrap"}
 go install github.com/mlange-42/modo@latest
 ```
 

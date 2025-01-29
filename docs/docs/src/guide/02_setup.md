@@ -14,7 +14,7 @@ As an example, we use [Hugo](https://gohugo.io) as SSG.
 For all supported options, see chapter [formats](../formats).
 Navigate into your Mojo🔥 project's root folder and run:
 
-``` {class="no-wrap"}
+```shell {class="no-wrap"}
 modo init hugo
 ```
 
@@ -24,9 +24,9 @@ It then sets up a [`modo.yaml`](../03_config) file and a directory `docs`, conta
 After that, you should be able to instantly generate your API docs with Modo🧯
 and render them with Hugo:
 
-``` {class="no-wrap"}
+```shell {class="no-wrap"}
 modo build
-hugo serve -s docs/site
+hugo serve -s docs/site/
 ```
 
 If your project has a GitHub repository, Modo🧯 will set up the project so
@@ -36,10 +36,10 @@ that it can be deployed to GitHub Pages instantly.
 
 Similarly, with [mdBook](https://github.com/rust-lang/mdBook) as SSG, these three commands should be sufficient to view your API docs in a web browser:
 
-``` {class="no-wrap"}
+```shell {class="no-wrap"}
 modo init mdbook
 modo build
-mdbook serve docs
+mdbook serve docs/
 ```
 
 For more details on the generated directory structure and files, see chapter [formats](../formats).
