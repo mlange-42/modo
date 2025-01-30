@@ -72,7 +72,7 @@ Finally, serve or build the site with the target SSG (here Hugo):
 hugo serve -s docs/site/
 ```
 
-See chapter [Project setup](https://mlange-42.github.io/modo/guide/setup/) in the user guide for more details and other SSGs.
+See [Project setup](https://mlange-42.github.io/modo/guide/setup/) for details and other supported SSGs.
 
 ## Packages using Modo🧯
 
