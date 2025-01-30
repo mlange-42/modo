@@ -103,6 +103,7 @@ Messages/request @Modular:
 - Specify cross-ref syntax
 - Include package re-exports into JSON
 - Inconsistency: `out` arg vs. return docs?
+- Bug: currently no signature for structs in JSON
 - Allow lists in `Raises:`
 
 ## Contribute
