@@ -46,6 +46,11 @@ With [Go](https://go.dev) installed, you can install Modo🧯 like this:
 go install github.com/mlange-42/modo@latest
 ```
 
+> With Go, you can also install the latest **development version**:
+> ```
+> go install github.com/mlange-42/modo@main
+> ```
+
 ### Precompiled binaries
 
 Pre-compiled binaries for manual installation are available in the
