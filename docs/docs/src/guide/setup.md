@@ -48,58 +48,52 @@ For more details on the generated directory structure and files, see chapter [fo
 
 ## Detected packages
 
-Below are the possible project layouts the `init` command can work with.
+These are the possible project layouts the `init` command can work with:
 
-Single package only:
-
-{{<html>}}<div style="display: flex;"><div style="flex: 50%;">{{</html>}}
+{{<html>}}<div style="display: flex;"><div style="flex: 25%;">{{</html>}}
 
 {{< filetree/container >}}
   {{< filetree/folder name="root" >}}
-    {{< filetree/folder name="src" >}}
+    {{< filetree/folder name="src" state="closed" >}}
       {{< filetree/file name="`__init__.mojo`" >}}
     {{< /filetree/folder >}}
   {{< /filetree/folder >}}
 {{< /filetree/container >}}
 
-{{<html>}}</div><div style="flex: 50%;">{{</html>}}
+{{<html>}}</div><div style="flex: 25%;">{{</html>}}
 
 {{< filetree/container >}}
   {{< filetree/folder name="root" >}}
     {{< filetree/folder name="pkg_a" >}}
-      {{< filetree/folder name="src" >}}
+      {{< filetree/folder name="src" state="closed" >}}
         {{< filetree/file name="`__init__.mojo`" >}}
       {{< /filetree/folder >}}
     {{< /filetree/folder >}}
   {{< /filetree/folder >}}
 {{< /filetree/container >}}
 
-{{<html>}}</div></div>{{</html>}}
-
-One or more packages:
-
-{{<html>}}<div style="display: flex;"><div style="flex: 50%;">{{</html>}}
+{{<html>}}</div><div style="flex: 25%;">{{</html>}}
 
 {{< filetree/container >}}
   {{< filetree/folder name="root" >}}
-    {{< filetree/folder name="pkg_a" >}}
+    {{< filetree/folder name="pkg_a" state="closed" >}}
       {{< filetree/file name="`__init__.mojo`" >}}
     {{< /filetree/folder >}}
-    {{< filetree/folder name="pkg_b" >}}
+    {{< filetree/folder name="pkg_b" state="closed" >}}
       {{< filetree/file name="`__init__.mojo`" >}}
     {{< /filetree/folder >}}
   {{< /filetree/folder >}}
 {{< /filetree/container >}}
 
-{{<html>}}</div><div style="flex: 50%;">{{</html>}}
+{{<html>}}</div><div style="flex: 25%;">{{</html>}}
 
 {{< filetree/container >}}
   {{< filetree/folder name="root" >}}
     {{< filetree/folder name="src" >}}
-      {{< filetree/folder name="pkg_a" >}}
+      {{< filetree/folder name="pkg_a" state="closed" >}}
         {{< filetree/file name="`__init__.mojo`" >}}
       {{< /filetree/folder >}}
-      {{< filetree/folder name="pkg_b" >}}
+      {{< filetree/folder name="pkg_b" state="closed" >}}
         {{< filetree/file name="`__init__.mojo`" >}}
       {{< /filetree/folder >}}
     {{< /filetree/folder >}}
