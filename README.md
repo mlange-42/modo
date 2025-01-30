@@ -47,9 +47,7 @@ go install github.com/mlange-42/modo@latest
 ```
 
 > With Go, you can also install the latest **development version**:
-> ```
-> go install github.com/mlange-42/modo@main
-> ```
+> `go install github.com/mlange-42/modo@main`
 
 ### Precompiled binaries
 
