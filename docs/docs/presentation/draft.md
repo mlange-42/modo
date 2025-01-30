@@ -87,6 +87,13 @@ But there is more...
 - Maybe show Modo API example for features?
 - Or put screenshots into feature sections? Probably better.
 
+## How to get Modo
+
+- `pip install pymodo`
+- `go install github.com/mlange-42/modo`
+- `magic instal ...` (not yet)
+- Download binaries from releases
+
 ## Performance
 
 "fast enough", no optimizations done so far
@@ -97,9 +104,9 @@ But there is more...
 ## Outlook
 
 - Feature-compete regarding initial plan
-- A few potential near-term features in the issues
-- Code needs modularization (now 5 recursions into doc tree)
-- Open for contributions
+- A few potential near-term features: commands `clean` and `watch`
+- Set up for Community Packages (no patience for this ATM)
+- Open for contributions!
 
 ## @modular
 
@@ -115,4 +122,4 @@ Messages/request @Modular:
 
 - Feedback on tool and docs
 - "Playtest"
-- Set up for Community Packages (no patience for this ATM)
+- Make issues & PRs
