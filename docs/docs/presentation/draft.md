@@ -51,6 +51,7 @@ But there is more...
 ### Cross-refs
 
 - Very simple syntax, equivalent to Python/Mojo package imports
+  - Show examples
 - Transformed to Markdown links or SSG-specific refs
 - No need for changes when re-exports change
 
@@ -59,23 +60,27 @@ But there is more...
 - Structure the docs as the user sees your package
 - Must be represented in docs, by `Exports:` section
 - Again, very simple syntax, equivalent to Python/Mojo package imports
+  - Show example
 
 ### Doc-tests
 
 - Extract unit test files from doc comments
-- Highly flexible with hidden end global blocks
-- Uses standard block attributes alias "info string"
+- Highly flexible with hidden and global blocks
+- Uses standard block attributes, alias "info string"
+  - Show example
 
 ### Scripts
 
 - Pre- and post-processing can be specified in config file
 - All (incl. external) steps in a single command
+  - Show default scripts
 
 ### Templates
 
 - Heavily based on Go's templating
 - Highly customizable via template overwrites
 - Same syntax (and Go library) as Hugo
+  - Show example (original) template? Just to show how simple they are...
 
 ### 2nd demo?
 
