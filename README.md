@@ -54,28 +54,25 @@ for Linux, Windows and MacOS.
 
 ## Usage
 
-In your Mojo🔥 project, set up Modo🧯:
+To initialize an existing Mojo🔥 project for Modo🧯 and an SSG like [Hugo](https://gohugo.io), run command `init` once:
 
 ```
-modo init
+modo init hugo
 ```
 
-This sets up the project with default settings and paths.
-See the generated `modo.yaml` file to modify them.
-
-Next, run `mojo doc` to extract the API docs in JSON format:
-
-```
-mojo doc src/ -o api.json
-```
-
-Finally, build the Markdown documentation:
+This sets up everything to be able to build Markdown files for the target SSG with command `build`:
 
 ```
 modo build
 ```
 
-See the [User guide](https://mlange-42.github.io/modo/) for more information.
+Finally, serve or build the site with the target SSG (here Hugo):
+
+```
+hugo serve -s docs/site/
+```
+
+See chapter [Project setup](https://mlange-42.github.io/modo/guide/setup/) in the user guide for more details and other SSGs.
 
 ## Packages using Modo🧯
 
