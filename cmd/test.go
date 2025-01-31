@@ -60,7 +60,7 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 	root.MarkFlagDirname("tests")
 	root.MarkFlagDirname("templates")
 
-	err := v.BindPFlags(root.Flags())
+	err := bindFlags(v, root.Flags())
 	if err != nil {
 		return nil, err
 	}

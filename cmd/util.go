@@ -14,6 +14,7 @@ import (
 
 	"github.com/mlange-42/modo/document"
 	"github.com/rjeczalik/notify"
+	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
 
@@ -220,6 +221,18 @@ func GetCwdName() (string, error) {
 
 func commandError(commandType string, err error) error {
 	return fmt.Errorf("in script %s: %s\nTo skip pre- and post-processing scripts, use flag '--bare'", commandType, err)
+}
+
+// bindFlags binds flags to Viper, filtering out the `--watch` flag.
+func bindFlags(v *viper.Viper, flags *pflag.FlagSet) error {
+	newFlags := pflag.NewFlagSet("root", pflag.ExitOnError)
+	flags.VisitAll(func(f *pflag.Flag) {
+		if f.Name == "watch" {
+			return
+		}
+		newFlags.AddFlag(f)
+	})
+	return v.BindPFlags(newFlags)
 }
 
 func watchAndRun(args *document.Config, command func(*document.Config) error) error {

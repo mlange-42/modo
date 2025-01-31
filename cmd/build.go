@@ -6,7 +6,6 @@ import (
 	"github.com/mlange-42/modo/document"
 	"github.com/mlange-42/modo/format"
 	"github.com/spf13/cobra"
-	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
 
@@ -66,14 +65,7 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 	root.MarkFlagDirname("tests")
 	root.MarkFlagDirname("templates")
 
-	flags := pflag.NewFlagSet("root", pflag.ExitOnError)
-	root.Flags().VisitAll(func(f *pflag.Flag) {
-		if f.Name == "watch" {
-			return
-		}
-		flags.AddFlag(f)
-	})
-	err := v.BindPFlags(flags)
+	err := bindFlags(v, root.Flags())
 	if err != nil {
 		return nil, err
 	}
