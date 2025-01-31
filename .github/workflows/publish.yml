@@ -59,6 +59,14 @@ jobs:
         run: |
           hugo -s docs/docs/site
 
+      - name: Install reveal-md
+        run: |
+          npm install --global reveal-md
+      - name: Build slides
+        run: |
+          cd docs/docs/presentation
+          reveal-md slides.md --static ../site/public/slides  --static-dirs=.nojekyll,flowchart.svg
+
       - name: Archive Markdown artifacts
         uses: actions/upload-artifact@v4
         with:
