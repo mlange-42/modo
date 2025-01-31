@@ -119,9 +119,9 @@ Want simple, low-tech, generic solution
 Using  `mojo doc`  JSON...
 
 - creates Markdown files suitable for SSGs
-<!-- .element: class="fragment" data-fragment-index="1" -->
+<!-- .element: class="fragment" data-fragment-index="4" -->
 - converts code examples to unit tests
-<!-- .element: class="fragment" data-fragment-index="2" -->
+<!-- .element: class="fragment" data-fragment-index="7" -->
 
 <br />
 <br />
@@ -130,6 +130,13 @@ Using  `mojo doc`  JSON...
     <img src="flowchart.svg" />
 </object>
 
+<span class="fragment" data-fragment-index="3" data-svg-classes="show-modo"></span>
+<span class="fragment" data-fragment-index="4" data-svg-classes="show-markdown"></span>
+<span class="fragment" data-fragment-index="5" data-svg-classes="show-ssg"></span>
+<span class="fragment" data-fragment-index="6" data-svg-classes="show-html"></span>
+<span class="fragment" data-fragment-index="7" data-svg-classes="show-tests"></span>
+<span class="fragment" data-fragment-index="8" data-svg-classes="show-mojo-test"></span>
+<span class="fragment" data-fragment-index="100" data-svg-classes="show-cluster"></span>
 
 ---
 
