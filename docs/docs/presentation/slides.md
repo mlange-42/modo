@@ -43,6 +43,9 @@ p code, li code {
 .reveal .code-wrapper code .nowrap {
   text-wrap: nowrap;
 }
+.reveal .fragment {
+	transition: all 1s ease;
+}
 code.mermaid {
   text-align: center;
 }
@@ -255,9 +258,21 @@ Re-structure docs the way users see your package
 #### <i class="fa-solid fa-arrow-right"></i>
 
 </div><!-- .element: class="fragment" data-fragment-index="2" -->
-<div class="col" style="flex:2.0">
+<div class="col" style="flex:2.0;">
+
+<div style="display:flex; flex-direction: column; align-items: center; justify-content: center; position: relative;">
 
 ```python
+"""
+Package mypkg...
+"""
+from .mod import Struct
+from .subpkg.submod import Trait
+```
+
+<div style="position:absolute; width: 100%; z-index: 10;">
+
+```python [4-6]
 """
 Package mypkg...
 
@@ -269,7 +284,11 @@ from .mod import Struct
 from .subpkg.submod import Trait
 ```
 
+</div><!-- .element: class="fragment" data-fragment-index="4" -->
+
 </div><!-- .element: class="fragment" data-fragment-index="2" -->
+
+</div>
 <div class="col" style="flex:0.2">
 
 #### <i class="fa-solid fa-arrow-right"></i>
