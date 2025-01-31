@@ -123,7 +123,8 @@ From  `mojo doc`  JSON...
 <br />
 <br />
 
-<object data="flowchart.svg" type="image/svg+xml">
+<object type="image/svg+xml" data="flowchart.svg">
+    <img src="flowchart.svg" />
 </object>
 
 ---
