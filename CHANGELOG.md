@@ -10,6 +10,7 @@
 * Command `init` has flag `--no-folders` to skip creation of directories (#143)
 * Command `init` writes a `.gitignore` file to the docs folder (#145)
 * With format `hugo`, set up site with `hugo.yaml` and `go.mod` (#155)
+* Adds flag `--watch` to re-build on changes (#174)
 
 ### Documentation
 
