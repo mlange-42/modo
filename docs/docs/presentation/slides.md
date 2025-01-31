@@ -154,9 +154,13 @@ Using  `mojo doc`  JSON...
 
 ### Output formats
 
+Several fully supported rendering target
+
 <br />
 
 Plain Markdown<!-- .element: class="fragment" data-fragment-index="1" -->
+
+<br />
 
 <div class="columns" style="align-items: center; justify-content: center;">
 <div class="col" style="margin-right: 2rem; flex: 1;">
@@ -182,7 +186,6 @@ Your wishes?<!-- .element: class="fragment" data-fragment-index="4" -->
 ### Cross-references
 
 Very simple syntax, resembling Mojo imports
-<!-- .element: class="fragment" data-fragment-index="1" -->
 
 <div><div class="columns"><div class="col">
 
@@ -230,6 +233,10 @@ Ref with [custom text]().
 ----
 
 ### Re-exports
+
+Re-structure docs the way users see your package
+
+<br />
 
 <div class="columns" style="align-items: center; justify-content: center;"><div class="col">
 
@@ -285,6 +292,8 @@ Modo🧯
 
 ### Doc-tests
 
+Convert code examples into unit tests
+
 <div class="columns" style="align-items: center; justify-content: center;"><div class="col">
 
 ````python
@@ -309,7 +318,6 @@ if a != 3:
 
 </div><!-- .element: class="fragment" data-fragment-index="2" -->
 <div class="col">
-
 
 Doc-test example.
 
@@ -364,7 +372,7 @@ post-test:
 
 ### Templates
 
-Highly customizable Markdown output through templates
+Customize Markdown output via templates
 
 ```template
 Mojo struct
@@ -437,7 +445,7 @@ Feedback on tool and docs
 "Playtest"
 <!-- .element: class="fragment" -->
 
-Make issues & PRs
+Create issues & PRs
 <!-- .element: class="fragment" -->
 
 ---
