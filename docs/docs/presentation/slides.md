@@ -152,6 +152,33 @@ Using  `mojo doc`  JSON...
 
 ----
 
+### Output formats
+
+<br />
+
+Plain Markdown<!-- .element: class="fragment" data-fragment-index="1" -->
+
+<div class="columns" style="align-items: center; justify-content: center;">
+<div class="col" style="margin-right: 2rem; flex: 1;">
+
+[Hugo](https://gohugo.io)  
+popular open-source SSG
+
+</div><!-- .element: class="fragment" data-fragment-index="2" -->
+<div class="col" style="margin-left: 2rem flex: 1;">
+
+[mdBook](https://github.com/rust-lang/mdBook)  
+known from the <i class="fa-brands fa-rust"></i>Rust book
+
+</div><!-- .element: class="fragment" data-fragment-index="3" -->
+</div>
+
+<br />
+
+Your wishes?<!-- .element: class="fragment" data-fragment-index="4" -->
+
+----
+
 ### Cross-references
 
 Very simple syntax, resembling Mojo imports
