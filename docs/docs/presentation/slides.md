@@ -30,6 +30,11 @@ p code, li code {
   background: #303030;
   border-radius: 0.2em;
 }
+.reveal .code-wrapper {
+  width: 100%;
+  margin-left: 0;
+  margin-right: 0;
+}
 .reveal .code-wrapper code:not(.mermaid) {
 	white-space: preserve;
   font-size: 120%;
@@ -167,8 +172,10 @@ Very simple syntax, resembling Mojo imports
 
 <div><div class="columns"><div class="col">
 
-```md
+```python
+"""
 Relative ref to [.Struct.method] in the current module.
+"""
 ```
 
 </div><div class="col">
@@ -179,8 +186,10 @@ Relative ref to [Struct.method]() in the current module.
 <!-- .element: class="fragment" data-fragment-index="2" -->
 <div><div class="columns"><div class="col">
 
-```md
+```python
+"""
 Absolute ref to module [pkg.mod].
+"""
 ```
 
 </div><div class="col">
@@ -191,8 +200,10 @@ Absolute ref to module [mod]().
 <!-- .element: class="fragment" data-fragment-index="3" -->
 <div><div class="columns"><div class="col">
 
-```md
+```python
+"""
 Ref with [pkg.mod custom text].
+"""
 ```
 
 </div><div class="col">
@@ -259,6 +270,52 @@ Modo🧯
 ----
 
 ### Doc-tests
+
+<div class="columns" style="align-items: center; justify-content: center;"><div class="col">
+
+````python
+"""
+Doc-test example.
+
+```mojo {doctest="sum"}
+var a = 1 + 2
+```
+
+```mojo {doctest="sum" hide=true}
+if a != 3:
+    raise Error("failed")
+```
+"""
+````
+
+</div><!-- .element: class="fragment" data-fragment-index="1" -->
+<div class="col" style="flex:0.4;">
+
+#### <i class="fa-solid fa-arrow-right"></i>
+
+</div><!-- .element: class="fragment" data-fragment-index="2" -->
+<div class="col">
+
+
+Doc-test example.
+
+```python
+var a = 1 + 2
+```
+
+<hr />
+
+`..._test.mojo`
+
+```python
+fn test_add() raises:
+    var a = 1 + 2
+    if a != 3:
+        raise Error("failed")
+```
+
+</div><!-- .element: class="fragment" data-fragment-index="2" -->
+</div>
 
 ----
 
