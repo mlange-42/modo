@@ -126,8 +126,8 @@ Using  `mojo doc`  JSON...
 <br />
 <br />
 
-<object type="image/svg+xml" data="flowchart.svg">
-    <img src="flowchart.svg" />
+<object type="image/svg+xml" data="img/flowchart.svg">
+    <img src="img/flowchart.svg" />
 </object>
 
 <span class="fragment" data-fragment-index="3" data-svg-classes="show-modo"></span>
@@ -149,6 +149,33 @@ Using  `mojo doc`  JSON...
 ## Features
 
 ### <big>&darr;</big>
+
+----
+
+### Output formats
+
+<br />
+
+Plain Markdown<!-- .element: class="fragment" data-fragment-index="1" -->
+
+<div class="columns" style="align-items: center; justify-content: center;">
+<div class="col" style="margin-right: 2rem; flex: 1;">
+
+[Hugo](https://gohugo.io)  
+popular open-source SSG
+
+</div><!-- .element: class="fragment" data-fragment-index="2" -->
+<div class="col" style="margin-left: 2rem flex: 1;">
+
+[mdBook](https://github.com/rust-lang/mdBook)  
+known from the <i class="fa-brands fa-rust"></i>Rust book
+
+</div><!-- .element: class="fragment" data-fragment-index="3" -->
+</div>
+
+<br />
+
+Your wishes?<!-- .element: class="fragment" data-fragment-index="4" -->
 
 ----
 

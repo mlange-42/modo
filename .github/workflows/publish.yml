@@ -65,7 +65,7 @@ jobs:
       - name: Build slides
         run: |
           cd docs/docs/presentation
-          reveal-md slides.md --static ../site/public/slides  --static-dirs=.nojekyll,flowchart.svg
+          reveal-md slides.md --static ../site/public/slides  --static-dirs=.nojekyll,img
 
       - name: Archive Markdown artifacts
         uses: actions/upload-artifact@v4
