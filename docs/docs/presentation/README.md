@@ -3,5 +3,5 @@
 Local preview:
 
 ```
-reveal-md slides.md -w --% --static-dirs=.nojekyll,flowchart.svg
+reveal-md slides.md -w --% --static-dirs=.nojekyll,img
 ```

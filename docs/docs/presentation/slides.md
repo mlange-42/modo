@@ -126,8 +126,8 @@ Using  `mojo doc`  JSON...
 <br />
 <br />
 
-<object type="image/svg+xml" data="flowchart.svg">
-    <img src="flowchart.svg" />
+<object type="image/svg+xml" data="img/flowchart.svg">
+    <img src="img/flowchart.svg" />
 </object>
 
 <span class="fragment" data-fragment-index="3" data-svg-classes="show-modo"></span>
