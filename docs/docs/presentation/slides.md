@@ -11,12 +11,12 @@ revealOptions:
   transition: 'convex'
   controls: true
   progress: false
-  history: true,
+  history: true
   center: true
   slide-number: false
 mermaid:
-  theme: dark
   look: handDrawn
+  theme: dark
   themeVariables:
     fontSize: 24px
 ---
@@ -30,6 +30,16 @@ p code, li code {
   background: #303030;
   border-radius: 0.2em;
 }
+.reveal .code-wrapper code:not(.mermaid) {
+	white-space: preserve;
+  font-size: 120%;
+  background: #303030;
+  border-radius: 0.33em;
+}
+.reveal .code-wrapper code .nowrap {
+  text-wrap: nowrap;
+}
+
 .reveal .slides section .fragment.step-fade-in-then-out {
 	opacity: 0;
 	display: none;
@@ -37,6 +47,14 @@ p code, li code {
 .reveal .slides section .fragment.step-fade-in-then-out.current-fragment {
 	opacity: 1;
 	display: inline;
+}
+.columns {
+  display: flex;
+}
+.col {
+  flex: 1;
+  text-align: left;
+  font-size: 90%;
 }
 </style>
 
@@ -94,7 +112,7 @@ Want simple, low-tech, generic solution
 
 ----
 
-From  `mojo doc`  JSON:
+From  `mojo doc`  JSON...
 - creates Markdown files suitable for SSGs
 <!-- .element: class="fragment" data-fragment-index="1" -->
 - converts code examples to unit tests
@@ -113,6 +131,8 @@ graph LR
   Tests[(Tests)]
   mojo_test[mojo test]
   HTML[(HTML)]
+  SSG["`SSG
+(e.g. Hugo)`"]
 
   sources-->mojo_doc
   subgraph cmd [modo build]
@@ -127,7 +147,6 @@ graph LR
   end
   SSG-->HTML
 ```
-<!-- .element: class="fragment" data-fragment-index="3" -->
 
 ---
 
@@ -141,23 +160,113 @@ graph LR
 
 ----
 
-#### Cross-references
+### Cross-references
+
+Very simple syntax, resembling Mojo imports
+<!-- .element: class="fragment" data-fragment-index="1" -->
+
+<div><div class="columns"><div class="col">
+
+```md
+Relative ref to [.Struct.method] in the current module.
+```
+
+</div><div class="col">
+
+Relative ref to [Struct.method]() in the current module.
+
+</div></div></div>
+<!-- .element: class="fragment" data-fragment-index="2" -->
+<div><div class="columns"><div class="col">
+
+```md
+Absolute ref to module [pkg.mod].
+```
+
+</div><div class="col">
+
+Absolute ref to module [mod]().
+
+</div></div></div>
+<!-- .element: class="fragment" data-fragment-index="3" -->
+<div><div class="columns"><div class="col">
+
+```md
+Ref with [pkg.mod custom text].
+```
+
+</div><div class="col">
+
+Ref with [custom text]().
+
+</div></div></div>
+<!-- .element: class="fragment" data-fragment-index="4" -->
 
 ----
 
-#### Re-exports
+### Re-exports
+
+<div class="columns" style="align-items: center; justify-content: center;"><div class="col">
+
+<pre style="width:100%; font-size: 0.65em;">
+- pkg
+  - mod
+    - Struct
+  - subpkg
+    - submod
+      - Trait
+</pre>
+
+</div><!-- .element: class="fragment" data-fragment-index="1" -->
+<div class="col" style="flex:0.2;">
+
+#### <i class="fa-solid fa-arrow-right"></i>
+
+</div><!-- .element: class="fragment" data-fragment-index="2" -->
+<div class="col" style="flex:2.0">
+
+```python
+"""
+Package mypkg...
+
+Exports:
+ - mod.Struct
+ - subpkg.submod.Trait
+"""
+from .mod import Struct
+from .subpkg.submod import Trait
+```
+
+</div><!-- .element: class="fragment" data-fragment-index="2" -->
+<div class="col" style="flex:0.2">
+
+#### <i class="fa-solid fa-arrow-right"></i>
+
+</div><!-- .element: class="fragment" data-fragment-index="3" -->
+<div class="col">
+
+Modo🧯
+
+<pre style="width:100%; font-size: 0.65em;">
+- pkg
+  - Struct
+  - Trait
+</pre>
+
+</div><!-- .element: class="fragment" data-fragment-index="3" -->
+</div>
 
 ----
 
-#### Doc-tests
+### Doc-tests
 
 ----
 
-#### Scripts
+### Scripts
 
 ----
 
-#### Templates
+### Templates
 
 ---
 
