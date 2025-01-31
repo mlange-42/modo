@@ -2,15 +2,20 @@ package cmd
 
 import (
 	"fmt"
+	"log"
+	"time"
 
 	"github.com/mlange-42/modo/document"
 	"github.com/mlange-42/modo/format"
+	"github.com/rjeczalik/notify"
 	"github.com/spf13/cobra"
+	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
 )
 
 func buildCommand() (*cobra.Command, error) {
 	v := viper.New()
+	var watch bool
 
 	root := &cobra.Command{
 		Use:   "build [PATH]",
@@ -37,7 +42,10 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 			if err != nil {
 				return err
 			}
-			return runBuild(cliArgs)
+			if err := runBuild(cliArgs); err != nil {
+				return err
+			}
+			return watchAndBuild(cliArgs)
 		},
 	}
 
@@ -52,6 +60,7 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 	root.Flags().BoolP("strict", "S", false, "Strict mode. Errors instead of warnings")
 	root.Flags().BoolP("dry-run", "D", false, "Dry-run without any file output")
 	root.Flags().BoolP("bare", "B", false, "Don't run ore- and post-commands")
+	root.Flags().BoolVarP(&watch, "watch", "W", false, "Watch for changes to sources and documentation files")
 	root.Flags().StringSliceP("templates", "T", []string{}, "Optional directories with templates for (partial) overwrite.\nSee folder assets/templates in the repository")
 
 	root.Flags().SortFlags = false
@@ -60,7 +69,14 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 	root.MarkFlagDirname("tests")
 	root.MarkFlagDirname("templates")
 
-	err := v.BindPFlags(root.Flags())
+	flags := pflag.NewFlagSet("root", pflag.ExitOnError)
+	root.Flags().VisitAll(func(f *pflag.Flag) {
+		if f.Name == "watch" {
+			return
+		}
+		flags.AddFlag(f)
+	})
+	err := v.BindPFlags(flags)
 	if err != nil {
 		return nil, err
 	}
@@ -140,6 +156,44 @@ func runPostBuildCommands(cfg *document.Config) error {
 	}
 	if err := runCommands(cfg.PostRun); err != nil {
 		return commandError("post-run", err)
+	}
+	return nil
+}
+
+func watchAndBuild(_ *document.Config) error {
+	c := make(chan notify.EventInfo, 32)
+	collected := make(chan []notify.EventInfo, 1)
+
+	if err := notify.Watch("../...", c, notify.All); err != nil {
+		log.Fatal(err)
+	}
+	defer notify.Stop(c)
+
+	fmt.Println("Watching for changes...")
+	ticker := time.NewTicker(5 * time.Second)
+	defer ticker.Stop()
+
+	go func() {
+		var batch []notify.EventInfo
+		for {
+			select {
+			case msg := <-c:
+				batch = append(batch, msg)
+			case <-ticker.C:
+				if len(batch) > 0 {
+					collected <- batch
+					batch = nil // Reset the batch
+				} else {
+					collected <- nil
+				}
+			}
+		}
+	}()
+
+	for batch := range collected {
+		if batch != nil {
+			fmt.Println("Handling batch of messages:", batch)
+		}
 	}
 	return nil
 }
