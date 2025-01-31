@@ -4,13 +4,16 @@ import (
 	"errors"
 	"fmt"
 	"io"
+	"log"
 	"os"
 	"os/exec"
 	"path"
 	"path/filepath"
 	"strings"
+	"time"
 
 	"github.com/mlange-42/modo/document"
+	"github.com/rjeczalik/notify"
 	"github.com/spf13/viper"
 )
 
@@ -217,4 +220,83 @@ func GetCwdName() (string, error) {
 
 func commandError(commandType string, err error) error {
 	return fmt.Errorf("in script %s: %s\nTo skip pre- and post-processing scripts, use flag '--bare'", commandType, err)
+}
+
+func watchAndRun(args *document.Config, command func(*document.Config) error) error {
+	c := make(chan notify.EventInfo, 32)
+	collected := make(chan []notify.EventInfo, 1)
+
+	toWatch, err := getWatchPaths(args)
+	if err != nil {
+		return err
+	}
+	for _, w := range toWatch {
+		if err := notify.Watch(w, c, notify.All); err != nil {
+			log.Fatal(err)
+		}
+	}
+	defer notify.Stop(c)
+
+	fmt.Printf("Watching for changes: %s\n", strings.Join(toWatch, ", "))
+	ticker := time.NewTicker(1 * time.Second)
+	defer ticker.Stop()
+
+	go func() {
+		var events []notify.EventInfo
+		for {
+			select {
+			case evt := <-c:
+				events = append(events, evt)
+			case <-ticker.C:
+				if len(events) > 0 {
+					collected <- events
+					events = nil
+				} else {
+					collected <- nil
+				}
+			}
+		}
+	}()
+
+	for events := range collected {
+		if events == nil {
+			continue
+		}
+		trigger := false
+		for _, e := range events {
+			for _, ext := range watchExtensions {
+				if strings.HasSuffix(e.Path(), ext) {
+					trigger = true
+					break
+				}
+			}
+		}
+		if trigger {
+			if err := command(args); err != nil {
+				return err
+			}
+			fmt.Printf("Watching for changes: %s\n", strings.Join(toWatch, ", "))
+		}
+	}
+	return nil
+}
+
+func getWatchPaths(args *document.Config) ([]string, error) {
+	toWatch := append([]string{}, args.Sources...)
+	toWatch = append(toWatch, args.InputFiles...)
+	for i, w := range toWatch {
+		p := w
+		exists, isDir, err := fileExists(p)
+		if err != nil {
+			return nil, err
+		}
+		if !exists {
+			return nil, fmt.Errorf("file or directory '%s' to watch does not exist", p)
+		}
+		if isDir {
+			p = path.Join(w, "...")
+		}
+		toWatch[i] = p
+	}
+	return toWatch, nil
 }

@@ -2,14 +2,9 @@ package cmd
 
 import (
 	"fmt"
-	"log"
-	"path"
-	"strings"
-	"time"
 
 	"github.com/mlange-42/modo/document"
 	"github.com/mlange-42/modo/format"
-	"github.com/rjeczalik/notify"
 	"github.com/spf13/cobra"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -47,7 +42,7 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 			if err := runBuild(cliArgs); err != nil {
 				return err
 			}
-			return watchAndBuild(cliArgs)
+			return watchAndRun(cliArgs, runBuild)
 		},
 	}
 
@@ -62,7 +57,7 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 	root.Flags().BoolP("strict", "S", false, "Strict mode. Errors instead of warnings")
 	root.Flags().BoolP("dry-run", "D", false, "Dry-run without any file output")
 	root.Flags().BoolP("bare", "B", false, "Don't run ore- and post-commands")
-	root.Flags().BoolVarP(&watch, "watch", "w", false, "Watch for changes to sources and documentation files")
+	root.Flags().BoolVarP(&watch, "watch", "W", false, "Watch for changes to sources and documentation files")
 	root.Flags().StringSliceP("templates", "T", []string{}, "Optional directories with templates for (partial) overwrite.\nSee folder assets/templates in the repository")
 
 	root.Flags().SortFlags = false
@@ -160,83 +155,4 @@ func runPostBuildCommands(cfg *document.Config) error {
 		return commandError("post-run", err)
 	}
 	return nil
-}
-
-func watchAndBuild(args *document.Config) error {
-	c := make(chan notify.EventInfo, 32)
-	collected := make(chan []notify.EventInfo, 1)
-
-	toWatch, err := getWatchPaths(args)
-	if err != nil {
-		return err
-	}
-	for _, w := range toWatch {
-		if err := notify.Watch(w, c, notify.All); err != nil {
-			log.Fatal(err)
-		}
-	}
-	defer notify.Stop(c)
-
-	fmt.Printf("Watching for changes: %s\n", strings.Join(toWatch, ", "))
-	ticker := time.NewTicker(1 * time.Second)
-	defer ticker.Stop()
-
-	go func() {
-		var events []notify.EventInfo
-		for {
-			select {
-			case evt := <-c:
-				events = append(events, evt)
-			case <-ticker.C:
-				if len(events) > 0 {
-					collected <- events
-					events = nil
-				} else {
-					collected <- nil
-				}
-			}
-		}
-	}()
-
-	for events := range collected {
-		if events == nil {
-			continue
-		}
-		trigger := false
-		for _, e := range events {
-			for _, ext := range watchExtensions {
-				if strings.HasSuffix(e.Path(), ext) {
-					trigger = true
-					break
-				}
-			}
-		}
-		if trigger {
-			if err := runBuild(args); err != nil {
-				return err
-			}
-			fmt.Printf("Watching for changes: %s\n", strings.Join(toWatch, ", "))
-		}
-	}
-	return nil
-}
-
-func getWatchPaths(args *document.Config) ([]string, error) {
-	toWatch := append([]string{}, args.Sources...)
-	toWatch = append(toWatch, args.InputFiles...)
-	for i, w := range toWatch {
-		p := w
-		exists, isDir, err := fileExists(p)
-		if err != nil {
-			return nil, err
-		}
-		if !exists {
-			return nil, fmt.Errorf("file or directory '%s' to watch does not exist", p)
-		}
-		if isDir {
-			p = path.Join(w, "...")
-		}
-		toWatch[i] = p
-	}
-	return toWatch, nil
 }
