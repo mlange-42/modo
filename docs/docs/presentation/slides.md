@@ -4,8 +4,8 @@ theme: night
 scripts:
   - https://kit.fontawesome.com/f4816f3363.js
   - https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js
-  - lib/reveal-mermaid.js
-  - lib/reveal-svg-smil.js
+  - https://mlange-42.github.io/reveal-svg-smil/_assets/reveal-svg-smil.js
+  #- lib/reveal-mermaid.js
 revealOptions:
   transition: 'convex'
   controls: true
