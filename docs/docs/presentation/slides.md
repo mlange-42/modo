@@ -290,6 +290,7 @@ Doc-test example.
 var a = 1 + 2
 ```
 
+<div>
 <hr />
 
 `..._test.mojo`
@@ -301,6 +302,7 @@ fn test_sum() raises:
         raise Error("failed")
 ```
 
+</div><!-- .element: class="fragment" data-fragment-index="3" -->
 </div><!-- .element: class="fragment" data-fragment-index="2" -->
 </div>
 
