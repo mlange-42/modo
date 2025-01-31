@@ -51,8 +51,8 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 	root.Flags().BoolP("case-insensitive", "C", false, "Build for systems that are not case-sensitive regarding file names.\nAppends hyphen (-) to capitalized file names")
 	root.Flags().BoolP("strict", "S", false, "Strict mode. Errors instead of warnings")
 	root.Flags().BoolP("dry-run", "D", false, "Dry-run without any file output")
-	root.Flags().BoolP("bare", "B", false, "Don't run ore- and post-commands")
-	root.Flags().BoolVarP(&watch, "watch", "W", false, "Watch for changes to sources and documentation files")
+	root.Flags().BoolP("bare", "B", false, "Don't run pre- and post-processing scripts")
+	root.Flags().BoolVarP(&watch, "watch", "W", false, "Re-run on changes of sources and documentation files.\nDisables all post-processing scripts after running them once")
 	root.Flags().StringSliceP("templates", "T", []string{}, "Optional directories with templates for (partial) overwrite.\nSee folder assets/templates in the repository")
 
 	root.Flags().SortFlags = false

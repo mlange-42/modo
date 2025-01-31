@@ -236,6 +236,8 @@ func bindFlags(v *viper.Viper, flags *pflag.FlagSet) error {
 }
 
 func watchAndRun(args *document.Config, command func(*document.Config) error) error {
+	args.RemovePostScripts()
+
 	c := make(chan notify.EventInfo, 32)
 	collected := make(chan []notify.EventInfo, 1)
 

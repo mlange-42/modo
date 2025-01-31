@@ -59,3 +59,9 @@ func (c *Config) check(v *viper.Viper) error {
 	}
 	return nil
 }
+
+func (c *Config) RemovePostScripts() {
+	c.PostTest = nil
+	c.PostBuild = nil
+	c.PostRun = nil
+}
