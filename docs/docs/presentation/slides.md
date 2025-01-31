@@ -14,11 +14,11 @@ revealOptions:
   history: true
   center: true
   slide-number: false
+  width: 1024
+  height: 700
 mermaid:
   look: handDrawn
   theme: dark
-  themeVariables:
-    fontSize: 24px
 ---
 <style>
 .reveal {
@@ -44,7 +44,9 @@ p code, li code {
 .reveal .code-wrapper code .nowrap {
   text-wrap: nowrap;
 }
-
+code.mermaid {
+  text-align: center;
+}
 .reveal .slides section .fragment.step-fade-in-then-out {
 	opacity: 0;
 	display: none;
@@ -67,9 +69,7 @@ p code, li code {
 
 <br />
 
-DocGen for Mojo🔥
-
-[<i class="fa fa-github"></i>](https://github.com/mlange-42/modo)
+### 🔥
 
 ---
 
@@ -79,14 +79,14 @@ DocGen for Mojo🔥
 
 ----
 
-This is not a Mojo🔥 project!
+Modo🧯 is not a Mojo🔥 project!
 
 It is a project for Mojo🔥 projects.
 <!-- .element: class="fragment" data-fragment-index="1" -->
 
 <br />
 
-A DocGen for Mojo🔥, written in <i class="fa-brands fa-golang" style="font-size: 200%; position: relative; top: 12px; color: #00ADD8;"></i>
+Modo🧯 is a DocGen for Mojo🔥, written in <i class="fa-brands fa-golang" style="font-size: 200%; position: relative; top: 12px; color: #00ADD8;"></i>
 <!-- .element: class="fragment" data-fragment-index="2" -->
 
 ---
@@ -119,43 +119,19 @@ Want simple, low-tech, generic solution
 
 From  `mojo doc`  JSON...
 - creates Markdown files suitable for SSGs
-<!-- .element: class="fragment" data-fragment-index="1" -->
 - converts code examples to unit tests
-<!-- .element: class="fragment" data-fragment-index="2" -->
 
 <br />
 <br />
 
-```mermaid
-graph LR
-  sources[(Sources)]
-  mojo_doc[mojo doc]
-  JSON[(JSON)]
-  Modo[Modo🧯]
-  Markdown[(Markdown)]
-  Tests[(Tests)]
-  mojo_test[mojo test]
-  HTML[(HTML)]
-  SSG["`SSG
-(e.g. Hugo)`"]
-
-  sources-->mojo_doc
-  subgraph cmd [modo build]
-    mojo_doc-->JSON
-
-    JSON-->Modo
-    Modo-->Markdown
-    Modo-->Tests
-
-    Tests-->mojo_test
-    Markdown-->SSG
-  end
-  SSG-->HTML
-```
+<object data="flowchart.svg" type="image/svg+xml">
+</object>
 
 ---
 
 ## Demo
+
+<h3>&nbsp;</h3>
 
 ---
 
@@ -178,7 +154,7 @@ Relative ref to [.Struct.method] in the current module.
 """
 ```
 
-</div><div class="col">
+</div><div class="col" style="flex:0.1;"></div><div class="col">
 
 Relative ref to [Struct.method]() in the current module.
 
@@ -192,7 +168,7 @@ Absolute ref to module [pkg.mod].
 """
 ```
 
-</div><div class="col">
+</div><div class="col" style="flex:0.1;"></div><div class="col">
 
 Absolute ref to module [mod]().
 
@@ -206,7 +182,7 @@ Ref with [pkg.mod custom text].
 """
 ```
 
-</div><div class="col">
+</div><div class="col" style="flex:0.1;"></div><div class="col">
 
 Ref with [custom text]().
 
@@ -308,7 +284,7 @@ var a = 1 + 2
 `..._test.mojo`
 
 ```python
-fn test_add() raises:
+fn test_sum() raises:
     var a = 1 + 2
     if a != 3:
         raise Error("failed")
@@ -321,9 +297,51 @@ fn test_add() raises:
 
 ### Scripts
 
+Configure pre- and post-processing bash scripts
+
+```yaml
+# Bash commands to run before build as well as test.
+pre-run:
+  - |
+    echo Running 'mojo doc'...
+    magic run mojo doc -o docs/src/mypkg.json src/mypkg
+    echo Done.
+```
+<!-- .element: class="fragment" data-fragment-index="1" -->
+
+```yaml
+# Bash scripts to run after test.
+# Also runs after build if 'tests' is given.
+post-test:
+  - |
+    echo Running 'mojo test'...
+    magic run mojo test -I src docs/test
+    echo Done.
+```
+<!-- .element: class="fragment" data-fragment-index="2" -->
+
 ----
 
 ### Templates
+
+Highly customizable Markdown output through templates
+
+```template
+Mojo struct
+
+# `{{.Name}}`
+
+{{template "signature_struct" .}}
+
+{{template "summary" . -}}
+{{template "description" . -}}
+{{template "aliases" . -}}
+{{template "parameters" . -}}
+{{template "fields" . -}}
+{{template "parent_traits" . -}}
+{{template "methods" . -}}
+```
+<!-- .element: class="fragment" data-fragment-index="1" -->
 
 ---
 
@@ -358,10 +376,13 @@ GitHub Releases
 
 ----
 
-- Specify cross-ref syntax <!-- .element: class="fragment" data-fragment-index="1" -->
-- Include package re-exports into JSON <!-- .element: class="fragment" data-fragment-index="2" -->
-- Bug: currently no signature for structs in JSON <!-- .element: class="fragment" data-fragment-index="3" -->
-- Allow lists in <!-- .element: class="fragment" data-fragment-index="4" -->`Raises:` <!-- .element: class="fragment" data-fragment-index="4" -->
+#### Please...
+
+Specify cross-ref syntax <!-- .element: class="fragment" data-fragment-index="1" -->
+
+Include package re-exports in JSON <!-- .element: class="fragment" data-fragment-index="2" -->
+
+Support Markdown lists in <!-- .element: class="fragment" data-fragment-index="3" --> `Raises`<!-- .element: class="fragment" data-fragment-index="3" --> section
 
 ---
 
@@ -369,6 +390,18 @@ GitHub Releases
 
 ### <big>&darr;</big>
 
+----
+
+Feedback on tool and docs
+
+"Playtest"
+<!-- .element: class="fragment" -->
+
+Make issues & PRs
+<!-- .element: class="fragment" -->
+
 ---
 
 ## Thank you!
+
+[<i class="fa fa-github"></i>/mlange-42/modo](https://github.com/mlange-42/modo)
