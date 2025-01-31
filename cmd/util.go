@@ -20,6 +20,8 @@ const setExitOnError = "set -e"
 const initFileText = "__init__.mojo"
 const initFileEmoji = "__init__.🔥"
 
+var watchExtensions = []string{".md", ".mojo", ".🔥"}
+
 func runCommand(command string) error {
 	commandWithExit := fmt.Sprintf("%s\n%s", setExitOnError, command)
 	cmd := exec.Command("bash", "-c", commandWithExit)
