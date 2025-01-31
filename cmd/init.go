@@ -43,6 +43,7 @@ They will be processed for doc-tests and copied to folder 'site/content'.
 type config struct {
 	Warning      string
 	InputFiles   []string
+	Sources      []string
 	OutputDir    string
 	TestsDir     string
 	RenderFormat string
@@ -137,9 +138,15 @@ func initProject(initArgs *initArgs) error {
 	if err != nil {
 		return err
 	}
+
+	sourceDirs := make([]string, 0, len(sources))
+	for _, s := range sources {
+		sourceDirs = append(sourceDirs, path.Join(s.Path...))
+	}
 	config := config{
 		Warning:      warning,
 		InputFiles:   []string{inDir},
+		Sources:      sourceDirs,
 		OutputDir:    outDir,
 		TestsDir:     path.Join(initArgs.DocsDirectory, testsDir),
 		RenderFormat: initArgs.Format,

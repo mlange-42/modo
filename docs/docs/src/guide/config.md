@@ -60,6 +60,10 @@ for a package under `src/mypkg`.
 input:
   - docs/src
 
+# Source directories to monitor when running in watch mode.
+source:
+  - src/mypkg
+
 # Output directory.
 output: docs/site/content
 
