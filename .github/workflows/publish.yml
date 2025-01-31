@@ -64,7 +64,7 @@ jobs:
           npm install --global reveal-md
       - name: Build slides
         run: |
-          cd docs/docs/presentation
+          cd docs/docs/slides
           reveal-md slides.md --static ../site/public/slides  --static-dirs=.nojekyll,img
 
       - name: Archive Markdown artifacts

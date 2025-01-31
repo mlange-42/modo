@@ -43,6 +43,9 @@ p code, li code {
 .reveal .code-wrapper code .nowrap {
   text-wrap: nowrap;
 }
+.reveal .fragment {
+	transition: all 1s ease;
+}
 code.mermaid {
   text-align: center;
 }
@@ -154,9 +157,13 @@ Using  `mojo doc`  JSON...
 
 ### Output formats
 
+Several fully supported rendering target
+
 <br />
 
 Plain Markdown<!-- .element: class="fragment" data-fragment-index="1" -->
+
+<br />
 
 <div class="columns" style="align-items: center; justify-content: center;">
 <div class="col" style="margin-right: 2rem; flex: 1;">
@@ -182,7 +189,6 @@ Your wishes?<!-- .element: class="fragment" data-fragment-index="4" -->
 ### Cross-references
 
 Very simple syntax, resembling Mojo imports
-<!-- .element: class="fragment" data-fragment-index="1" -->
 
 <div><div class="columns"><div class="col">
 
@@ -231,6 +237,10 @@ Ref with [custom text]().
 
 ### Re-exports
 
+Re-structure docs the way users see your package
+
+<br />
+
 <div class="columns" style="align-items: center; justify-content: center;"><div class="col">
 
 <pre style="width:100%; font-size: 0.65em;">
@@ -248,9 +258,21 @@ Ref with [custom text]().
 #### <i class="fa-solid fa-arrow-right"></i>
 
 </div><!-- .element: class="fragment" data-fragment-index="2" -->
-<div class="col" style="flex:2.0">
+<div class="col" style="flex:2.0;">
+
+<div style="display:flex; flex-direction: column; align-items: center; justify-content: center; position: relative;">
 
 ```python
+"""
+Package mypkg...
+"""
+from .mod import Struct
+from .subpkg.submod import Trait
+```
+
+<div style="position:absolute; width: 100%; z-index: 10;">
+
+```python [4-6]
 """
 Package mypkg...
 
@@ -262,7 +284,11 @@ from .mod import Struct
 from .subpkg.submod import Trait
 ```
 
+</div><!-- .element: class="fragment" data-fragment-index="4" -->
+
 </div><!-- .element: class="fragment" data-fragment-index="2" -->
+
+</div>
 <div class="col" style="flex:0.2">
 
 #### <i class="fa-solid fa-arrow-right"></i>
@@ -284,6 +310,8 @@ Modo🧯
 ----
 
 ### Doc-tests
+
+Convert code examples into unit tests
 
 <div class="columns" style="align-items: center; justify-content: center;"><div class="col">
 
@@ -309,7 +337,6 @@ if a != 3:
 
 </div><!-- .element: class="fragment" data-fragment-index="2" -->
 <div class="col">
-
 
 Doc-test example.
 
@@ -364,7 +391,7 @@ post-test:
 
 ### Templates
 
-Highly customizable Markdown output through templates
+Customize Markdown output via templates
 
 ```template
 Mojo struct
@@ -418,6 +445,8 @@ GitHub Releases
 
 #### Please...
 
+<br />
+
 Specify cross-ref syntax <!-- .element: class="fragment" data-fragment-index="1" -->
 
 Include package re-exports in JSON <!-- .element: class="fragment" data-fragment-index="2" -->
@@ -437,7 +466,7 @@ Feedback on tool and docs
 "Playtest"
 <!-- .element: class="fragment" -->
 
-Make issues & PRs
+Create issues & PRs
 <!-- .element: class="fragment" -->
 
 ---
