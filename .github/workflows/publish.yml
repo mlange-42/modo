@@ -55,7 +55,7 @@ jobs:
           source /home/runner/.bash_profile
           go run . build docs
 
-      - name: Run hugo
+      - name: Run Hugo
         run: |
           hugo -s docs/docs/site
 
