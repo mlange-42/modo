@@ -1,12 +1,11 @@
 ---
 title: Modo🧯 -- DocGen for Mojo🔥
 theme: night
-css:
-  - https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.7.2/css/font-awesome.min.css
 scripts:
+  - https://kit.fontawesome.com/f4816f3363.js
   - https://cdn.jsdelivr.net/npm/mermaid@11.4.1/dist/mermaid.min.js
   - lib/reveal-mermaid.js
-  - https://kit.fontawesome.com/f4816f3363.js
+  - lib/reveal-svg-smil.js
 revealOptions:
   transition: 'convex'
   controls: true
