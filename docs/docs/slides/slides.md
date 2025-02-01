@@ -119,12 +119,14 @@ Want simple, low-tech, generic solution
 
 ----
 
-Using  `mojo doc`  JSON...
+Using `mojo doc` JSON...
 
 - creates Markdown files suitable for SSGs
 <!-- .element: class="fragment" data-fragment-index="4" -->
 - converts code examples to unit tests
 <!-- .element: class="fragment" data-fragment-index="7" -->
+- can run the whole chain with a single command
+<!-- .element: class="fragment" data-fragment-index="9" -->
 
 <br />
 <br />
@@ -139,7 +141,7 @@ Using  `mojo doc`  JSON...
 <span class="fragment" data-fragment-index="6" data-svg-classes="show-html"></span>
 <span class="fragment" data-fragment-index="7" data-svg-classes="show-tests"></span>
 <span class="fragment" data-fragment-index="8" data-svg-classes="show-mojo-test"></span>
-<span class="fragment" data-fragment-index="100" data-svg-classes="show-cluster"></span>
+<span class="fragment" data-fragment-index="9" data-svg-classes="show-cluster"></span>
 
 ---
 
@@ -244,7 +246,7 @@ Re-structure docs the way users see your package
 <div class="columns" style="align-items: center; justify-content: center;"><div class="col">
 
 <pre style="width:100%; font-size: 0.65em;">
-- pkg
+- mypkg
   - mod
     - Struct
   - subpkg
@@ -299,7 +301,7 @@ from .subpkg.submod import Trait
 Modo🧯
 
 <pre style="width:100%; font-size: 0.65em;">
-- pkg
+- mypkg
   - Struct
   - Trait
 </pre>
@@ -461,9 +463,9 @@ Support Markdown lists in <!-- .element: class="fragment" data-fragment-index="3
 
 ----
 
-Feedback on tool and docs
-
 "Playtest"
+
+Give feedback on tool and docs
 <!-- .element: class="fragment" -->
 
 Create issues & PRs
