@@ -18,6 +18,7 @@
 * Restructures `docs/` to serve as full Hugo example that uses all features (#134)
 * Rewrites the user guide for the new workflow with batteries-included `init` (#161)
 * Adds a sub-sction on CLI flags to the user guide (#175)
+* Adds a user guide section on CLI commands (#179)
 
 ### Other
 

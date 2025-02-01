@@ -5,7 +5,7 @@ summary: Setting up a Mojo🔥 project for Modo🧯.
 weight: 20
 ---
 
-The command `init` serves to prepare an existing Mojo🔥 project for instant usage
+The [command](../commands) `init` serves to prepare an existing Mojo🔥 project for instant usage
 with Modo🧯 and a static site generator (SSG).
 
 ## Hugo example
