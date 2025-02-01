@@ -1,14 +1,14 @@
-package format_test
+package format
 
 import (
 	"testing"
 
-	"github.com/mlange-42/modo/format"
+	"github.com/mlange-42/modo/document"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestMdBookAccepts(t *testing.T) {
-	f := format.MdBook{}
+	f := MdBook{}
 
 	err := f.Accepts([]string{"../test"})
 	assert.NotNil(t, err)
@@ -19,7 +19,7 @@ func TestMdBookAccepts(t *testing.T) {
 }
 
 func TestMdBookToFilePath(t *testing.T) {
-	f := format.MdBook{}
+	f := MdBook{}
 
 	text := f.ToFilePath("pkg/mod/Struct", "struct")
 	assert.Equal(t, text, "pkg/mod/Struct.md")
@@ -32,7 +32,7 @@ func TestMdBookToFilePath(t *testing.T) {
 }
 
 func TestMdBookToLinkPath(t *testing.T) {
-	f := format.MdBook{}
+	f := MdBook{}
 
 	text := f.ToLinkPath("pkg/mod/Struct", "struct")
 	assert.Equal(t, text, "pkg/mod/Struct.md")
@@ -42,4 +42,76 @@ func TestMdBookToLinkPath(t *testing.T) {
 
 	text = f.ToLinkPath("pkg", "package")
 	assert.Equal(t, text, "pkg/_index.md")
+}
+
+func TestMdBookInput(t *testing.T) {
+	f := MdBook{}
+
+	assert.Equal(t, f.Input("src", []document.PackageSource{
+		{Name: "pkg", Path: []string{"src", "pkg"}},
+	}), "pkg.json")
+}
+
+func TestMdBookOutput(t *testing.T) {
+	f := MdBook{}
+
+	assert.Equal(t, f.Output("site"), "")
+}
+
+func TestMdBookGitIgnore(t *testing.T) {
+	f := MdBook{}
+	gi := f.GitIgnore("src", "site", []document.PackageSource{{Name: "pkg"}})
+
+	assert.Contains(t, gi, "/pkg.json")
+	assert.Contains(t, gi, "/pkg/")
+	assert.Contains(t, gi, "/public/")
+	assert.Contains(t, gi, "/test/")
+}
+
+func TestMdBookCreateDirs(t *testing.T) {
+	f := MdBook{}
+	testCreateDirs(&f, t, []string{
+		".",
+		"docs",
+		"docs/book.toml",
+		"docs/css",
+		"docs/css/custom.css",
+		"docs/test",
+	})
+}
+
+func TestMdBookRenderSummary(t *testing.T) {
+	f := MdBook{}
+
+	docs := document.Docs{
+		Decl: &document.Package{
+			MemberName: document.MemberName{Name: "pkg"},
+			MemberKind: document.MemberKind{Kind: "package"},
+
+			Modules: []*document.Module{
+				{
+					MemberName: document.MemberName{Name: "mod"},
+					MemberKind: document.MemberKind{Kind: "module"},
+					Structs: []*document.Struct{
+						{
+							MemberName: document.MemberName{Name: "Struct"},
+							MemberKind: document.MemberKind{Kind: "struct"},
+						},
+					},
+				},
+			},
+		},
+	}
+
+	templ, err := document.LoadTemplates(&f)
+	assert.Nil(t, err)
+
+	proc := document.NewProcessor(&docs, &f, templ, &document.Config{})
+
+	text, err := f.renderSummary(docs.Decl, proc)
+	assert.Nil(t, err)
+
+	assert.Contains(t, text, "[`pkg`](_index.md)")
+	assert.Contains(t, text, "- [`mod`](mod/_index.md)")
+	assert.Contains(t, text, "  - [`Struct`](mod/Struct.md)")
 }
