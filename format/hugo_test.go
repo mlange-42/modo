@@ -1,16 +1,15 @@
-package format_test
+package format
 
 import (
 	"strings"
 	"testing"
 
 	"github.com/mlange-42/modo/document"
-	"github.com/mlange-42/modo/format"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestHugoToFilePath(t *testing.T) {
-	f := format.Hugo{}
+	f := Hugo{}
 
 	text := f.ToFilePath("pkg/mod/Struct", "struct")
 	assert.Equal(t, text, "pkg/mod/Struct.md")
@@ -23,7 +22,7 @@ func TestHugoToFilePath(t *testing.T) {
 }
 
 func TestHugoToLinkPath(t *testing.T) {
-	f := format.Hugo{}
+	f := Hugo{}
 
 	text := f.ToLinkPath("pkg/mod/Struct", "struct")
 	assert.Equal(t, text, `{{< ref "pkg/mod/Struct.md" >}}`)
@@ -36,7 +35,7 @@ func TestHugoToLinkPath(t *testing.T) {
 }
 
 func TestHugoProcessMarkdown(t *testing.T) {
-	form := format.Hugo{}
+	form := Hugo{}
 	templ, err := document.LoadTemplates(&form)
 	assert.Nil(t, err)
 
@@ -57,4 +56,14 @@ weight: 100
 ---
 
 test`)
+}
+
+func TestGetGitOrigin(t *testing.T) {
+	conf, err := getGitOrigin("docs")
+
+	assert.Nil(t, err)
+	assert.Equal(t, conf.Repo, "https://github.com/mlange-42/modo")
+	assert.Equal(t, conf.Title, "modo")
+	assert.Equal(t, conf.Pages, "https://mlange-42.github.io/modo/")
+	assert.Equal(t, conf.Module, "github.com/mlange-42/modo/docs")
 }

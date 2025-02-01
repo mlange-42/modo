@@ -1,6 +1,9 @@
 package document
 
-import "path"
+import (
+	"path"
+	"text/template"
+)
 
 type TestFormatter struct{}
 
@@ -28,4 +31,20 @@ func (f *TestFormatter) ToFilePath(p string, kind string) string {
 
 func (f *TestFormatter) ToLinkPath(p string, kind string) string {
 	return f.ToFilePath(p, kind)
+}
+
+func (f *TestFormatter) Input(base, in string, sources []PackageSource) string {
+	return path.Join(base, in)
+}
+
+func (f *TestFormatter) Output(base, out string) string {
+	return path.Join(base, out)
+}
+
+func (f *TestFormatter) GitIgnore(in, out string, sources []PackageSource) []string {
+	return []string{}
+}
+
+func (f *TestFormatter) CreateDirs(base, in, out string, sources []PackageSource, templ *template.Template) error {
+	return nil
 }
