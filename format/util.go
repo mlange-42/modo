@@ -12,6 +12,13 @@ func mkDirs(path string) error {
 	return nil
 }
 
+func emptyDir(dir string) error {
+	if err := os.RemoveAll(dir); err != nil {
+		return err
+	}
+	return mkDirs(dir)
+}
+
 func fileExists(file string) (exists, isDir bool, err error) {
 	var s os.FileInfo
 	if s, err = os.Stat(file); err == nil {

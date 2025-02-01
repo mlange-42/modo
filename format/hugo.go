@@ -139,6 +139,13 @@ func (f *Hugo) createInitialFiles(docDir, hugoDir string, templ *template.Templa
 	return nil
 }
 
+func (f *Hugo) Clean(config *document.Config) error {
+	if err := emptyDir(config.TestOutput); err != nil {
+		return err
+	}
+	return emptyDir(config.OutputDir)
+}
+
 func getGitOrigin(outDir string) (*hugoConfig, error) {
 	gitFiles := []string{
 		".git/config",

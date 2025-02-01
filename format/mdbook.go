@@ -62,6 +62,26 @@ func (f *MdBook) ToLinkPath(p string, kind string) string {
 	return f.ToFilePath(p, kind)
 }
 
+func (f *MdBook) Clean(config *document.Config) error {
+	dirs, err := os.ReadDir(config.OutputDir)
+	if err != nil {
+		return err
+	}
+	for _, info := range dirs {
+		if !info.IsDir() {
+			continue
+		}
+		if info.Name() == "css" {
+			continue
+		}
+		if err := emptyDir(path.Join(config.OutputDir, info.Name())); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 type summary struct {
 	Summary   string
 	Packages  string

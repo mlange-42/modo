@@ -22,7 +22,7 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 
 	root.CompletionOptions.HiddenDefaultCmd = true
 
-	for _, fn := range []func() (*cobra.Command, error){initCommand, buildCommand, testCommand} {
+	for _, fn := range []func() (*cobra.Command, error){initCommand, buildCommand, testCommand, cleanCommand} {
 		cmd, err := fn()
 		if err != nil {
 			return nil, err
