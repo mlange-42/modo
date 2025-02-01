@@ -7,7 +7,6 @@ import (
 	"io/fs"
 	"os"
 	"path"
-	"path/filepath"
 	"strings"
 	"text/template"
 
@@ -64,25 +63,23 @@ func (f *MdBook) ToLinkPath(p string, kind string) string {
 }
 
 func (f *MdBook) Clean(config *document.Config) error {
-	if err := emptyDir(config.TestOutput); err != nil {
+	dirs, err := os.ReadDir(config.OutputDir)
+	if err != nil {
 		return err
 	}
+	for _, info := range dirs {
+		if !info.IsDir() {
+			continue
+		}
+		if info.Name() == "css" {
+			continue
+		}
+		if err := emptyDir(path.Join(config.OutputDir, info.Name())); err != nil {
+			return err
+		}
+	}
 
-	err := filepath.Walk(config.OutputDir,
-		func(path string, info os.FileInfo, err error) error {
-			if err != nil {
-				return err
-			}
-			if info.IsDir() {
-				return nil
-			}
-			if strings.HasSuffix(path, ".md") {
-				return os.Remove(path)
-			}
-			return nil
-		})
-
-	return err
+	return nil
 }
 
 type summary struct {

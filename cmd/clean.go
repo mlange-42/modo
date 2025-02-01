@@ -13,12 +13,12 @@ func cleanCommand() (*cobra.Command, error) {
 	v := viper.New()
 
 	root := &cobra.Command{
-		Use:   "clean",
+		Use:   "clean [PATH]",
 		Short: "Remove Modo's output files",
 		Long: `Remove Modo's output files.
 
 Complete documentation at https://mlange-42.github.io/modo/`,
-		Args:         cobra.ExactArgs(1),
+		Args:         cobra.MaximumNArgs(1),
 		SilenceUsage: true,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
 			if err := mountProject(v, args); err != nil {
