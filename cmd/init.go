@@ -68,11 +68,6 @@ type mdBookConfig struct {
 	Title string
 }
 
-type packageSource struct {
-	Name string
-	Path []string
-}
-
 func initCommand() (*cobra.Command, error) {
 	initArgs := initArgs{}
 
@@ -166,9 +161,9 @@ func initProject(initArgs *initArgs) error {
 	return nil
 }
 
-func findSources(f string) ([]packageSource, string, error) {
+func findSources(f string) ([]format.PackageSource, string, error) {
 	warning := ""
-	sources := []packageSource{}
+	sources := []format.PackageSource{}
 	srcExists, srcIsDir, err := fileExists(srcDir)
 	if err != nil {
 		return nil, warning, err
@@ -206,7 +201,7 @@ func findSources(f string) ([]packageSource, string, error) {
 					return nil, warning, err
 				}
 			}
-			sources = append(sources, packageSource{file, []string{dir}})
+			sources = append(sources, format.PackageSource{Name: file, Path: []string{dir}})
 			continue
 		}
 		if dir != srcDir {
@@ -217,7 +212,7 @@ func findSources(f string) ([]packageSource, string, error) {
 			if isPkg {
 				// Package is `<dir>/src/__init__.mojo`
 				nestedSrc = true
-				sources = append(sources, packageSource{dir, []string{dir, srcDir}})
+				sources = append(sources, format.PackageSource{Name: dir, Path: []string{dir, srcDir}})
 			}
 			continue
 		}
@@ -233,7 +228,7 @@ func findSources(f string) ([]packageSource, string, error) {
 				}
 				if isPkg {
 					// Package is `src/<dir>/__init__.mojo`
-					sources = append(sources, packageSource{info.Name(), []string{dir, info.Name()}})
+					sources = append(sources, format.PackageSource{Name: info.Name(), Path: []string{dir, info.Name()}})
 				}
 			}
 		}
@@ -245,7 +240,7 @@ func findSources(f string) ([]packageSource, string, error) {
 	}
 
 	if len(sources) == 0 {
-		sources = []packageSource{{"mypkg", []string{srcDir, "mypkg"}}}
+		sources = []format.PackageSource{{Name: "mypkg", Path: []string{srcDir, "mypkg"}}}
 		warning = fmt.Sprintf("WARNING: no package sources found; using %s", path.Join(sources[0].Path...))
 		fmt.Println(warning)
 	} else if f == "mdbook" && len(sources) > 1 {
@@ -256,7 +251,7 @@ func findSources(f string) ([]packageSource, string, error) {
 	return sources, warning, nil
 }
 
-func createDocs(args *initArgs, templ *template.Template, sources []packageSource) (inDir, outDir string, err error) {
+func createDocs(args *initArgs, templ *template.Template, sources []format.PackageSource) (inDir, outDir string, err error) {
 	var gitignore []string
 
 	dir := args.DocsDirectory
@@ -432,7 +427,7 @@ func writeGitIgnore(dir string, gitignore []string) error {
 	return os.WriteFile(path.Join(dir, gitignoreFile), []byte(s), 0644)
 }
 
-func createPreRun(docsDir, f string, sources []packageSource) (string, error) {
+func createPreRun(docsDir, f string, sources []format.PackageSource) (string, error) {
 	s := "|\n    echo Running 'mojo doc'...\n"
 
 	inDir := docsDir
@@ -447,7 +442,7 @@ func createPreRun(docsDir, f string, sources []packageSource) (string, error) {
 	return s, nil
 }
 
-func createPostTest(docsDir string, sources []packageSource) string {
+func createPostTest(docsDir string, sources []format.PackageSource) string {
 	testOurDir := path.Join(docsDir, testsDir)
 	var src string
 	if len(sources[0].Path) == 1 {
