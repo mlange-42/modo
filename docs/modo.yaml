@@ -1,5 +1,7 @@
 input:
   - docs/src/
+source:
+  - src/mypkg/
 output: docs/site/content/
 tests: doctest/
 format: hugo

@@ -8,6 +8,13 @@ input:{{if not .InputFiles}} []
 {{range .InputFiles}}  - {{.}}
 {{end}}
 {{end -}}
+# Source directories to monitor when running in watch mode.
+source:{{if not .Sources}} []
+
+{{else}}
+{{range .Sources}}  - {{.}}
+{{end}}
+{{end -}}
 # Output directory.
 output: {{if .OutputDir}}{{.OutputDir}}{{else}}docs/{{end}}
 

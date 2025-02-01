@@ -9,6 +9,7 @@ import (
 
 type Config struct {
 	InputFiles      []string `mapstructure:"input" yaml:"input"`
+	Sources         []string `mapstructure:"source" yaml:"source"`
 	OutputDir       string   `mapstructure:"output" yaml:"output"`
 	TestOutput      string   `mapstructure:"tests" yaml:"tests"`
 	RenderFormat    string   `mapstructure:"format" yaml:"format"`
@@ -57,4 +58,10 @@ func (c *Config) check(v *viper.Viper) error {
 		}
 	}
 	return nil
+}
+
+func (c *Config) RemovePostScripts() {
+	c.PostTest = nil
+	c.PostBuild = nil
+	c.PostRun = nil
 }

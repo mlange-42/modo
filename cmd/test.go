@@ -11,6 +11,7 @@ import (
 
 func testCommand() (*cobra.Command, error) {
 	v := viper.New()
+	var watch bool
 
 	root := &cobra.Command{
 		Use:   "test [PATH]",
@@ -38,7 +39,13 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 			if err != nil {
 				return err
 			}
-			return runTest(cliArgs)
+			if err := runTest(cliArgs); err != nil {
+				return err
+			}
+			if watch {
+				return watchAndRun(cliArgs, runTest)
+			}
+			return nil
 		},
 	}
 
@@ -47,7 +54,8 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 	root.Flags().BoolP("case-insensitive", "C", false, "Build for systems that are not case-sensitive regarding file names.\nAppends hyphen (-) to capitalized file names")
 	root.Flags().BoolP("strict", "S", false, "Strict mode. Errors instead of warnings")
 	root.Flags().BoolP("dry-run", "D", false, "Dry-run without any file output")
-	root.Flags().BoolP("bare", "B", false, "Don't run ore- and post-commands")
+	root.Flags().BoolP("bare", "B", false, "Don't run pre- and post-processing scripts")
+	root.Flags().BoolVarP(&watch, "watch", "W", false, "Re-run on changes of sources and documentation files.\nDisables all post-processing scripts after running them once")
 	root.Flags().StringSliceP("templates", "T", []string{}, "Optional directories with templates for (partial) overwrite.\nSee folder assets/templates in the repository")
 
 	root.Flags().SortFlags = false
@@ -55,7 +63,7 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 	root.MarkFlagDirname("tests")
 	root.MarkFlagDirname("templates")
 
-	err := v.BindPFlags(root.Flags())
+	err := bindFlags(v, root.Flags())
 	if err != nil {
 		return nil, err
 	}
