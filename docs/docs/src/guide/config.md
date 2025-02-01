@@ -46,8 +46,8 @@ modo build -i api.json -o docs/
 
 Most command line flags overwrite config file settings.
 They are not listed here explicitly, please see the [reference](#config-reference).
-There are, however, a few special flags that are useful do trigger different behaviour when working in differnet environments.
-These flags are available for both, `build` and `test`.
+There are, however, a few special flags that are useful to trigger different behaviour when working in different environments.
+These flags are available for both `build` and `test` command.
 
 **`--watch`, `-W`**
 
