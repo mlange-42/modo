@@ -42,6 +42,35 @@ Command line flags must be used for any configuration:
 modo build -i api.json -o docs/
 ```
 
+## CLI flags
+
+Most command line flags overwrite config file settings.
+They are not listed here explicitly, please see the [reference](#config-reference).
+There are, however, a few special flags that are useful do trigger different behaviour when working in differnet environments.
+These flags are available for both, `build` and `test`.
+
+**`--watch`, `-W`**
+
+Re-run on changes of sources and documentation files. Disables all post-processing scripts after running them once.
+In conjunction with the watch mode of your SSG (e.g. [Hugo](https://gohugo.io)), this allows to preview changes
+in a web browser instantly.
+
+**`--bare`, `-B`**
+
+Don't run pre- and post-processing scripts.
+May be useful when working in an environment where Mojo🔥 is not available.
+
+**`--strict`, `-S`**
+
+Exits with error on any warnings.
+Useful to ensure flawless docs in a CI.
+
+**`--dry-run`, `-D`**
+
+Dry-run without any file output.
+Useful for fast tests.
+Disables all post-processing scripts.
+
 ## Paths
 
 Paths in the config file as well as the directory structure created by the `init` command are just recommendations.
