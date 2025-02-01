@@ -260,7 +260,11 @@ func createPreRun(docsDir string, sources []document.PackageSource, form documen
 
 	inDir := path.Join(docsDir, form.Input(docsInDir, sources))
 	for _, src := range sources {
-		s += fmt.Sprintf("    magic run mojo doc -o %s.json %s\n", path.Join(inDir, src.Name), path.Join(src.Path...))
+		outFile := inDir
+		if !strings.HasSuffix(outFile, ".json") {
+			outFile = path.Join(inDir, src.Name+".json")
+		}
+		s += fmt.Sprintf("    magic run mojo doc -o %s %s\n", outFile, path.Join(src.Path...))
 	}
 
 	s += "    echo Done."
