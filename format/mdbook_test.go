@@ -73,10 +73,10 @@ func TestMdBookCreateDirs(t *testing.T) {
 	testCreateDirs(&f, t, []string{
 		".",
 		"docs",
-		"docs\\book.toml",
-		"docs\\css",
-		"docs\\css\\custom.css",
-		"docs\\test",
+		"docs/book.toml",
+		"docs/css",
+		"docs/css/custom.css",
+		"docs/test",
 	})
 }
 

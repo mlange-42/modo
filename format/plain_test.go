@@ -59,9 +59,9 @@ func TestPlainCreateDirs(t *testing.T) {
 	testCreateDirs(&f, t, []string{
 		".",
 		"docs",
-		"docs\\site",
-		"docs\\src",
-		"docs\\src\\_index.md",
-		"docs\\test",
+		"docs/site",
+		"docs/src",
+		"docs/src/_index.md",
+		"docs/test",
 	})
 }

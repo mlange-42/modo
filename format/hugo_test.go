@@ -86,14 +86,14 @@ func TestHugoCreateDirs(t *testing.T) {
 	testCreateDirs(&f, t, []string{
 		".",
 		"docs",
-		"docs\\site",
-		"docs\\site\\content",
-		"docs\\site\\go.mod",
-		"docs\\site\\go.sum",
-		"docs\\site\\hugo.yaml",
-		"docs\\src",
-		"docs\\src\\_index.md",
-		"docs\\test",
+		"docs/site",
+		"docs/site/content",
+		"docs/site/go.mod",
+		"docs/site/go.sum",
+		"docs/site/hugo.yaml",
+		"docs/src",
+		"docs/src/_index.md",
+		"docs/test",
 	})
 }
 

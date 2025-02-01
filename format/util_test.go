@@ -3,6 +3,7 @@ package format
 import (
 	"os"
 	"path/filepath"
+	"strings"
 	"testing"
 	"text/template"
 
@@ -18,7 +19,7 @@ func listDir(dir string) ([]string, error) {
 			if err != nil {
 				return err
 			}
-			paths = append(paths, path)
+			paths = append(paths, strings.ReplaceAll(path, "\\", "/"))
 			return nil
 		})
 	return paths, err
