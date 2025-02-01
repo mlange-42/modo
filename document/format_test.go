@@ -48,3 +48,7 @@ func (f *TestFormatter) GitIgnore(in, out string, sources []PackageSource) []str
 func (f *TestFormatter) CreateDirs(base, in, out string, sources []PackageSource, templ *template.Template) error {
 	return nil
 }
+
+func (f *TestFormatter) Clean(config *Config) error {
+	return nil
+}
