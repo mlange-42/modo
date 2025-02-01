@@ -252,7 +252,7 @@ func watchAndRun(args *document.Config, command func(*document.Config) error) er
 	}
 	defer notify.Stop(c)
 
-	fmt.Printf("Watching for changes: %s\n", strings.Join(toWatch, ", "))
+	fmt.Printf("Watching for changes: %s\nExit with Ctrl + C\n", strings.Join(toWatch, ", "))
 	ticker := time.NewTicker(1 * time.Second)
 	defer ticker.Stop()
 
