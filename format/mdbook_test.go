@@ -58,6 +58,16 @@ func TestMdBookOutput(t *testing.T) {
 	assert.Equal(t, f.Output("site"), "")
 }
 
+func TestMdBookGitIgnore(t *testing.T) {
+	f := MdBook{}
+	gi := f.GitIgnore("src", "site", []document.PackageSource{{Name: "pkg"}})
+
+	assert.Contains(t, gi, "/pkg.json")
+	assert.Contains(t, gi, "/pkg/")
+	assert.Contains(t, gi, "/public/")
+	assert.Contains(t, gi, "/test/")
+}
+
 func TestMdBookRenderSummary(t *testing.T) {
 	f := MdBook{}
 

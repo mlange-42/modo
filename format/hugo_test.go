@@ -70,6 +70,17 @@ func TestHugoOutput(t *testing.T) {
 	assert.Equal(t, f.Output("site"), "site/content")
 }
 
+func TestHugoGitIgnore(t *testing.T) {
+	f := Hugo{}
+	gi := f.GitIgnore("src", "site", []document.PackageSource{})
+
+	assert.Contains(t, gi, "/src/*.json")
+	assert.Contains(t, gi, "/site/content/")
+	assert.Contains(t, gi, "/site/public/")
+	assert.Contains(t, gi, "/site/*.lock")
+	assert.Contains(t, gi, "/test/")
+}
+
 func TestGetGitOrigin(t *testing.T) {
 	conf, err := getGitOrigin("docs")
 

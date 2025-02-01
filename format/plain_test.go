@@ -44,3 +44,12 @@ func TestPlainOutput(t *testing.T) {
 	f := Plain{}
 	assert.Equal(t, f.Output("site"), "site")
 }
+
+func TestPlainGitIgnore(t *testing.T) {
+	f := Plain{}
+	gi := f.GitIgnore("src", "site", []document.PackageSource{})
+
+	assert.Contains(t, gi, "/src/*.json")
+	assert.Contains(t, gi, "/site/")
+	assert.Contains(t, gi, "/test/")
+}
