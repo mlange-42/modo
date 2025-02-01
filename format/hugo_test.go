@@ -58,6 +58,18 @@ weight: 100
 test`)
 }
 
+func TestHugoInput(t *testing.T) {
+	f := Hugo{}
+	assert.Equal(t, f.Input("src", []document.PackageSource{
+		{Name: "pkg", Path: []string{"src", "pkg"}},
+	}), "src")
+}
+
+func TestHugoOutput(t *testing.T) {
+	f := Hugo{}
+	assert.Equal(t, f.Output("site"), "site/content")
+}
+
 func TestGetGitOrigin(t *testing.T) {
 	conf, err := getGitOrigin("docs")
 

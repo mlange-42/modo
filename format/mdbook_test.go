@@ -44,7 +44,21 @@ func TestMdBookToLinkPath(t *testing.T) {
 	assert.Equal(t, text, "pkg/_index.md")
 }
 
-func TestRenderSummary(t *testing.T) {
+func TestMdBookInput(t *testing.T) {
+	f := MdBook{}
+
+	assert.Equal(t, f.Input("src", []document.PackageSource{
+		{Name: "pkg", Path: []string{"src", "pkg"}},
+	}), "pkg.json")
+}
+
+func TestMdBookOutput(t *testing.T) {
+	f := MdBook{}
+
+	assert.Equal(t, f.Output("site"), "")
+}
+
+func TestMdBookRenderSummary(t *testing.T) {
 	f := MdBook{}
 
 	docs := document.Docs{

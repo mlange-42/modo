@@ -1,14 +1,14 @@
-package format_test
+package format
 
 import (
 	"testing"
 
-	"github.com/mlange-42/modo/format"
+	"github.com/mlange-42/modo/document"
 	"github.com/stretchr/testify/assert"
 )
 
 func TestPlainToFilePath(t *testing.T) {
-	f := format.Plain{}
+	f := Plain{}
 
 	text := f.ToFilePath("pkg/mod/Struct", "struct")
 	assert.Equal(t, text, "pkg/mod/Struct.md")
@@ -21,7 +21,7 @@ func TestPlainToFilePath(t *testing.T) {
 }
 
 func TestPlainToLinkPath(t *testing.T) {
-	f := format.Plain{}
+	f := Plain{}
 
 	text := f.ToLinkPath("pkg/mod/Struct", "struct")
 	assert.Equal(t, text, "pkg/mod/Struct.md")
@@ -31,4 +31,16 @@ func TestPlainToLinkPath(t *testing.T) {
 
 	text = f.ToLinkPath("pkg", "package")
 	assert.Equal(t, text, "pkg/_index.md")
+}
+
+func TestPlainInput(t *testing.T) {
+	f := Plain{}
+	assert.Equal(t, f.Input("src", []document.PackageSource{
+		{Name: "pkg", Path: []string{"src", "pkg"}},
+	}), "src")
+}
+
+func TestPlainOutput(t *testing.T) {
+	f := Plain{}
+	assert.Equal(t, f.Output("site"), "site")
 }
