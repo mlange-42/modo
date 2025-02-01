@@ -16,6 +16,7 @@
 
 * Restructures `docs/` to serve as full Hugo example that uses all features (#134)
 * Rewrites the user guide for the new workflow with batteries-included `init` (#161)
+* Adds a sub-sction on CLI flags to the user guide (#175)
 
 ### Other
 
@@ -23,6 +24,7 @@
 * Improves message on script errors with hint to flag `--bare` (#144)
 * Checks that user template directories actually exist (#157)
 * mdBook config and CSS files are written by command `init` instead of `build` (#158)
+* Disables post-processing scripts on dry-run (#175)
 
 ## [[v0.9.0]](https://github.com/mlange-42/modo/compare/v0.8.1...v0.9.0)
 
