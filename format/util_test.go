@@ -25,7 +25,7 @@ func listDir(dir string) ([]string, error) {
 	return paths, err
 }
 
-func testCreateDirs(f document.Formatter, t *testing.T, expected []string) {
+func testCreateDirs(f document.Formatter, t *testing.T, outDir string, expected []string) {
 	templ := template.New("all")
 	templ, err := templ.ParseFS(assets.Config, "**/*")
 	assert.Nil(t, err)
@@ -47,6 +47,9 @@ func testCreateDirs(f document.Formatter, t *testing.T, expected []string) {
 	assert.Nil(t, err)
 
 	assert.Equal(t, expected, files)
+
+	err = f.Clean(outDir, "test")
+	assert.Nil(t, err)
 
 	err = os.Chdir(curr)
 	assert.Nil(t, err)
