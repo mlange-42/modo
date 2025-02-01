@@ -12,7 +12,7 @@ type Formatter interface {
 	Output(out string) string
 	GitIgnore(in, out string, sources []PackageSource) []string
 	CreateDirs(base, in, out string, sources []PackageSource, templ *template.Template) error
-	Clean(config *Config) error
+	Clean(out, tests string) error
 }
 
 type PackageSource struct {

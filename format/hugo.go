@@ -139,11 +139,11 @@ func (f *Hugo) createInitialFiles(docDir, hugoDir string, templ *template.Templa
 	return nil
 }
 
-func (f *Hugo) Clean(config *document.Config) error {
-	if err := emptyDir(config.TestOutput); err != nil {
+func (f *Hugo) Clean(out, tests string) error {
+	if err := emptyDir(out); err != nil {
 		return err
 	}
-	return emptyDir(config.OutputDir)
+	return emptyDir(tests)
 }
 
 func getGitOrigin(outDir string) (*hugoConfig, error) {
@@ -185,7 +185,7 @@ func getGitOrigin(outDir string) (*hugoConfig, error) {
 	if !ok {
 		fmt.Printf("WARNING: No Git repository or no remote 'origin' found.\n         Using dummy %s\n", url)
 	}
-	title, pages := repoToTitleEndPages(url)
+	title, pages := repoToTitleAndPages(url)
 	module := strings.ReplaceAll(strings.ReplaceAll(url, "https://", ""), "http://", "")
 	module = fmt.Sprintf("%s/%s", module, outDir)
 
@@ -197,7 +197,7 @@ func getGitOrigin(outDir string) (*hugoConfig, error) {
 	}, nil
 }
 
-func repoToTitleEndPages(repo string) (string, string) {
+func repoToTitleAndPages(repo string) (string, string) {
 	if !strings.HasPrefix(repo, "https://github.com/") {
 		parts := strings.Split(repo, "/")
 		title := parts[len(parts)-1]

@@ -48,5 +48,5 @@ func runClean(args *document.Config) error {
 		return err
 	}
 
-	return formatter.Clean(args)
+	return formatter.Clean(args.OutputDir, args.TestOutput)
 }

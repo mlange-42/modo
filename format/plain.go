@@ -79,9 +79,9 @@ func (f *Plain) CreateDirs(base, in, out string, sources []document.PackageSourc
 	return mkDirs(testDir)
 }
 
-func (f *Plain) Clean(config *document.Config) error {
-	if err := emptyDir(config.TestOutput); err != nil {
+func (f *Plain) Clean(out, tests string) error {
+	if err := emptyDir(out); err != nil {
 		return err
 	}
-	return emptyDir(config.OutputDir)
+	return emptyDir(tests)
 }

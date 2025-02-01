@@ -56,7 +56,7 @@ func TestPlainGitIgnore(t *testing.T) {
 
 func TestPlainCreateDirs(t *testing.T) {
 	f := Plain{}
-	testCreateDirs(&f, t, []string{
+	testCreateDirs(&f, t, "docs/site", []string{
 		".",
 		"docs",
 		"docs/site",

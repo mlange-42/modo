@@ -1,6 +1,7 @@
 package format
 
 import (
+	"fmt"
 	"testing"
 
 	"github.com/mlange-42/modo/document"
@@ -70,7 +71,7 @@ func TestMdBookGitIgnore(t *testing.T) {
 
 func TestMdBookCreateDirs(t *testing.T) {
 	f := MdBook{}
-	testCreateDirs(&f, t, []string{
+	testCreateDirs(&f, t, "docs", []string{
 		".",
 		"docs",
 		"docs/book.toml",
@@ -100,6 +101,12 @@ func TestMdBookRenderSummary(t *testing.T) {
 					},
 				},
 			},
+			Packages: []*document.Package{
+				{
+					MemberName: document.MemberName{Name: "subpkg"},
+					MemberKind: document.MemberKind{Kind: "package"},
+				},
+			},
 		},
 	}
 
@@ -111,7 +118,10 @@ func TestMdBookRenderSummary(t *testing.T) {
 	text, err := f.renderSummary(docs.Decl, proc)
 	assert.Nil(t, err)
 
+	fmt.Println(text)
+
 	assert.Contains(t, text, "[`pkg`](_index.md)")
+	assert.Contains(t, text, "- [`subpkg`](subpkg/_index.md))")
 	assert.Contains(t, text, "- [`mod`](mod/_index.md)")
 	assert.Contains(t, text, "  - [`Struct`](mod/Struct.md)")
 }

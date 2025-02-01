@@ -62,8 +62,8 @@ func (f *MdBook) ToLinkPath(p string, kind string) string {
 	return f.ToFilePath(p, kind)
 }
 
-func (f *MdBook) Clean(config *document.Config) error {
-	dirs, err := os.ReadDir(config.OutputDir)
+func (f *MdBook) Clean(out, _ string) error {
+	dirs, err := os.ReadDir(out)
 	if err != nil {
 		return err
 	}
@@ -74,7 +74,7 @@ func (f *MdBook) Clean(config *document.Config) error {
 		if info.Name() == "css" {
 			continue
 		}
-		if err := emptyDir(path.Join(config.OutputDir, info.Name())); err != nil {
+		if err := emptyDir(path.Join(out, info.Name())); err != nil {
 			return err
 		}
 	}

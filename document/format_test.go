@@ -49,6 +49,6 @@ func (f *TestFormatter) CreateDirs(base, in, out string, sources []PackageSource
 	return nil
 }
 
-func (f *TestFormatter) Clean(config *Config) error {
+func (f *TestFormatter) Clean(out, tests string) error {
 	return nil
 }
