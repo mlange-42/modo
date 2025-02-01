@@ -53,3 +53,15 @@ func TestPlainGitIgnore(t *testing.T) {
 	assert.Contains(t, gi, "/site/")
 	assert.Contains(t, gi, "/test/")
 }
+
+func TestPlainCreateDirs(t *testing.T) {
+	f := Plain{}
+	testCreateDirs(&f, t, []string{
+		".",
+		"docs",
+		"docs\\site",
+		"docs\\src",
+		"docs\\src\\_index.md",
+		"docs\\test",
+	})
+}

@@ -81,6 +81,22 @@ func TestHugoGitIgnore(t *testing.T) {
 	assert.Contains(t, gi, "/test/")
 }
 
+func TestHugoCreateDirs(t *testing.T) {
+	f := Hugo{}
+	testCreateDirs(&f, t, []string{
+		".",
+		"docs",
+		"docs\\site",
+		"docs\\site\\content",
+		"docs\\site\\go.mod",
+		"docs\\site\\go.sum",
+		"docs\\site\\hugo.yaml",
+		"docs\\src",
+		"docs\\src\\_index.md",
+		"docs\\test",
+	})
+}
+
 func TestGetGitOrigin(t *testing.T) {
 	conf, err := getGitOrigin("docs")
 

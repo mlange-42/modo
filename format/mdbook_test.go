@@ -68,6 +68,18 @@ func TestMdBookGitIgnore(t *testing.T) {
 	assert.Contains(t, gi, "/test/")
 }
 
+func TestMdBookCreateDirs(t *testing.T) {
+	f := MdBook{}
+	testCreateDirs(&f, t, []string{
+		".",
+		"docs",
+		"docs\\book.toml",
+		"docs\\css",
+		"docs\\css\\custom.css",
+		"docs\\test",
+	})
+}
+
 func TestMdBookRenderSummary(t *testing.T) {
 	f := MdBook{}
 
