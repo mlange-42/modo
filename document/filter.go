@@ -18,7 +18,7 @@ func (proc *Processor) filterPackages() error {
 
 	if proc.Config.UseExports && !anyExports {
 		msg := "no package re-exports found. As 'exports' are enabled, there would be no output.\n" +
-			"         Add re-exports or run without 'exports' enabled"
+			"         Add re-exports or run without 'exports' enabled."
 		if !proc.Config.Strict {
 			msg += "\n         Falling back to rendering everything."
 		}

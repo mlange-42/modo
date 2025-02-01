@@ -147,7 +147,34 @@ Using `mojo doc` JSON...
 
 ## Demo
 
-<h3>&nbsp;</h3>
+### <big>&darr;</big>
+
+----
+
+Get an random Mojo🔥 project
+
+```bash
+# use a fresh directory
+mkdir demo; cd demo
+# clone EmberJson
+git clone https://github.com/bgreni/EmberJson.git
+# cd into it
+cd EmberJson
+```
+
+----
+
+Set up and build docs
+
+```bash
+# initialize Modo project in Hugo format
+modo init hugo
+# build API docs for the project
+modo build
+# serve API docs with Hugo
+hugo serve -s docs/site/
+# open the displayed URL in a web browser
+```
 
 ---
 
