@@ -41,7 +41,10 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 			if err := runBuild(cliArgs); err != nil {
 				return err
 			}
-			return watchAndRun(cliArgs, runBuild)
+			if watch {
+				return watchAndRun(cliArgs, runBuild)
+			}
+			return nil
 		},
 	}
 
