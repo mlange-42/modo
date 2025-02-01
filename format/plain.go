@@ -45,12 +45,12 @@ func (f *Plain) ToLinkPath(p string, kind string) string {
 	return f.ToFilePath(p, kind)
 }
 
-func (f *Plain) Input(base, in string, sources []document.PackageSource) string {
-	return path.Join(base, in)
+func (f *Plain) Input(in string, sources []document.PackageSource) string {
+	return in
 }
 
-func (f *Plain) Output(base, out string) string {
-	return path.Join(base, out)
+func (f *Plain) Output(out string) string {
+	return out
 }
 
 func (f *Plain) GitIgnore(in, out string, sources []document.PackageSource) []string {
@@ -65,7 +65,7 @@ func (f *Plain) GitIgnore(in, out string, sources []document.PackageSource) []st
 }
 
 func (f *Plain) CreateDirs(base, in, out string, sources []document.PackageSource, _ *template.Template) error {
-	inDir, outDir := f.Input(base, in, sources), f.Output(base, out)
+	inDir, outDir := path.Join(base, in), path.Join(base, out)
 	testDir := path.Join(base, "test")
 	if err := mkDirs(inDir); err != nil {
 		return err

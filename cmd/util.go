@@ -204,13 +204,6 @@ func runDir(baseDir string, args *document.Config, form document.Formatter, runF
 	return err
 }
 
-func mkDirs(path string) error {
-	if err := os.MkdirAll(path, os.ModePerm); err != nil && !os.IsExist(err) {
-		return err
-	}
-	return nil
-}
-
 func GetCwdName() (string, error) {
 	cwd, err := os.Getwd()
 	if err != nil {

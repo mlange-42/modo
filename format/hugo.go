@@ -63,12 +63,12 @@ func (f *Hugo) ToLinkPath(p string, kind string) string {
 	return fmt.Sprintf("{{< ref \"%s\" >}}", p)
 }
 
-func (f *Hugo) Input(base, in string, sources []document.PackageSource) string {
-	return path.Join(base, in)
+func (f *Hugo) Input(in string, sources []document.PackageSource) string {
+	return in
 }
 
-func (f *Hugo) Output(base, out string) string {
-	return path.Join(base, out, "content")
+func (f *Hugo) Output(out string) string {
+	return path.Join(out, "content")
 }
 
 func (f *Hugo) GitIgnore(in, out string, sources []document.PackageSource) []string {
@@ -86,7 +86,7 @@ func (f *Hugo) GitIgnore(in, out string, sources []document.PackageSource) []str
 }
 
 func (f *Hugo) CreateDirs(base, in, out string, sources []document.PackageSource, templ *template.Template) error {
-	inDir, outDir := f.Input(base, in, sources), f.Output(base, out)
+	inDir, outDir := path.Join(base, in), path.Join(base, f.Output(out))
 	testDir := path.Join(base, "test")
 	if err := mkDirs(inDir); err != nil {
 		return err

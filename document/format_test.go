@@ -33,12 +33,12 @@ func (f *TestFormatter) ToLinkPath(p string, kind string) string {
 	return f.ToFilePath(p, kind)
 }
 
-func (f *TestFormatter) Input(base, in string, sources []PackageSource) string {
-	return path.Join(base, in)
+func (f *TestFormatter) Input(in string, sources []PackageSource) string {
+	return in
 }
 
-func (f *TestFormatter) Output(base, out string) string {
-	return path.Join(base, out)
+func (f *TestFormatter) Output(out string) string {
+	return out
 }
 
 func (f *TestFormatter) GitIgnore(in, out string, sources []PackageSource) []string {

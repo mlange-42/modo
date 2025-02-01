@@ -210,13 +210,13 @@ func (f *MdBook) renderModuleMember(mem document.Named, pathStr string, depth in
 	return nil
 }
 
-func (f *MdBook) Input(base, in string, sources []document.PackageSource) string {
+func (f *MdBook) Input(in string, sources []document.PackageSource) string {
 	file := sources[0].Name + ".json"
-	return path.Join(base, file)
+	return file
 }
 
-func (f *MdBook) Output(base, out string) string {
-	return path.Join(base)
+func (f *MdBook) Output(out string) string {
+	return ""
 }
 
 func (f *MdBook) GitIgnore(in, out string, sources []document.PackageSource) []string {
@@ -231,7 +231,7 @@ func (f *MdBook) GitIgnore(in, out string, sources []document.PackageSource) []s
 }
 
 func (f *MdBook) CreateDirs(base, in, out string, sources []document.PackageSource, templ *template.Template) error {
-	outDir := f.Output(base, out)
+	outDir := base
 	testDir := path.Join(base, "test")
 	if err := mkDirs(outDir); err != nil {
 		return err

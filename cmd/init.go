@@ -98,7 +98,7 @@ func initProject(initArgs *initArgs) error {
 	if err != nil {
 		return err
 	}
-	preRun, err := createPreRun(initArgs.DocsDirectory, initArgs.Format, sources)
+	preRun, err := createPreRun(initArgs.DocsDirectory, sources, form)
 	if err != nil {
 		return err
 	}
@@ -222,7 +222,8 @@ func findSources(f string) ([]document.PackageSource, string, error) {
 
 func createDocs(args *initArgs, form document.Formatter, templ *template.Template, sources []document.PackageSource) (inDir, outDir string, err error) {
 	dir := args.DocsDirectory
-	inDir, outDir = form.Input(dir, docsInDir, sources), form.Output(dir, docsOutDir)
+	inDir, outDir = form.Input(docsInDir, sources), form.Output(docsOutDir)
+	inDir, outDir = path.Join(dir, inDir), path.Join(dir, outDir)
 
 	if args.NoFolders {
 		return
@@ -254,13 +255,10 @@ func writeGitIgnore(dir string, gitignore []string) error {
 	return os.WriteFile(path.Join(dir, gitignoreFile), []byte(s), 0644)
 }
 
-func createPreRun(docsDir, f string, sources []document.PackageSource) (string, error) {
+func createPreRun(docsDir string, sources []document.PackageSource, form document.Formatter) (string, error) {
 	s := "|\n    echo Running 'mojo doc'...\n"
 
-	inDir := docsDir
-	if f != "mdbook" {
-		inDir = path.Join(docsDir, docsInDir)
-	}
+	inDir := path.Join(docsDir, form.Input(docsInDir, sources))
 	for _, src := range sources {
 		s += fmt.Sprintf("    magic run mojo doc -o %s.json %s\n", path.Join(inDir, src.Name), path.Join(src.Path...))
 	}

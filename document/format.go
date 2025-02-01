@@ -8,8 +8,8 @@ type Formatter interface {
 	ToLinkPath(path string, kind string) string
 	ProcessMarkdown(element any, text string, proc *Processor) (string, error)
 	WriteAuxiliary(p *Package, dir string, proc *Processor) error
-	Input(base, in string, sources []PackageSource) string
-	Output(base, out string) string
+	Input(in string, sources []PackageSource) string
+	Output(out string) string
 	GitIgnore(in, out string, sources []PackageSource) []string
 	CreateDirs(base, in, out string, sources []PackageSource, templ *template.Template) error
 }
