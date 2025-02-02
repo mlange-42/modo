@@ -45,6 +45,8 @@ It generates Markdown for static site generators (SSGs) from `mojo doc` JSON out
 * Optionally extracts [doc-tests](guide/features/doctests) for `mojo test` from code blocks.
 * Customizable output through [user templates](guide/features/templates).
 
+See also the Modo🧯 [slides](https://mlange-42.github.io/modo/slides/) for a feature overview.
+
 ## Usage
 
 For usage examples and details, see the [User guide](guide).

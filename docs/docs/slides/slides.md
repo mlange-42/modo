@@ -151,7 +151,7 @@ Using `mojo doc` JSON...
 
 ----
 
-Get an random Mojo🔥 project
+Clone a random Mojo🔥 project
 
 ```bash
 # use a fresh directory
@@ -164,7 +164,7 @@ cd EmberJson
 
 ----
 
-Set up and build docs
+Set up a Modo🧯 project and build API docs
 
 ```bash
 # initialize Modo project in Hugo format
@@ -173,8 +173,9 @@ modo init hugo
 modo build
 # serve API docs with Hugo
 hugo serve -s docs/site/
-# open the displayed URL in a web browser
 ```
+
+Open the displayed URL in a web browser
 
 ---
 

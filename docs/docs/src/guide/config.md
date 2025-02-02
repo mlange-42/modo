@@ -29,7 +29,8 @@ modo build --report-missing false
 ```
 
 All config file entries are also exposed as command line flags,
-except for pre- and post-processing scripts (`pre-run`, `pre-build`, ...).
+except for pre- and post-processing scripts
+(`pre-run`, `pre-build`, `pre-test`, `post-run`, `post-build`, `post-test`).
 
 ## Standalone
 
@@ -45,14 +46,14 @@ modo build -i api.json -o docs/
 ## CLI flags
 
 Most command line flags overwrite config file settings.
-They are not listed here explicitly, please see the [reference](#config-reference).
+These are not listed here explicitly. For details, see the [config reference](#config-reference).
 There are, however, a few special flags that are useful to trigger different behaviour when working in different environments.
 These flags are available for both `build` and `test` command.
 
 **`--watch`, `-W`**
 
 Re-run on changes of sources and documentation files. Disables all post-processing scripts after running them once.
-In conjunction with the watch mode of your SSG (e.g. [Hugo](https://gohugo.io)), this allows to preview changes
+Together with the watch mode of your SSG (e.g. [Hugo](https://gohugo.io)), this allows to preview changes
 in a web browser instantly.
 
 **`--bare`, `-B`**

@@ -1,5 +1,5 @@
 ---
-title: Project setup
+title: Setup
 type: docs
 summary: Setting up a Mojo🔥 project for Modo🧯.
 weight: 20
