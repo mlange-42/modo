@@ -22,10 +22,8 @@ Extracts tests based on the 'modo.yaml' file in the current directory if no path
 The flags listed below overwrite the settings from that file.
 
 Complete documentation at https://mlange-42.github.io/modo/`,
-		Example: `  modo init                      # set up a project
-  mojo doc src/ -o api.json      # run 'mojo doc'
-  modo test                      # extract tests
-  mojo test -I . doctest/        # run the tests`,
+		Example: `  modo init hugo                 # set up a project, e.g. for Hugo
+  modo test                      # extract doc-tests`,
 		Args:         cobra.MaximumNArgs(1),
 		SilenceUsage: true,
 		PreRunE: func(cmd *cobra.Command, args []string) error {

@@ -13,8 +13,7 @@ func RootCommand() (*cobra.Command, error) {
 Modo generates Markdown for static site generators (SSGs) from 'mojo doc' JSON output.
 
 Complete documentation at https://mlange-42.github.io/modo/`,
-		Example: `  modo init                      # set up a project
-  mojo doc src/ -o api.json      # run 'mojo doc'
+		Example: `  modo init hugo                 # set up a project, e.g. for Hugo
   modo build                     # build the docs`,
 		Args:         cobra.ExactArgs(0),
 		SilenceUsage: true,
