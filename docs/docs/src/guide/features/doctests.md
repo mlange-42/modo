@@ -78,13 +78,15 @@ fn add(a: Int, b: Int) -> Int:
 
 This generates the following docs content:
 
-----
+{{<html>}}<div style="border: 2px solid grey; padding: 1rem; margin: 1rem 0;">{{</html>}}
+
 Function `add` sums up its arguments.
 
 ```mojo
 var result = add(1, 2)
 ```
-----
+
+{{<html>}}</div>{{</html>}}
 
 Further, Modo🧯 creates a test file with this content:
 
