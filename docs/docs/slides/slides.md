@@ -151,7 +151,7 @@ Using `mojo doc` JSON...
 
 ----
 
-Get an random Mojo🔥 project
+Get a random Mojo🔥 project
 
 ```bash
 # use a fresh directory
