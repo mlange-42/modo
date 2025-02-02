@@ -1,6 +1,6 @@
-## [[unpublished]](https://github.com/mlange-42/modo/compare/v0.9.0...main)
+## [[v0.10.0]](https://github.com/mlange-42/modo/compare/v0.9.0...v0.10.0)
 
-Modo🧯 v0.10.0 brings a few major usability improvements:
+Modo🧯 v0.10.0 brings a some major usability improvements:
 - Command `init` now analyzes the structure of the Mojo project and sets everything up to work instantly.
 - Flag `--watch` introduces a watch mode, so that edits can be reviewer in a web browser instantly.
 - Flag `--report-missing` reports missing docstrings and a documentation coverage percentage.
