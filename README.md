@@ -23,6 +23,7 @@ It generates Markdown for static site generators (SSGs) from `mojo doc` JSON out
 * Customizable output through [user templates](https://mlange-42.github.io/modo/guide/features/templates).
 
 See the [User guide](https://mlange-42.github.io/modo/) for more information.
+See the Modo🧯 [slides](https://mlange-42.github.io/modo/slides/) for a feature overview.
 
 ## Installation
 
