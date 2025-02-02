@@ -1,5 +1,9 @@
 ## [[v0.10.1]](https://github.com/mlange-42/modo/compare/v0.10.0...v0.10.1)
 
+### Documentation
+
+* Extends the user guide section on templates (#188)
+
 ### Bugfixes
 
 * Updates the examples in the CLI help to match the new features of v0.10.0 (#187)
