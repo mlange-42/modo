@@ -75,6 +75,11 @@ fn add(a: Int, b: Int) -> Int:
     return a + b
 ````
 
+```mojo {doctest="add" hide=true}
+var result = add(1, 2)
+if result != 3:
+    raise Error("test failed")
+```
 
 This generates the following docs content:
 
