@@ -105,18 +105,20 @@ func TestExtractDocTests4Ticks(t *testing.T) {
 	assert.Equal(t, 3, len(strings.Split(outText, "\n")))
 
 	assert.Equal(t, 2, len(proc.docTests))
-	assert.Equal(t, proc.docTests[0], &docTest{
+
+	assert.Equal(t, &docTest{
 		Name:   "test1",
 		Path:   []string{"pkg", "Struct"},
 		Code:   []string{},
 		Global: []string{"````mojo {doctest=\"test2\"}", "Test1", "````"},
-	})
-	assert.Equal(t, proc.docTests[1], &docTest{
+	}, proc.docTests[0])
+
+	assert.Equal(t, &docTest{
 		Name:   "test3",
 		Path:   []string{"pkg", "Struct"},
 		Code:   []string{},
 		Global: []string{"```mojo {doctest=\"test4\"}", "Test2", "```"},
-	})
+	}, proc.docTests[1])
 }
 
 func TestExtractTestsMarkdown(t *testing.T) {
