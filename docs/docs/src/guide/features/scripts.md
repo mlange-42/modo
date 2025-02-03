@@ -27,7 +27,7 @@ Each bash script can be comprised of multiple commands.
 Here is an example that shows how `mojo doc` is executed in the default setup before build and test:
 
 ```yaml
-# Bash commands to run before build as well as test.
+# Bash scripts to run before build as well as test.
 pre-run:
   - |
     echo Running 'mojo doc'...

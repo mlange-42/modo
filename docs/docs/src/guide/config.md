@@ -126,7 +126,7 @@ case-insensitive: false
 # Directories to scan for templates to overwrite builtin templates.
 templates: []
 
-# Bash commands to run before build as well as test.
+# Bash scripts to run before build as well as test.
 pre-run:
   - |
     echo Running 'mojo doc'...
