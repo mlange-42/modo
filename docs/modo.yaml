@@ -3,7 +3,7 @@ input:
 source:
   - src/mypkg/
 output: docs/site/content/
-tests: doctest/
+tests: docs/test/
 format: hugo
 exports: true
 short-links: true
@@ -31,7 +31,7 @@ pre-test: []
 post-test:
   - |
     echo Running 'mojo test'...
-    magic run mojo test -I src/ doctest/
+    magic run mojo test -I src/ docs/test/
     echo Done.
 
 # Shell commands to run after build.
