@@ -397,7 +397,7 @@ fn test_sum() raises:
 Configure pre- and post-processing bash scripts
 
 ```yaml
-# Bash commands to run before build as well as test.
+# Bash scripts to run before build as well as test.
 pre-run:
   - |
     echo Running 'mojo doc'...
