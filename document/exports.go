@@ -8,8 +8,6 @@ import (
 
 const exportsMarker = "Exports:"
 const exportsPrefix = "- "
-const codeFence3 = "```"
-const codeFence4 = "````"
 
 type packageExport struct {
 	Short []string
