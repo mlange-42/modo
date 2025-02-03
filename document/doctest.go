@@ -6,6 +6,7 @@ import (
 	"os"
 	"path"
 	"path/filepath"
+	"sort"
 	"strings"
 )
 
@@ -202,6 +203,7 @@ func extractTestsText(text string, elems []string, strict bool) (string, []*docT
 	for _, block := range blocks {
 		tests = append(tests, block)
 	}
+	sort.Slice(tests, func(i, j int) bool { return tests[i].Name < tests[j].Name })
 
 	return strings.TrimSuffix(outText.String(), "\n"), tests, nil
 }
