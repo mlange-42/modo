@@ -121,7 +121,7 @@ func extractTestsText(text string, elems []string, strict bool) (string, []*docT
 	scanner := bufio.NewScanner(strings.NewReader(text))
 	outText := strings.Builder{}
 
-	fenced := false
+	fenced := fenceNone
 	blocks := map[string]*docTest{}
 	var blockLines []string
 	var globalLines []string
@@ -133,8 +133,8 @@ func extractTestsText(text string, elems []string, strict bool) (string, []*docT
 		origLine := scanner.Text()
 
 		isStart := false
-		isFence := strings.HasPrefix(origLine, codeFence3)
-		if isFence && !fenced {
+		currFence := getFenceType(origLine)
+		if currFence != fenceNone && fenced == fenceNone {
 			var ok bool
 			var err error
 			blockName, excluded, global, ok, err = parseBlockAttr(origLine)
@@ -146,7 +146,7 @@ func extractTestsText(text string, elems []string, strict bool) (string, []*docT
 			if !ok {
 				blockName = ""
 			}
-			fenced = true
+			fenced = currFence
 			isStart = true
 		}
 
@@ -155,7 +155,7 @@ func extractTestsText(text string, elems []string, strict bool) (string, []*docT
 			outText.WriteRune('\n')
 		}
 
-		if fenced && !isFence && blockName != "" {
+		if fenced != fenceNone && currFence != fenced && blockName != "" {
 			if global {
 				globalLines = append(globalLines, origLine)
 			} else {
@@ -164,11 +164,11 @@ func extractTestsText(text string, elems []string, strict bool) (string, []*docT
 		}
 		count++
 
-		if isFence && fenced && !isStart {
+		if fenced != fenceNone && currFence == fenced && !isStart {
 			if blockName == "" {
 				excluded = false
 				global = false
-				fenced = false
+				fenced = fenceNone
 				continue
 			}
 			if dt, ok := blocks[blockName]; ok {
@@ -186,13 +186,13 @@ func extractTestsText(text string, elems []string, strict bool) (string, []*docT
 			globalLines = globalLines[:0]
 			excluded = false
 			global = false
-			fenced = false
+			fenced = fenceNone
 		}
 	}
 	if err := scanner.Err(); err != nil {
 		panic(err)
 	}
-	if fenced {
+	if fenced != fenceNone {
 		if err := warnOrError(strict, "unbalanced code block in %s", strings.Join(elems, ".")); err != nil {
 			return "", nil, err
 		}

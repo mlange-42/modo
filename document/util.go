@@ -5,10 +5,33 @@ import (
 	"fmt"
 	"os"
 	"path/filepath"
+	"strings"
 	"text/template"
 
 	"github.com/mlange-42/modo/assets"
 )
+
+const codeFence3 = "```"
+const codeFence4 = "````"
+
+type fenceType uint8
+
+const (
+	fenceNone fenceType = iota
+	fenceThree
+	fenceFour
+)
+
+func getFenceType(line string) fenceType {
+	isFence4 := strings.HasPrefix(line, codeFence4)
+	if strings.HasPrefix(line, codeFence3) && !isFence4 {
+		return fenceThree
+	}
+	if isFence4 {
+		return fenceFour
+	}
+	return fenceNone
+}
 
 // appends to a slice, but guaranties to return a new one and not alter the original.
 func appendNew[T any](sl []T, elems ...T) []T {

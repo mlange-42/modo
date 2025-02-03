@@ -1,3 +1,9 @@
+## [[unpublished]](https://github.com/mlange-42/modo/compare/v0.10.1...main)
+
+### Other
+
+* Doc-tests parser supports quadruple backticks (#194)
+
 ## [[v0.10.1]](https://github.com/mlange-42/modo/compare/v0.10.0...v0.10.1)
 
 ### Documentation

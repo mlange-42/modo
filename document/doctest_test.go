@@ -84,6 +84,41 @@ func TestExtractDocTests(t *testing.T) {
 	})
 }
 
+func TestExtractDocTests4Ticks(t *testing.T) {
+	text := "Docstring\n" +
+		"\n" +
+		"```mojo {doctest=\"test1\" hide=true global=true}\n" +
+		"````mojo {doctest=\"test2\"}\n" +
+		"Test1\n" +
+		"````\n" +
+		"```\n" +
+		"\n" +
+		"````mojo {doctest=\"test3\" hide=true global=true}\n" +
+		"```mojo {doctest=\"test4\"}\n" +
+		"Test2\n" +
+		"```\n" +
+		"````\n"
+
+	proc := NewProcessor(nil, nil, nil, &Config{})
+	outText, err := proc.extractTests(text, []string{"pkg", "Struct"}, 1)
+	assert.Nil(t, err)
+	assert.Equal(t, 3, len(strings.Split(outText, "\n")))
+
+	assert.Equal(t, 2, len(proc.docTests))
+	assert.Equal(t, proc.docTests[0], &docTest{
+		Name:   "test1",
+		Path:   []string{"pkg", "Struct"},
+		Code:   []string{},
+		Global: []string{"````mojo {doctest=\"test2\"}", "Test1", "````"},
+	})
+	assert.Equal(t, proc.docTests[1], &docTest{
+		Name:   "test3",
+		Path:   []string{"pkg", "Struct"},
+		Code:   []string{},
+		Global: []string{"```mojo {doctest=\"test4\"}", "Test2", "```"},
+	})
+}
+
 func TestExtractTestsMarkdown(t *testing.T) {
 	inDir := t.TempDir()
 	outDir := t.TempDir()
