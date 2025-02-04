@@ -61,7 +61,6 @@ fn add(a: Int, b: Int) -> Int:
 
     ```mojo {doctest="add" global=true hide=true}
     from testing import assert_equal
-    from mypkg import add
     ```
 
     ```mojo {doctest="add"}
@@ -95,13 +94,18 @@ var result = add(1, 2)
 
 Further, Modo🧯 creates a test file with this content:
 
-```mojo
+```mojo {doctest="testoutput" global=true}
 from testing import assert_equal
-from mypkg import add
 
 fn test_add() raises:
-    result = add(1, 2)
+    var result = add(1, 2)
     assert_equal(result, 3)
+```
+
+```mojo {doctest="testoutput" global=true hide=true}
+
+fn add(a: Int, b: Int) -> Int:
+    return a + b
 ```
 
 ## Markdown files
