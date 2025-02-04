@@ -17,6 +17,7 @@ type packageExport struct {
 
 // Parses and collects project re-exports, recursively.
 func (proc *Processor) collectExports(p *Package, elems []string) (bool, error) {
+	proc.renameExports = map[string]string{}
 	anyExports := false
 
 	newElems := appendNew(elems, p.Name)
@@ -41,9 +42,11 @@ func (proc *Processor) collectExports(p *Package, elems []string) (bool, error) 
 			anyExports = true
 		}
 		for _, ex := range p.exports {
-			if _, ok := proc.allPaths[strings.Join(ex.Long, ".")]; !ok {
-				return anyExports, fmt.Errorf("unresolved package re-export '%s' in %s", strings.Join(ex.Long, "."), strings.Join(newElems, "."))
+			longPath := strings.Join(ex.Long, ".")
+			if _, ok := proc.allPaths[longPath]; !ok {
+				return anyExports, fmt.Errorf("unresolved package re-export '%s' in %s", longPath, strings.Join(newElems, "."))
 			}
+			proc.renameExports[strings.Join(ex.Short, ".")] = strings.Join(ex.Renamed, ".")
 		}
 		return anyExports, nil
 	}
