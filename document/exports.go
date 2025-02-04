@@ -10,9 +10,10 @@ const exportsMarker = "Exports:"
 const exportsPrefix = "- "
 
 type packageExport struct {
-	Short   []string
-	Renamed []string
-	Long    []string
+	Short    []string
+	Exported []string
+	Renamed  string
+	Long     []string
 }
 
 // Parses and collects project re-exports, recursively.
@@ -46,7 +47,10 @@ func (proc *Processor) collectExports(p *Package, elems []string) (bool, error) 
 			if _, ok := proc.allPaths[longPath]; !ok {
 				return anyExports, fmt.Errorf("unresolved package re-export '%s' in %s", longPath, strings.Join(newElems, "."))
 			}
-			proc.renameExports[strings.Join(ex.Short, ".")] = strings.Join(ex.Renamed, ".")
+			if ex.Renamed != ex.Exported[len(ex.Exported)-1] {
+				exported := strings.Join(ex.Exported, ".")
+				proc.renameExports[exported] = ex.Renamed
+			}
 		}
 		return anyExports, nil
 	}
@@ -54,16 +58,18 @@ func (proc *Processor) collectExports(p *Package, elems []string) (bool, error) 
 	p.exports = make([]*packageExport, 0, len(p.Packages)+len(p.Modules))
 	for _, pkg := range p.Packages {
 		p.exports = append(p.exports, &packageExport{
-			Short:   []string{pkg.Name},
-			Renamed: []string{pkg.Name},
-			Long:    appendNew(newElems, pkg.Name),
+			Short:    []string{pkg.Name},
+			Exported: appendNew(newElems, pkg.Name),
+			Renamed:  pkg.Name,
+			Long:     appendNew(newElems, pkg.Name),
 		})
 	}
 	for _, mod := range p.Modules {
 		p.exports = append(p.exports, &packageExport{
-			Short:   []string{mod.Name},
-			Renamed: []string{mod.Name},
-			Long:    appendNew(newElems, mod.Name),
+			Short:    []string{mod.Name},
+			Exported: appendNew(newElems, mod.Name),
+			Renamed:  mod.Name,
+			Long:     appendNew(newElems, mod.Name),
 		})
 	}
 
@@ -123,9 +129,10 @@ func (proc *Processor) parseExports(pkgDocs string, basePath []string, remove bo
 				}
 			}
 			exports = append(exports, &packageExport{
-				Short:   partsShort,
-				Renamed: appendNew(partsShort[:len(partsShort)-1], renamed),
-				Long:    appendNew(basePath, partsShort...)})
+				Short:    partsShort,
+				Exported: appendNew(basePath, partsShort[len(partsShort)-1]),
+				Renamed:  renamed,
+				Long:     appendNew(basePath, partsShort...)})
 			anyExports = true
 			exportIndex++
 		} else {

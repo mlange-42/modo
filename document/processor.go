@@ -74,7 +74,9 @@ func (proc *Processor) PrepareDocs(subdir string) error {
 		return err
 	}
 
-	proc.renameAll(proc.ExportDocs.Decl, "")
+	if proc.Config.UseExports {
+		proc.renameAll(proc.ExportDocs.Decl)
+	}
 
 	return nil
 }
