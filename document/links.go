@@ -144,6 +144,10 @@ func (proc *Processor) placeholderToRelLink(link string, elems []string, modElem
 }
 
 func (proc *Processor) renameInLink(link string, elems *elemPath) string {
+	if len(proc.renameExports) == 0 {
+		return link
+	}
+
 	maxDepth := len(elems.Elements)
 	if elems.IsSection {
 		maxDepth -= 1
