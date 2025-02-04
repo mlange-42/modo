@@ -2,9 +2,9 @@ Mojo trait [🡭](https://github.com/mlange-42/modo/blob/main/test/src/mod.mojo)
 
 # `Trait`
 
-[`ModuleAlias`](_index.md#aliases).
+[`ModAlias`](_index.md#aliases).
 
-[`Struct.struct_method`](Struct-.md#struct_method)
+[`RenamedStruct.struct_method`](RenamedStruct-.md#struct_method)
 
 ## Implemented traits
 
@@ -18,25 +18,25 @@ Mojo trait [🡭](https://github.com/mlange-42/modo/blob/main/test/src/mod.mojo)
 fn trait_method[T: Intable](self: _Self, arg: T) -> Int
 ```
 
-[`ModuleAlias`](_index.md#aliases).
+[`ModAlias`](_index.md#aliases).
 
-[`Struct.struct_method`](Struct-.md#struct_method)
+[`RenamedStruct.struct_method`](RenamedStruct-.md#struct_method)
 
 **Parameters:**
 
-- **T** (`Intable`): [`Struct.struct_method`](Struct-.md#struct_method).
+- **T** (`Intable`): [`RenamedStruct.struct_method`](RenamedStruct-.md#struct_method).
 
 **Args:**
 
 - **self** (`_Self`)
-- **arg** (`T`): [`Struct.struct_method`](Struct-.md#struct_method).
+- **arg** (`T`): [`RenamedStruct.struct_method`](RenamedStruct-.md#struct_method).
 
 **Returns:**
 
-`Int`: Bla [`Struct.struct_method`](Struct-.md#struct_method).
+`Int`: Bla [`RenamedStruct.struct_method`](RenamedStruct-.md#struct_method).
 
 **Raises:**
 
-Error [`Struct.struct_method`](Struct-.md#struct_method).
+Error [`RenamedStruct.struct_method`](RenamedStruct-.md#struct_method).
 
 

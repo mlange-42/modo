@@ -18,6 +18,7 @@ type Processor struct {
 	linkTargets        map[string]elemPath     // Mapping from full (new) member paths to link strings.
 	linkExports        map[string]string       // Mapping from original to new member paths.
 	linkExportsReverse map[string]*exportError // Used to check for name collisions through re-exports.
+	renameExports      map[string]string       // Mapping from short to renamed member paths.
 	docTests           []*docTest
 	writer             func(file, text string) error
 }
@@ -72,6 +73,11 @@ func (proc *Processor) PrepareDocs(subdir string) error {
 	if err := proc.processLinks(proc.Docs); err != nil {
 		return err
 	}
+
+	if proc.Config.UseExports {
+		proc.renameAll(proc.ExportDocs.Decl)
+	}
+
 	return nil
 }
 

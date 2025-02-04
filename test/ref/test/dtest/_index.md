@@ -1,6 +1,6 @@
 Mojo module [🡭](https://github.com/mlange-42/modo/blob/main/test/src/doctest.mojo)
 
-# `doctest`
+# `dtest`
 
 Package doctests tests doctests
 
@@ -13,7 +13,7 @@ var c = add(a, b)
 
 ## Aliases
 
-- `ModAlias = Int`
+- `ModuleAlias2 = Int`
 
 ## Structs
 

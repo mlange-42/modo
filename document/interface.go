@@ -58,13 +58,7 @@ func (m *MemberName) GetName() string {
 }
 
 func (m *MemberName) GetFileName() string {
-	if caseSensitiveSystem {
-		return m.Name
-	}
-	if isCap(m.Name) {
-		return m.Name + capitalFileMarker
-	}
-	return m.Name
+	return toFileName(m.Name)
 }
 
 type MemberSummary struct {

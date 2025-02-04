@@ -6,23 +6,23 @@ Mojo function [🡭](https://github.com/mlange-42/modo/blob/main/test/src/mod.mo
 fn module_function[FunctionParameter: Intable](arg: Int) -> Int
 ```
 
-[`ModuleAlias`](_index.md#aliases).
+[`ModAlias`](_index.md#aliases).
 
-[`Struct.struct_method`](Struct-.md#struct_method)
+[`RenamedStruct.struct_method`](RenamedStruct-.md#struct_method)
 
 **Parameters:**
 
-- **FunctionParameter** (`Intable`): [`Struct.struct_method`](Struct-.md#struct_method).
+- **FunctionParameter** (`Intable`): [`RenamedStruct.struct_method`](RenamedStruct-.md#struct_method).
 
 **Args:**
 
-- **arg** (`Int`): [`Struct.struct_method`](Struct-.md#struct_method).
+- **arg** (`Int`): [`RenamedStruct.struct_method`](RenamedStruct-.md#struct_method).
 
 **Returns:**
 
-`Int`: Bla [`Struct.struct_method`](Struct-.md#struct_method).
+`Int`: Bla [`RenamedStruct.struct_method`](RenamedStruct-.md#struct_method).
 
 **Raises:**
 
-Error [`Struct.struct_method`](Struct-.md#struct_method).
+Error [`RenamedStruct.struct_method`](RenamedStruct-.md#struct_method).
 

@@ -105,6 +105,16 @@ func fileExists(file string) (exists, isDir bool, err error) {
 	return
 }
 
+func toFileName(name string) string {
+	if caseSensitiveSystem {
+		return name
+	}
+	if isCap(name) {
+		return name + capitalFileMarker
+	}
+	return name
+}
+
 func findTemplates(dir string) ([]string, error) {
 	allTemplates := []string{}
 	err := filepath.WalkDir(dir,

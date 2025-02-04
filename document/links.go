@@ -127,6 +127,10 @@ func (proc *Processor) placeholderToRelLink(link string, elems []string, modElem
 			break
 		}
 	}
+
+	// redirect link to re-name by re-export
+	link = proc.renameInLink(link, &elemPath)
+
 	fullPath := []string{}
 	for range modElems - skip {
 		fullPath = append(fullPath, "..")
@@ -135,7 +139,45 @@ func (proc *Processor) placeholderToRelLink(link string, elems []string, modElem
 	if len(fullPath) == 0 {
 		fullPath = []string{"."}
 	}
+
 	return &elemPath, link, fullPath, true, nil
+}
+
+func (proc *Processor) renameInLink(link string, elems *elemPath) string {
+	if len(proc.renameExports) == 0 {
+		return link
+	}
+
+	maxDepth := len(elems.Elements)
+	if elems.IsSection {
+		maxDepth -= 1
+	}
+
+	newLink := strings.Split(link, ".")
+	dotPos := 0
+	currDepth := 0
+	changed := false
+	for currDepth < len(elems.Elements) {
+		idx := strings.IndexRune(link[dotPos:], '.')
+		if idx < 0 {
+			idx = len(link) - dotPos
+		}
+		subLink := link[:dotPos+idx]
+		if renamed, ok := proc.renameExports[subLink]; ok {
+			if currDepth < maxDepth {
+				newName := toFileName(renamed)
+				elems.Elements[currDepth] = newName
+			}
+			newLink[currDepth] = renamed
+			changed = true
+		}
+		dotPos += idx + 1
+		currDepth++
+	}
+	if changed {
+		return strings.Join(newLink, ".")
+	}
+	return link
 }
 
 func (proc *Processor) refToPlaceholder(link string, elems []string, modElems int) (string, bool, error) {
