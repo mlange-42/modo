@@ -12,7 +12,6 @@ func (proc *Processor) renamePackage(p *Package, ownPath string) {
 			tempPkg := *p.Packages[i]
 			tempPkg.MemberName = MemberName{Name: newName}
 			p.Packages[i] = &tempPkg
-			newPath = ownPath + "." + newName
 		}
 	}
 
@@ -23,7 +22,6 @@ func (proc *Processor) renamePackage(p *Package, ownPath string) {
 			tempMod := *p.Modules[i]
 			tempMod.MemberName = MemberName{Name: newName}
 			p.Modules[i] = &tempMod
-			newPath = ownPath + "." + newName
 		}
 	}
 
