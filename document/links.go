@@ -129,6 +129,28 @@ func (proc *Processor) placeholderToRelLink(link string, elems []string, modElem
 	}
 
 	// redirect link to re-name by re-export
+	maxDepth := len(elemPath.Elements)
+	if elemPath.IsSection {
+		maxDepth -= 1
+	}
+	dotPos := 0
+	currDepth := 0
+	for currDepth < maxDepth {
+		idx := strings.IndexRune(link[dotPos:], '.')
+		var subLink string
+		if idx < 0 {
+			subLink = link
+		} else {
+			subLink = link[:dotPos+idx]
+		}
+		if renamed, ok := proc.renameExports[subLink]; ok {
+			newName := toFileName(renamed)
+			elemPath.Elements[currDepth] = newName
+		}
+		dotPos += idx + 1
+		currDepth++
+	}
+
 	if renamed, ok := proc.renameExports[link]; ok {
 		newName := toFileName(renamed)
 		if elemPath.IsSection {
