@@ -15,6 +15,7 @@ source:{{if not .Sources}} []
 {{range .Sources}}  - {{.}}
 {{end}}
 {{end -}}
+# Full URLs of package sources. Used to create source links.
 source-url:{{if not .SourceURLs}} {}
 
 {{else}}

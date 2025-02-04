@@ -94,6 +94,10 @@ input:
 source:
   - src/mypkg
 
+# Full URLs of package sources. Used to create source links.
+source-url:
+  mypkg: https:/github.com/your/project/blob/main/src/mypkg
+
 # Output directory.
 output: docs/site/content
 
