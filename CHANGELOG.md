@@ -2,7 +2,8 @@
 
 ### Features
 
-* Modo🧯 can automatically link from doc pages to the containing module's source (#195)
+* Supports renaming of re-exports like in `from .mod import X as Y` (#189)
+* Adds automatic linking from doc pages to the containing module's source (#195)
 
 ### Other
 
