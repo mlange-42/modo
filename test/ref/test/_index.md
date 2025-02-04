@@ -6,13 +6,13 @@ Package test.
 
 Self ref [`test`](_index.md).
 
-Exports (rel) [`ModuleAlias`](_index.md#aliases), [`Struct`](Struct-.md), [`Trait`](Trait-.md), [`module_function`](module_function.md), [`pkg`](pkg/_index.md).
-Exports (abs) [`ModuleAlias`](_index.md#aliases), [`Struct`](Struct-.md), [`Trait`](Trait-.md), [`module_function`](module_function.md), [`pkg`](pkg/_index.md).
+Exports (rel) [`ModAlias`](_index.md#aliases), [`RenamedStruct`](RenamedStruct-.md), [`Trait`](Trait-.md), [`module_function`](module_function.md), [`pkg`](pkg/_index.md).
+Exports (abs) [`ModAlias`](_index.md#aliases), [`RenamedStruct`](RenamedStruct-.md), [`Trait`](Trait-.md), [`module_function`](module_function.md), [`pkg`](pkg/_index.md).
 
- - [`Struct.StructParameter`](Struct-.md#parameters)
- - [`Struct.struct_field`](Struct-.md#fields)
- - [`Struct.struct_method`](Struct-.md#struct_method)
- - [`Struct.StructAlias`](Struct-.md#aliases)
+ - [`RenamedStruct.StructParameter`](RenamedStruct-.md#parameters)
+ - [`RenamedStruct.struct_field`](RenamedStruct-.md#fields)
+ - [`RenamedStruct.struct_method`](RenamedStruct-.md#struct_method)
+ - [`RenamedStruct.StructAlias`](RenamedStruct-.md#aliases)
 
  - [`Trait.trait_method`](Trait-.md#trait_method)
 
@@ -24,15 +24,16 @@ Exports (abs) [`ModuleAlias`](_index.md#aliases), [`Struct`](Struct-.md), [`Trai
 
 ## Aliases
 
-- `ModuleAlias = Int`
+- `ModAlias2 = Int`
+- `ModAlias = Int`
 
 ## Structs
 
-- [`Struct`](Struct-.md): [`ModuleAlias`](_index.md#aliases).
+- [`RenamedStruct`](RenamedStruct-.md): [`ModAlias`](_index.md#aliases).
 
 ## Traits
 
-- [`Trait`](Trait-.md): [`ModuleAlias`](_index.md#aliases).
+- [`Trait`](Trait-.md): [`ModAlias`](_index.md#aliases).
 
 ## Functions
 
@@ -40,7 +41,7 @@ Exports (abs) [`ModuleAlias`](_index.md#aliases), [`Struct`](Struct-.md), [`Trai
 
 ## Modules
 
-- [`doctest`](doctest/_index.md): Package doctests tests doctests
+- [`dtest`](dtest/_index.md): Package doctests tests doctests
 
 ## Packages
 
