@@ -1,4 +1,4 @@
-module {{.Module}}
+module {{.GoModule}}
 
 go 1.23.0
 

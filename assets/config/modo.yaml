@@ -15,6 +15,12 @@ source:{{if not .Sources}} []
 {{range .Sources}}  - {{.}}
 {{end}}
 {{end -}}
+source-url:{{if not .SourceURLs}} {}
+
+{{else}}
+{{range $key, $value := .SourceURLs}}  {{$key}}: {{$value}}
+{{end}}
+{{end -}}
 # Output directory.
 output: {{if .OutputDir}}{{.OutputDir}}{{else}}docs/{{end}}
 
