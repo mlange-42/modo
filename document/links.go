@@ -127,6 +127,22 @@ func (proc *Processor) placeholderToRelLink(link string, elems []string, modElem
 			break
 		}
 	}
+
+	fmt.Println(link)
+	if renamed, ok := proc.renameExports[link]; ok {
+		newName := toFileName(renamed)
+		if elemPath.IsSection {
+			if elemPath.Kind != "package" && elemPath.Kind != "module" {
+				elemPath.Elements[len(elemPath.Elements)-2] = newName
+			}
+		} else {
+			elemPath.Elements[len(elemPath.Elements)-1] = newName
+		}
+		//fmt.Println("   +", elemPath, renamed)
+	} else {
+		fmt.Println("   -", elemPath, renamed)
+	}
+
 	fullPath := []string{}
 	for range modElems - skip {
 		fullPath = append(fullPath, "..")
@@ -135,6 +151,7 @@ func (proc *Processor) placeholderToRelLink(link string, elems []string, modElem
 	if len(fullPath) == 0 {
 		fullPath = []string{"."}
 	}
+
 	return &elemPath, link, fullPath, true, nil
 }
 
