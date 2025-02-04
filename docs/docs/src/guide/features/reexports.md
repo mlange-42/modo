@@ -20,24 +20,29 @@ In a package's `__init__.mojo`, document re-exports like this:
 Package creatures demonstrates Modo re-exports.
 
 Exports:
- - animals.mammals.Cat
- - animals.mammals.Dog
- - plants.vascular
+ - animals.Dog
+ - animals.Cat as Kitten
  - fungi
+ - plants.vascular
+ - plants.bryophytes.Moss
 """
-from .animals.mammals import Cat, Dog
+from .animals import Dog, Cat as Kitten
 from .plants import vascular
+from .plants.bryophytes import Moss
 ```
 
 > Note that `Exports:` should not be the first line of the docstring, as it is considered the summary and is not processed.
 
 When processed with `--exports`, only exported members are included in the documentation.
-Re-exports are processed recursively.
-This means that sub-packages need an `Exports:` section too if they are re-exported directly,
-like `fungi` in the example.
-For exporting members from a sub-package (like `Cat` and `Doc`), the sub-package `Exports:` are ignored.
 
+Re-exports are processed recursively.
 Re-exported modules (like `plants.vascular`) are fully included with all members.
+Sub-packages (like `fungi`) need an `Exports:` section too if they are re-exported as a whole.
+When directly exporting members from a sub-package (like `plants.bryophytes.Moss`), the sub-package exports are ignored.
+
+Renaming (`X as Y`) can be used like in Mojo🔥 imports.
+Member names, link paths and cross-reference labels are changed accordingly.
+Signatures, however, are not changed.
 
 [Cross-references](../crossrefs) should still use the original structure of the package.
 They are automatically transformed to match the altered structure.
