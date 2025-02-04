@@ -40,11 +40,23 @@ func TestGetGitOrigin(t *testing.T) {
 }
 
 func TestRepoToTitleAndPages(t *testing.T) {
-	title, pages := repoToTitleAndPages("https://github.com/user/repo")
+	title, pages := repoToTitleAndPages("https://github.com/user/repo/")
 	assert.Equal(t, title, "repo")
 	assert.Equal(t, pages, "https://user.github.io/repo/")
 
 	title, pages = repoToTitleAndPages("https://gitlab.com/user/repo")
 	assert.Equal(t, title, "repo")
-	assert.Equal(t, pages, "https://repo.com")
+	assert.Equal(t, pages, "https://user.gitlab.io/repo/")
+
+	title, pages = repoToTitleAndPages("https://my-git.com/user/repo")
+	assert.Equal(t, title, "repo")
+	assert.Equal(t, pages, "https://user.my-git.io/repo/")
+
+	title, pages = repoToTitleAndPages("https://my-git.com/repo")
+	assert.Equal(t, title, "repo")
+	assert.Equal(t, pages, "https://my-git.io/repo/")
+
+	title, pages = repoToTitleAndPages("https://my-git.com")
+	assert.Equal(t, title, "unknown")
+	assert.Equal(t, pages, "https://my-git.io/")
 }
