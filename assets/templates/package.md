@@ -1,4 +1,4 @@
-Mojo package
+Mojo package [[src]({{sourceUrl}}/{{.Link}})]
 
 # `{{.Name}}`
 

@@ -1,4 +1,4 @@
-Mojo module
+Mojo module [[src]({{sourceUrl}}/{{.Link}})]
 
 # `{{.Name}}`
 

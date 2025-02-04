@@ -49,10 +49,11 @@ func warnOrError(strict bool, pattern string, args ...any) error {
 	return nil
 }
 
-func LoadTemplates(f Formatter, additional ...string) (*template.Template, error) {
+func LoadTemplates(f Formatter, sourceURL string, additional ...string) (*template.Template, error) {
 	templ := template.New("all")
 	templ = templ.Funcs(template.FuncMap{
-		"toLink": f.ToLinkPath,
+		"toLink":    f.ToLinkPath,
+		"sourceUrl": func() string { return sourceURL },
 	})
 	templ, err := templ.ParseFS(assets.Templates, "templates/*.*", "templates/**/*.*")
 	if err != nil {

@@ -1,4 +1,4 @@
-Mojo function
+Mojo function [[src]({{sourceUrl}}/{{.Link}})]
 
 # `{{.Name}}`
 

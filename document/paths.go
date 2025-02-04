@@ -14,32 +14,35 @@ type elemPath struct {
 // Runs on the re-structured package.
 func (proc *Processor) collectPaths() {
 	proc.linkTargets = map[string]elemPath{}
-	proc.collectPathsPackage(proc.ExportDocs.Decl, []string{}, []string{}, proc.addLinkTarget)
+	proc.collectPathsPackage(proc.ExportDocs.Decl, []string{}, []string{}, proc.addLinkTarget, false)
 }
 
 // Collects the paths of all (sub)-elements in the original structure.
 func (proc *Processor) collectElementPaths() {
 	proc.allPaths = map[string]bool{}
-	proc.collectPathsPackage(proc.Docs.Decl, []string{}, []string{}, proc.addElementPath)
+	proc.collectPathsPackage(proc.Docs.Decl, []string{}, []string{}, proc.addElementPath, true)
 }
 
-func (proc *Processor) collectPathsPackage(p *Package, elems []string, pathElem []string, add func([]string, []string, string, bool)) {
+func (proc *Processor) collectPathsPackage(p *Package, elems []string, pathElem []string, add func([]string, []string, string, bool), isOriginal bool) {
 	newElems := appendNew(elems, p.GetName())
 	newPath := appendNew(pathElem, p.GetFileName())
+	if isOriginal {
+		p.SetLink(newElems, p.Kind)
+	}
 	add(newElems, newPath, "package", false)
 
 	for _, pkg := range p.Packages {
-		proc.collectPathsPackage(pkg, newElems, newPath, add)
+		proc.collectPathsPackage(pkg, newElems, newPath, add, isOriginal)
 	}
 	for _, mod := range p.Modules {
-		proc.collectPathsModule(mod, newElems, newPath, add)
+		proc.collectPathsModule(mod, newElems, newPath, add, isOriginal)
 	}
 
 	for _, s := range p.Structs {
-		proc.collectPathsStruct(s, newElems, newPath, add)
+		proc.collectPathsStruct(s, newElems, newPath, add, isOriginal)
 	}
 	for _, t := range p.Traits {
-		proc.collectPathsTrait(t, newElems, newPath, add)
+		proc.collectPathsTrait(t, newElems, newPath, add, isOriginal)
 	}
 	for _, a := range p.Aliases {
 		newElems := appendNew(newElems, a.GetName())
@@ -47,22 +50,26 @@ func (proc *Processor) collectPathsPackage(p *Package, elems []string, pathElem 
 		add(newElems, newPath, "package", true) // kind=package for correct link paths
 	}
 	for _, f := range p.Functions {
+		if isOriginal {
+			f.SetLink(newElems, f.Kind)
+		}
 		newElems := appendNew(newElems, f.GetName())
 		newPath := appendNew(newPath, f.GetFileName())
 		add(newElems, newPath, "function", false)
 	}
 }
 
-func (proc *Processor) collectPathsModule(m *Module, elems []string, pathElem []string, add func([]string, []string, string, bool)) {
+func (proc *Processor) collectPathsModule(m *Module, elems []string, pathElem []string, add func([]string, []string, string, bool), isOriginal bool) {
 	newElems := appendNew(elems, m.GetName())
 	newPath := appendNew(pathElem, m.GetFileName())
+	m.SetLink(newElems, m.Kind)
 	add(newElems, newPath, "module", false)
 
 	for _, s := range m.Structs {
-		proc.collectPathsStruct(s, newElems, newPath, add)
+		proc.collectPathsStruct(s, newElems, newPath, add, isOriginal)
 	}
 	for _, t := range m.Traits {
-		proc.collectPathsTrait(t, newElems, newPath, add)
+		proc.collectPathsTrait(t, newElems, newPath, add, isOriginal)
 	}
 	for _, a := range m.Aliases {
 		newElems := appendNew(newElems, a.GetName())
@@ -70,15 +77,21 @@ func (proc *Processor) collectPathsModule(m *Module, elems []string, pathElem []
 		add(newElems, newPath, "module", true) // kind=module for correct link paths
 	}
 	for _, f := range m.Functions {
+		if isOriginal {
+			f.SetLink(newElems, f.Kind)
+		}
 		newElems := appendNew(newElems, f.GetName())
 		newPath := appendNew(newPath, f.GetFileName())
 		add(newElems, newPath, "function", false)
 	}
 }
 
-func (proc *Processor) collectPathsStruct(s *Struct, elems []string, pathElem []string, add func([]string, []string, string, bool)) {
+func (proc *Processor) collectPathsStruct(s *Struct, elems []string, pathElem []string, add func([]string, []string, string, bool), isOriginal bool) {
 	newElems := appendNew(elems, s.GetName())
 	newPath := appendNew(pathElem, s.GetFileName())
+	if isOriginal {
+		s.SetLink(elems, s.Kind)
+	}
 	add(newElems, newPath, "struct", false)
 
 	for _, f := range s.Aliases {
@@ -103,9 +116,12 @@ func (proc *Processor) collectPathsStruct(s *Struct, elems []string, pathElem []
 	}
 }
 
-func (proc *Processor) collectPathsTrait(t *Trait, elems []string, pathElem []string, add func([]string, []string, string, bool)) {
+func (proc *Processor) collectPathsTrait(t *Trait, elems []string, pathElem []string, add func([]string, []string, string, bool), isOriginal bool) {
 	newElems := appendNew(elems, t.GetName())
 	newPath := appendNew(pathElem, t.GetFileName())
+	if isOriginal {
+		t.SetLink(elems, t.Kind)
+	}
 	add(newElems, newPath, "trait", false)
 
 	for _, f := range t.Fields {

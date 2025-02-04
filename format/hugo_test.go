@@ -36,7 +36,7 @@ func TestHugoToLinkPath(t *testing.T) {
 
 func TestHugoProcessMarkdown(t *testing.T) {
 	form := Hugo{}
-	templ, err := document.LoadTemplates(&form)
+	templ, err := document.LoadTemplates(&form, "")
 	assert.Nil(t, err)
 
 	proc := document.NewProcessor(nil, &form, templ, &document.Config{})

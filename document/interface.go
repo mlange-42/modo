@@ -1,6 +1,7 @@
 package document
 
 import (
+	"path"
 	"unicode"
 )
 
@@ -14,10 +15,6 @@ type missingStats struct {
 	Missing int
 }
 
-//type missingChecker interface {
-//	CheckMissing(path string) (missing []missingDocs)
-//}
-
 type Kinded interface {
 	GetKind() string
 }
@@ -29,6 +26,11 @@ type Named interface {
 
 type Summarized interface {
 	GetSummary() string
+}
+
+type Linked interface {
+	SetLink(path []string, kind string)
+	GetLink() string
 }
 
 type MemberKind struct {
@@ -104,4 +106,20 @@ func isCap(s string) bool {
 	}
 	firstRune := []rune(s)[0]
 	return unicode.IsUpper(firstRune)
+}
+
+type MemberLink struct {
+	Link string
+}
+
+func (m *MemberLink) SetLink(p []string, kind string) {
+	if kind == "package" {
+		m.Link = path.Join(path.Join(p[1:]...), "__init__.mojo")
+	} else {
+		m.Link = path.Join(p[1:]...) + ".mojo"
+	}
+}
+
+func (m *MemberLink) GetLink() string {
+	return m.Link
 }

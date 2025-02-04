@@ -1,4 +1,4 @@
-Mojo struct
+Mojo struct [[src]({{sourceUrl}}/{{.Link}})]
 
 # `{{.Name}}`
 
