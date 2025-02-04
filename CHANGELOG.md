@@ -9,6 +9,7 @@
 
 * Doc-tests parser supports quadruple backticks (#194)
 * Project setup fully supports GitLab remotes, incl. self-hosted (#199)
+* Omits the test function for pure global doc-tests (#200)
 
 ## [[v0.10.1]](https://github.com/mlange-42/modo/compare/v0.10.0...v0.10.1)
 

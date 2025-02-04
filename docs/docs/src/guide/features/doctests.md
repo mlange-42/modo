@@ -61,7 +61,6 @@ fn add(a: Int, b: Int) -> Int:
 
     ```mojo {doctest="add" global=true hide=true}
     from testing import assert_equal
-    from mypkg import add
     ```
 
     ```mojo {doctest="add"}
@@ -74,12 +73,6 @@ fn add(a: Int, b: Int) -> Int:
     """
     return a + b
 ````
-
-```mojo {doctest="add" hide=true}
-var result = add(1, 2)
-if result != 3:
-    raise Error("test failed")
-```
 
 This generates the following docs content:
 
@@ -95,14 +88,18 @@ var result = add(1, 2)
 
 Further, Modo🧯 creates a test file with this content:
 
-```mojo
+```mojo {doctest="add" global=true}
 from testing import assert_equal
-from mypkg import add
 
 fn test_add() raises:
-    result = add(1, 2)
+    var result = add(1, 2)
     assert_equal(result, 3)
 ```
+
+Note that the two code blocks around the box form a doc-test themselves,
+to ensure that this guide is correct and up to date.
+Both blocks have the attributes `{doctest="add" global=true}`,
+which concatenates them into one test file.
 
 ## Markdown files
 
