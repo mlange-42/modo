@@ -14,14 +14,14 @@ Text
 Exports:
  - mod.Struct
  - mod.Trait
- - mod.func
+ - mod.func as f
 
 ` +
 		"```mojo\n" +
 		`Exports:
  - xxx.Struct
  - xxx.Trait
- - xxx.func
+ - xxx.func as f
 ` +
 		"```\n" +
 		`
@@ -34,16 +34,17 @@ Exports:
 Text
 `
 
-	proc := NewProcessor(nil, nil, nil, &Config{})
-	exports, newText, anyExp := proc.parseExports(text, []string{"pkg"}, true)
+	proc := NewProcessor(nil, nil, nil, &Config{Strict: true})
+	exports, newText, anyExp, err := proc.parseExports(text, []string{"pkg"}, true)
 
+	assert.Nil(t, err)
 	assert.True(t, anyExp)
 
 	assert.Equal(t, []*packageExport{
-		{Short: []string{"mod", "Struct"}, Long: []string{"pkg", "mod", "Struct"}},
-		{Short: []string{"mod", "Trait"}, Long: []string{"pkg", "mod", "Trait"}},
-		{Short: []string{"mod", "func"}, Long: []string{"pkg", "mod", "func"}},
-		{Short: []string{"mod", "submod"}, Long: []string{"pkg", "mod", "submod"}},
+		{Short: []string{"mod", "Struct"}, Renamed: []string{"mod", "Struct"}, Long: []string{"pkg", "mod", "Struct"}},
+		{Short: []string{"mod", "Trait"}, Renamed: []string{"mod", "Trait"}, Long: []string{"pkg", "mod", "Trait"}},
+		{Short: []string{"mod", "func"}, Renamed: []string{"mod", "f"}, Long: []string{"pkg", "mod", "func"}},
+		{Short: []string{"mod", "submod"}, Renamed: []string{"mod", "submod"}, Long: []string{"pkg", "mod", "submod"}},
 	}, exports)
 
 	assert.Equal(t, newText, `Text.
@@ -56,7 +57,7 @@ Text
 		`Exports:
  - xxx.Struct
  - xxx.Trait
- - xxx.func
+ - xxx.func as f
 `+
 		"```\n"+
 		`
