@@ -73,6 +73,9 @@ func (proc *Processor) PrepareDocs(subdir string) error {
 	if err := proc.processLinks(proc.Docs); err != nil {
 		return err
 	}
+
+	proc.renameAll(proc.ExportDocs.Decl, "")
+
 	return nil
 }
 
