@@ -129,38 +129,7 @@ func (proc *Processor) placeholderToRelLink(link string, elems []string, modElem
 	}
 
 	// redirect link to re-name by re-export
-	maxDepth := len(elemPath.Elements)
-	if elemPath.IsSection {
-		maxDepth -= 1
-	}
-	dotPos := 0
-	currDepth := 0
-	for currDepth < maxDepth {
-		idx := strings.IndexRune(link[dotPos:], '.')
-		var subLink string
-		if idx < 0 {
-			subLink = link
-		} else {
-			subLink = link[:dotPos+idx]
-		}
-		if renamed, ok := proc.renameExports[subLink]; ok {
-			newName := toFileName(renamed)
-			elemPath.Elements[currDepth] = newName
-		}
-		dotPos += idx + 1
-		currDepth++
-	}
-
-	if renamed, ok := proc.renameExports[link]; ok {
-		newName := toFileName(renamed)
-		if elemPath.IsSection {
-			if elemPath.Kind != "package" && elemPath.Kind != "module" {
-				elemPath.Elements[len(elemPath.Elements)-2] = newName
-			}
-		} else {
-			elemPath.Elements[len(elemPath.Elements)-1] = newName
-		}
-	}
+	link = proc.renameInLink(link, &elemPath)
 
 	fullPath := []string{}
 	for range modElems - skip {
@@ -172,6 +141,39 @@ func (proc *Processor) placeholderToRelLink(link string, elems []string, modElem
 	}
 
 	return &elemPath, link, fullPath, true, nil
+}
+
+func (proc *Processor) renameInLink(link string, elems *elemPath) string {
+	maxDepth := len(elems.Elements)
+	if elems.IsSection {
+		maxDepth -= 1
+	}
+
+	newLink := strings.Split(link, ".")
+	dotPos := 0
+	currDepth := 0
+	changed := false
+	for currDepth < len(elems.Elements) {
+		idx := strings.IndexRune(link[dotPos:], '.')
+		if idx < 0 {
+			idx = len(link) - dotPos
+		}
+		subLink := link[:dotPos+idx]
+		if renamed, ok := proc.renameExports[subLink]; ok {
+			if currDepth < maxDepth {
+				newName := toFileName(renamed)
+				elems.Elements[currDepth] = newName
+			}
+			newLink[currDepth] = renamed
+			changed = true
+		}
+		dotPos += idx + 1
+		currDepth++
+	}
+	if changed {
+		return strings.Join(newLink, ".")
+	}
+	return link
 }
 
 func (proc *Processor) refToPlaceholder(link string, elems []string, modElems int) (string, bool, error) {
