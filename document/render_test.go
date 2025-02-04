@@ -304,6 +304,7 @@ func TestRenderFiles(t *testing.T) {
 	refDir := path.Join("..", "test", "ref")
 	config := Config{
 		InputFiles:      []string{"../test/docs"},
+		SourceURLs:      map[string]string{"test": "https://github.com/mlange-42/modo/blob/main/test/src"},
 		OutputDir:       tmpDir,
 		UseExports:      true,
 		ShortLinks:      true,

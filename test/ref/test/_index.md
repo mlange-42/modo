@@ -1,4 +1,4 @@
-Mojo package
+Mojo package [🡭](https://github.com/mlange-42/modo/blob/main/test/src/__init__.mojo)
 
 # `test`
 

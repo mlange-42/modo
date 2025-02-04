@@ -1,4 +1,4 @@
-Mojo function
+Mojo function [🡭](https://github.com/mlange-42/modo/blob/main/test/src/mod.mojo)
 
 # `module_function`
 
