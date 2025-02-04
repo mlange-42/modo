@@ -19,12 +19,19 @@ Exports (abs) [test.mod.ModuleAlias], [test.mod.Struct], [test.mod.Trait], [test
  - [.pkg.submod.ModuleAlias]
 
 Exports:
- - mod.ModuleAlias
- - mod.Struct
+ - mod.ModuleAlias as ModAlias
+ - mod.Struct as RenamedStruct
  - mod.Trait
  - mod.module_function
  - pkg
- - doctest
+ - doctest as dtest
+ - doctest.ModuleAlias2 as ModAlias2
 """
-from .mod import ModuleAlias, Struct, Trait, module_function
+from .mod import (
+    ModuleAlias as ModAlias,
+    Struct as RenamedStruct,
+    Trait,
+    module_function,
+)
+from .doctest import ModuleAlias2 as ModAlias2
 from .pkg import submod
