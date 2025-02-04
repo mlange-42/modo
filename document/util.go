@@ -192,12 +192,27 @@ func GetGitOrigin(outDir string) (*GitInfo, error) {
 }
 
 func repoToTitleAndPages(repo string) (string, string) {
-	if !strings.HasPrefix(repo, "https://github.com/") {
-		parts := strings.Split(repo, "/")
-		title := parts[len(parts)-1]
-		return title, fmt.Sprintf("https://%s.com", title)
+	repo = strings.TrimSuffix(repo, "/")
+	protocolAddress := strings.Split(repo, "//")
+	if len(protocolAddress) < 2 {
+		return "unknown", "https://example.com"
 	}
-	repo = strings.TrimPrefix(repo, "https://github.com/")
-	parts := strings.Split(repo, "/")
-	return parts[1], fmt.Sprintf("https://%s.github.io/%s/", parts[0], parts[1])
+	parts := strings.Split(protocolAddress[1], "/")
+	domainParts := strings.Split(parts[0], ".")
+	domain := strings.Join(domainParts[:len(domainParts)-1], ".")
+
+	var title, user, pages string
+	switch len(parts) {
+	case 1:
+		title = "unknown"
+		pages = fmt.Sprintf("%s//%s.io/", protocolAddress[0], domain)
+	case 2:
+		title = parts[1]
+		pages = fmt.Sprintf("%s//%s.io/%s/", protocolAddress[0], domain, title)
+	default:
+		user = parts[1]
+		title = parts[2]
+		pages = fmt.Sprintf("%s//%s.%s.io/%s/", protocolAddress[0], user, domain, title)
+	}
+	return title, pages
 }
