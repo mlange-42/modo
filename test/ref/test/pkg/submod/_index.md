@@ -1,4 +1,4 @@
-Mojo module
+Mojo module [🡭](https://github.com/mlange-42/modo/blob/main/test/src/pkg/submod.mojo)
 
 # `submod`
 

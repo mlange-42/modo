@@ -1,4 +1,4 @@
-Mojo trait
+Mojo trait [🡭](https://github.com/mlange-42/modo/blob/main/test/src/mod.mojo)
 
 # `Trait`
 

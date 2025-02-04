@@ -1,5 +1,7 @@
 input: 
   - docs/
+source-url:
+  test: https://github.com/mlange-42/modo/blob/main/test/src
 output: out/
 tests: doctest/
 format: plain
