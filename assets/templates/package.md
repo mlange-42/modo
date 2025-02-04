@@ -1,4 +1,4 @@
-Mojo package
+Mojo package{{template "source_link" .}}
 
 # `{{.Name}}`
 

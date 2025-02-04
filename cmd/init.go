@@ -19,11 +19,13 @@ const docsInDir = "src"
 const docsOutDir = "site"
 const testsDir = "test"
 const gitignoreFile = ".gitignore"
+const gitUrl = "blob/main"
 
 type config struct {
 	Warning      string
 	InputFiles   []string
 	Sources      []string
+	SourceURLs   map[string]string
 	OutputDir    string
 	TestsDir     string
 	RenderFormat string
@@ -94,6 +96,10 @@ func initProject(initArgs *initArgs) error {
 	if err != nil {
 		return err
 	}
+	gitInfo, err := document.GetGitOrigin(initArgs.DocsDirectory)
+	if err != nil {
+		return err
+	}
 	inDir, outDir, err := createDocs(initArgs, form, templ, sources)
 	if err != nil {
 		return err
@@ -104,13 +110,17 @@ func initProject(initArgs *initArgs) error {
 	}
 
 	sourceDirs := make([]string, 0, len(sources))
+	sourceURLs := map[string]string{}
 	for _, s := range sources {
 		sourceDirs = append(sourceDirs, path.Join(s.Path...))
+		sourceURLs[s.Name] = path.Join(path.Join(gitInfo.Repo, gitUrl), gitInfo.BasePath, path.Join(s.Path...))
 	}
+
 	config := config{
 		Warning:      warning,
 		InputFiles:   []string{inDir},
 		Sources:      sourceDirs,
+		SourceURLs:   sourceURLs,
 		OutputDir:    outDir,
 		TestsDir:     path.Join(initArgs.DocsDirectory, testsDir),
 		RenderFormat: initArgs.Format,
@@ -165,7 +175,7 @@ func findSources(f string) ([]document.PackageSource, string, error) {
 			file := dir
 			if file == srcDir {
 				// Package is `src/__init__.mojo`
-				file, err = GetCwdName()
+				file, err = document.GetCwdName()
 				if err != nil {
 					return nil, warning, err
 				}

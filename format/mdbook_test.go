@@ -110,7 +110,7 @@ func TestMdBookRenderSummary(t *testing.T) {
 		},
 	}
 
-	templ, err := document.LoadTemplates(&f)
+	templ, err := document.LoadTemplates(&f, "")
 	assert.Nil(t, err)
 
 	proc := document.NewProcessor(&docs, &f, templ, &document.Config{})

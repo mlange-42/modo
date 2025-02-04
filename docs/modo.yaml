@@ -2,6 +2,9 @@ input:
   - docs/src/
 source:
   - src/mypkg/
+source-url:
+  mypkg: https://github.com/mlange-42/modo/tree/main/docs/src/mypkg
+
 output: docs/site/content/
 tests: docs/test/
 format: hugo

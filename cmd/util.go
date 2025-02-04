@@ -204,14 +204,6 @@ func runDir(baseDir string, args *document.Config, form document.Formatter, runF
 	return err
 }
 
-func GetCwdName() (string, error) {
-	cwd, err := os.Getwd()
-	if err != nil {
-		return cwd, err
-	}
-	return filepath.Base(cwd), nil
-}
-
 func commandError(commandType string, err error) error {
 	return fmt.Errorf("in script %s: %s\nTo skip pre- and post-processing scripts, use flag '--bare'", commandType, err)
 }

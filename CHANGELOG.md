@@ -1,5 +1,9 @@
 ## [[unpublished]](https://github.com/mlange-42/modo/compare/v0.10.1...main)
 
+### Features
+
+* Modo🧯 can automatically link from doc pages to the containing module's source (#195)
+
 ### Other
 
 * Doc-tests parser supports quadruple backticks (#194)

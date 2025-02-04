@@ -1,4 +1,4 @@
-Mojo struct
+Mojo struct{{template "source_link" .}}
 
 # `{{.Name}}`
 

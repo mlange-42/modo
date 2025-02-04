@@ -9,7 +9,6 @@ import (
 	"text/template"
 
 	"github.com/mlange-42/modo/document"
-	"gopkg.in/ini.v1"
 )
 
 const landingPageContentHugo = `---
@@ -24,13 +23,6 @@ They will be processed for doc-tests and copied to folder 'site/content'.
 `
 
 type Hugo struct{}
-
-type hugoConfig struct {
-	Title  string
-	Repo   string
-	Module string
-	Pages  string
-}
 
 func (f *Hugo) Accepts(files []string) error {
 	return nil
@@ -104,7 +96,7 @@ func (f *Hugo) CreateDirs(base, in, out string, sources []document.PackageSource
 }
 
 func (f *Hugo) createInitialFiles(docDir, hugoDir string, templ *template.Template) error {
-	config, err := getGitOrigin(docDir)
+	config, err := document.GetGitOrigin(docDir)
 	if err != nil {
 		return err
 	}
@@ -144,66 +136,4 @@ func (f *Hugo) Clean(out, tests string) error {
 		return err
 	}
 	return emptyDir(tests)
-}
-
-func getGitOrigin(outDir string) (*hugoConfig, error) {
-	gitFiles := []string{
-		".git/config",
-		"../.git/config",
-	}
-
-	var content *ini.File
-	found := false
-	for _, f := range gitFiles {
-		exists, isDir, err := fileExists(f)
-		if err != nil {
-			return nil, err
-		}
-		if !exists || isDir {
-			continue
-		}
-		content, err = ini.Load(f)
-		if err != nil {
-			return nil, err
-		}
-		found = true
-		break
-	}
-
-	url := "https://github.com/your/package"
-	ok := false
-	if found {
-		section := content.Section(`remote "origin"`)
-		if section != nil {
-			value := section.Key("url")
-			if value != nil {
-				url = strings.TrimSuffix(value.String(), ".git")
-				ok = true
-			}
-		}
-	}
-	if !ok {
-		fmt.Printf("WARNING: No Git repository or no remote 'origin' found.\n         Using dummy %s\n", url)
-	}
-	title, pages := repoToTitleAndPages(url)
-	module := strings.ReplaceAll(strings.ReplaceAll(url, "https://", ""), "http://", "")
-	module = fmt.Sprintf("%s/%s", module, outDir)
-
-	return &hugoConfig{
-		Title:  title,
-		Repo:   url,
-		Pages:  pages,
-		Module: module,
-	}, nil
-}
-
-func repoToTitleAndPages(repo string) (string, string) {
-	if !strings.HasPrefix(repo, "https://github.com/") {
-		parts := strings.Split(repo, "/")
-		title := parts[len(parts)-1]
-		return title, fmt.Sprintf("https://%s.com", title)
-	}
-	repo = strings.TrimPrefix(repo, "https://github.com/")
-	parts := strings.Split(repo, "/")
-	return parts[1], fmt.Sprintf("https://%s.github.io/%s/", parts[0], parts[1])
 }

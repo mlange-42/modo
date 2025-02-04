@@ -1,4 +1,4 @@
-Mojo module
+Mojo module{{template "source_link" .}}
 
 # `{{.Name}}`
 

@@ -28,3 +28,23 @@ func TestLoadTemplates(t *testing.T) {
 
 	assert.NotNil(t, templ.Lookup("package.md"))
 }
+
+func TestGetGitOrigin(t *testing.T) {
+	conf, err := GetGitOrigin("docs")
+
+	assert.Nil(t, err)
+	assert.Equal(t, conf.Repo, "https://github.com/mlange-42/modo")
+	assert.Equal(t, conf.Title, "modo")
+	assert.Equal(t, conf.Pages, "https://mlange-42.github.io/modo/")
+	assert.Equal(t, conf.GoModule, "github.com/mlange-42/modo/docs")
+}
+
+func TestRepoToTitleAndPages(t *testing.T) {
+	title, pages := repoToTitleAndPages("https://github.com/user/repo")
+	assert.Equal(t, title, "repo")
+	assert.Equal(t, pages, "https://user.github.io/repo/")
+
+	title, pages = repoToTitleAndPages("https://gitlab.com/user/repo")
+	assert.Equal(t, title, "repo")
+	assert.Equal(t, pages, "https://repo.com")
+}

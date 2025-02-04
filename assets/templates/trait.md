@@ -1,4 +1,4 @@
-Mojo trait
+Mojo trait{{template "source_link" .}}
 
 # `{{.Name}}`
 

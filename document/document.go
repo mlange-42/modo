@@ -32,6 +32,7 @@ type Package struct {
 	Structs            []*Struct        `yaml:",omitempty" json:",omitempty"` // Additional field for package re-exports
 	Traits             []*Trait         `yaml:",omitempty" json:",omitempty"` // Additional field for package re-exports
 	exports            []*packageExport `yaml:"-" json:"-"`                   // Additional field for package re-exports
+	MemberLink         `yaml:"-" json:"-"`
 }
 
 func (p *Package) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
@@ -68,6 +69,7 @@ func (p *Package) linkedCopy() *Package {
 		MemberSummary:     p.MemberSummary,
 		MemberDescription: p.MemberDescription,
 		exports:           p.exports,
+		MemberLink:        p.MemberLink,
 	}
 }
 
@@ -80,6 +82,7 @@ type Module struct {
 	Functions     []*Function
 	Structs       []*Struct
 	Traits        []*Trait
+	MemberLink    `yaml:"-" json:"-"`
 }
 
 func (m *Module) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
@@ -128,6 +131,7 @@ type Struct struct {
 	Parameters    []*Parameter
 	ParentTraits  []string
 	Signature     string
+	MemberLink    `yaml:"-" json:"-"`
 }
 
 func (s *Struct) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
@@ -167,6 +171,7 @@ type Function struct {
 	ReturnsDoc           string
 	Signature            string
 	Parameters           []*Parameter
+	MemberLink           `yaml:"-" json:"-"`
 }
 
 func (f *Function) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
@@ -219,6 +224,7 @@ type Trait struct {
 	Functions     []*Function
 	ParentTraits  []string
 	Deprecated    string
+	MemberLink    `yaml:"-" json:"-"`
 }
 
 func (t *Trait) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
