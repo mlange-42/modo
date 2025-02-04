@@ -38,6 +38,7 @@ func (proc *Processor) renamePackage(p *Package, ownPath string) {
 	for i := range p.Structs {
 		newPath := ownPath + "." + p.Structs[i].Name
 		if newName, ok := proc.renameExports[newPath]; ok {
+			proc.renameStruct(p.Structs[i], newPath, newName)
 			tempMod := *p.Structs[i]
 			tempMod.MemberName = MemberName{Name: newName}
 			p.Structs[i] = &tempMod
@@ -46,6 +47,7 @@ func (proc *Processor) renamePackage(p *Package, ownPath string) {
 	for i := range p.Traits {
 		newPath := ownPath + "." + p.Traits[i].Name
 		if newName, ok := proc.renameExports[newPath]; ok {
+			proc.renameTrait(p.Traits[i], newPath, newName)
 			tempMod := *p.Traits[i]
 			tempMod.MemberName = MemberName{Name: newName}
 			p.Traits[i] = &tempMod
@@ -65,6 +67,7 @@ func (proc *Processor) renameModule(m *Module, ownPath string) {
 	for i := range m.Aliases {
 		newPath := ownPath + "." + m.Aliases[i].Name
 		if newName, ok := proc.renameExports[newPath]; ok {
+			proc.renameStruct(m.Structs[i], newPath, newName)
 			tempMod := *m.Aliases[i]
 			tempMod.MemberName = MemberName{Name: newName}
 			m.Aliases[i] = &tempMod
@@ -73,6 +76,7 @@ func (proc *Processor) renameModule(m *Module, ownPath string) {
 	for i := range m.Structs {
 		newPath := ownPath + "." + m.Structs[i].Name
 		if newName, ok := proc.renameExports[newPath]; ok {
+			proc.renameTrait(m.Traits[i], newPath, newName)
 			tempMod := *m.Structs[i]
 			tempMod.MemberName = MemberName{Name: newName}
 			m.Structs[i] = &tempMod
@@ -93,5 +97,29 @@ func (proc *Processor) renameModule(m *Module, ownPath string) {
 			tempMod.MemberName = MemberName{Name: newName}
 			m.Functions[i] = &tempMod
 		}
+	}
+}
+
+func (proc *Processor) renameStruct(s *Struct, oldPath, name string) {
+	for _, e := range s.Aliases {
+		proc.renameExports[oldPath+"."+e.Name] = name
+	}
+	for _, e := range s.Parameters {
+		proc.renameExports[oldPath+"."+e.Name] = name
+	}
+	for _, e := range s.Fields {
+		proc.renameExports[oldPath+"."+e.Name] = name
+	}
+	for _, e := range s.Functions {
+		proc.renameExports[oldPath+"."+e.Name] = name
+	}
+}
+
+func (proc *Processor) renameTrait(t *Trait, oldPath, name string) {
+	for _, e := range t.Fields {
+		proc.renameExports[oldPath+"."+e.Name] = name
+	}
+	for _, e := range t.Functions {
+		proc.renameExports[oldPath+"."+e.Name] = name
 	}
 }

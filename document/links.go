@@ -128,7 +128,7 @@ func (proc *Processor) placeholderToRelLink(link string, elems []string, modElem
 		}
 	}
 
-	fmt.Println(link)
+	// redirect link to re-name by re-export
 	if renamed, ok := proc.renameExports[link]; ok {
 		newName := toFileName(renamed)
 		if elemPath.IsSection {
@@ -138,9 +138,6 @@ func (proc *Processor) placeholderToRelLink(link string, elems []string, modElem
 		} else {
 			elemPath.Elements[len(elemPath.Elements)-1] = newName
 		}
-		//fmt.Println("   +", elemPath, renamed)
-	} else {
-		fmt.Println("   -", elemPath, renamed)
 	}
 
 	fullPath := []string{}

@@ -41,10 +41,10 @@ Text
 	assert.True(t, anyExp)
 
 	assert.Equal(t, []*packageExport{
-		{Short: []string{"mod", "Struct"}, Renamed: "Struct", Long: []string{"pkg", "mod", "Struct"}},
-		{Short: []string{"mod", "Trait"}, Renamed: "Trait", Long: []string{"pkg", "mod", "Trait"}},
-		{Short: []string{"mod", "func"}, Renamed: "f", Long: []string{"pkg", "mod", "func"}},
-		{Short: []string{"mod", "submod"}, Renamed: "submod", Long: []string{"pkg", "mod", "submod"}},
+		{Short: []string{"mod", "Struct"}, Exported: []string{"pkg", "Struct"}, Renamed: "Struct", Long: []string{"pkg", "mod", "Struct"}},
+		{Short: []string{"mod", "Trait"}, Exported: []string{"pkg", "Trait"}, Renamed: "Trait", Long: []string{"pkg", "mod", "Trait"}},
+		{Short: []string{"mod", "func"}, Exported: []string{"pkg", "func"}, Renamed: "f", Long: []string{"pkg", "mod", "func"}},
+		{Short: []string{"mod", "submod"}, Exported: []string{"pkg", "submod"}, Renamed: "submod", Long: []string{"pkg", "mod", "submod"}},
 	}, exports)
 
 	assert.Equal(t, newText, `Text.
