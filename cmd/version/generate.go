@@ -12,6 +12,8 @@ import (
 )
 
 func main() {
+	fmt.Println("Updating version...")
+
 	cmd := exec.Command("git", "describe", "--tags")
 	out, err := cmd.Output()
 	if err != nil {
