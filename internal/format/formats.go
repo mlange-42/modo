@@ -3,7 +3,7 @@ package format
 import (
 	"fmt"
 
-	"github.com/mlange-42/modo/document"
+	"github.com/mlange-42/modo/internal/document"
 )
 
 var formats = map[string]document.Formatter{

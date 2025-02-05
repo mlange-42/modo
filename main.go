@@ -4,7 +4,7 @@ import (
 	"fmt"
 	"os"
 
-	"github.com/mlange-42/modo/cmd"
+	"github.com/mlange-42/modo/internal/cmd"
 )
 
 func main() {

@@ -11,7 +11,7 @@ import (
 	"text/template"
 
 	"github.com/mlange-42/modo/assets"
-	"github.com/mlange-42/modo/document"
+	"github.com/mlange-42/modo/internal/document"
 )
 
 type MdBook struct{}
