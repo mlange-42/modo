@@ -11,11 +11,11 @@ import (
 func TestMdBookAccepts(t *testing.T) {
 	f := MdBook{}
 
-	err := f.Accepts([]string{"../test"})
+	err := f.Accepts([]string{"../../test"})
 	assert.NotNil(t, err)
-	assert.Equal(t, err.Error(), "mdBook formatter can process only a single JSON file, but directory '../test' is given")
+	assert.Equal(t, err.Error(), "mdBook formatter can process only a single JSON file, but directory '../../test' is given")
 
-	err = f.Accepts([]string{"../main.go", "../go.mod"})
+	err = f.Accepts([]string{"../../main.go", "../../go.mod"})
 	assert.Equal(t, err.Error(), "mdBook formatter can process only a single JSON file, but 2 is given")
 }
 

@@ -1,6 +1,7 @@
 package document
 
 import (
+	"os"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -30,6 +31,12 @@ func TestLoadTemplates(t *testing.T) {
 }
 
 func TestGetGitOrigin(t *testing.T) {
+	oldDir, err := os.Getwd()
+	assert.Nil(t, err)
+
+	err = os.Chdir("..")
+	assert.Nil(t, err)
+
 	conf, err := GetGitOrigin("docs")
 
 	assert.Nil(t, err)
@@ -37,6 +44,9 @@ func TestGetGitOrigin(t *testing.T) {
 	assert.Equal(t, conf.Title, "modo")
 	assert.Equal(t, conf.Pages, "https://mlange-42.github.io/modo/")
 	assert.Equal(t, conf.GoModule, "github.com/mlange-42/modo/docs")
+
+	err = os.Chdir(oldDir)
+	assert.Nil(t, err)
 }
 
 func TestRepoToTitleAndPages(t *testing.T) {
