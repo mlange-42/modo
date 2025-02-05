@@ -1,4 +1,8 @@
 package cmd
 
-const version = "v0.10.2"
-const release = false
+var version = Version{
+	Major: 0,
+	Minor: 10,
+	Patch: 2,
+	Dev:   true,
+}

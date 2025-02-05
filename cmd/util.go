@@ -26,6 +26,21 @@ const initFileEmoji = "__init__.🔥"
 
 var watchExtensions = []string{".md", ".mojo", ".🔥"}
 
+type Version struct {
+	Major int
+	Minor int
+	Patch int
+	Dev   bool
+}
+
+func (v *Version) Version() string {
+	version := fmt.Sprintf("%d.%d.%d", v.Major, v.Minor, v.Patch)
+	if v.Dev {
+		version = fmt.Sprintf("%s-dev", version)
+	}
+	return version
+}
+
 func runCommand(command string) error {
 	commandWithExit := fmt.Sprintf("%s\n%s", setExitOnError, command)
 	cmd := exec.Command("bash", "-c", commandWithExit)
