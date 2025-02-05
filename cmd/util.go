@@ -221,7 +221,7 @@ func bindFlags(v *viper.Viper, flags *pflag.FlagSet) error {
 
 func checkConfigFile(f string) error {
 	if strings.ContainsRune(f, '/') || strings.ContainsRune(f, '\\') {
-		return fmt.Errorf("config file must be in the Modo's directory (as set by the PATH argument)")
+		return fmt.Errorf("config file must be in Modo's working directory (as set by the PATH argument)")
 	}
 	return nil
 }
