@@ -41,6 +41,7 @@ type initArgs struct {
 
 func initCommand() (*cobra.Command, error) {
 	initArgs := initArgs{}
+	var config string
 
 	root := &cobra.Command{
 		Use:   "init FORMAT",
@@ -54,38 +55,39 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			initArgs.Format = args[0]
 
-			file := configFile + ".yaml"
-			exists, _, err := fileExists(file)
+			if err := checkConfigFile(config); err != nil {
+				return err
+			}
+			exists, _, err := fileExists(config)
 			if err != nil {
-				return fmt.Errorf("error checking config file %s: %s", file, err.Error())
+				return fmt.Errorf("error checking config file %s: %s", config, err.Error())
 			}
 			if exists {
-				return fmt.Errorf("config file %s already exists", file)
+				return fmt.Errorf("config file %s already exists", config)
 			}
 			if initArgs.Format == "" {
 				initArgs.Format = "plain"
 			}
 			initArgs.DocsDirectory = strings.ReplaceAll(initArgs.DocsDirectory, "\\", "/")
-			return initProject(&initArgs)
+			return initProject(config, &initArgs)
 		},
 	}
-
+	root.Flags().StringVarP(&config, "config", "c", defaultConfigFile, "Config file in the working directory to use")
 	root.Flags().StringVarP(&initArgs.DocsDirectory, "docs", "d", "docs", "Folder for documentation")
 	root.Flags().BoolVarP(&initArgs.NoFolders, "no-folders", "F", false, "Don't create any folders")
 
 	root.Flags().SortFlags = false
+	root.MarkFlagFilename("config", "yaml")
 	root.MarkFlagDirname("docs")
 
 	return root, nil
 }
 
-func initProject(initArgs *initArgs) error {
+func initProject(configFile string, initArgs *initArgs) error {
 	form, err := format.GetFormatter(initArgs.Format)
 	if err != nil {
 		return err
 	}
-
-	file := configFile + ".yaml"
 
 	templ := template.New("all")
 	templ, err = templ.ParseFS(assets.Config, "**/*")
@@ -132,7 +134,7 @@ func initProject(initArgs *initArgs) error {
 	if err := templ.ExecuteTemplate(&b, "modo.yaml", &config); err != nil {
 		return err
 	}
-	if err := os.WriteFile(file, b.Bytes(), 0644); err != nil {
+	if err := os.WriteFile(configFile, b.Bytes(), 0644); err != nil {
 		return err
 	}
 

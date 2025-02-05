@@ -11,6 +11,7 @@ import (
 
 func testCommand() (*cobra.Command, error) {
 	v := viper.New()
+	var config string
 	var watch bool
 
 	root := &cobra.Command{
@@ -27,7 +28,10 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 		Args:         cobra.MaximumNArgs(1),
 		SilenceUsage: true,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
-			if err := mountProject(v, args); err != nil {
+			if err := checkConfigFile(config); err != nil {
+				return err
+			}
+			if err := mountProject(v, config, args); err != nil {
 				return err
 			}
 			return nil
@@ -47,6 +51,7 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 		},
 	}
 
+	root.Flags().StringVarP(&config, "config", "c", defaultConfigFile, "Config file in the working directory to use")
 	root.Flags().StringSliceP("input", "i", []string{}, "'mojo doc' JSON file to process. Reads from STDIN if not specified.\nIf a single directory is given, it is processed recursively")
 	root.Flags().StringP("tests", "t", "", "Target folder to extract doctests for 'mojo test'")
 	root.Flags().BoolP("case-insensitive", "C", false, "Build for systems that are not case-sensitive regarding file names.\nAppends hyphen (-) to capitalized file names")
@@ -57,6 +62,7 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 	root.Flags().StringSliceP("templates", "T", []string{}, "Optional directories with templates for (partial) overwrite.\nSee folder assets/templates in the repository")
 
 	root.Flags().SortFlags = false
+	root.MarkFlagFilename("config", "yaml")
 	root.MarkFlagFilename("input", "json")
 	root.MarkFlagDirname("tests")
 	root.MarkFlagDirname("templates")
