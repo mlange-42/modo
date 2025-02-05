@@ -11,6 +11,7 @@ import (
 
 func cleanCommand() (*cobra.Command, error) {
 	v := viper.New()
+	var config string
 
 	root := &cobra.Command{
 		Use:   "clean [PATH]",
@@ -21,7 +22,10 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 		Args:         cobra.MaximumNArgs(1),
 		SilenceUsage: true,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
-			if err := mountProject(v, args); err != nil {
+			if err := checkConfigFile(config); err != nil {
+				return err
+			}
+			if err := mountProject(v, config, args); err != nil {
 				return err
 			}
 			return nil
@@ -34,6 +38,11 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 			return runClean(cliArgs)
 		},
 	}
+
+	root.Flags().StringVarP(&config, "config", "c", defaultConfigFile, "Config file in the working directory to use")
+
+	root.Flags().SortFlags = false
+	root.MarkFlagFilename("config", "yaml")
 
 	return root, nil
 }

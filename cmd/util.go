@@ -18,7 +18,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-const configFile = "modo"
+const defaultConfigFile = "modo.yaml"
 const setExitOnError = "set -e"
 
 const initFileText = "__init__.mojo"
@@ -102,7 +102,7 @@ func isPackage(dir string) (isPackage bool, err error) {
 	return
 }
 
-func mountProject(v *viper.Viper, paths []string) error {
+func mountProject(v *viper.Viper, config string, paths []string) error {
 	withConfig := len(paths) > 0
 	p := "."
 	if withConfig {
@@ -112,19 +112,18 @@ func mountProject(v *viper.Viper, paths []string) error {
 		}
 	}
 
-	filePath := configFile + ".yaml"
-	exists, isDir, err := fileExists(filePath)
+	exists, isDir, err := fileExists(config)
 	if err != nil {
 		return err
 	}
 	if !exists || isDir {
 		if withConfig {
-			return fmt.Errorf("no config file '%s' found in path '%s'", filePath, p)
+			return fmt.Errorf("no config file '%s' found in path '%s'", config, p)
 		}
 		return nil
 	}
 
-	v.SetConfigName(configFile)
+	v.SetConfigName(strings.TrimSuffix(config, path.Ext(config)))
 	v.SetConfigType("yaml")
 	v.AddConfigPath(".")
 
@@ -212,12 +211,19 @@ func commandError(commandType string, err error) error {
 func bindFlags(v *viper.Viper, flags *pflag.FlagSet) error {
 	newFlags := pflag.NewFlagSet("root", pflag.ExitOnError)
 	flags.VisitAll(func(f *pflag.Flag) {
-		if f.Name == "watch" {
+		if f.Name == "watch" || f.Name == "config" {
 			return
 		}
 		newFlags.AddFlag(f)
 	})
 	return v.BindPFlags(newFlags)
+}
+
+func checkConfigFile(f string) error {
+	if strings.ContainsRune(f, '/') || strings.ContainsRune(f, '\\') {
+		return fmt.Errorf("config file must be in the Modo's directory (as set by the PATH argument)")
+	}
+	return nil
 }
 
 func watchAndRun(args *document.Config, command func(*document.Config) error) error {

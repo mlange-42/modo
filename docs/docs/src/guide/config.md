@@ -50,6 +50,10 @@ These are not listed here explicitly. For details, see the [config reference](#c
 There are, however, a few special flags that are useful to trigger different behaviour when working in different environments.
 These flags are available for both `build` and `test` command.
 
+**`--config`, `-c`**
+
+Use an alternative config file. Available for all commands, incl. `init` and `clean`.
+
 **`--watch`, `-W`**
 
 Re-run on changes of sources and documentation files. Disables all post-processing scripts after running them once.
