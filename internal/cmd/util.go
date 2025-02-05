@@ -12,7 +12,7 @@ import (
 	"strings"
 	"time"
 
-	"github.com/mlange-42/modo/document"
+	"github.com/mlange-42/modo/internal/document"
 	"github.com/rjeczalik/notify"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"

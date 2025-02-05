@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	"github.com/mlange-42/modo/document"
+	"github.com/mlange-42/modo/internal/document"
 	"github.com/stretchr/testify/assert"
 )
 

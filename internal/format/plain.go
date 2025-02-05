@@ -6,7 +6,7 @@ import (
 	"path"
 	"text/template"
 
-	"github.com/mlange-42/modo/document"
+	"github.com/mlange-42/modo/internal/document"
 )
 
 const landingPageContentPlain = `# Landing page

@@ -4,8 +4,8 @@ import (
 	"fmt"
 	"time"
 
-	"github.com/mlange-42/modo/document"
-	"github.com/mlange-42/modo/format"
+	"github.com/mlange-42/modo/internal/document"
+	"github.com/mlange-42/modo/internal/format"
 	"github.com/spf13/cobra"
 	"github.com/spf13/viper"
 )

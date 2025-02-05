@@ -276,7 +276,7 @@ func createProcessor(t *testing.T, docs *Docs, useExports bool, files map[string
 func TestRenderDry(t *testing.T) {
 	tmpDir := strings.ReplaceAll(t.TempDir(), "\\", "/")
 	config := Config{
-		InputFiles:      []string{"../test/docs/test.json"},
+		InputFiles:      []string{"../../test/docs/test.json"},
 		OutputDir:       tmpDir,
 		UseExports:      true,
 		ShortLinks:      true,
@@ -301,9 +301,9 @@ func TestRenderDry(t *testing.T) {
 
 func TestRenderFiles(t *testing.T) {
 	tmpDir := strings.ReplaceAll(t.TempDir(), "\\", "/")
-	refDir := path.Join("..", "test", "ref")
+	refDir := path.Join("..", "..", "test", "ref")
 	config := Config{
-		InputFiles:      []string{"../test/docs"},
+		InputFiles:      []string{"../../test/docs"},
 		SourceURLs:      map[string]string{"test": "https://github.com/mlange-42/modo/blob/main/test/src"},
 		OutputDir:       tmpDir,
 		UseExports:      true,

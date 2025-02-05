@@ -12,8 +12,8 @@ import (
 	"path"
 	"testing"
 
-	"github.com/mlange-42/modo/document"
-	"github.com/mlange-42/modo/format"
+	"github.com/mlange-42/modo/internal/document"
+	"github.com/mlange-42/modo/internal/format"
 	"github.com/pkg/profile"
 )
 

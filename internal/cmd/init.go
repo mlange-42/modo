@@ -9,8 +9,8 @@ import (
 	"text/template"
 
 	"github.com/mlange-42/modo/assets"
-	"github.com/mlange-42/modo/document"
-	"github.com/mlange-42/modo/format"
+	"github.com/mlange-42/modo/internal/document"
+	"github.com/mlange-42/modo/internal/format"
 	"github.com/spf13/cobra"
 )
 

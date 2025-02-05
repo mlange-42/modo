@@ -3,7 +3,7 @@ package format_test
 import (
 	"testing"
 
-	"github.com/mlange-42/modo/format"
+	"github.com/mlange-42/modo/internal/format"
 	"github.com/stretchr/testify/assert"
 )
 
