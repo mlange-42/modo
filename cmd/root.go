@@ -23,7 +23,11 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 		SilenceUsage: true,
 		Run: func(cmd *cobra.Command, args []string) {
 			if showVersion {
-				fmt.Printf("Modo %s\n", version)
+				if release {
+					fmt.Printf("Modo %s\n", version)
+				} else {
+					fmt.Printf("Modo %s-dev\n", version)
+				}
 			}
 		},
 	}
