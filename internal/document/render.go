@@ -7,7 +7,7 @@ import (
 )
 
 func Render(docs *Docs, config *Config, form Formatter, subdir string) error {
-	t, err := LoadTemplates(form, config.SourceURLs[docs.Decl.Name], config.TemplateDirs...)
+	t, err := LoadTemplates(form, config.SourceURLs[strings.ToLower(docs.Decl.Name)], config.TemplateDirs...)
 	if err != nil {
 		return err
 	}
@@ -35,7 +35,7 @@ func Render(docs *Docs, config *Config, form Formatter, subdir string) error {
 
 func ExtractTests(docs *Docs, config *Config, form Formatter, subdir string) error {
 	caseSensitiveSystem = !config.CaseInsensitive
-	t, err := LoadTemplates(form, config.SourceURLs[docs.Decl.Name], config.TemplateDirs...)
+	t, err := LoadTemplates(form, config.SourceURLs[strings.ToLower(docs.Decl.Name)], config.TemplateDirs...)
 	if err != nil {
 		return err
 	}
