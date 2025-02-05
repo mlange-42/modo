@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"time"
 
 	"github.com/mlange-42/modo/document"
 	"github.com/mlange-42/modo/format"
@@ -37,6 +38,8 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 			return nil
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
+			start := time.Now()
+
 			cliArgs, err := document.ConfigFromViper(v)
 			if err != nil {
 				return err
@@ -47,6 +50,8 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 			if watch {
 				return watchAndRun(cliArgs, runTest)
 			}
+
+			fmt.Printf("Completed in %.1fms 🧯\n", float64(time.Since(start).Microseconds())/1000.0)
 			return nil
 		},
 	}

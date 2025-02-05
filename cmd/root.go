@@ -1,10 +1,14 @@
 package cmd
 
 import (
+	"fmt"
+
 	"github.com/spf13/cobra"
 )
 
 func RootCommand() (*cobra.Command, error) {
+	var showVersion bool
+
 	root := &cobra.Command{
 		Use:   "modo",
 		Short: "Modo -- DocGen for Mojo.",
@@ -17,6 +21,11 @@ Complete documentation at https://mlange-42.github.io/modo/`,
   modo build                     # build the docs`,
 		Args:         cobra.ExactArgs(0),
 		SilenceUsage: true,
+		Run: func(cmd *cobra.Command, args []string) {
+			if showVersion {
+				fmt.Printf("Modo %s\n", version.Version())
+			}
+		},
 	}
 
 	root.CompletionOptions.HiddenDefaultCmd = true
@@ -28,6 +37,8 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 		}
 		root.AddCommand(cmd)
 	}
+
+	root.Flags().BoolVarP(&showVersion, "version", "V", false, "")
 
 	return root, nil
 }
