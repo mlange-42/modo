@@ -11,6 +11,7 @@ import (
 	"github.com/mlange-42/modo/assets"
 	"github.com/mlange-42/modo/internal/document"
 	"github.com/mlange-42/modo/internal/format"
+	"github.com/mlange-42/modo/internal/util"
 	"github.com/spf13/cobra"
 )
 
@@ -177,7 +178,7 @@ func findSources(f string) ([]document.PackageSource, string, error) {
 			file := dir
 			if file == srcDir {
 				// Package is `src/__init__.mojo`
-				file, err = document.GetCwdName()
+				file, err = util.GetCwdName()
 				if err != nil {
 					return nil, warning, err
 				}

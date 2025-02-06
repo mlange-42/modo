@@ -1,7 +1,6 @@
 package document
 
 import (
-	"errors"
 	"fmt"
 	"os"
 	"path/filepath"
@@ -9,6 +8,7 @@ import (
 	"text/template"
 
 	"github.com/mlange-42/modo/assets"
+	"github.com/mlange-42/modo/internal/util"
 	"gopkg.in/ini.v1"
 )
 
@@ -73,7 +73,7 @@ func LoadTemplates(f Formatter, sourceURL string, additional ...string) (*templa
 		if dir == "" {
 			continue
 		}
-		exists, isDir, err := fileExists(dir)
+		exists, isDir, err := util.FileExists(dir)
 		if err != nil {
 			return nil, err
 		}
@@ -90,19 +90,6 @@ func LoadTemplates(f Formatter, sourceURL string, additional ...string) (*templa
 		}
 	}
 	return templ, nil
-}
-
-func fileExists(file string) (exists, isDir bool, err error) {
-	var s os.FileInfo
-	if s, err = os.Stat(file); err == nil {
-		exists = true
-		isDir = s.IsDir()
-		return
-	} else if !errors.Is(err, os.ErrNotExist) {
-		return
-	}
-	err = nil
-	return
 }
 
 func toFileName(name string) string {
@@ -133,14 +120,6 @@ func findTemplates(dir string) ([]string, error) {
 	return allTemplates, nil
 }
 
-func GetCwdName() (string, error) {
-	cwd, err := os.Getwd()
-	if err != nil {
-		return cwd, err
-	}
-	return filepath.Base(cwd), nil
-}
-
 func GetGitOrigin(outDir string) (*GitInfo, error) {
 	gitFiles := []string{
 		".git/config",
@@ -151,7 +130,7 @@ func GetGitOrigin(outDir string) (*GitInfo, error) {
 	found := false
 	basePath := ""
 	for _, f := range gitFiles {
-		exists, isDir, err := fileExists(f)
+		exists, isDir, err := util.FileExists(f)
 		if err != nil {
 			return nil, err
 		}
@@ -164,7 +143,7 @@ func GetGitOrigin(outDir string) (*GitInfo, error) {
 		}
 
 		if strings.HasPrefix(f, "..") {
-			basePath, err = GetCwdName()
+			basePath, err = util.GetCwdName()
 			if err != nil {
 				return nil, err
 			}

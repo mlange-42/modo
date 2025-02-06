@@ -12,6 +12,7 @@ import (
 
 	"github.com/mlange-42/modo/assets"
 	"github.com/mlange-42/modo/internal/document"
+	"github.com/mlange-42/modo/internal/util"
 )
 
 type MdBook struct{}
@@ -256,10 +257,10 @@ func (f *MdBook) GitIgnore(in, out string, sources []document.PackageSource) []s
 func (f *MdBook) CreateDirs(base, in, out string, sources []document.PackageSource, templ *template.Template) error {
 	outDir := base
 	testDir := path.Join(base, "test")
-	if err := mkDirs(outDir); err != nil {
+	if err := util.MkDirs(outDir); err != nil {
 		return err
 	}
-	if err := mkDirs(testDir); err != nil {
+	if err := util.MkDirs(testDir); err != nil {
 		return err
 	}
 	return f.createInitialFiles(sources[0].Name, outDir, templ)
@@ -267,7 +268,7 @@ func (f *MdBook) CreateDirs(base, in, out string, sources []document.PackageSour
 
 func (f *MdBook) createInitialFiles(title, docDir string, templ *template.Template) error {
 	outFile := path.Join(docDir, "book.toml")
-	exists, _, err := fileExists(outFile)
+	exists, _, err := util.FileExists(outFile)
 	if err != nil {
 		return err
 	}
@@ -288,7 +289,7 @@ func (f *MdBook) createInitialFiles(title, docDir string, templ *template.Templa
 
 	cssDir := path.Join(docDir, "css")
 	cssFile := path.Join(cssDir, "mdbook.css")
-	exists, _, err = fileExists(cssFile)
+	exists, _, err = util.FileExists(cssFile)
 	if err != nil {
 		return err
 	}

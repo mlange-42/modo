@@ -9,6 +9,7 @@ import (
 	"text/template"
 
 	"github.com/mlange-42/modo/internal/document"
+	"github.com/mlange-42/modo/internal/util"
 )
 
 const landingPageContentHugo = `---
@@ -80,16 +81,16 @@ func (f *Hugo) GitIgnore(in, out string, sources []document.PackageSource) []str
 func (f *Hugo) CreateDirs(base, in, out string, sources []document.PackageSource, templ *template.Template) error {
 	inDir, outDir := path.Join(base, in), path.Join(base, f.Output(out))
 	testDir := path.Join(base, "test")
-	if err := mkDirs(inDir); err != nil {
+	if err := util.MkDirs(inDir); err != nil {
 		return err
 	}
 	if err := os.WriteFile(path.Join(inDir, "_index.md"), []byte(landingPageContentHugo), 0644); err != nil {
 		return err
 	}
-	if err := mkDirs(outDir); err != nil {
+	if err := util.MkDirs(outDir); err != nil {
 		return err
 	}
-	if err := mkDirs(testDir); err != nil {
+	if err := util.MkDirs(testDir); err != nil {
 		return err
 	}
 	return f.createInitialFiles(base, path.Join(base, out), templ)
@@ -108,7 +109,7 @@ func (f *Hugo) createInitialFiles(docDir, hugoDir string, templ *template.Templa
 	}
 	for _, f := range files {
 		outFile := path.Join(hugoDir, f[1])
-		exists, _, err := fileExists(outFile)
+		exists, _, err := util.FileExists(outFile)
 		if err != nil {
 			return err
 		}
