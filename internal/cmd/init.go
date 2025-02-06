@@ -40,7 +40,7 @@ type initArgs struct {
 	NoFolders     bool
 }
 
-func initCommand() (*cobra.Command, error) {
+func initCommand(_ chan struct{}) (*cobra.Command, error) {
 	initArgs := initArgs{}
 	var config string
 

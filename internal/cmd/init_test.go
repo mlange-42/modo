@@ -57,7 +57,7 @@ func TestInitHugo(t *testing.T) {
 		dir := t.TempDir()
 		cwd := setupProject(t, dir, packages)
 
-		cmd, err := initCommand()
+		cmd, err := initCommand(nil)
 		assert.Nil(t, err)
 
 		cmd.SetArgs([]string{"hugo"})

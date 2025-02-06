@@ -7,14 +7,14 @@ import (
 )
 
 func TestClean(t *testing.T) {
-	cmd, err := buildCommand()
+	cmd, err := buildCommand(nil)
 	assert.Nil(t, err)
 	cmd.SetArgs([]string{"../../test"})
 
 	err = cmd.Execute()
 	assert.Nil(t, err)
 
-	cmd, err = cleanCommand()
+	cmd, err = cleanCommand(nil)
 	assert.Nil(t, err)
 	cmd.SetArgs([]string{"../../test"})
 
