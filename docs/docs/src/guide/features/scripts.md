@@ -2,7 +2,7 @@
 title: Bash scripts
 type: docs
 summary: Configure bash scripts to run before and after processing.
-weight: 40
+weight: 50
 ---
 
 Modo🧯 can be configured to automatically run bash scripts before and/or after processing.

@@ -3,7 +3,7 @@ title: Templates
 type: docs
 summary: Use templates to customize Modo🧯's output.
 next: mypkg
-weight: 50
+weight: 60
 ---
 
 Modo🧯 relies heavily on templating.
