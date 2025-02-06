@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-func cleanCommand() (*cobra.Command, error) {
+func cleanCommand(_ chan struct{}) (*cobra.Command, error) {
 	v := viper.New()
 	var config string
 
@@ -36,6 +36,12 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 			return nil
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
+			defer func() {
+				if err := os.Chdir(cwd); err != nil {
+					fmt.Println(err)
+				}
+			}()
+
 			start := time.Now()
 
 			cliArgs, err := document.ConfigFromViper(v)
@@ -43,10 +49,6 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 				return err
 			}
 			if err := runClean(cliArgs); err != nil {
-				return err
-			}
-
-			if err := os.Chdir(cwd); err != nil {
 				return err
 			}
 

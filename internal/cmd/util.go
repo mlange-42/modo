@@ -233,7 +233,7 @@ func checkConfigFile(f string) error {
 	return nil
 }
 
-func watchAndRun(args *document.Config, command func(*document.Config) error) error {
+func watchAndRun(args *document.Config, command func(*document.Config) error, stop chan struct{}) error {
 	args.RemovePostScripts()
 
 	c := make(chan notify.EventInfo, 32)
@@ -271,27 +271,31 @@ func watchAndRun(args *document.Config, command func(*document.Config) error) er
 		}
 	}()
 
-	for events := range collected {
-		if events == nil {
-			continue
-		}
-		trigger := false
-		for _, e := range events {
-			for _, ext := range watchExtensions {
-				if strings.HasSuffix(e.Path(), ext) {
-					trigger = true
-					break
+	for {
+		select {
+		case events := <-collected:
+			if events == nil {
+				continue
+			}
+			trigger := false
+			for _, e := range events {
+				for _, ext := range watchExtensions {
+					if strings.HasSuffix(e.Path(), ext) {
+						trigger = true
+						break
+					}
 				}
 			}
-		}
-		if trigger {
-			if err := command(args); err != nil {
-				return err
+			if trigger {
+				if err := command(args); err != nil {
+					return err
+				}
+				fmt.Printf("Watching for changes: %s\n", strings.Join(toWatch, ", "))
 			}
-			fmt.Printf("Watching for changes: %s\n", strings.Join(toWatch, ", "))
+		case <-stop:
+			return nil
 		}
 	}
-	return nil
 }
 
 func getWatchPaths(args *document.Config) ([]string, error) {

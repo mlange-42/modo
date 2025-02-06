@@ -11,7 +11,7 @@ import (
 	"github.com/spf13/viper"
 )
 
-func testCommand() (*cobra.Command, error) {
+func testCommand(stopWatch chan struct{}) (*cobra.Command, error) {
 	v := viper.New()
 	var config string
 	var watch bool
@@ -42,6 +42,12 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 			return nil
 		},
 		RunE: func(cmd *cobra.Command, args []string) error {
+			defer func() {
+				if err := os.Chdir(cwd); err != nil {
+					fmt.Println(err)
+				}
+			}()
+
 			start := time.Now()
 
 			cliArgs, err := document.ConfigFromViper(v)
@@ -52,11 +58,7 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 				return err
 			}
 			if watch {
-				return watchAndRun(cliArgs, runTest)
-			}
-
-			if err := os.Chdir(cwd); err != nil {
-				return err
+				return watchAndRun(cliArgs, runTest, stopWatch)
 			}
 
 			fmt.Printf("Completed in %.1fms 🧯\n", float64(time.Since(start).Microseconds())/1000.0)

@@ -7,7 +7,7 @@ import (
 )
 
 func TestTest(t *testing.T) {
-	cmd, err := testCommand()
+	cmd, err := testCommand(nil)
 	assert.Nil(t, err)
 
 	cmd.SetArgs([]string{"../../test"})
