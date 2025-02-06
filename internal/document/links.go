@@ -7,13 +7,19 @@ import (
 	"strings"
 )
 
-const regexString = `(?s)(?:(` + "```.*?```)|(`.*?`" + `))|(\[.*?\])`
+const linkRegexString = `(?s)(?:(` + "```.*?```)|(`.*?`" + `))|(\[.*?\])`
+const transcludeRegexString = `(?s)(?:(` + "```.*?```)|(`.*?`" + `))|(\{.*?\})`
 
-var re *regexp.Regexp
+var linkRegex *regexp.Regexp
+var transcludeRegex *regexp.Regexp
 
 func init() {
 	var err error
-	re, err = regexp.Compile(regexString)
+	linkRegex, err = regexp.Compile(linkRegexString)
+	if err != nil {
+		panic(err)
+	}
+	transcludeRegex, err = regexp.Compile(transcludeRegexString)
 	if err != nil {
 		panic(err)
 	}
@@ -26,7 +32,7 @@ func (proc *Processor) processLinks(docs *Docs) error {
 }
 
 func (proc *Processor) replaceRefs(text string, elems []string, modElems int) (string, error) {
-	indices, err := findLinks(text)
+	indices, err := findLinks(text, linkRegex)
 	if err != nil {
 		return "", err
 	}
@@ -50,7 +56,7 @@ func (proc *Processor) replaceRefs(text string, elems []string, modElems int) (s
 }
 
 func (proc *Processor) ReplacePlaceholders(text string, elems []string, modElems int) (string, error) {
-	indices, err := findLinks(text)
+	indices, err := findLinks(text, linkRegex)
 	if err != nil {
 		return "", err
 	}
@@ -240,9 +246,9 @@ func (proc *Processor) refToPlaceholderAbs(link string, elems []string) (string,
 	return placeholder, true, nil
 }
 
-func findLinks(text string) ([]int, error) {
+func findLinks(text string, regex *regexp.Regexp) ([]int, error) {
 	links := []int{}
-	results := re.FindAllStringSubmatchIndex(text, -1)
+	results := regex.FindAllStringSubmatchIndex(text, -1)
 	for _, r := range results {
 		if r[6] >= 0 {
 			if len(text) > r[7] && string(text[r[7]]) == "(" {

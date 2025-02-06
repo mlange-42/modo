@@ -74,6 +74,10 @@ func (proc *Processor) PrepareDocs(subdir string) error {
 		return err
 	}
 
+	if err := proc.processTranscludes(proc.Docs); err != nil {
+		return err
+	}
+
 	if proc.Config.UseExports {
 		proc.renameAll(proc.ExportDocs.Decl)
 	}
