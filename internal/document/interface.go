@@ -28,6 +28,10 @@ type Summarized interface {
 	GetSummary() string
 }
 
+type Sortable interface {
+	Sort()
+}
+
 type Linked interface {
 	SetLink(path []string, kind string)
 	GetLink() string

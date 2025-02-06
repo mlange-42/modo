@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"slices"
+	"strings"
 
 	"gopkg.in/yaml.v3"
 )
@@ -73,6 +75,35 @@ func (p *Package) linkedCopy() *Package {
 	}
 }
 
+func sortByName[N Named](a, b N) int {
+	return strings.Compare(a.GetName(), b.GetName())
+}
+
+func (p *Package) Sort() {
+	for _, e := range p.Packages {
+		e.Sort()
+	}
+	slices.SortFunc(p.Packages, sortByName)
+
+	for _, e := range p.Modules {
+		e.Sort()
+	}
+	slices.SortFunc(p.Modules, sortByName)
+
+	for _, e := range p.Structs {
+		e.Sort()
+	}
+	slices.SortFunc(p.Structs, sortByName)
+
+	for _, e := range p.Traits {
+		e.Sort()
+	}
+	slices.SortFunc(p.Traits, sortByName)
+
+	slices.SortFunc(p.Aliases, sortByName)
+	slices.SortFunc(p.Functions, sortByName)
+}
+
 type Module struct {
 	MemberKind    `yaml:",inline"`
 	MemberName    `yaml:",inline"`
@@ -101,6 +132,21 @@ func (m *Module) CheckMissing(path string, stats *missingStats) (missing []missi
 		missing = append(missing, e.CheckMissing(newPath, stats)...)
 	}
 	return missing
+}
+
+func (m *Module) Sort() {
+	for _, e := range m.Structs {
+		e.Sort()
+	}
+	slices.SortFunc(m.Structs, sortByName)
+
+	for _, e := range m.Traits {
+		e.Sort()
+	}
+	slices.SortFunc(m.Traits, sortByName)
+
+	slices.SortFunc(m.Aliases, sortByName)
+	slices.SortFunc(m.Functions, sortByName)
 }
 
 type Alias struct {
@@ -150,6 +196,12 @@ func (s *Struct) CheckMissing(path string, stats *missingStats) (missing []missi
 		missing = append(missing, e.CheckMissing(newPath, stats)...)
 	}
 	return missing
+}
+
+func (s *Struct) Sort() {
+	slices.SortFunc(s.Aliases, sortByName)
+	slices.SortFunc(s.Fields, sortByName)
+	slices.SortFunc(s.Functions, sortByName)
 }
 
 type Function struct {
@@ -225,6 +277,11 @@ type Trait struct {
 	ParentTraits  []string
 	Deprecated    string
 	MemberLink    `yaml:"-" json:"-"`
+}
+
+func (t *Trait) Sort() {
+	slices.SortFunc(t.Fields, sortByName)
+	slices.SortFunc(t.Functions, sortByName)
 }
 
 func (t *Trait) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
