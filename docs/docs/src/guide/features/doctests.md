@@ -131,3 +131,22 @@ With a directory as input, Modo🧯 does the following:
 - For any other files, copy them to the output folder.
 
 Note that this feature is not available with the [mdBook](../../formats#mdbook) format.
+
+## Modo🧯 vs. `mojo test`
+
+Mojo🔥 can also test code examples directly,
+see the manual's section on [testing](https://docs.modular.com/mojo/tools/testing/#writing-api-documentation-tests).
+So why would you want to use Modo🧯's doc-testing feature?
+
+First and foremost, `mojo test` will only test code blocks in docstrings,
+while Modo🧯 also allows for doc-testing of general [Markdown files](#markdown-files).
+Further, Modo🧯 is probably a bit more flexible and offers more control than `mojo test`.
+E.g., multiple tests suites are possible per docstring, and code blocks can be hidden completely
+where `mojo test` produces empty code blocks.
+
+Note that `mojo test` does not recognize docstrings with attributes (```` ```mojo {...} ````).
+This means that code blocks prepared for Modo🧯's doc-testing are not tested by `mojo test`.
+But it also means that you can't use `mojo test` if you want to add attributes for your SSG,
+e.g. for line numbers, line highlights, or other features.
+
+The doc-testing features of Modo🧯 and `mojo test` can be used in the same project without conflicts.
