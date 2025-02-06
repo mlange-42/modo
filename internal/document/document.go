@@ -250,7 +250,7 @@ type Arg struct {
 }
 
 func (a *Arg) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
-	if a.Name == "self" && a.Type == "Self" {
+	if a.Name == "self" && (a.Type == "Self" || a.Type == "_Self") {
 		return nil
 	}
 	if a.Convention == "out" {

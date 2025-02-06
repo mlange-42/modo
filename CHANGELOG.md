@@ -6,6 +6,10 @@
 * Adds automatic linking from doc pages to the containing module's source (#195)
 * Adds flag `--config` to all commands, for working with an alternative config file (#202)
 
+### Bugfixes
+
+* Don't warn on missing self arg docs, also for traits (#210)
+
 ### Other
 
 * Doc-tests parser supports quadruple backticks (#194)
