@@ -56,4 +56,19 @@ fn struct_method[T: Intable](self, arg: StructParameter) -> Int
 
 Error [`RenamedStruct.struct_method`](RenamedStruct-.md#struct_method).
 
+### `impl_method`
+
+```mojo
+fn impl_method(self, x: Int)
+```
+
+Test method for transclusions.
+
+More details...
+
+**Args:**
+
+- **self** (`Self`)
+- **x** (`Int`): Itself.
+
 

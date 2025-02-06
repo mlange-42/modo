@@ -43,7 +43,7 @@ func (proc *Processor) replaceRefs(text string, elems []string, modElems int) (s
 		start, end := indices[i], indices[i+1]
 		link := text[start+1 : end-1]
 
-		content, ok, err := proc.refToPlaceholder(link, elems, modElems)
+		content, ok, err := proc.refToPlaceholder(link, elems, modElems, true)
 		if err != nil {
 			return "", err
 		}
@@ -186,16 +186,16 @@ func (proc *Processor) renameInLink(link string, elems *elemPath) string {
 	return link
 }
 
-func (proc *Processor) refToPlaceholder(link string, elems []string, modElems int) (string, bool, error) {
+func (proc *Processor) refToPlaceholder(link string, elems []string, modElems int, redirect bool) (string, bool, error) {
 	linkParts := strings.SplitN(link, " ", 2)
 
 	var placeholder string
 	var ok bool
 	var err error
 	if strings.HasPrefix(link, ".") {
-		placeholder, ok, err = proc.refToPlaceholderRel(linkParts[0], elems, modElems)
+		placeholder, ok, err = proc.refToPlaceholderRel(linkParts[0], elems, modElems, redirect)
 	} else {
-		placeholder, ok, err = proc.refToPlaceholderAbs(linkParts[0], elems)
+		placeholder, ok, err = proc.refToPlaceholderAbs(linkParts[0], elems, redirect)
 	}
 	if err != nil {
 		return "", false, err
@@ -211,7 +211,7 @@ func (proc *Processor) refToPlaceholder(link string, elems []string, modElems in
 	}
 }
 
-func (proc *Processor) refToPlaceholderRel(link string, elems []string, modElems int) (string, bool, error) {
+func (proc *Processor) refToPlaceholderRel(link string, elems []string, modElems int, redirect bool) (string, bool, error) {
 	dots := 0
 	for strings.HasPrefix(link[dots:], ".") {
 		dots++
@@ -229,6 +229,10 @@ func (proc *Processor) refToPlaceholderRel(link string, elems []string, modElems
 		fullLink = strings.Join(subElems, ".") + "." + linkText
 	}
 
+	if !redirect {
+		return fullLink, true, nil
+	}
+
 	placeholder, ok := proc.linkExports[fullLink]
 	if !ok {
 		err := proc.warnOrError("Can't resolve cross ref (rel) '%s' (%s) in %s", link, fullLink, strings.Join(elems, "."))
@@ -237,7 +241,10 @@ func (proc *Processor) refToPlaceholderRel(link string, elems []string, modElems
 	return placeholder, true, nil
 }
 
-func (proc *Processor) refToPlaceholderAbs(link string, elems []string) (string, bool, error) {
+func (proc *Processor) refToPlaceholderAbs(link string, elems []string, redirect bool) (string, bool, error) {
+	if !redirect {
+		return link, true, nil
+	}
 	placeholder, ok := proc.linkExports[link]
 	if !ok {
 		err := proc.warnOrError("Can't resolve cross ref (abs) '%s' in %s", link, strings.Join(elems, "."))
