@@ -21,10 +21,12 @@ Complete documentation at https://mlange-42.github.io/modo/`,
   modo build                     # build the docs`,
 		Args:         cobra.ExactArgs(0),
 		SilenceUsage: true,
-		Run: func(cmd *cobra.Command, args []string) {
+		RunE: func(cmd *cobra.Command, args []string) error {
 			if showVersion {
 				fmt.Printf("Modo %s\n", version.Version())
+				return nil
 			}
+			return cmd.Help()
 		},
 	}
 

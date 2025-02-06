@@ -104,25 +104,30 @@ func isPackage(dir string) (isPackage bool, err error) {
 	return
 }
 
-func mountProject(v *viper.Viper, config string, paths []string) error {
+func mountProject(v *viper.Viper, config string, paths []string) (string, error) {
+	cwd, err := os.Getwd()
+	if err != nil {
+		return "", err
+	}
+
 	withConfig := len(paths) > 0
 	p := "."
 	if withConfig {
 		p = paths[0]
 		if err := os.Chdir(p); err != nil {
-			return err
+			return cwd, err
 		}
 	}
 
 	exists, isDir, err := util.FileExists(config)
 	if err != nil {
-		return err
+		return cwd, err
 	}
 	if !exists || isDir {
 		if withConfig {
-			return fmt.Errorf("no config file '%s' found in path '%s'", config, p)
+			return cwd, fmt.Errorf("no config file '%s' found in path '%s'", config, p)
 		}
-		return nil
+		return cwd, nil
 	}
 
 	v.SetConfigName(strings.TrimSuffix(config, path.Ext(config)))
@@ -132,13 +137,13 @@ func mountProject(v *viper.Viper, config string, paths []string) error {
 	if err := v.ReadInConfig(); err != nil {
 		_, notFound := err.(viper.ConfigFileNotFoundError)
 		if !notFound {
-			return err
+			return cwd, err
 		}
 		if withConfig {
-			return err
+			return cwd, err
 		}
 	}
-	return nil
+	return cwd, nil
 }
 
 type command = func(file string, args *document.Config, form document.Formatter, subdir string, isFile, isDir bool) error

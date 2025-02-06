@@ -154,15 +154,14 @@ func findSources(f string) ([]document.PackageSource, string, error) {
 	var allDirs []string
 	if srcExists && srcIsDir {
 		allDirs = append(allDirs, srcDir)
-	} else {
-		infos, err := os.ReadDir(".")
-		if err != nil {
-			return nil, warning, err
-		}
-		for _, info := range infos {
-			if info.IsDir() {
-				allDirs = append(allDirs, info.Name())
-			}
+	}
+	infos, err := os.ReadDir(".")
+	if err != nil {
+		return nil, warning, err
+	}
+	for _, info := range infos {
+		if info.IsDir() && info.Name() != srcDir {
+			allDirs = append(allDirs, info.Name())
 		}
 	}
 

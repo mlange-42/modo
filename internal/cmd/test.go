@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"os"
 	"time"
 
 	"github.com/mlange-42/modo/internal/document"
@@ -14,6 +15,8 @@ func testCommand() (*cobra.Command, error) {
 	v := viper.New()
 	var config string
 	var watch bool
+
+	var cwd string
 
 	root := &cobra.Command{
 		Use:   "test [PATH]",
@@ -29,10 +32,11 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 		Args:         cobra.MaximumNArgs(1),
 		SilenceUsage: true,
 		PreRunE: func(cmd *cobra.Command, args []string) error {
-			if err := checkConfigFile(config); err != nil {
+			var err error
+			if err = checkConfigFile(config); err != nil {
 				return err
 			}
-			if err := mountProject(v, config, args); err != nil {
+			if cwd, err = mountProject(v, config, args); err != nil {
 				return err
 			}
 			return nil
@@ -49,6 +53,10 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 			}
 			if watch {
 				return watchAndRun(cliArgs, runTest)
+			}
+
+			if err := os.Chdir(cwd); err != nil {
+				return err
 			}
 
 			fmt.Printf("Completed in %.1fms 🧯\n", float64(time.Since(start).Microseconds())/1000.0)
