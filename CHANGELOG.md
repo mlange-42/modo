@@ -7,6 +7,10 @@
 * Adds flag `--config` to all commands, for working with an alternative config file (#202)
 * Struct methods can inherit docs from a parent trait (#208)
 
+### Documentation
+
+* Adds a user guide section on Modo's doc-testing vs. `mojo test` (#215)
+
 ### Bugfixes
 
 * Don't warn on missing self arg docs, also for traits (#210)
