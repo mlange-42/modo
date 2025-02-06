@@ -71,14 +71,15 @@ func ExtractTestsMarkdown(config *Config, form Formatter, baseDir string, build 
 func renderWith(config *Config, proc *Processor, subdir string) error {
 	caseSensitiveSystem = !config.CaseInsensitive
 
+	if err := proc.PrepareDocs(subdir); err != nil {
+		return err
+	}
 	var missing []missingDocs
 	var stats missingStats
 	if config.ReportMissing {
 		missing = proc.Docs.Decl.CheckMissing("", &stats)
 	}
-	if err := proc.PrepareDocs(subdir); err != nil {
-		return err
-	}
+
 	outPath := path.Join(config.OutputDir, subdir)
 	if err := renderPackage(proc.ExportDocs.Decl, []string{outPath}, proc); err != nil {
 		return err

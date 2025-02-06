@@ -7,13 +7,19 @@ import (
 	"strings"
 )
 
-const regexString = `(?s)(?:(` + "```.*?```)|(`.*?`" + `))|(\[.*?\])`
+const linkRegexString = `(?s)(?:(` + "```.*?```)|(`.*?`" + `))|(\[[^\[].*?\])`
+const transcludeRegexString = `(?s)(?:(` + "```.*?```)|(`.*?`" + `))|\[(\[.*?\])\]`
 
-var re *regexp.Regexp
+var linkRegex *regexp.Regexp
+var transcludeRegex *regexp.Regexp
 
 func init() {
 	var err error
-	re, err = regexp.Compile(regexString)
+	linkRegex, err = regexp.Compile(linkRegexString)
+	if err != nil {
+		panic(err)
+	}
+	transcludeRegex, err = regexp.Compile(transcludeRegexString)
 	if err != nil {
 		panic(err)
 	}
@@ -26,7 +32,7 @@ func (proc *Processor) processLinks(docs *Docs) error {
 }
 
 func (proc *Processor) replaceRefs(text string, elems []string, modElems int) (string, error) {
-	indices, err := findLinks(text)
+	indices, err := findLinks(text, linkRegex, true)
 	if err != nil {
 		return "", err
 	}
@@ -37,7 +43,7 @@ func (proc *Processor) replaceRefs(text string, elems []string, modElems int) (s
 		start, end := indices[i], indices[i+1]
 		link := text[start+1 : end-1]
 
-		content, ok, err := proc.refToPlaceholder(link, elems, modElems)
+		content, ok, err := proc.refToPlaceholder(link, elems, modElems, true)
 		if err != nil {
 			return "", err
 		}
@@ -50,7 +56,7 @@ func (proc *Processor) replaceRefs(text string, elems []string, modElems int) (s
 }
 
 func (proc *Processor) ReplacePlaceholders(text string, elems []string, modElems int) (string, error) {
-	indices, err := findLinks(text)
+	indices, err := findLinks(text, linkRegex, true)
 	if err != nil {
 		return "", err
 	}
@@ -180,16 +186,16 @@ func (proc *Processor) renameInLink(link string, elems *elemPath) string {
 	return link
 }
 
-func (proc *Processor) refToPlaceholder(link string, elems []string, modElems int) (string, bool, error) {
+func (proc *Processor) refToPlaceholder(link string, elems []string, modElems int, redirect bool) (string, bool, error) {
 	linkParts := strings.SplitN(link, " ", 2)
 
 	var placeholder string
 	var ok bool
 	var err error
 	if strings.HasPrefix(link, ".") {
-		placeholder, ok, err = proc.refToPlaceholderRel(linkParts[0], elems, modElems)
+		placeholder, ok, err = proc.refToPlaceholderRel(linkParts[0], elems, modElems, redirect)
 	} else {
-		placeholder, ok, err = proc.refToPlaceholderAbs(linkParts[0], elems)
+		placeholder, ok, err = proc.refToPlaceholderAbs(linkParts[0], elems, redirect)
 	}
 	if err != nil {
 		return "", false, err
@@ -205,7 +211,7 @@ func (proc *Processor) refToPlaceholder(link string, elems []string, modElems in
 	}
 }
 
-func (proc *Processor) refToPlaceholderRel(link string, elems []string, modElems int) (string, bool, error) {
+func (proc *Processor) refToPlaceholderRel(link string, elems []string, modElems int, redirect bool) (string, bool, error) {
 	dots := 0
 	for strings.HasPrefix(link[dots:], ".") {
 		dots++
@@ -223,6 +229,10 @@ func (proc *Processor) refToPlaceholderRel(link string, elems []string, modElems
 		fullLink = strings.Join(subElems, ".") + "." + linkText
 	}
 
+	if !redirect {
+		return fullLink, true, nil
+	}
+
 	placeholder, ok := proc.linkExports[fullLink]
 	if !ok {
 		err := proc.warnOrError("Can't resolve cross ref (rel) '%s' (%s) in %s", link, fullLink, strings.Join(elems, "."))
@@ -231,7 +241,10 @@ func (proc *Processor) refToPlaceholderRel(link string, elems []string, modElems
 	return placeholder, true, nil
 }
 
-func (proc *Processor) refToPlaceholderAbs(link string, elems []string) (string, bool, error) {
+func (proc *Processor) refToPlaceholderAbs(link string, elems []string, redirect bool) (string, bool, error) {
+	if !redirect {
+		return link, true, nil
+	}
 	placeholder, ok := proc.linkExports[link]
 	if !ok {
 		err := proc.warnOrError("Can't resolve cross ref (abs) '%s' in %s", link, strings.Join(elems, "."))
@@ -240,13 +253,21 @@ func (proc *Processor) refToPlaceholderAbs(link string, elems []string) (string,
 	return placeholder, true, nil
 }
 
-func findLinks(text string) ([]int, error) {
+func findLinks(text string, regex *regexp.Regexp, isReference bool) ([]int, error) {
 	links := []int{}
-	results := re.FindAllStringSubmatchIndex(text, -1)
+	results := regex.FindAllStringSubmatchIndex(text, -1)
 	for _, r := range results {
 		if r[6] >= 0 {
-			if len(text) > r[7] && string(text[r[7]]) == "(" {
-				continue
+			// TODO: this can probably be moved into the REGEXP somehow.
+			if isReference {
+				// Excludes markdown links
+				if len(text) > r[7] && string(text[r[7]]) == "(" {
+					continue
+				}
+				// Excludes doucle square brackets
+				if r[6] > 0 && string(text[r[6]-1]) == "[" {
+					continue
+				}
 			}
 			links = append(links, r[6], r[7])
 		}

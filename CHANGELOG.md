@@ -5,6 +5,7 @@
 * Supports renaming of re-exports like in `from .mod import X as Y` (#189)
 * Adds automatic linking from doc pages to the containing module's source (#195)
 * Adds flag `--config` to all commands, for working with an alternative config file (#202)
+* Struct methods can inherit docs from a parent trait (#208)
 
 ### Bugfixes
 

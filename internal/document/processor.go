@@ -14,7 +14,7 @@ type Processor struct {
 	Formatter          Formatter
 	Docs               *Docs
 	ExportDocs         *Docs
-	allPaths           map[string]bool         // Full paths of all original members. Used to check whether all re-exports could be found.
+	allPaths           map[string]Named        // Full paths of all original members. Used to check whether all re-exports could be found.
 	linkTargets        map[string]elemPath     // Mapping from full (new) member paths to link strings.
 	linkExports        map[string]string       // Mapping from original to new member paths.
 	linkExportsReverse map[string]*exportError // Used to check for name collisions through re-exports.
@@ -74,6 +74,10 @@ func (proc *Processor) PrepareDocs(subdir string) error {
 		return err
 	}
 
+	if err := proc.processTranscludes(proc.Docs); err != nil {
+		return err
+	}
+
 	if proc.Config.UseExports {
 		proc.renameAll(proc.ExportDocs.Decl)
 	}
@@ -123,15 +127,15 @@ func (proc *Processor) addLinkExport(oldPath, newPath []string) {
 	proc.linkExports[pOld] = pNew
 }
 
-func (proc *Processor) addLinkTarget(elPath, filePath []string, kind string, isSection bool) {
+func (proc *Processor) addLinkTarget(elem Named, elPath, filePath []string, kind string, isSection bool) {
 	proc.linkTargets[strings.Join(elPath, ".")] = elemPath{Elements: filePath, Kind: kind, IsSection: isSection}
 }
 
-func (proc *Processor) addElementPath(elPath, filePath []string, kind string, isSection bool) {
+func (proc *Processor) addElementPath(elem Named, elPath, filePath []string, kind string, isSection bool) {
 	if isSection && kind != "package" && kind != "module" { // actually, we are want to let aliases pass
 		return
 	}
-	proc.allPaths[strings.Join(elPath, ".")] = true
+	proc.allPaths[strings.Join(elPath, ".")] = elem
 	_ = filePath
 }
 

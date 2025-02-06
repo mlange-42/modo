@@ -14,8 +14,26 @@ func TestFindLinks(t *testing.T) {
 		"```mojo\n" +
 		"a [link3] in a code block\n" +
 		"```\n" +
-		"and a normal [link4] again.\n"
-	indices, err := findLinks(text)
+		"and a normal [link4] again.\n" +
+		"and a doc inheritance [[link4]].\n"
+	indices, err := findLinks(text, linkRegex, true)
+	assert.Nil(t, err)
+	assert.NotNil(t, indices)
+	assert.Equal(t, 4, len(indices))
+	assert.Equal(t, "[link1]", text[indices[0]:indices[1]])
+	assert.Equal(t, "[link4]", text[indices[2]:indices[3]])
+}
+
+func TestTranscludesLinks(t *testing.T) {
+	text := "⌘a [[link1]].\n" +
+		"a `[[link2]] in inline` code\n" +
+		"and finally...\n" +
+		"```mojo\n" +
+		"a [[link3]] in a code block\n" +
+		"```\n" +
+		"and a normal [[link4]] again.\n" +
+		"and a doc inheritance [link5].\n"
+	indices, err := findLinks(text, transcludeRegex, false)
 	assert.Nil(t, err)
 	assert.NotNil(t, indices)
 	assert.Equal(t, 4, len(indices))

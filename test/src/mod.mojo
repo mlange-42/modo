@@ -43,6 +43,10 @@ struct Struct[StructParameter: Intable]:
         """
         return self.struct_field
 
+    fn impl_method(self, x: Int):
+        """[[.Trait]]."""
+        pass
+
 
 trait Trait:
     """[.ModuleAlias].
@@ -68,6 +72,16 @@ trait Trait:
 
         Raises:
             Error [.Struct.struct_method].
+        """
+        ...
+
+    fn impl_method(self, x: Int):
+        """Test method for transclusions.
+
+        More details...
+
+        Args:
+          x: Itself.
         """
         ...
 
