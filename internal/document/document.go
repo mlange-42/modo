@@ -12,6 +12,12 @@ import (
 
 const capitalFileMarker = "-"
 
+var specialMethods = []string{
+	"__init__",
+	"__copyinit__",
+	"__moveinit__",
+}
+
 // Global variable for file case sensitivity.
 //
 // TODO: find another way to handle this, without using a global variable.
@@ -77,6 +83,28 @@ func (p *Package) linkedCopy() *Package {
 
 func sortByName[N Named](a, b N) int {
 	return strings.Compare(a.GetName(), b.GetName())
+}
+
+func sortMethods(a, b *Function) int {
+	idxA, idxB := len(specialMethods), len(specialMethods)
+	for i, m := range specialMethods {
+		if a.GetName() == m {
+			idxA = i
+		}
+		if b.GetName() == m {
+			idxB = i
+		}
+	}
+	if idxA == idxB {
+		return strings.Compare(a.GetName(), b.GetName())
+	}
+	if idxA > idxB {
+		return 1
+	}
+	if idxA < idxB {
+		return -1
+	}
+	return 0
 }
 
 func (p *Package) Sort() {
@@ -201,7 +229,7 @@ func (s *Struct) CheckMissing(path string, stats *missingStats) (missing []missi
 func (s *Struct) Sort() {
 	slices.SortFunc(s.Aliases, sortByName)
 	slices.SortFunc(s.Fields, sortByName)
-	slices.SortFunc(s.Functions, sortByName)
+	slices.SortFunc(s.Functions, sortMethods)
 }
 
 type Function struct {
@@ -281,7 +309,7 @@ type Trait struct {
 
 func (t *Trait) Sort() {
 	slices.SortFunc(t.Fields, sortByName)
-	slices.SortFunc(t.Functions, sortByName)
+	slices.SortFunc(t.Functions, sortMethods)
 }
 
 func (t *Trait) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
