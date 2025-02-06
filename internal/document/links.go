@@ -32,7 +32,7 @@ func (proc *Processor) processLinks(docs *Docs) error {
 }
 
 func (proc *Processor) replaceRefs(text string, elems []string, modElems int) (string, error) {
-	indices, err := findLinks(text, linkRegex)
+	indices, err := findLinks(text, linkRegex, true)
 	if err != nil {
 		return "", err
 	}
@@ -56,7 +56,7 @@ func (proc *Processor) replaceRefs(text string, elems []string, modElems int) (s
 }
 
 func (proc *Processor) ReplacePlaceholders(text string, elems []string, modElems int) (string, error) {
-	indices, err := findLinks(text, linkRegex)
+	indices, err := findLinks(text, linkRegex, true)
 	if err != nil {
 		return "", err
 	}
@@ -253,12 +253,12 @@ func (proc *Processor) refToPlaceholderAbs(link string, elems []string, redirect
 	return placeholder, true, nil
 }
 
-func findLinks(text string, regex *regexp.Regexp) ([]int, error) {
+func findLinks(text string, regex *regexp.Regexp, noBracesAfter bool) ([]int, error) {
 	links := []int{}
 	results := regex.FindAllStringSubmatchIndex(text, -1)
 	for _, r := range results {
 		if r[6] >= 0 {
-			if len(text) > r[7] && string(text[r[7]]) == "(" {
+			if noBracesAfter && len(text) > r[7] && string(text[r[7]]) == "(" {
 				continue
 			}
 			links = append(links, r[6], r[7])

@@ -47,7 +47,7 @@ func (proc *Processor) replaceTranscludesModule(m *Module, elems []string) error
 }
 
 func (proc *Processor) replaceTranscludes(elem *Function, elems []string, modElems int) error {
-	indices, err := findLinks(elem.Summary, transcludeRegex)
+	indices, err := findLinks(elem.Summary, transcludeRegex, false)
 	if err != nil {
 		return err
 	}
