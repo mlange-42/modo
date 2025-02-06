@@ -112,8 +112,8 @@ func findImplementedFunction(structFunc *Function, trait *Trait) (*Function, boo
 		for _, o := range f.Overloads {
 			if functionsMatch(structFunc, o) {
 				sourceFunc = o
+				break
 			}
-			break
 		}
 		break
 	}
