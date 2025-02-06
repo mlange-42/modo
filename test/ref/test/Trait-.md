@@ -12,6 +12,21 @@ Mojo trait [🡭](https://github.com/mlange-42/modo/blob/main/test/src/mod.mojo)
 
 ## Methods
 
+### `impl_method`
+
+```mojo
+fn impl_method(self: _Self, x: Int)
+```
+
+Test method for transclusions.
+
+More details...
+
+**Args:**
+
+- **self** (`_Self`)
+- **x** (`Int`): Itself.
+
 ### `trait_method`
 
 ```mojo
@@ -38,20 +53,5 @@ fn trait_method[T: Intable](self: _Self, arg: T) -> Int
 **Raises:**
 
 Error [`RenamedStruct.struct_method`](RenamedStruct-.md#struct_method).
-
-### `impl_method`
-
-```mojo
-fn impl_method(self: _Self, x: Int)
-```
-
-Test method for transclusions.
-
-More details...
-
-**Args:**
-
-- **self** (`_Self`)
-- **x** (`Int`): Itself.
 
 
