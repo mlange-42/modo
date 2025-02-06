@@ -7,8 +7,8 @@ import (
 	"strings"
 )
 
-const linkRegexString = `(?s)(?:(` + "```.*?```)|(`.*?`" + `))|(\[.*?\])`
-const transcludeRegexString = `(?s)(?:(` + "```.*?```)|(`.*?`" + `))|(\{.*?\})`
+const linkRegexString = `(?s)(?:(` + "```.*?```)|(`.*?`" + `))|(\[[^\[].*?\])`
+const transcludeRegexString = `(?s)(?:(` + "```.*?```)|(`.*?`" + `))|\[(\[.*?\])\]`
 
 var linkRegex *regexp.Regexp
 var transcludeRegex *regexp.Regexp
@@ -253,13 +253,21 @@ func (proc *Processor) refToPlaceholderAbs(link string, elems []string, redirect
 	return placeholder, true, nil
 }
 
-func findLinks(text string, regex *regexp.Regexp, noBracesAfter bool) ([]int, error) {
+func findLinks(text string, regex *regexp.Regexp, isReference bool) ([]int, error) {
 	links := []int{}
 	results := regex.FindAllStringSubmatchIndex(text, -1)
 	for _, r := range results {
 		if r[6] >= 0 {
-			if noBracesAfter && len(text) > r[7] && string(text[r[7]]) == "(" {
-				continue
+			// TODO: this can probably be moved into the REGEXP somehow.
+			if isReference {
+				// Excludes markdown links
+				if len(text) > r[7] && string(text[r[7]]) == "(" {
+					continue
+				}
+				// Excludes doucle square brackets
+				if r[6] > 0 && string(text[r[6]-1]) == "[" {
+					continue
+				}
 			}
 			links = append(links, r[6], r[7])
 		}

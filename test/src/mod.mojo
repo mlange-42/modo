@@ -44,7 +44,7 @@ struct Struct[StructParameter: Intable]:
         return self.struct_field
 
     fn impl_method(self, x: Int):
-        """{.Trait}."""
+        """[[.Trait]]."""
         pass
 
 

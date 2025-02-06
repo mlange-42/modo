@@ -9,7 +9,7 @@ When implementing trait methods, documentation of the method
 in the implementing struct is often redundent.
 For these cases, Modo🧯 offers doc inheritance.
 
-In the method docstring, reference the parent trait in curly braces,
+In the method docstring, reference the parent trait in double square brackets,
 somewhere in the summary (i.e. in the first sentence).
 The syntax is the same as for [cross-references](../crossrefs).
 See line 14 below:
@@ -28,7 +28,7 @@ trait MyTrait:
 @value
 struct MyStruct(MyTrait):
     fn do_something(self) -> Int:
-        """See {.MyTrait}."""
+        """See [[.MyTrait]]."""
         return 100
 ```
 
