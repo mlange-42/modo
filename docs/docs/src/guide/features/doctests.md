@@ -149,4 +149,4 @@ This means that code blocks prepared for Modo🧯's doc-testing are not tested b
 But it also means that you can't use `mojo test` if you want to add attributes for your SSG,
 e.g. for line numbers, line highlights, or other features.
 
-The doc-testing feature of Modo🧯 and `mojo test` can be used in the same project without conflicts.
+The doc-testing features of Modo🧯 and `mojo test` can be used in the same project without conflicts.
