@@ -24,7 +24,7 @@ func TestWarnOrError(t *testing.T) {
 
 func TestLoadTemplates(t *testing.T) {
 	f := TestFormatter{}
-	templ, err := LoadTemplates(&f, "../docs/docs/templates")
+	templ, err := LoadTemplates(&f, "https://example.com", "../../docs/docs/templates")
 	assert.Nil(t, err)
 
 	assert.NotNil(t, templ.Lookup("package.md"))

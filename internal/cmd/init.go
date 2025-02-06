@@ -11,6 +11,7 @@ import (
 	"github.com/mlange-42/modo/assets"
 	"github.com/mlange-42/modo/internal/document"
 	"github.com/mlange-42/modo/internal/format"
+	"github.com/mlange-42/modo/internal/util"
 	"github.com/spf13/cobra"
 )
 
@@ -58,7 +59,7 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 			if err := checkConfigFile(config); err != nil {
 				return err
 			}
-			exists, _, err := fileExists(config)
+			exists, _, err := util.FileExists(config)
 			if err != nil {
 				return fmt.Errorf("error checking config file %s: %s", config, err.Error())
 			}
@@ -145,7 +146,7 @@ func initProject(configFile string, initArgs *initArgs) error {
 func findSources(f string) ([]document.PackageSource, string, error) {
 	warning := ""
 	sources := []document.PackageSource{}
-	srcExists, srcIsDir, err := fileExists(srcDir)
+	srcExists, srcIsDir, err := util.FileExists(srcDir)
 	if err != nil {
 		return nil, warning, err
 	}
@@ -177,7 +178,7 @@ func findSources(f string) ([]document.PackageSource, string, error) {
 			file := dir
 			if file == srcDir {
 				// Package is `src/__init__.mojo`
-				file, err = document.GetCwdName()
+				file, err = util.GetCwdName()
 				if err != nil {
 					return nil, warning, err
 				}
@@ -241,7 +242,7 @@ func createDocs(args *initArgs, form document.Formatter, templ *template.Templat
 		return
 	}
 
-	docsExists, _, err := fileExists(dir)
+	docsExists, _, err := util.FileExists(dir)
 	if err != nil {
 		return
 	}

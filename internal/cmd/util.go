@@ -1,7 +1,6 @@
 package cmd
 
 import (
-	"errors"
 	"fmt"
 	"io"
 	"log"
@@ -13,6 +12,7 @@ import (
 	"time"
 
 	"github.com/mlange-42/modo/internal/document"
+	"github.com/mlange-42/modo/internal/util"
 	"github.com/rjeczalik/notify"
 	"github.com/spf13/pflag"
 	"github.com/spf13/viper"
@@ -80,22 +80,9 @@ func read(file string) ([]byte, error) {
 	}
 }
 
-func fileExists(file string) (exists, isDir bool, err error) {
-	var s os.FileInfo
-	if s, err = os.Stat(file); err == nil {
-		exists = true
-		isDir = s.IsDir()
-		return
-	} else if !errors.Is(err, os.ErrNotExist) {
-		return
-	}
-	err = nil
-	return
-}
-
 func isPackage(dir string) (isPackage bool, err error) {
 	pkgFile := path.Join(dir, initFileText)
-	initExists, initIsDir, err := fileExists(pkgFile)
+	initExists, initIsDir, err := util.FileExists(pkgFile)
 	if err != nil {
 		return
 	}
@@ -105,7 +92,7 @@ func isPackage(dir string) (isPackage bool, err error) {
 	}
 
 	pkgFile = path.Join(dir, initFileEmoji)
-	initExists, initIsDir, err = fileExists(pkgFile)
+	initExists, initIsDir, err = util.FileExists(pkgFile)
 	if err != nil {
 		return
 	}
@@ -127,7 +114,7 @@ func mountProject(v *viper.Viper, config string, paths []string) error {
 		}
 	}
 
-	exists, isDir, err := fileExists(config)
+	exists, isDir, err := util.FileExists(config)
 	if err != nil {
 		return err
 	}
@@ -222,7 +209,7 @@ func commandError(commandType string, err error) error {
 	return fmt.Errorf("in script %s: %s\nTo skip pre- and post-processing scripts, use flag '--bare'", commandType, err)
 }
 
-// bindFlags binds flags to Viper, filtering out the `--watch` flag.
+// bindFlags binds flags to Viper, filtering out the `--watch` and `--config` flag.
 func bindFlags(v *viper.Viper, flags *pflag.FlagSet) error {
 	newFlags := pflag.NewFlagSet("root", pflag.ExitOnError)
 	flags.VisitAll(func(f *pflag.Flag) {
@@ -307,7 +294,7 @@ func getWatchPaths(args *document.Config) ([]string, error) {
 	toWatch = append(toWatch, args.InputFiles...)
 	for i, w := range toWatch {
 		p := w
-		exists, isDir, err := fileExists(p)
+		exists, isDir, err := util.FileExists(p)
 		if err != nil {
 			return nil, err
 		}

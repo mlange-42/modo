@@ -7,6 +7,7 @@ import (
 	"text/template"
 
 	"github.com/mlange-42/modo/internal/document"
+	"github.com/mlange-42/modo/internal/util"
 )
 
 const landingPageContentPlain = `# Landing page
@@ -67,16 +68,16 @@ func (f *Plain) GitIgnore(in, out string, sources []document.PackageSource) []st
 func (f *Plain) CreateDirs(base, in, out string, sources []document.PackageSource, _ *template.Template) error {
 	inDir, outDir := path.Join(base, in), path.Join(base, out)
 	testDir := path.Join(base, "test")
-	if err := mkDirs(inDir); err != nil {
+	if err := util.MkDirs(inDir); err != nil {
 		return err
 	}
 	if err := os.WriteFile(path.Join(inDir, "_index.md"), []byte(landingPageContentPlain), 0644); err != nil {
 		return err
 	}
-	if err := mkDirs(outDir); err != nil {
+	if err := util.MkDirs(outDir); err != nil {
 		return err
 	}
-	return mkDirs(testDir)
+	return util.MkDirs(testDir)
 }
 
 func (f *Plain) Clean(out, tests string) error {
