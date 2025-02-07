@@ -6,6 +6,7 @@ import (
 	"github.com/spf13/cobra"
 )
 
+// RootCommand creates the root command.
 func RootCommand() (*cobra.Command, error) {
 	var showVersion bool
 
