@@ -20,7 +20,7 @@ const docsInDir = "src"
 const docsOutDir = "site"
 const testsDir = "test"
 const gitignoreFile = ".gitignore"
-const gitUrl = "blob/main"
+const gitURL = "blob/main"
 
 type config struct {
 	Warning      string
@@ -116,7 +116,7 @@ func initProject(configFile string, initArgs *initArgs) error {
 	sourceURLs := map[string]string{}
 	for _, s := range sources {
 		sourceDirs = append(sourceDirs, path.Join(s.Path...))
-		sourceURLs[s.Name] = path.Join(path.Join(gitInfo.Repo, gitUrl), gitInfo.BasePath, path.Join(s.Path...))
+		sourceURLs[s.Name] = path.Join(path.Join(gitInfo.Repo, gitURL), gitInfo.BasePath, path.Join(s.Path...))
 	}
 
 	config := config{

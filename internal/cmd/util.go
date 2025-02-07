@@ -26,16 +26,23 @@ const initFileEmoji = "__init__.🔥"
 
 var watchExtensions = []string{".md", ".mojo", ".🔥"}
 
+// Version represents the version of Modo.
 type Version struct {
-	Major int
-	Minor int
-	Patch int
-	Dev   bool
+	Major   int
+	Minor   int
+	Patch   int
+	Release bool
 }
 
+// NewVersion creates a new Version.
+func NewVersion(major, minor, patch int, release bool) Version {
+	return Version{Major: major, Minor: minor, Patch: patch, Release: release}
+}
+
+// Version returns the version as a string.
 func (v *Version) Version() string {
-	version := fmt.Sprintf("%d.%d.%d", v.Major, v.Minor, v.Patch)
-	if v.Dev {
+	version := fmt.Sprintf("v%d.%d.%d", v.Major, v.Minor, v.Patch)
+	if !v.Release {
 		version = fmt.Sprintf("%s-dev", version)
 	}
 	return version
@@ -75,9 +82,8 @@ func readDocs(file string) (*document.Docs, error) {
 func read(file string) ([]byte, error) {
 	if file == "" {
 		return io.ReadAll(os.Stdin)
-	} else {
-		return os.ReadFile(file)
 	}
+	return os.ReadFile(file)
 }
 
 func isPackage(dir string) (isPackage bool, err error) {
