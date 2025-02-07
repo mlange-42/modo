@@ -29,6 +29,21 @@ struct Struct[StructParameter: Intable]
 
 ## Methods
 
+### `impl_method`
+
+```mojo
+fn impl_method(self, x: Int)
+```
+
+Test method for transclusions.
+
+More details...
+
+**Args:**
+
+- **self** (`Self`)
+- **x** (`Int`): Itself.
+
 ### `struct_method`
 
 ```mojo
@@ -55,20 +70,5 @@ fn struct_method[T: Intable](self, arg: StructParameter) -> Int
 **Raises:**
 
 Error [`RenamedStruct.struct_method`](RenamedStruct-.md#struct_method).
-
-### `impl_method`
-
-```mojo
-fn impl_method(self, x: Int)
-```
-
-Test method for transclusions.
-
-More details...
-
-**Args:**
-
-- **self** (`Self`)
-- **x** (`Int`): Itself.
 
 

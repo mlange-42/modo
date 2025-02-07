@@ -82,6 +82,8 @@ func (proc *Processor) PrepareDocs(subdir string) error {
 		proc.renameAll(proc.ExportDocs.Decl)
 	}
 
+	proc.ExportDocs.Decl.Sort()
+
 	return nil
 }
 
