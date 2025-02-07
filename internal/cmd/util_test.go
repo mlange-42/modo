@@ -8,7 +8,15 @@ import (
 	"github.com/stretchr/testify/assert"
 )
 
-func TestUtilGetWatchPaths(t *testing.T) {
+func TestVersion(t *testing.T) {
+	v := NewVersion(1, 2, 3, true)
+	assert.Equal(t, "v1.2.3", v.Version())
+
+	v = NewVersion(1, 2, 3, false)
+	assert.Equal(t, "v1.2.3-dev", v.Version())
+}
+
+func TestGetWatchPaths(t *testing.T) {
 	config := document.Config{
 		Sources:    []string{"src/mypkg"},
 		InputFiles: []string{"docs/src"},
