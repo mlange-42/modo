@@ -46,11 +46,13 @@ func NewProcessor(docs *Docs, f Formatter, t *template.Template, config *Config)
 // NewProcessorWithWriter creates a new Processor instance with a custom writer.
 func NewProcessorWithWriter(docs *Docs, f Formatter, t *template.Template, config *Config, writer func(file, text string) error) *Processor {
 	return &Processor{
-		Config:    config,
-		Template:  t,
-		Formatter: f,
-		Docs:      docs,
-		writer:    writer,
+		Config:      config,
+		Template:    t,
+		Formatter:   f,
+		Docs:        docs,
+		writer:      writer,
+		allPaths:    map[string]Named{},
+		linkTargets: map[string]elemPath{},
 	}
 }
 

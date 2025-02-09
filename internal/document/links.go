@@ -266,7 +266,7 @@ func findLinks(text string, regex *regexp.Regexp, isReference bool) ([]int, erro
 				if len(text) > r[7] && string(text[r[7]]) == "(" {
 					continue
 				}
-				// Excludes doucle square brackets
+				// Excludes double square brackets
 				if r[6] > 0 && string(text[r[6]-1]) == "[" {
 					continue
 				}
