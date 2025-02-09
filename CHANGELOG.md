@@ -1,3 +1,9 @@
+## [[unpublished]](https://github.com/mlange-42/modo/compare/v0.11.0...main)
+
+### Other
+
+* Internal: splits up the `Processor` mega-struct (#218, #219)
+
 ## [[v0.11.0]](https://github.com/mlange-42/modo/compare/v0.10.1...v0.11.0)
 
 ### Features
