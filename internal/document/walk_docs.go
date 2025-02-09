@@ -3,129 +3,134 @@ package document
 type walkFunc = func(text string, elems []string, modElems int) (string, error)
 type nameFunc = func(elem Named) string
 
-func (proc *Processor) walkAllDocStrings(docs *Docs, fn walkFunc, nameFn nameFunc) error {
-	return proc.walkAllDocStringsPackage(docs.Decl, []string{}, fn, nameFn)
+type walker struct {
+	Func     walkFunc
+	NameFunc nameFunc
 }
 
-func (proc *Processor) walkAllDocStringsPackage(p *Package, elems []string, fn walkFunc, nameFn nameFunc) error {
-	newElems := appendNew(elems, nameFn(p))
+func (w *walker) walkAllDocStrings(docs *Docs) error {
+	return w.walkAllDocStringsPackage(docs.Decl, []string{})
+}
+
+func (w *walker) walkAllDocStringsPackage(p *Package, elems []string) error {
+	newElems := appendNew(elems, w.NameFunc(p))
 
 	var err error
-	if p.Summary, err = fn(p.Summary, newElems, len(newElems)); err != nil {
+	if p.Summary, err = w.Func(p.Summary, newElems, len(newElems)); err != nil {
 		return err
 	}
-	if p.Description, err = fn(p.Description, newElems, len(newElems)); err != nil {
+	if p.Description, err = w.Func(p.Description, newElems, len(newElems)); err != nil {
 		return err
 	}
 
 	for _, pkg := range p.Packages {
-		if err := proc.walkAllDocStringsPackage(pkg, newElems, fn, nameFn); err != nil {
+		if err := w.walkAllDocStringsPackage(pkg, newElems); err != nil {
 			return err
 		}
 	}
 	for _, mod := range p.Modules {
-		if err := proc.walkAllDocStringsModule(mod, newElems, fn, nameFn); err != nil {
+		if err := w.walkAllDocStringsModule(mod, newElems); err != nil {
 			return err
 		}
 	}
 
 	for _, a := range p.Aliases {
-		if err := proc.walkAllDocStringsModuleAlias(a, newElems, fn, nameFn); err != nil {
+		if err := w.walkAllDocStringsModuleAlias(a, newElems); err != nil {
 			return err
 		}
 	}
 	for _, f := range p.Functions {
-		if err := proc.walkAllDocStringsFunction(f, newElems, fn, nameFn); err != nil {
+		if err := w.walkAllDocStringsFunction(f, newElems); err != nil {
 			return err
 		}
 	}
 	for _, s := range p.Structs {
-		if err := proc.walkAllDocStringsStruct(s, newElems, fn, nameFn); err != nil {
+		if err := w.walkAllDocStringsStruct(s, newElems); err != nil {
 			return err
 		}
 	}
 	for _, tr := range p.Traits {
-		if err := proc.walkAllDocStringsTrait(tr, newElems, fn, nameFn); err != nil {
+		if err := w.walkAllDocStringsTrait(tr, newElems); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func (proc *Processor) walkAllDocStringsModule(m *Module, elems []string, fn walkFunc, nameFn nameFunc) error {
-	newElems := appendNew(elems, nameFn(m))
+func (w *walker) walkAllDocStringsModule(m *Module, elems []string) error {
+	newElems := appendNew(elems, w.NameFunc(m))
 
 	var err error
-	if m.Summary, err = fn(m.Summary, newElems, len(newElems)); err != nil {
+	if m.Summary, err = w.Func(m.Summary, newElems, len(newElems)); err != nil {
 		return err
 	}
-	if m.Description, err = fn(m.Description, newElems, len(newElems)); err != nil {
+	if m.Description, err = w.Func(m.Description, newElems, len(newElems)); err != nil {
 		return err
 	}
 
 	for _, a := range m.Aliases {
-		if err := proc.walkAllDocStringsModuleAlias(a, newElems, fn, nameFn); err != nil {
+		if err := w.walkAllDocStringsModuleAlias(a, newElems); err != nil {
 			return err
 		}
 	}
 	for _, f := range m.Functions {
-		if err := proc.walkAllDocStringsFunction(f, newElems, fn, nameFn); err != nil {
+		if err := w.walkAllDocStringsFunction(f, newElems); err != nil {
 			return err
 		}
 	}
 	for _, s := range m.Structs {
-		if err := proc.walkAllDocStringsStruct(s, newElems, fn, nameFn); err != nil {
+		if err := w.walkAllDocStringsStruct(s, newElems); err != nil {
 			return err
 		}
 	}
 	for _, tr := range m.Traits {
-		if err := proc.walkAllDocStringsTrait(tr, newElems, fn, nameFn); err != nil {
+		if err := w.walkAllDocStringsTrait(tr, newElems); err != nil {
 			return err
 		}
 	}
 	return nil
 }
 
-func (proc *Processor) walkAllDocStringsStruct(s *Struct, elems []string, fn walkFunc, nameFn nameFunc) error {
-	newElems := appendNew(elems, nameFn(s))
+func (w *walker) walkAllDocStringsStruct(s *Struct, elems []string) error {
+	newElems := appendNew(elems, w.NameFunc(s))
 
 	var err error
-	if s.Summary, err = fn(s.Summary, newElems, len(elems)); err != nil {
+	if s.Summary, err = w.Func(s.Summary, newElems, len(elems)); err != nil {
 		return err
 	}
-	if s.Description, err = fn(s.Description, newElems, len(elems)); err != nil {
+	if s.Description, err = w.Func(s.Description, newElems, len(elems)); err != nil {
 		return err
 	}
-	if s.Deprecated, err = fn(s.Deprecated, newElems, len(elems)); err != nil {
+	if s.Deprecated, err = w.Func(s.Deprecated, newElems, len(elems)); err != nil {
 		return err
 	}
 
 	for _, a := range s.Aliases {
-		if a.Summary, err = fn(a.Summary, newElems, len(elems)); err != nil {
+		if a.Summary, err = w.Func(a.Summary, newElems, len(elems)); err != nil {
 			return err
 		}
-		if a.Description, err = fn(a.Description, newElems, len(elems)); err != nil {
+		if a.Description, err = w.Func(a.Description, newElems, len(elems)); err != nil {
 			return err
 		}
-		if a.Deprecated, err = fn(a.Deprecated, newElems, len(elems)); err != nil {
+		if a.Deprecated, err = w.Func(a.Deprecated, newElems, len(elems)); err != nil {
 			return err
 		}
 	}
 	for _, p := range s.Parameters {
-		if p.Description, err = fn(p.Description, newElems, len(elems)); err != nil {
+		if p.Description, err = w.Func(p.Description, newElems, len(elems)); err != nil {
 			return err
 		}
 	}
 	for _, f := range s.Fields {
-		if f.Summary, err = fn(f.Summary, newElems, len(elems)); err != nil {
+		if f.Summary, err = w.Func(f.Summary, newElems, len(elems)); err != nil {
 			return err
 		}
-		if f.Description, err = fn(f.Description, newElems, len(elems)); err != nil {
+		if f.Description, err = w.Func(f.Description, newElems, len(elems)); err != nil {
 			return err
 		}
 	}
 	for _, f := range s.Functions {
-		if err := proc.walkAllDocStringsMethod(f, newElems, fn, nameFn); err != nil {
+		if err := w.walkAllDocStringsMethod(f, newElems); err != nil {
 			return err
 		}
 	}
@@ -133,17 +138,17 @@ func (proc *Processor) walkAllDocStringsStruct(s *Struct, elems []string, fn wal
 	return nil
 }
 
-func (proc *Processor) walkAllDocStringsTrait(tr *Trait, elems []string, fn walkFunc, nameFn nameFunc) error {
-	newElems := appendNew(elems, nameFn(tr))
+func (w *walker) walkAllDocStringsTrait(tr *Trait, elems []string) error {
+	newElems := appendNew(elems, w.NameFunc(tr))
 
 	var err error
-	if tr.Summary, err = fn(tr.Summary, newElems, len(elems)); err != nil {
+	if tr.Summary, err = w.Func(tr.Summary, newElems, len(elems)); err != nil {
 		return err
 	}
-	if tr.Description, err = fn(tr.Description, newElems, len(elems)); err != nil {
+	if tr.Description, err = w.Func(tr.Description, newElems, len(elems)); err != nil {
 		return err
 	}
-	if tr.Deprecated, err = fn(tr.Deprecated, newElems, len(elems)); err != nil {
+	if tr.Deprecated, err = w.Func(tr.Deprecated, newElems, len(elems)); err != nil {
 		return err
 	}
 
@@ -155,15 +160,15 @@ func (proc *Processor) walkAllDocStringsTrait(tr *Trait, elems []string, fn walk
 		}
 	}*/
 	for _, f := range tr.Fields {
-		if f.Summary, err = fn(f.Summary, newElems, len(elems)); err != nil {
+		if f.Summary, err = w.Func(f.Summary, newElems, len(elems)); err != nil {
 			return err
 		}
-		if f.Description, err = fn(f.Description, newElems, len(elems)); err != nil {
+		if f.Description, err = w.Func(f.Description, newElems, len(elems)); err != nil {
 			return err
 		}
 	}
 	for _, f := range tr.Functions {
-		if err := proc.walkAllDocStringsMethod(f, newElems, fn, nameFn); err != nil {
+		if err := w.walkAllDocStringsMethod(f, newElems); err != nil {
 			return err
 		}
 	}
@@ -171,39 +176,39 @@ func (proc *Processor) walkAllDocStringsTrait(tr *Trait, elems []string, fn walk
 	return nil
 }
 
-func (proc *Processor) walkAllDocStringsFunction(f *Function, elems []string, fn walkFunc, nameFn nameFunc) error {
-	newElems := appendNew(elems, nameFn(f))
+func (w *walker) walkAllDocStringsFunction(f *Function, elems []string) error {
+	newElems := appendNew(elems, w.NameFunc(f))
 
 	var err error
-	if f.Summary, err = fn(f.Summary, newElems, len(elems)); err != nil {
+	if f.Summary, err = w.Func(f.Summary, newElems, len(elems)); err != nil {
 		return err
 	}
-	if f.Description, err = fn(f.Description, newElems, len(elems)); err != nil {
+	if f.Description, err = w.Func(f.Description, newElems, len(elems)); err != nil {
 		return err
 	}
-	if f.Deprecated, err = fn(f.Deprecated, newElems, len(elems)); err != nil {
+	if f.Deprecated, err = w.Func(f.Deprecated, newElems, len(elems)); err != nil {
 		return err
 	}
-	if f.ReturnsDoc, err = fn(f.ReturnsDoc, newElems, len(elems)); err != nil {
+	if f.ReturnsDoc, err = w.Func(f.ReturnsDoc, newElems, len(elems)); err != nil {
 		return err
 	}
-	if f.RaisesDoc, err = fn(f.RaisesDoc, newElems, len(elems)); err != nil {
+	if f.RaisesDoc, err = w.Func(f.RaisesDoc, newElems, len(elems)); err != nil {
 		return err
 	}
 
 	for _, a := range f.Args {
-		if a.Description, err = fn(a.Description, newElems, len(elems)); err != nil {
+		if a.Description, err = w.Func(a.Description, newElems, len(elems)); err != nil {
 			return err
 		}
 	}
 	for _, p := range f.Parameters {
-		if p.Description, err = fn(p.Description, newElems, len(elems)); err != nil {
+		if p.Description, err = w.Func(p.Description, newElems, len(elems)); err != nil {
 			return err
 		}
 	}
 
 	for _, o := range f.Overloads {
-		err := proc.walkAllDocStringsFunction(o, elems, fn, nameFn)
+		err := w.walkAllDocStringsFunction(o, elems)
 		if err != nil {
 			return err
 		}
@@ -212,53 +217,53 @@ func (proc *Processor) walkAllDocStringsFunction(f *Function, elems []string, fn
 	return nil
 }
 
-func (proc *Processor) walkAllDocStringsModuleAlias(a *Alias, elems []string, fn walkFunc, nameFn nameFunc) error {
-	newElems := appendNew(elems, nameFn(a))
+func (w *walker) walkAllDocStringsModuleAlias(a *Alias, elems []string) error {
+	newElems := appendNew(elems, w.NameFunc(a))
 
 	var err error
-	if a.Summary, err = fn(a.Summary, newElems, len(elems)); err != nil {
+	if a.Summary, err = w.Func(a.Summary, newElems, len(elems)); err != nil {
 		return err
 	}
-	if a.Description, err = fn(a.Description, newElems, len(elems)); err != nil {
+	if a.Description, err = w.Func(a.Description, newElems, len(elems)); err != nil {
 		return err
 	}
-	if a.Deprecated, err = fn(a.Deprecated, newElems, len(elems)); err != nil {
+	if a.Deprecated, err = w.Func(a.Deprecated, newElems, len(elems)); err != nil {
 		return err
 	}
 	return nil
 }
 
-func (proc *Processor) walkAllDocStringsMethod(f *Function, elems []string, fn walkFunc, nameFn nameFunc) error {
+func (w *walker) walkAllDocStringsMethod(f *Function, elems []string) error {
 	var err error
-	if f.Summary, err = fn(f.Summary, elems, len(elems)-1); err != nil {
+	if f.Summary, err = w.Func(f.Summary, elems, len(elems)-1); err != nil {
 		return err
 	}
-	if f.Description, err = fn(f.Description, elems, len(elems)-1); err != nil {
+	if f.Description, err = w.Func(f.Description, elems, len(elems)-1); err != nil {
 		return err
 	}
-	if f.Deprecated, err = fn(f.Deprecated, elems, len(elems)-1); err != nil {
+	if f.Deprecated, err = w.Func(f.Deprecated, elems, len(elems)-1); err != nil {
 		return err
 	}
-	if f.ReturnsDoc, err = fn(f.ReturnsDoc, elems, len(elems)-1); err != nil {
+	if f.ReturnsDoc, err = w.Func(f.ReturnsDoc, elems, len(elems)-1); err != nil {
 		return err
 	}
-	if f.RaisesDoc, err = fn(f.RaisesDoc, elems, len(elems)-1); err != nil {
+	if f.RaisesDoc, err = w.Func(f.RaisesDoc, elems, len(elems)-1); err != nil {
 		return err
 	}
 
 	for _, a := range f.Args {
-		if a.Description, err = fn(a.Description, elems, len(elems)-1); err != nil {
+		if a.Description, err = w.Func(a.Description, elems, len(elems)-1); err != nil {
 			return err
 		}
 	}
 	for _, p := range f.Parameters {
-		if p.Description, err = fn(p.Description, elems, len(elems)-1); err != nil {
+		if p.Description, err = w.Func(p.Description, elems, len(elems)-1); err != nil {
 			return err
 		}
 	}
 
 	for _, o := range f.Overloads {
-		err := proc.walkAllDocStringsMethod(o, elems, fn, nameFn)
+		err := w.walkAllDocStringsMethod(o, elems)
 		if err != nil {
 			return err
 		}

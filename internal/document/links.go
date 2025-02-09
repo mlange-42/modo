@@ -26,9 +26,11 @@ func init() {
 }
 
 func (proc *Processor) processLinks(docs *Docs) error {
-	return proc.walkAllDocStrings(docs, proc.replaceRefs, func(elem Named) string {
-		return elem.GetName()
-	})
+	w := walker{
+		Func:     proc.replaceRefs,
+		NameFunc: func(elem Named) string { return elem.GetName() },
+	}
+	return w.walkAllDocStrings(docs)
 }
 
 func (proc *Processor) replaceRefs(text string, elems []string, modElems int) (string, error) {
@@ -55,6 +57,7 @@ func (proc *Processor) replaceRefs(text string, elems []string, modElems int) (s
 	return text, nil
 }
 
+// ReplacePlaceholders replaces placeholders in the text with links to the corresponding elements.
 func (proc *Processor) ReplacePlaceholders(text string, elems []string, modElems int) (string, error) {
 	indices, err := findLinks(text, linkRegex, true)
 	if err != nil {
@@ -156,7 +159,7 @@ func (proc *Processor) renameInLink(link string, elems *elemPath) string {
 
 	maxDepth := len(elems.Elements)
 	if elems.IsSection {
-		maxDepth -= 1
+		maxDepth--
 	}
 
 	newLink := strings.Split(link, ".")
@@ -206,9 +209,8 @@ func (proc *Processor) refToPlaceholder(link string, elems []string, modElems in
 
 	if len(linkParts) > 1 {
 		return fmt.Sprintf("%s %s", placeholder, linkParts[1]), true, nil
-	} else {
-		return placeholder, true, nil
 	}
+	return placeholder, true, nil
 }
 
 func (proc *Processor) refToPlaceholderRel(link string, elems []string, modElems int, redirect bool) (string, bool, error) {

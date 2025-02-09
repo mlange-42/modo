@@ -16,9 +16,11 @@ const globalAttr = "global"
 
 func (proc *Processor) extractDocTests() error {
 	proc.docTests = []*docTest{}
-	return proc.walkAllDocStrings(proc.Docs, proc.extractTests, func(elem Named) string {
-		return elem.GetFileName()
-	})
+	w := walker{
+		Func:     proc.extractTests,
+		NameFunc: func(elem Named) string { return elem.GetFileName() },
+	}
+	return w.walkAllDocStrings(proc.Docs)
 }
 
 func (proc *Processor) extractDocTestsMarkdown(baseDir string, build bool) error {
@@ -76,7 +78,7 @@ func (proc *Processor) extractMarkdown(file, baseDir, outDir string, build bool)
 		if err != nil {
 			return err
 		}
-		return proc.WriteFile(targetPath, contentStr)
+		return proc.writeFile(targetPath, contentStr)
 	}
 	return nil
 }
@@ -101,7 +103,7 @@ func (proc *Processor) writeDocTests(dir string) error {
 			return err
 		}
 
-		err = proc.WriteFile(fullPath, b.String())
+		err = proc.writeFile(fullPath, b.String())
 		if err != nil {
 			return err
 		}

@@ -26,6 +26,7 @@ type Formatter interface {
 	Clean(out, tests string) error
 }
 
+// PackageSource represents a sources of a package.
 type PackageSource struct {
 	Name string
 	Path []string

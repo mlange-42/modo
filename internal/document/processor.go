@@ -8,6 +8,7 @@ import (
 	"text/template"
 )
 
+// Processor is the main struct for processing and rendering documentation.
 type Processor struct {
 	Config             *Config
 	Template           *template.Template
@@ -35,12 +36,14 @@ type docTest struct {
 	Global []string
 }
 
+// NewProcessor creates a new Processor instance.
 func NewProcessor(docs *Docs, f Formatter, t *template.Template, config *Config) *Processor {
 	return NewProcessorWithWriter(docs, f, t, config, func(file, text string) error {
 		return os.WriteFile(file, []byte(text), 0644)
 	})
 }
 
+// NewProcessorWithWriter creates a new Processor instance with a custom writer.
 func NewProcessorWithWriter(docs *Docs, f Formatter, t *template.Template, config *Config, writer func(file, text string) error) *Processor {
 	return &Processor{
 		Config:    config,
@@ -85,6 +88,7 @@ func (proc *Processor) PrepareDocs(subdir string) error {
 	return nil
 }
 
+// ExtractTests extracts and writes doc tests.
 func (proc *Processor) ExtractTests(subdir string) error {
 	// Collect the paths of all (sub)-elements in the original structure.
 	proc.collectElementPaths()
@@ -105,7 +109,7 @@ func (proc *Processor) ExtractTests(subdir string) error {
 	return nil
 }
 
-func (proc *Processor) WriteFile(file, text string) error {
+func (proc *Processor) writeFile(file, text string) error {
 	return proc.writer(file, text)
 }
 

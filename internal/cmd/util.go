@@ -73,10 +73,10 @@ func readDocs(file string) (*document.Docs, error) {
 	}
 
 	if strings.HasSuffix(file, ".yaml") || strings.HasSuffix(file, ".yml") {
-		return document.FromYaml(data)
+		return document.FromYAML(data)
 	}
 
-	return document.FromJson(data)
+	return document.FromJSON(data)
 }
 
 func read(file string) ([]byte, error) {

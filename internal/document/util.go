@@ -23,6 +23,7 @@ const (
 	fenceFour
 )
 
+// GitInfo contains information about a Git repository.
 type GitInfo struct {
 	Title    string
 	Repo     string
@@ -58,6 +59,7 @@ func warnOrError(strict bool, pattern string, args ...any) error {
 	return nil
 }
 
+// LoadTemplates loads all templates from the assets and additional directories.
 func LoadTemplates(f Formatter, sourceURL string, additional ...string) (*template.Template, error) {
 	templ := template.New("all")
 	templ = templ.Funcs(template.FuncMap{
@@ -120,6 +122,7 @@ func findTemplates(dir string) ([]string, error) {
 	return allTemplates, nil
 }
 
+// GetGitOrigin tries to determine the `origin` remote repository.
 func GetGitOrigin(outDir string) (*GitInfo, error) {
 	gitFiles := []string{
 		".git/config",
