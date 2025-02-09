@@ -26,9 +26,11 @@ func init() {
 }
 
 func (proc *Processor) processLinks(docs *Docs) error {
-	return proc.walkAllDocStrings(docs, proc.replaceRefs, func(elem Named) string {
-		return elem.GetName()
-	})
+	w := walker{
+		Func:     proc.replaceRefs,
+		NameFunc: func(elem Named) string { return elem.GetName() },
+	}
+	return w.walkAllDocStrings(docs)
 }
 
 func (proc *Processor) replaceRefs(text string, elems []string, modElems int) (string, error) {
