@@ -12,7 +12,7 @@ type elemPath struct {
 
 type addPathFunc = func(Named, []string, []string, string, bool)
 
-type pathCollector struct {
+type pathHelper struct {
 	AddPathFunc addPathFunc
 	SetLink     bool
 }
@@ -20,7 +20,7 @@ type pathCollector struct {
 // Collects lookup for link target paths.
 // Runs on the re-structured package.
 func (proc *Processor) collectPaths() {
-	pc := pathCollector{
+	pc := pathHelper{
 		AddPathFunc: proc.addLinkTarget,
 		SetLink:     false,
 	}
@@ -29,14 +29,14 @@ func (proc *Processor) collectPaths() {
 
 // Collects the paths of all (sub)-elements in the original structure.
 func (proc *Processor) collectElementPaths() {
-	pc := pathCollector{
+	pc := pathHelper{
 		AddPathFunc: proc.addElementPath,
 		SetLink:     true,
 	}
 	pc.collectPathsPackage(proc.Docs.Decl, []string{}, []string{})
 }
 
-func (pc *pathCollector) collectPathsPackage(p *Package, elems []string, pathElem []string) {
+func (pc *pathHelper) collectPathsPackage(p *Package, elems []string, pathElem []string) {
 	newElems := appendNew(elems, p.GetName())
 	newPath := appendNew(pathElem, p.GetFileName())
 	if pc.SetLink {
@@ -73,7 +73,7 @@ func (pc *pathCollector) collectPathsPackage(p *Package, elems []string, pathEle
 	}
 }
 
-func (pc *pathCollector) collectPathsModule(m *Module, elems []string, pathElem []string) {
+func (pc *pathHelper) collectPathsModule(m *Module, elems []string, pathElem []string) {
 	newElems := appendNew(elems, m.GetName())
 	newPath := appendNew(pathElem, m.GetFileName())
 	if pc.SetLink {
@@ -102,7 +102,7 @@ func (pc *pathCollector) collectPathsModule(m *Module, elems []string, pathElem 
 	}
 }
 
-func (pc *pathCollector) collectPathsStruct(s *Struct, elems []string, pathElem []string) {
+func (pc *pathHelper) collectPathsStruct(s *Struct, elems []string, pathElem []string) {
 	newElems := appendNew(elems, s.GetName())
 	newPath := appendNew(pathElem, s.GetFileName())
 	if pc.SetLink {
@@ -132,7 +132,7 @@ func (pc *pathCollector) collectPathsStruct(s *Struct, elems []string, pathElem 
 	}
 }
 
-func (pc *pathCollector) collectPathsTrait(t *Trait, elems []string, pathElem []string) {
+func (pc *pathHelper) collectPathsTrait(t *Trait, elems []string, pathElem []string) {
 	newElems := appendNew(elems, t.GetName())
 	newPath := appendNew(pathElem, t.GetFileName())
 	if pc.SetLink {
