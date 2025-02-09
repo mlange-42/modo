@@ -20,13 +20,13 @@ func TestFromJson(t *testing.T) {
     "version": "0.1.0"
 }`
 
-	docs, err := FromJson([]byte(data))
+	docs, err := FromJSON([]byte(data))
 	assert.Nil(t, err)
 	assert.NotNil(t, docs)
 
-	outJson, err := docs.ToJson()
+	outJSON, err := docs.ToJSON()
 	assert.Nil(t, err)
-	fmt.Println(string(outJson))
+	fmt.Println(string(outJSON))
 }
 
 func TestFromYaml(t *testing.T) {
@@ -43,13 +43,13 @@ decl:
 version: 0.1.0
 `
 
-	docs, err := FromYaml([]byte(data))
+	docs, err := FromYAML([]byte(data))
 	assert.Nil(t, err)
 	assert.NotNil(t, docs)
 
 	assert.Equal(t, "Struct", docs.Decl.Modules[0].Structs[0].Name)
 
-	outYaml, err := docs.ToYaml()
+	outYaml, err := docs.ToYAML()
 	assert.Nil(t, err)
 	fmt.Println(string(outYaml))
 }

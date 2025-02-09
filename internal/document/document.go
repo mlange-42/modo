@@ -15,11 +15,13 @@ const capitalFileMarker = "-"
 // TODO: find another way to handle this, without using a global variable.
 var caseSensitiveSystem = true
 
+// Docs holds the document for a package.
 type Docs struct {
 	Decl    *Package
 	Version string
 }
 
+// Package holds the document for a package.
 type Package struct {
 	MemberKind         `yaml:",inline"`
 	MemberName         `yaml:",inline"`
@@ -35,29 +37,30 @@ type Package struct {
 	MemberLink         `yaml:"-" json:"-"`
 }
 
-func (p *Package) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
+// checkMissing checks for missing documentation.
+func (p *Package) checkMissing(path string, stats *missingStats) (missing []missingDocs) {
 	newPath := p.Name
 	if len(path) > 0 {
 		newPath = fmt.Sprintf("%s.%s", path, p.Name)
 	}
-	missing = p.MemberSummary.CheckMissing(newPath, stats)
+	missing = p.MemberSummary.checkMissing(newPath, stats)
 	for _, e := range p.Packages {
-		missing = append(missing, e.CheckMissing(newPath, stats)...)
+		missing = append(missing, e.checkMissing(newPath, stats)...)
 	}
 	for _, e := range p.Modules {
-		missing = append(missing, e.CheckMissing(newPath, stats)...)
+		missing = append(missing, e.checkMissing(newPath, stats)...)
 	}
 	for _, e := range p.Aliases {
-		missing = append(missing, e.CheckMissing(newPath, stats)...)
+		missing = append(missing, e.checkMissing(newPath, stats)...)
 	}
 	for _, e := range p.Structs {
-		missing = append(missing, e.CheckMissing(newPath, stats)...)
+		missing = append(missing, e.checkMissing(newPath, stats)...)
 	}
 	for _, e := range p.Traits {
-		missing = append(missing, e.CheckMissing(newPath, stats)...)
+		missing = append(missing, e.checkMissing(newPath, stats)...)
 	}
 	for _, e := range p.Functions {
-		missing = append(missing, e.CheckMissing(newPath, stats)...)
+		missing = append(missing, e.checkMissing(newPath, stats)...)
 	}
 	return missing
 }
@@ -73,6 +76,7 @@ func (p *Package) linkedCopy() *Package {
 	}
 }
 
+// Module holds the document for a module.
 type Module struct {
 	MemberKind    `yaml:",inline"`
 	MemberName    `yaml:",inline"`
@@ -85,24 +89,25 @@ type Module struct {
 	MemberLink    `yaml:"-" json:"-"`
 }
 
-func (m *Module) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
+func (m *Module) checkMissing(path string, stats *missingStats) (missing []missingDocs) {
 	newPath := fmt.Sprintf("%s.%s", path, m.Name)
-	missing = m.MemberSummary.CheckMissing(newPath, stats)
+	missing = m.MemberSummary.checkMissing(newPath, stats)
 	for _, e := range m.Aliases {
-		missing = append(missing, e.CheckMissing(newPath, stats)...)
+		missing = append(missing, e.checkMissing(newPath, stats)...)
 	}
 	for _, e := range m.Structs {
-		missing = append(missing, e.CheckMissing(newPath, stats)...)
+		missing = append(missing, e.checkMissing(newPath, stats)...)
 	}
 	for _, e := range m.Traits {
-		missing = append(missing, e.CheckMissing(newPath, stats)...)
+		missing = append(missing, e.checkMissing(newPath, stats)...)
 	}
 	for _, e := range m.Functions {
-		missing = append(missing, e.CheckMissing(newPath, stats)...)
+		missing = append(missing, e.checkMissing(newPath, stats)...)
 	}
 	return missing
 }
 
+// Alias holds the document for an alias.
 type Alias struct {
 	MemberKind    `yaml:",inline"`
 	MemberName    `yaml:",inline"`
@@ -112,11 +117,12 @@ type Alias struct {
 	Deprecated    string
 }
 
-func (a *Alias) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
+func (a *Alias) checkMissing(path string, stats *missingStats) (missing []missingDocs) {
 	newPath := fmt.Sprintf("%s.%s", path, a.Name)
-	return a.MemberSummary.CheckMissing(newPath, stats)
+	return a.MemberSummary.checkMissing(newPath, stats)
 }
 
+// Struct holds the document for a struct.
 type Struct struct {
 	MemberKind    `yaml:",inline"`
 	MemberName    `yaml:",inline"`
@@ -134,24 +140,25 @@ type Struct struct {
 	MemberLink    `yaml:"-" json:"-"`
 }
 
-func (s *Struct) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
+func (s *Struct) checkMissing(path string, stats *missingStats) (missing []missingDocs) {
 	newPath := fmt.Sprintf("%s.%s", path, s.Name)
-	missing = s.MemberSummary.CheckMissing(newPath, stats)
+	missing = s.MemberSummary.checkMissing(newPath, stats)
 	for _, e := range s.Aliases {
-		missing = append(missing, e.CheckMissing(newPath, stats)...)
+		missing = append(missing, e.checkMissing(newPath, stats)...)
 	}
 	for _, e := range s.Fields {
-		missing = append(missing, e.CheckMissing(newPath, stats)...)
+		missing = append(missing, e.checkMissing(newPath, stats)...)
 	}
 	for _, e := range s.Parameters {
-		missing = append(missing, e.CheckMissing(newPath, stats)...)
+		missing = append(missing, e.checkMissing(newPath, stats)...)
 	}
 	for _, e := range s.Functions {
-		missing = append(missing, e.CheckMissing(newPath, stats)...)
+		missing = append(missing, e.checkMissing(newPath, stats)...)
 	}
 	return missing
 }
 
+// Function holds the document for a function.
 type Function struct {
 	MemberKind           `yaml:",inline"`
 	MemberName           `yaml:",inline"`
@@ -174,10 +181,10 @@ type Function struct {
 	MemberLink           `yaml:"-" json:"-"`
 }
 
-func (f *Function) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
+func (f *Function) checkMissing(path string, stats *missingStats) (missing []missingDocs) {
 	if len(f.Overloads) == 0 {
 		newPath := fmt.Sprintf("%s.%s", path, f.Name)
-		missing = f.MemberSummary.CheckMissing(newPath, stats)
+		missing = f.MemberSummary.checkMissing(newPath, stats)
 		if f.Raises && f.RaisesDoc == "" {
 			missing = append(missing, missingDocs{newPath, "raises docs"})
 			stats.Missing++
@@ -189,19 +196,20 @@ func (f *Function) CheckMissing(path string, stats *missingStats) (missing []mis
 		stats.Total += 2
 
 		for _, e := range f.Parameters {
-			missing = append(missing, e.CheckMissing(newPath, stats)...)
+			missing = append(missing, e.checkMissing(newPath, stats)...)
 		}
 		for _, e := range f.Args {
-			missing = append(missing, e.CheckMissing(newPath, stats)...)
+			missing = append(missing, e.checkMissing(newPath, stats)...)
 		}
 		return missing
 	}
 	for _, o := range f.Overloads {
-		missing = append(missing, o.CheckMissing(path, stats)...)
+		missing = append(missing, o.checkMissing(path, stats)...)
 	}
 	return missing
 }
 
+// Field holds the document for a field.
 type Field struct {
 	MemberKind    `yaml:",inline"`
 	MemberName    `yaml:",inline"`
@@ -210,11 +218,12 @@ type Field struct {
 	Type          string
 }
 
-func (f *Field) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
+func (f *Field) checkMissing(path string, stats *missingStats) (missing []missingDocs) {
 	newPath := fmt.Sprintf("%s.%s", path, f.Name)
-	return f.MemberSummary.CheckMissing(newPath, stats)
+	return f.MemberSummary.checkMissing(newPath, stats)
 }
 
+// Trait holds the document for a trait.
 type Trait struct {
 	MemberKind    `yaml:",inline"`
 	MemberName    `yaml:",inline"`
@@ -227,18 +236,19 @@ type Trait struct {
 	MemberLink    `yaml:"-" json:"-"`
 }
 
-func (t *Trait) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
+func (t *Trait) checkMissing(path string, stats *missingStats) (missing []missingDocs) {
 	newPath := fmt.Sprintf("%s.%s", path, t.Name)
-	missing = t.MemberSummary.CheckMissing(newPath, stats)
+	missing = t.MemberSummary.checkMissing(newPath, stats)
 	for _, e := range t.Fields {
-		missing = append(missing, e.CheckMissing(newPath, stats)...)
+		missing = append(missing, e.checkMissing(newPath, stats)...)
 	}
 	for _, e := range t.Functions {
-		missing = append(missing, e.CheckMissing(newPath, stats)...)
+		missing = append(missing, e.checkMissing(newPath, stats)...)
 	}
 	return missing
 }
 
+// Arg holds the document for a function argument.
 type Arg struct {
 	MemberKind  `yaml:",inline"`
 	MemberName  `yaml:",inline"`
@@ -249,7 +259,7 @@ type Arg struct {
 	Default     string
 }
 
-func (a *Arg) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
+func (a *Arg) checkMissing(path string, stats *missingStats) (missing []missingDocs) {
 	if a.Name == "self" && (a.Type == "Self" || a.Type == "_Self") {
 		return nil
 	}
@@ -264,6 +274,7 @@ func (a *Arg) CheckMissing(path string, stats *missingStats) (missing []missingD
 	return missing
 }
 
+// Parameter holds the document for a parameter.
 type Parameter struct {
 	MemberKind  `yaml:",inline"`
 	MemberName  `yaml:",inline"`
@@ -273,7 +284,7 @@ type Parameter struct {
 	Default     string
 }
 
-func (p *Parameter) CheckMissing(path string, stats *missingStats) (missing []missingDocs) {
+func (p *Parameter) checkMissing(path string, stats *missingStats) (missing []missingDocs) {
 	if p.Description == "" {
 		missing = append(missing, missingDocs{fmt.Sprintf("%s.%s", path, p.Name), "description"})
 		stats.Missing++
@@ -282,7 +293,8 @@ func (p *Parameter) CheckMissing(path string, stats *missingStats) (missing []mi
 	return missing
 }
 
-func FromJson(data []byte) (*Docs, error) {
+// FromJSON parses JSON documentation.
+func FromJSON(data []byte) (*Docs, error) {
 	reader := bytes.NewReader(data)
 	dec := json.NewDecoder(reader)
 	dec.DisallowUnknownFields()
@@ -298,7 +310,8 @@ func FromJson(data []byte) (*Docs, error) {
 	return &docs, nil
 }
 
-func (d *Docs) ToJson() ([]byte, error) {
+// ToJSON converts the documentation to JSON.
+func (d *Docs) ToJSON() ([]byte, error) {
 	b := bytes.Buffer{}
 	enc := json.NewEncoder(&b)
 	enc.SetIndent("", "  ")
@@ -309,7 +322,8 @@ func (d *Docs) ToJson() ([]byte, error) {
 	return b.Bytes(), nil
 }
 
-func FromYaml(data []byte) (*Docs, error) {
+// FromYAML parses YAML documentation.
+func FromYAML(data []byte) (*Docs, error) {
 	reader := bytes.NewReader(data)
 	dec := yaml.NewDecoder(reader)
 	dec.KnownFields(true)
@@ -325,7 +339,8 @@ func FromYaml(data []byte) (*Docs, error) {
 	return &docs, nil
 }
 
-func (d *Docs) ToYaml() ([]byte, error) {
+// ToYAML converts the documentation to YAML.
+func (d *Docs) ToYAML() ([]byte, error) {
 	b := bytes.Buffer{}
 	enc := yaml.NewEncoder(&b)
 

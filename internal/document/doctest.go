@@ -78,7 +78,7 @@ func (proc *Processor) extractMarkdown(file, baseDir, outDir string, build bool)
 		if err != nil {
 			return err
 		}
-		return proc.WriteFile(targetPath, contentStr)
+		return proc.writeFile(targetPath, contentStr)
 	}
 	return nil
 }
@@ -103,7 +103,7 @@ func (proc *Processor) writeDocTests(dir string) error {
 			return err
 		}
 
-		err = proc.WriteFile(fullPath, b.String())
+		err = proc.writeFile(fullPath, b.String())
 		if err != nil {
 			return err
 		}

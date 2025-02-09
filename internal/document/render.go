@@ -6,6 +6,7 @@ import (
 	"strings"
 )
 
+// Render generates documentation for the given docs and writes it to the output directory.
 func Render(docs *Docs, config *Config, form Formatter, subdir string) error {
 	t, err := LoadTemplates(form, config.SourceURLs[strings.ToLower(docs.Decl.Name)], config.TemplateDirs...)
 	if err != nil {
@@ -33,6 +34,7 @@ func Render(docs *Docs, config *Config, form Formatter, subdir string) error {
 	return nil
 }
 
+// ExtractTests extracts tests from the documentation.
 func ExtractTests(docs *Docs, config *Config, form Formatter, subdir string) error {
 	caseSensitiveSystem = !config.CaseInsensitive
 	t, err := LoadTemplates(form, config.SourceURLs[strings.ToLower(docs.Decl.Name)], config.TemplateDirs...)
@@ -50,6 +52,7 @@ func ExtractTests(docs *Docs, config *Config, form Formatter, subdir string) err
 	return proc.ExtractTests(subdir)
 }
 
+// ExtractTestsMarkdown extracts tests from markdown files.
 func ExtractTestsMarkdown(config *Config, form Formatter, baseDir string, build bool) error {
 	caseSensitiveSystem = !config.CaseInsensitive
 
@@ -77,7 +80,7 @@ func renderWith(config *Config, proc *Processor, subdir string) error {
 	var missing []missingDocs
 	var stats missingStats
 	if config.ReportMissing {
-		missing = proc.Docs.Decl.CheckMissing("", &stats)
+		missing = proc.Docs.Decl.checkMissing("", &stats)
 	}
 
 	outPath := path.Join(config.OutputDir, subdir)
@@ -197,7 +200,7 @@ func linkAndWrite(text string, dir []string, modElems int, kind string, proc *Pr
 		return err
 	}
 	outFile := proc.Formatter.ToFilePath(path.Join(dir...), kind)
-	return proc.WriteFile(outFile, text)
+	return proc.writeFile(outFile, text)
 }
 
 func reportMissing(pkg string, missing []missingDocs, stats missingStats, strict bool) error {

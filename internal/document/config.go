@@ -8,6 +8,7 @@ import (
 	"github.com/spf13/viper"
 )
 
+// Config holds the configuration for the documentation processor.
 type Config struct {
 	InputFiles      []string          `mapstructure:"input" yaml:"input"`
 	Sources         []string          `mapstructure:"source" yaml:"source"`
@@ -31,6 +32,7 @@ type Config struct {
 	PostRun         []string          `mapstructure:"post-run" yaml:"post-run"`
 }
 
+// ConfigFromViper creates a new Config from a viper.Viper instance.
 func ConfigFromViper(v *viper.Viper) (*Config, error) {
 	c := Config{}
 	if err := v.Unmarshal(&c); err != nil {
@@ -63,6 +65,7 @@ func (c *Config) check(v *viper.Viper) error {
 	return nil
 }
 
+// RemovePostScripts removes all post-run, post-build, and post-test scripts.
 func (c *Config) RemovePostScripts() {
 	c.PostTest = nil
 	c.PostBuild = nil

@@ -51,7 +51,7 @@ func run(file string, iters int) {
 		}
 		formatter := format.Plain{}
 
-		doc, err := document.FromJson(data)
+		doc, err := document.FromJSON(data)
 		if err != nil {
 			panic(err)
 		}

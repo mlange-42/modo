@@ -115,7 +115,7 @@ decl:
             - name: func2
               kind: function
 `
-	docs, err := FromYaml([]byte(yml))
+	docs, err := FromYAML([]byte(yml))
 	assert.Nil(t, err)
 	assert.NotNil(t, docs)
 
@@ -169,7 +169,7 @@ decl:
                       kind: argument
                       description: A description
 `
-	docs, err := FromYaml([]byte(yml))
+	docs, err := FromYAML([]byte(yml))
 	assert.Nil(t, err)
 	assert.NotNil(t, docs)
 
@@ -214,7 +214,7 @@ decl:
                       kind: argument
                       description: A description
 `
-	docs, err := FromYaml([]byte(yml))
+	docs, err := FromYAML([]byte(yml))
 	assert.Nil(t, err)
 	assert.NotNil(t, docs)
 
@@ -251,7 +251,7 @@ decl:
                   kind: argument
                   description: A description
 `
-	docs, err := FromYaml([]byte(yml))
+	docs, err := FromYAML([]byte(yml))
 	assert.Nil(t, err)
 	assert.NotNil(t, docs)
 
@@ -287,7 +287,7 @@ func TestRenderDry(t *testing.T) {
 
 	data, err := os.ReadFile(config.InputFiles[0])
 	assert.Nil(t, err)
-	doc, err := FromJson(data)
+	doc, err := FromJSON(data)
 	assert.Nil(t, err)
 
 	err = Render(doc, &config, &formatter, "")
@@ -315,7 +315,7 @@ func TestRenderFiles(t *testing.T) {
 
 	data, err := os.ReadFile(path.Join(config.InputFiles[0], "test.json"))
 	assert.Nil(t, err)
-	doc, err := FromJson(data)
+	doc, err := FromJSON(data)
 	assert.Nil(t, err)
 
 	err = Render(doc, &config, &formatter, "")
