@@ -170,7 +170,7 @@ func GetGitOrigin(outDir string) (*GitInfo, error) {
 	if !ok {
 		fmt.Printf("WARNING: No Git repository or no remote 'origin' found.\n         Using dummy %s\n", url)
 	}
-	url, err := getRepoUrl(url)
+	url, err := getRepoURL(url)
 	if err != nil {
 		url = "https://github.com/your/package"
 		fmt.Printf("WARNING: Git remote 'origin' could not be parsed.\n         Using dummy %s\n", url)
@@ -188,7 +188,8 @@ func GetGitOrigin(outDir string) (*GitInfo, error) {
 	}, nil
 }
 
-func getRepoUrl(url string) (string, error) {
+func getRepoURL(url string) (string, error) {
+	url = strings.TrimSuffix(url, "/")
 	if strings.HasPrefix(url, "http://") || strings.HasPrefix(url, "https://") {
 		return strings.TrimSuffix(url, ".git"), nil
 	}
