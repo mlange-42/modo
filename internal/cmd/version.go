@@ -1,3 +1,3 @@
 package cmd
 
-var version = NewVersion(0, 11, 1, false)
+var version = NewVersion(0, 11, 1, true)
