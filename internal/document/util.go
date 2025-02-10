@@ -162,13 +162,18 @@ func GetGitOrigin(outDir string) (*GitInfo, error) {
 		if section != nil {
 			value := section.Key("url")
 			if value != nil {
-				url = strings.TrimSuffix(value.String(), ".git")
+				url = value.String()
 				ok = true
 			}
 		}
 	}
 	if !ok {
 		fmt.Printf("WARNING: No Git repository or no remote 'origin' found.\n         Using dummy %s\n", url)
+	}
+	url, err := getRepoUrl(url)
+	if err != nil {
+		url = "https://github.com/your/package"
+		fmt.Printf("WARNING: Git remote 'origin' could not be parsed.\n         Using dummy %s\n", url)
 	}
 	title, pages := repoToTitleAndPages(url)
 	module := strings.ReplaceAll(strings.ReplaceAll(url, "https://", ""), "http://", "")
@@ -181,6 +186,18 @@ func GetGitOrigin(outDir string) (*GitInfo, error) {
 		GoModule: module,
 		BasePath: basePath,
 	}, nil
+}
+
+func getRepoUrl(url string) (string, error) {
+	if strings.HasPrefix(url, "http://") || strings.HasPrefix(url, "https://") {
+		return strings.TrimSuffix(url, ".git"), nil
+	}
+	if !strings.HasPrefix(url, "git@") {
+		return "", fmt.Errorf("git remote 'origin' could not be parsed")
+	}
+	url = strings.TrimPrefix(url, "git@")
+	domainRepo := strings.SplitN(url, ":", 2)
+	return fmt.Sprintf("https://%s/%s", domainRepo[0], domainRepo[1]), nil
 }
 
 func repoToTitleAndPages(repo string) (string, string) {

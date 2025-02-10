@@ -49,6 +49,16 @@ func TestGetGitOrigin(t *testing.T) {
 	assert.Nil(t, err)
 }
 
+func TestGetRepoUrl(t *testing.T) {
+	url, err := getRepoUrl("https://github.com/mlange-42/modo.git")
+	assert.Nil(t, err)
+	assert.Equal(t, "https://github.com/mlange-42/modo", url)
+
+	url, err = getRepoUrl("git@github.com:mlange-42/modo")
+	assert.Nil(t, err)
+	assert.Equal(t, "https://github.com/mlange-42/modo", url)
+}
+
 func TestRepoToTitleAndPages(t *testing.T) {
 	title, pages := repoToTitleAndPages("https://github.com/user/repo/")
 	assert.Equal(t, title, "repo")
