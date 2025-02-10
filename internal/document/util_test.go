@@ -50,11 +50,15 @@ func TestGetGitOrigin(t *testing.T) {
 }
 
 func TestGetRepoUrl(t *testing.T) {
-	url, err := getRepoUrl("https://github.com/mlange-42/modo.git")
+	url, err := getRepoURL("https://github.com/mlange-42/modo.git")
 	assert.Nil(t, err)
 	assert.Equal(t, "https://github.com/mlange-42/modo", url)
 
-	url, err = getRepoUrl("git@github.com:mlange-42/modo")
+	url, err = getRepoURL("https://github.com/mlange-42/modo.git/")
+	assert.Nil(t, err)
+	assert.Equal(t, "https://github.com/mlange-42/modo", url)
+
+	url, err = getRepoURL("git@github.com:mlange-42/modo")
 	assert.Nil(t, err)
 	assert.Equal(t, "https://github.com/mlange-42/modo", url)
 }
