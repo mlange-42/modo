@@ -1,9 +1,12 @@
-## [[v0.11.0]](https://github.com/mlange-42/modo/compare/v0.11.0...v0.11.1)
+## [[v0.11.1]](https://github.com/mlange-42/modo/compare/v0.11.0...v0.11.1)
+
+### Bugfixes
+
+* Fixes command `init` to support remote repos cloned with SSH (#221, #223)
 
 ### Other
 
 * Internal: splits up the `Processor` mega-struct (#218, #219)
-* Command `init` supports remote repos cloned with SSH (#221, #223)
 
 ## [[v0.11.0]](https://github.com/mlange-42/modo/compare/v0.10.1...v0.11.0)
 
