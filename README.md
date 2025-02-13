@@ -81,7 +81,8 @@ See [Project setup](https://mlange-42.github.io/modo/guide/setup/) for details a
 
 ## Packages using Modo🧯
 
-- [Larecs](https://github.com/samufi/larecs) -- a performance-centred archetype-based ECS ([docs](https://samufi.github.io/larecs/)).
+- [Larecs🌲](https://github.com/samufi/larecs) -- a performance-centred archetype-based ECS ([docs](https://samufi.github.io/larecs/)).
+- [ExtraMojo](https://github.com/ExtraMojo/ExtraMojo) -- a collection of useful things that aren't (yet) in the standard library ([docs](https://extramojo.github.io/ExtraMojo/)).
 
 ## License
 
