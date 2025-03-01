@@ -31,7 +31,7 @@ jobs:
           source /home/runner/.bash_profile
       - name: Clone stdlib
         run: |
-          git clone https://github.com/modularml/mojo.git
+          git clone https://github.com/modularml/max.git
           cd mojo
           git checkout ${{env.STDLIB_VERSION}}
       - name: Install mojo and dependencies
