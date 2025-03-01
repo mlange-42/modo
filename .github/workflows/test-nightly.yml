@@ -32,20 +32,20 @@ jobs:
       - name: Clone stdlib
         run: |
           git clone https://github.com/modular/max.git
-          cd mojo
+          cd max
           git checkout ${{env.STDLIB_VERSION}}
       - name: Install mojo and dependencies
         run: |
           source /home/runner/.bash_profile
-          cd mojo
+          cd max/mojo
           magic install --locked
           magic run mojo --version
 
       - name: Generate JSON docs
         run: |
           source /home/runner/.bash_profile
-          cd mojo
-          magic run mojo doc -o ../stdlib.json stdlib/src
+          cd max/mojo
+          magic run mojo doc -o ../../stdlib.json stdlib/src
       - name: Create Markdown
         run: |
           go run . build -o markdown -i stdlib.json --format=mdbook
