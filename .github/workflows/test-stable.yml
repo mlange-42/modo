@@ -37,15 +37,15 @@ jobs:
       - name: Install mojo and dependencies
         run: |
           source /home/runner/.bash_profile
-          cd max
+          cd max/mojo
           magic install --locked
           magic run mojo --version
 
       - name: Generate JSON docs
         run: |
           source /home/runner/.bash_profile
-          cd max
-          magic run mojo doc -o ../stdlib.json stdlib/src
+          cd max/mojo
+          magic run mojo doc -o ../../stdlib.json stdlib/src
       - name: Create Markdown
         run: |
           go run . build -o markdown -i stdlib.json --format=mdbook
