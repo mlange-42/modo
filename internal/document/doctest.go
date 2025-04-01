@@ -249,6 +249,9 @@ func parseBlockAttr(line string) (name string, hide bool, global bool, ok bool, 
 			h := strings.Trim(elems[1], "\" ")
 			if h == "true" {
 				hide = true
+			} else if h != "false" {
+				err = fmt.Errorf("invalid argument in code block attribute 'hide': '%s'", h)
+				return
 			}
 			continue
 		}
@@ -256,6 +259,9 @@ func parseBlockAttr(line string) (name string, hide bool, global bool, ok bool, 
 			g := strings.Trim(elems[1], "\"")
 			if g == "true" {
 				global = true
+			} else if g != "false" {
+				err = fmt.Errorf("invalid argument in code block attribute 'global': '%s'", g)
+				return
 			}
 			continue
 		}

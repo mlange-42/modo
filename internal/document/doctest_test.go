@@ -28,6 +28,10 @@ func TestParseBlockAttributes(t *testing.T) {
 			"test", false, false, true, false},
 		{"```mojo {hide=true}",
 			"", true, false, true, false},
+		{"```mojo {doctest=\"test\" hide=true, global=true}",
+			"test", false, false, false, true},
+		{"```mojo {doctest=\"test\" global=true, hide=true}",
+			"test", false, false, false, true},
 	}
 
 	for _, test := range tests {
