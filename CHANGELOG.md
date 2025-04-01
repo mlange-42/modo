@@ -1,3 +1,9 @@
+## [[v0.11.2]](https://github.com/mlange-42/modo/compare/v0.11.1...v0.11.2)
+
+### Other
+
+* Checks code block attributes for argument validity (#227)
+
 ## [[v0.11.1]](https://github.com/mlange-42/modo/compare/v0.11.0...v0.11.1)
 
 ### Bugfixes
