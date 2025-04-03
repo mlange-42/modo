@@ -294,6 +294,6 @@ func createPostTest(docsDir string, sources []document.PackageSource) string {
 
 	return fmt.Sprintf(`|
     echo Running 'mojo test'...
-    magic run mojo test -I %s %s
+    magic run mojo test --sanitize address -D ASSERT=all -I %s %s
     echo Done.`, src, testOurDir)
 }

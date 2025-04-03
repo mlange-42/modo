@@ -153,7 +153,7 @@ pre-test: []
 post-test:
   - |
     echo Running 'mojo test'...
-    magic run mojo test -I src docs/test
+    magic run mojo test --sanitize address -D ASSERT=all -I src docs/test
     echo Done.
 
 # Bash scripts to run after build.
