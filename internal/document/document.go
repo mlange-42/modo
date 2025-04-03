@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"fmt"
+	"slices"
 
 	"gopkg.in/yaml.v3"
 )
@@ -189,11 +190,15 @@ func (f *Function) checkMissing(path string, stats *missingStats) (missing []mis
 			missing = append(missing, missingDocs{newPath, "raises docs"})
 			stats.Missing++
 		}
-		if f.ReturnType != "" && f.ReturnsDoc == "" {
-			missing = append(missing, missingDocs{newPath, "return docs"})
-			stats.Missing++
+		stats.Total++
+
+		if !slices.Contains(initializers[:], f.Name) {
+			if f.ReturnType != "" && f.ReturnsDoc == "" {
+				missing = append(missing, missingDocs{newPath, "return docs"})
+				stats.Missing++
+			}
+			stats.Total++
 		}
-		stats.Total += 2
 
 		for _, e := range f.Parameters {
 			missing = append(missing, e.checkMissing(newPath, stats)...)
