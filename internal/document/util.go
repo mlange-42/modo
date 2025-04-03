@@ -15,6 +15,10 @@ import (
 const codeFence3 = "```"
 const codeFence4 = "````"
 
+var initializers = [3]string{
+	"__init__", "__moveinit__", "__copyinit__",
+}
+
 type fenceType uint8
 
 const (

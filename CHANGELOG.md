@@ -3,6 +3,7 @@
 ### Other
 
 * Adds address sanitizer and debug warnings to tests bash script (#231)
+* Doesn't warn on missing return docs for `__init__`, `__moveinit__` and `__copyinit__` (#232)
 
 ## [[v0.11.2]](https://github.com/mlange-42/modo/compare/v0.11.1...v0.11.2)
 
