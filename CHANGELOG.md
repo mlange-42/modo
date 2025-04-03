@@ -1,3 +1,9 @@
+## [[unpublished]](https://github.com/mlange-42/modo/compare/v0.11.2...main)
+
+### Other
+
+* Adds address sanitizer and debug warnings to tests bash script (#231)
+
 ## [[v0.11.2]](https://github.com/mlange-42/modo/compare/v0.11.1...v0.11.2)
 
 ### Other
