@@ -2,6 +2,7 @@ package cmd
 
 import (
 	"fmt"
+	"runtime/debug"
 
 	"github.com/spf13/cobra"
 )
@@ -24,7 +25,8 @@ Complete documentation at https://mlange-42.github.io/modo/`,
 		SilenceUsage: true,
 		RunE: func(cmd *cobra.Command, args []string) error {
 			if showVersion {
-				fmt.Printf("Modo %s\n", version.Version())
+				info, _ := debug.ReadBuildInfo()
+				fmt.Printf("Modo %s\n", info.Main.Version)
 				return nil
 			}
 			return cmd.Help()
