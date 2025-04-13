@@ -2,6 +2,7 @@
 
 ### Other
 
+* Upgrades to Go 1.24 (#234)
 * Uses the new Go 1.24 version feature to determine the app version (#234)
 
 ## [[v0.11.3]](https://github.com/mlange-42/modo/compare/v0.11.2...v0.11.3)
