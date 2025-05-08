@@ -152,6 +152,17 @@ func (w *walker) walkAllDocStringsTrait(tr *Trait, elems []string) error {
 		return err
 	}
 
+	for _, a := range tr.Aliases {
+		if a.Summary, err = w.Func(a.Summary, newElems, len(elems)); err != nil {
+			return err
+		}
+		if a.Description, err = w.Func(a.Description, newElems, len(elems)); err != nil {
+			return err
+		}
+		if a.Deprecated, err = w.Func(a.Deprecated, newElems, len(elems)); err != nil {
+			return err
+		}
+	}
 	// TODO: add when traits support parameters
 	/*for _, p := range tr.Parameters {
 		p.Description, err = replaceLinks(p.Description, newElems, len(elems), lookup, t)

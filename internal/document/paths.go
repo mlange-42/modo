@@ -140,6 +140,11 @@ func (pc *pathHelper) collectPathsTrait(t *Trait, elems []string, pathElem []str
 	}
 	pc.AddPathFunc(t, newElems, newPath, "trait", false)
 
+	for _, e := range t.Aliases {
+		newElems := appendNew(newElems, e.GetName())
+		newPath := appendNew(newPath, "#aliases")
+		pc.AddPathFunc(e, newElems, newPath, "member", true)
+	}
 	for _, e := range t.Fields {
 		newElems := appendNew(newElems, e.GetName())
 		newPath := appendNew(newPath, "#fields")
