@@ -234,6 +234,7 @@ type Trait struct {
 	MemberName    `yaml:",inline"`
 	MemberSummary `yaml:",inline"`
 	Description   string
+	Aliases       []*Alias
 	Fields        []*Field
 	Functions     []*Function
 	ParentTraits  []string
@@ -244,6 +245,9 @@ type Trait struct {
 func (t *Trait) checkMissing(path string, stats *missingStats) (missing []missingDocs) {
 	newPath := fmt.Sprintf("%s.%s", path, t.Name)
 	missing = t.MemberSummary.checkMissing(newPath, stats)
+	for _, e := range t.Aliases {
+		missing = append(missing, e.checkMissing(newPath, stats)...)
+	}
 	for _, e := range t.Fields {
 		missing = append(missing, e.checkMissing(newPath, stats)...)
 	}

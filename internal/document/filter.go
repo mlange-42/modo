@@ -201,6 +201,7 @@ func (proc *Processor) collectExportsTrait(s *Trait, oldPath []string, newPath [
 
 	proc.addLinkExport(oldPath, newPath)
 
+	collectExportsList(proc, s.Aliases, oldPath, newPath)
 	collectExportsList(proc, s.Fields, oldPath, newPath)
 	collectExportsList(proc, s.Functions, oldPath, newPath)
 }
