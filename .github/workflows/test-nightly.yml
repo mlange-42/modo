@@ -45,7 +45,7 @@ jobs:
         run: |
           source /home/runner/.bash_profile
           cd modular/mojo
-          magic run mojo doc -o ../../stdlib.json stdlib/src
+          magic run mojo doc -o ../../stdlib.json stdlib/stdlib
       - name: Create Markdown
         run: |
           go run . build -o markdown -i stdlib.json --format=mdbook
