@@ -138,7 +138,7 @@ templates: []
 pre-run:
   - |
     echo Running 'mojo doc'...
-    magic run mojo doc -o docs/src/mypkg.json src/mypkg
+    pixi run mojo doc -o docs/src/mypkg.json src/mypkg
     echo Done.
 
 # Bash scripts to run before build.
@@ -153,7 +153,7 @@ pre-test: []
 post-test:
   - |
     echo Running 'mojo test'...
-    magic run mojo test --sanitize address -D ASSERT=all -I src docs/test
+    pixi run mojo test --sanitize address -D ASSERT=all -I src docs/test
     echo Done.
 
 # Bash scripts to run after build.

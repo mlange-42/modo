@@ -15,6 +15,9 @@ jobs:
   test_stdlib:
     name: Test stdlib nightly
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -ieo pipefail {0}
     steps:
       - name: Checkout Modo
         uses: actions/checkout@v3
@@ -25,10 +28,9 @@ jobs:
       - name: Install dependencies
         run: go get .
 
-      - name: Install magic CLI
+      - name: Install pixi CLI
         run: |
-          curl -ssL https://magic.modular.com | bash
-          source /home/runner/.bash_profile
+          curl -ssL https://pixi.sh/install.sh | bash
       - name: Clone stdlib
         run: |
           git clone https://github.com/modular/modular.git
@@ -36,16 +38,14 @@ jobs:
           git checkout ${{env.STDLIB_VERSION}}
       - name: Install mojo and dependencies
         run: |
-          source /home/runner/.bash_profile
           cd modular/mojo
-          magic install --locked
-          magic run mojo --version
+          pixi install --locked
+          pixi run mojo --version
 
       - name: Generate JSON docs
         run: |
-          source /home/runner/.bash_profile
           cd modular/mojo
-          magic run mojo doc -o ../../stdlib.json stdlib/stdlib
+          pixi run mojo doc -o ../../stdlib.json stdlib/stdlib
       - name: Create Markdown
         run: |
           go run . build -o markdown -i stdlib.json --format=mdbook

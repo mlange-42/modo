@@ -38,6 +38,6 @@ Pre-compiled binaries for manual installation are available in the
 [Releases](https://github.com/mlange-42/modo/releases)
 for Linux, Windows and MacOS.
 
-## Using Modular's Magic
+## Using Pixi
 
 Not supported yet. Help is appreciated, see issue [#133](https://github.com/mlange-42/modo/issues/133).

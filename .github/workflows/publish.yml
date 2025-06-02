@@ -14,6 +14,9 @@ jobs:
   publish:
     name: Generate and publish docs
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -ieo pipefail {0}
     steps:
       - name: Checkout Modo
         uses: actions/checkout@v3
@@ -24,15 +27,13 @@ jobs:
       - name: Install dependencies
         run: go get .
 
-      - name: Install magic CLI
+      - name: Install pixi CLI
         run: |
-          curl -ssL https://magic.modular.com | bash
-          source /home/runner/.bash_profile
+          curl -ssL https://pixi.sh/install.sh | bash
       - name: Install mojo and dependencies
         run: |
-          source /home/runner/.bash_profile
           cd docs
-          magic install --locked
+          pixi install --locked
         
       - name: Clone Hugo
         run: |
@@ -52,7 +53,6 @@ jobs:
 
       - name: Run Modo # includes `mojo doc` and `mojo test`
         run: |
-          source /home/runner/.bash_profile
           go run . build docs
 
       - name: Run Hugo

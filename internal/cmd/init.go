@@ -276,7 +276,7 @@ func createPreRun(docsDir string, sources []document.PackageSource, form documen
 		if !strings.HasSuffix(outFile, ".json") {
 			outFile = path.Join(inDir, src.Name+".json")
 		}
-		s += fmt.Sprintf("    magic run mojo doc -o %s %s\n", outFile, path.Join(src.Path...))
+		s += fmt.Sprintf("    pixi run mojo doc -o %s %s\n", outFile, path.Join(src.Path...))
 	}
 
 	s += "    echo Done."
@@ -294,6 +294,6 @@ func createPostTest(docsDir string, sources []document.PackageSource) string {
 
 	return fmt.Sprintf(`|
     echo Running 'mojo test'...
-    magic run mojo test --sanitize address -D ASSERT=all -I %s %s
+    pixi run mojo test --sanitize address -D ASSERT=all -I %s %s
     echo Done.`, src, testOurDir)
 }

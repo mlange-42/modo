@@ -401,7 +401,7 @@ Configure pre- and post-processing bash scripts
 pre-run:
   - |
     echo Running 'mojo doc'...
-    magic run mojo doc -o docs/src/mypkg.json src/mypkg
+    pixi run mojo doc -o docs/src/mypkg.json src/mypkg
     echo Done.
 ```
 <!-- .element: class="fragment" data-fragment-index="1" -->
@@ -412,7 +412,7 @@ pre-run:
 post-test:
   - |
     echo Running 'mojo test'...
-    magic run mojo test -I src docs/test
+    pixi run mojo test -I src docs/test
     echo Done.
 ```
 <!-- .element: class="fragment" data-fragment-index="2" -->
