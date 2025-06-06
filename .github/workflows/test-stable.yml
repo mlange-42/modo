@@ -36,6 +36,10 @@ jobs:
           git clone https://github.com/modular/modular.git
           cd modular
           git checkout ${{env.STDLIB_VERSION}}
+      - name: Update pixi (temporary fix)
+        run: |
+          cd modular/mojo
+          pixi update
       - name: Install mojo and dependencies
         run: |
           cd modular/mojo
