@@ -33,18 +33,18 @@ jobs:
           curl -ssL https://pixi.sh/install.sh | bash
       - name: Clone stdlib
         run: |
-          git clone https://github.com/modular/max.git
-          cd max
+          git clone https://github.com/modular/modular.git
+          cd modular
           git checkout ${{env.STDLIB_VERSION}}
       - name: Install mojo and dependencies
         run: |
-          cd max/mojo
+          cd modular/mojo
           pixi install --locked
           pixi run mojo --version
 
       - name: Generate JSON docs
         run: |
-          cd max/mojo
+          cd modular/mojo
           pixi run mojo doc -o ../../stdlib.json stdlib/src
       - name: Create Markdown
         run: |
