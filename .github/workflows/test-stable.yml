@@ -36,6 +36,10 @@ jobs:
           git clone https://github.com/modular/max.git
           cd max
           git checkout ${{env.STDLIB_VERSION}}
+      - name: Temporary fix - generate lock file
+        run: |
+          cd max/mojo
+          pixi s
       - name: Install mojo and dependencies
         run: |
           cd max/mojo
