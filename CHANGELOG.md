@@ -1,3 +1,9 @@
+## [[v0.11.6]](https://github.com/mlange-42/modo/compare/v0.11.5...v0.11.6)
+
+### Other
+
+* Migrates from Modular's Magic to Pixi as package manager (#237)
+
 ## [[v0.11.5]](https://github.com/mlange-42/modo/compare/v0.11.4...v0.11.5)
 
 ### Other

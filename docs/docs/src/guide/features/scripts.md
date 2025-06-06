@@ -31,7 +31,7 @@ Here is an example that shows how `mojo doc` is executed in the default setup be
 pre-run:
   - |
     echo Running 'mojo doc'...
-    magic run mojo doc -o docs/src/mypkg.json src/mypkg
+    pixi run mojo doc -o docs/src/mypkg.json src/mypkg
     echo Done.
 ```
 
@@ -43,7 +43,7 @@ And here is how `mojo test` is executed in the default setup after doc-tests ext
 post-test:
   - |
     echo Running 'mojo test'...
-    magic run mojo test -I src docs/test
+    pixi run mojo test -I src docs/test
     echo Done.
 ```
 

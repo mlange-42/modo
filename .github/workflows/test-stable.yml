@@ -15,6 +15,9 @@ jobs:
   test_stdlib:
     name: Test stdlib stable
     runs-on: ubuntu-latest
+    defaults:
+      run:
+        shell: bash -ieo pipefail {0}
     steps:
       - name: Checkout Modo
         uses: actions/checkout@v3
@@ -25,27 +28,28 @@ jobs:
       - name: Install dependencies
         run: go get .
 
-      - name: Install magic CLI
+      - name: Install pixi CLI
         run: |
-          curl -ssL https://magic.modular.com | bash
-          source /home/runner/.bash_profile
+          curl -ssL https://pixi.sh/install.sh | bash
       - name: Clone stdlib
         run: |
-          git clone https://github.com/modular/max.git
-          cd max
+          git clone https://github.com/modular/modular.git
+          cd modular
           git checkout ${{env.STDLIB_VERSION}}
+      - name: Update pixi (temporary fix)
+        run: |
+          cd modular/mojo
+          pixi update
       - name: Install mojo and dependencies
         run: |
-          source /home/runner/.bash_profile
-          cd max/mojo
-          magic install --locked
-          magic run mojo --version
+          cd modular/mojo
+          pixi install --locked
+          pixi run mojo --version
 
       - name: Generate JSON docs
         run: |
-          source /home/runner/.bash_profile
-          cd max/mojo
-          magic run mojo doc -o ../../stdlib.json stdlib/src
+          cd modular/mojo
+          pixi run mojo doc -o ../../stdlib.json stdlib/src
       - name: Create Markdown
         run: |
           go run . build -o markdown -i stdlib.json --format=mdbook
