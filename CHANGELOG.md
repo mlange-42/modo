@@ -1,8 +1,16 @@
-## [[unpublished]](https://github.com/mlange-42/modo/compare/v0.11.6...main)
+## [[v0.11.7]](https://github.com/mlange-42/modo/compare/v0.11.6...v0.11.7)
 
 ### Bugfixes
 
 * Adds aliases to trait template (#239)
+
+### Other
+
+* Adds JSON field `Parameters` to aliases (#240)
+
+### Known issues
+
+* Parametric aliases are not yet fully supported due to Mojo issue [#4980](https://github.com/modular/modular/issues/4980) (#241)
 
 ## [[v0.11.6]](https://github.com/mlange-42/modo/compare/v0.11.5...v0.11.6)
 
