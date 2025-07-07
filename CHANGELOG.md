@@ -1,3 +1,9 @@
+## [[unpublished]](https://github.com/mlange-42/modo/compare/v0.11.6...main)
+
+### Bugfixes
+
+* Adds aliases to trait template (#239)
+
 ## [[v0.11.6]](https://github.com/mlange-42/modo/compare/v0.11.5...v0.11.6)
 
 ### Other
