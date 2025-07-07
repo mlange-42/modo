@@ -2,7 +2,7 @@ alias MyIntAlias = Int
 """An example module alias."""
 
 
-struct MyPair[T: Intable]:
+struct MyPair[T: Intable & Copyable]:
     """
     A simple example struct.
 
