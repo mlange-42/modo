@@ -116,11 +116,16 @@ type Alias struct {
 	Description   string
 	Value         string
 	Deprecated    string
+	Parameters    []*Parameter
 }
 
 func (a *Alias) checkMissing(path string, stats *missingStats) (missing []missingDocs) {
 	newPath := fmt.Sprintf("%s.%s", path, a.Name)
-	return a.MemberSummary.checkMissing(newPath, stats)
+	missing = a.MemberSummary.checkMissing(newPath, stats)
+	for _, e := range a.Parameters {
+		missing = append(missing, e.checkMissing(newPath, stats)...)
+	}
+	return missing
 }
 
 // Struct holds the document for a struct.
