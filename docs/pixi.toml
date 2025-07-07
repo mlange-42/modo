@@ -1,6 +1,6 @@
 [project]
 authors = ["mlange-42 <martin_lange_@gmx.net>"]
-channels = ["conda-forge", "https://conda.modular.com/max-nightly"]
+channels = ["conda-forge", "https://conda.modular.com/max"]
 description = "Modo docs example package"
 name = "example"
 platforms = ["linux-64"]
