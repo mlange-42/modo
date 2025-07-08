@@ -32,13 +32,45 @@ func cleanupPackage(p *Package) {
 }
 
 func cleanupModule(m *Module) {
-	for _, a := range m.Aliases {
-		a.Signature = createSignature(a.GetName(), a.Parameters)
-	}
 	for _, s := range m.Structs {
 		if s.Signature == "" {
 			s.Signature = createSignature(fmt.Sprintf("struct %s", s.GetName()), s.Parameters)
 		}
+	}
+}
+
+func fixAliasSignatures(doc *Docs) {
+	fixAliasSignaturesPackage(doc.Decl)
+}
+
+func fixAliasSignaturesPackage(p *Package) {
+	for _, pp := range p.Packages {
+		fixAliasSignaturesPackage(pp)
+	}
+	for _, m := range p.Modules {
+		fixAliasSignaturesModule(m)
+	}
+
+	for _, a := range p.Aliases {
+		a.Signature = createSignature(a.GetName(), a.Parameters)
+	}
+	for _, s := range p.Structs {
+		for _, a := range s.Aliases {
+			a.Signature = createSignature(a.GetName(), a.Parameters)
+		}
+	}
+	for _, t := range p.Traits {
+		for _, a := range t.Aliases {
+			a.Signature = createSignature(a.GetName(), a.Parameters)
+		}
+	}
+}
+
+func fixAliasSignaturesModule(m *Module) {
+	for _, a := range m.Aliases {
+		a.Signature = createSignature(a.GetName(), a.Parameters)
+	}
+	for _, s := range m.Structs {
 		for _, a := range s.Aliases {
 			a.Signature = createSignature(a.GetName(), a.Parameters)
 		}

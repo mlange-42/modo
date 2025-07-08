@@ -87,6 +87,8 @@ func (proc *Processor) PrepareDocs(subdir string) error {
 		proc.renameAll(proc.ExportDocs.Decl)
 	}
 
+	fixAliasSignatures(proc.ExportDocs)
+
 	return nil
 }
 
