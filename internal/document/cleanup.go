@@ -32,26 +32,36 @@ func cleanupPackage(p *Package) {
 }
 
 func cleanupModule(m *Module) {
+	for _, a := range m.Aliases {
+		a.Signature = createSignature(a.GetName(), a.Parameters)
+	}
 	for _, s := range m.Structs {
 		if s.Signature == "" {
-			s.Signature = createSignature(s)
+			s.Signature = createSignature(fmt.Sprintf("struct %s", s.GetName()), s.Parameters)
+		}
+		for _, a := range s.Aliases {
+			a.Signature = createSignature(a.GetName(), a.Parameters)
+		}
+	}
+	for _, t := range m.Traits {
+		for _, a := range t.Aliases {
+			a.Signature = createSignature(a.GetName(), a.Parameters)
 		}
 	}
 }
 
-func createSignature(s *Struct) string {
+func createSignature(prefix string, pars []*Parameter) string {
 	b := strings.Builder{}
-	b.WriteString("struct ")
-	b.WriteString(s.GetName())
+	b.WriteString(prefix)
 
-	if len(s.Parameters) == 0 {
+	if len(pars) == 0 {
 		return b.String()
 	}
 
 	b.WriteString("[")
 
 	prevKind := ""
-	for i, par := range s.Parameters {
+	for i, par := range pars {
 		written := false
 		if par.PassingKind == "kw" && prevKind != par.PassingKind {
 			if i > 0 {

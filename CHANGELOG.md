@@ -1,3 +1,13 @@
+## [[v0.11.8]](https://github.com/mlange-42/modo/compare/v0.11.7...v0.11.8)
+
+### Other
+
+* Formats parametric aliases as far as currently possible; see below for details (#242)
+
+### Known issues
+
+* Parametric aliases are not yet fully supported due to Mojo issue [#4980](https://github.com/modular/modular/issues/4980) (#241)
+
 ## [[v0.11.7]](https://github.com/mlange-42/modo/compare/v0.11.6...v0.11.7)
 
 ### Bugfixes
