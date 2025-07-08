@@ -116,6 +116,7 @@ type Alias struct {
 	Description   string
 	Value         string
 	Deprecated    string
+	Signature     string
 	Parameters    []*Parameter
 }
 

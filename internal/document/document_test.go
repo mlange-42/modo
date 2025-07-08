@@ -79,7 +79,7 @@ func TestCreateSignature(t *testing.T) {
 		},
 	}
 
-	assert.Equal(t, "struct Struct[A: TypeA, //, B: TypeB, /, C: TypeC, *, D: TypeD]", createSignature(&s))
+	assert.Equal(t, "struct Struct[A: TypeA, //, B: TypeB, /, C: TypeC, *, D: TypeD]", createSignature("struct Struct", s.Parameters))
 
 	s = Struct{
 		MemberName: newName("Struct"),
@@ -88,7 +88,7 @@ func TestCreateSignature(t *testing.T) {
 		},
 	}
 
-	assert.Equal(t, "struct Struct[A: TypeA, //]", createSignature(&s))
+	assert.Equal(t, "struct Struct[A: TypeA, //]", createSignature("struct Struct", s.Parameters))
 
 	s = Struct{
 		MemberName: newName("Struct"),
@@ -97,7 +97,7 @@ func TestCreateSignature(t *testing.T) {
 		},
 	}
 
-	assert.Equal(t, "struct Struct[B: TypeB, /]", createSignature(&s))
+	assert.Equal(t, "struct Struct[B: TypeB, /]", createSignature("struct Struct", s.Parameters))
 
 	s = Struct{
 		MemberName: newName("Struct"),
@@ -106,6 +106,5 @@ func TestCreateSignature(t *testing.T) {
 		},
 	}
 
-	assert.Equal(t, "struct Struct[*, D: TypeD]", createSignature(&s))
-
+	assert.Equal(t, "struct Struct[*, D: TypeD]", createSignature("struct Struct", s.Parameters))
 }
