@@ -26,6 +26,7 @@ Exports (abs) [`ModAlias`](_index.md#aliases), [`RenamedStruct`](RenamedStruct-.
 
 - `ModAlias2 = Int`
 - `ModAlias = Int`
+- `ParAlias[x: Int]: Int = (x + 1)`
 
 ## Structs
 

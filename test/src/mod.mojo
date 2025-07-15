@@ -7,6 +7,7 @@ Contains (abs) [test.mod.ModuleAlias], [test.mod.Struct], [test.mod.Trait], [tes
 [.Struct.StructAlias]
 """
 alias ModuleAlias = Int
+alias ParametricAlias[x: Int]: Int = x + 1
 
 
 struct Struct[StructParameter: Intable]:

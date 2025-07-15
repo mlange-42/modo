@@ -114,6 +114,7 @@ type Alias struct {
 	MemberName    `yaml:",inline"`
 	MemberSummary `yaml:",inline"`
 	Description   string
+	Type          string
 	Value         string
 	Deprecated    string
 	Signature     string
