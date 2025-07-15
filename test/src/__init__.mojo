@@ -20,6 +20,7 @@ Exports (abs) [test.mod.ModuleAlias], [test.mod.Struct], [test.mod.Trait], [test
 
 Exports:
  - mod.ModuleAlias as ModAlias
+ - mod.ParametricAlias as ParAlias
  - mod.Struct as RenamedStruct
  - mod.Trait
  - mod.module_function
@@ -29,6 +30,7 @@ Exports:
 """
 from .mod import (
     ModuleAlias as ModAlias,
+    ParametricAlias as ParAlias,
     Struct as RenamedStruct,
     Trait,
     module_function,

@@ -1,3 +1,9 @@
+## [[v0.11.9]](https://github.com/mlange-42/modo/compare/v0.11.8...v0.11.9)
+
+### Other
+
+* Adds type for parametric aliases, fixing #241 (#243)
+
 ## [[v0.11.8]](https://github.com/mlange-42/modo/compare/v0.11.7...v0.11.8)
 
 ### Other
