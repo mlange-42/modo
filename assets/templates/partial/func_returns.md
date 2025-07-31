@@ -3,4 +3,4 @@
 
 `{{.Returns.Type}}`{{if .Returns.Doc}}: {{.Returns.Doc}}{{end}}
 
-{{- end}}
+{{end}}
