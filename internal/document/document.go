@@ -394,6 +394,7 @@ type Parameter struct {
 	MemberName  `yaml:",inline"`
 	Description string
 	Type        string
+	Traits      []*ParentTrait
 	Path        string
 	PassingKind string
 	Default     string
