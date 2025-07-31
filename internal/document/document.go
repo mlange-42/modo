@@ -115,6 +115,7 @@ type Alias struct {
 	MemberSummary `yaml:",inline"`
 	Description   string
 	Type          string
+	Path          string
 	Value         string
 	Deprecated    string
 	Signature     string
@@ -271,6 +272,7 @@ type Arg struct {
 	Description string
 	Convention  string
 	Type        string
+	Path        string
 	PassingKind string
 	Default     string
 }
@@ -296,6 +298,7 @@ type Parameter struct {
 	MemberName  `yaml:",inline"`
 	Description string
 	Type        string
+	Path        string
 	PassingKind string
 	Default     string
 }
