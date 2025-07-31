@@ -1,4 +1,4 @@
-{{define "func_returns" -}}
+{{define "func_returns_old" -}}
 {{if .ReturnType}}**Returns:**
 
 `{{.ReturnType}}`{{if .ReturnsDoc}}: {{.ReturnsDoc}}{{end}}
