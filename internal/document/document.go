@@ -394,7 +394,7 @@ type Parameter struct {
 	MemberName  `yaml:",inline"`
 	Description string
 	Type        string
-	Traits      []*ParentTrait
+	Traits      []*ParameterTrait
 	Path        string
 	PassingKind string
 	Default     string
@@ -407,6 +407,12 @@ func (p *Parameter) checkMissing(path string, stats *missingStats) (missing []mi
 	}
 	stats.Total++
 	return missing
+}
+
+// ParameterTrait holds name and path information for a trait of a parameter.
+type ParameterTrait struct {
+	Type string
+	Path string
 }
 
 // FromJSON parses JSON documentation.
