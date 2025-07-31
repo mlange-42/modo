@@ -85,6 +85,7 @@ func (proc *Processor) replaceTranscludes(elem *Function, elems []string, modEle
 	elem.MemberSummary = sourceFunc.MemberSummary
 	elem.Description = sourceFunc.Description
 	elem.ReturnsDoc = sourceFunc.ReturnsDoc
+	elem.Returns = sourceFunc.Returns
 	elem.RaisesDoc = sourceFunc.RaisesDoc
 
 	for i, arg := range sourceFunc.Args {

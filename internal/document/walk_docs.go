@@ -203,6 +203,11 @@ func (w *walker) walkAllDocStringsFunction(f *Function, elems []string) error {
 	if f.ReturnsDoc, err = w.Func(f.ReturnsDoc, newElems, len(elems)); err != nil {
 		return err
 	}
+	if f.Returns != nil {
+		if f.Returns.Doc, err = w.Func(f.Returns.Doc, newElems, len(elems)); err != nil {
+			return err
+		}
+	}
 	if f.RaisesDoc, err = w.Func(f.RaisesDoc, newElems, len(elems)); err != nil {
 		return err
 	}
@@ -257,6 +262,11 @@ func (w *walker) walkAllDocStringsMethod(f *Function, elems []string) error {
 	}
 	if f.ReturnsDoc, err = w.Func(f.ReturnsDoc, elems, len(elems)-1); err != nil {
 		return err
+	}
+	if f.Returns != nil {
+		if f.Returns.Doc, err = w.Func(f.Returns.Doc, elems, len(elems)-1); err != nil {
+			return err
+		}
 	}
 	if f.RaisesDoc, err = w.Func(f.RaisesDoc, elems, len(elems)-1); err != nil {
 		return err

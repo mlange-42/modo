@@ -3,6 +3,7 @@
 ### Other
 
 * Adds new JSON field `path` to args, parameters and aliases (#244)
+* Fixes for changed JSON format of function and method returns (#245)
 
 ## [[v0.11.9]](https://github.com/mlange-42/modo/compare/v0.11.8...v0.11.9)
 
