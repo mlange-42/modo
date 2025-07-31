@@ -183,8 +183,9 @@ type Function struct {
 	IsImplicitConversion bool
 	Raises               bool
 	RaisesDoc            string
-	ReturnType           string
-	ReturnsDoc           string
+	ReturnType           string // TODO: remove
+	ReturnsDoc           string // TODO: remove
+	Returns              *Returns
 	Signature            string
 	Parameters           []*Parameter
 	MemberLink           `yaml:"-" json:"-"`
@@ -201,9 +202,16 @@ func (f *Function) checkMissing(path string, stats *missingStats) (missing []mis
 		stats.Total++
 
 		if !slices.Contains(initializers[:], f.Name) {
-			if f.ReturnType != "" && f.ReturnsDoc == "" {
-				missing = append(missing, missingDocs{newPath, "return docs"})
-				stats.Missing++
+			if f.Returns == nil { // old version
+				if f.ReturnType != "" && f.ReturnsDoc == "" {
+					missing = append(missing, missingDocs{newPath, "return docs"})
+					stats.Missing++
+				}
+			} else { // new version
+				if f.Returns.Doc == "" {
+					missing = append(missing, missingDocs{newPath, "return docs"})
+					stats.Missing++
+				}
 			}
 			stats.Total++
 		}
@@ -220,6 +228,13 @@ func (f *Function) checkMissing(path string, stats *missingStats) (missing []mis
 		missing = append(missing, o.checkMissing(path, stats)...)
 	}
 	return missing
+}
+
+// Returns holds information on function return type and docs
+type Returns struct {
+	Type string
+	Doc  string
+	Path string
 }
 
 // Field holds the document for a field.
