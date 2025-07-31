@@ -133,20 +133,43 @@ func (a *Alias) checkMissing(path string, stats *missingStats) (missing []missin
 
 // Struct holds the document for a struct.
 type Struct struct {
-	MemberKind    `yaml:",inline"`
-	MemberName    `yaml:",inline"`
-	MemberSummary `yaml:",inline"`
-	Description   string
-	Aliases       []*Alias
-	Constraints   string
-	Convention    string
-	Deprecated    string
-	Fields        []*Field
-	Functions     []*Function
-	Parameters    []*Parameter
-	ParentTraits  []string
-	Signature     string
-	MemberLink    `yaml:"-" json:"-"`
+	MemberKind         `yaml:",inline"`
+	MemberName         `yaml:",inline"`
+	MemberSummary      `yaml:",inline"`
+	Description        string
+	Aliases            []*Alias
+	Constraints        string
+	Convention         string
+	Deprecated         string
+	Fields             []*Field
+	Functions          []*Function
+	Parameters         []*Parameter
+	ParentTraits       []*ParentTrait `yaml:"-" json:"-"`                       // remove tag on next stable release of Mojo.
+	ParentTraitsHelper ParentTraits   `yaml:"parentTraits" json:"parentTraits"` // remove on next stable release of Mojo.
+	Signature          string
+	MemberLink         `yaml:"-" json:"-"`
+}
+
+// Custom logic after deserialization
+//
+// TODO: remove on next stable release of Mojo.
+func (o *Struct) UnmarshalJSON(data []byte) error {
+	type Alias Struct // Avoid recursion
+	var temp Alias
+	if err := json.Unmarshal(data, &temp); err != nil {
+		return err
+	}
+
+	if temp.ParentTraitsHelper.IsStruct {
+		temp.ParentTraits = temp.ParentTraitsHelper.Structs
+	} else {
+		for _, name := range temp.ParentTraitsHelper.Strings {
+			temp.ParentTraits = append(temp.ParentTraits, &ParentTrait{Name: name})
+		}
+	}
+
+	*o = Struct(temp)
+	return nil
 }
 
 func (s *Struct) checkMissing(path string, stats *missingStats) (missing []missingDocs) {
@@ -253,16 +276,74 @@ func (f *Field) checkMissing(path string, stats *missingStats) (missing []missin
 
 // Trait holds the document for a trait.
 type Trait struct {
-	MemberKind    `yaml:",inline"`
-	MemberName    `yaml:",inline"`
-	MemberSummary `yaml:",inline"`
-	Description   string
-	Aliases       []*Alias
-	Fields        []*Field
-	Functions     []*Function
-	ParentTraits  []string
-	Deprecated    string
-	MemberLink    `yaml:"-" json:"-"`
+	MemberKind         `yaml:",inline"`
+	MemberName         `yaml:",inline"`
+	MemberSummary      `yaml:",inline"`
+	Description        string
+	Aliases            []*Alias
+	Fields             []*Field
+	Functions          []*Function
+	ParentTraits       []*ParentTrait `yaml:"-" json:"-"`                       // remove tag on next stable release of Mojo.
+	ParentTraitsHelper ParentTraits   `yaml:"parentTraits" json:"parentTraits"` // remove on next stable release of Mojo.
+	Deprecated         string
+	MemberLink         `yaml:"-" json:"-"`
+}
+
+// Custom logic after deserialization
+//
+// TODO: remove on next stable release of Mojo.
+func (o *Trait) UnmarshalJSON(data []byte) error {
+	type Alias Trait // Avoid recursion
+	var temp Alias
+	if err := json.Unmarshal(data, &temp); err != nil {
+		return err
+	}
+
+	if temp.ParentTraitsHelper.IsStruct {
+		temp.ParentTraits = temp.ParentTraitsHelper.Structs
+	} else {
+		for _, name := range temp.ParentTraitsHelper.Strings {
+			temp.ParentTraits = append(temp.ParentTraits, &ParentTrait{Name: name})
+		}
+	}
+
+	*o = Trait(temp)
+	return nil
+}
+
+// ParentTrait holds name and path information for a parent trait.
+type ParentTrait struct {
+	Name string
+	Path string
+}
+
+// ParentTraits is a temporal wrapper to handle different versions of parent traits in JSON.
+//
+// TODO: remove on next stable release of Mojo.
+type ParentTraits struct {
+	Strings  []string
+	Structs  []*ParentTrait
+	IsStruct bool
+}
+
+func (s *ParentTraits) UnmarshalJSON(data []byte) error {
+	// Try to unmarshal as []string
+	var strSlice []string
+	if err := json.Unmarshal(data, &strSlice); err == nil {
+		s.Strings = strSlice
+		s.IsStruct = false
+		return nil
+	}
+
+	// Try to unmarshal as []MyStruct
+	var structSlice []*ParentTrait
+	if err := json.Unmarshal(data, &structSlice); err == nil {
+		s.Structs = structSlice
+		s.IsStruct = true
+		return nil
+	}
+
+	return fmt.Errorf("stat field is neither []string nor []ParentTrait")
 }
 
 func (t *Trait) checkMissing(path string, stats *missingStats) (missing []missingDocs) {
