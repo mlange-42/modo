@@ -1,3 +1,9 @@
+## [[v0.11.10]](https://github.com/mlange-42/modo/compare/v0.11.9...v0.11.10)
+
+### Other
+
+* Adds new JSON field `path` to args, parameters and aliases (#244)
+
 ## [[v0.11.9]](https://github.com/mlange-42/modo/compare/v0.11.8...v0.11.9)
 
 ### Other
