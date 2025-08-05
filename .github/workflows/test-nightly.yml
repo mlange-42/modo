@@ -39,7 +39,7 @@ jobs:
       - name: Install mojo and dependencies
         run: |
           cd modular/mojo
-          pixi install --locked
+          pixi install
           pixi run mojo --version
 
       - name: Generate JSON docs
