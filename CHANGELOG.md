@@ -1,3 +1,9 @@
+## [[v0.11.11]](https://github.com/mlange-42/modo/compare/v0.11.9...v0.11.11)
+
+### Other
+
+* Adds new JSON field `traits` to args (#251)
+
 ## [[v0.11.10]](https://github.com/mlange-42/modo/compare/v0.11.9...v0.11.10)
 
 ### Other
