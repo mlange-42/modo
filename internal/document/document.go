@@ -369,6 +369,7 @@ type Arg struct {
 	Convention  string
 	Type        string
 	Path        string
+	Traits      []*TraitEntry
 	PassingKind string
 	Default     string
 }
@@ -394,7 +395,7 @@ type Parameter struct {
 	MemberName  `yaml:",inline"`
 	Description string
 	Type        string
-	Traits      []*ParameterTrait
+	Traits      []*TraitEntry
 	Path        string
 	PassingKind string
 	Default     string
@@ -409,8 +410,8 @@ func (p *Parameter) checkMissing(path string, stats *missingStats) (missing []mi
 	return missing
 }
 
-// ParameterTrait holds name and path information for a trait of a parameter.
-type ParameterTrait struct {
+// TraitEntry holds type and path information for a trait of a parameter or arg.
+type TraitEntry struct {
 	Type string
 	Path string
 }
