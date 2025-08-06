@@ -200,9 +200,6 @@ func (w *walker) walkAllDocStringsFunction(f *Function, elems []string) error {
 	if f.Deprecated, err = w.Func(f.Deprecated, newElems, len(elems)); err != nil {
 		return err
 	}
-	if f.ReturnsDoc, err = w.Func(f.ReturnsDoc, newElems, len(elems)); err != nil {
-		return err
-	}
 	if f.Returns != nil {
 		if f.Returns.Doc, err = w.Func(f.Returns.Doc, newElems, len(elems)); err != nil {
 			return err
@@ -258,9 +255,6 @@ func (w *walker) walkAllDocStringsMethod(f *Function, elems []string) error {
 		return err
 	}
 	if f.Deprecated, err = w.Func(f.Deprecated, elems, len(elems)-1); err != nil {
-		return err
-	}
-	if f.ReturnsDoc, err = w.Func(f.ReturnsDoc, elems, len(elems)-1); err != nil {
 		return err
 	}
 	if f.Returns != nil {
