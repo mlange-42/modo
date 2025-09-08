@@ -192,26 +192,27 @@ func (s *Struct) checkMissing(path string, stats *missingStats) (missing []missi
 
 // Function holds the document for a function.
 type Function struct {
-	MemberKind           `yaml:",inline"`
-	MemberName           `yaml:",inline"`
-	MemberSummary        `yaml:",inline"`
-	Description          string
-	Args                 []*Arg
-	Overloads            []*Function
-	Async                bool
-	Constraints          string
-	Deprecated           string
-	IsDef                bool
-	IsStatic             bool
-	IsImplicitConversion bool
-	Raises               bool
-	RaisesDoc            string
-	ReturnType           string // TODO: remove
-	ReturnsDoc           string // TODO: remove
-	Returns              *Returns
-	Signature            string
-	Parameters           []*Parameter
-	MemberLink           `yaml:"-" json:"-"`
+	MemberKind               `yaml:",inline"`
+	MemberName               `yaml:",inline"`
+	MemberSummary            `yaml:",inline"`
+	Description              string
+	Args                     []*Arg
+	Overloads                []*Function
+	Async                    bool
+	Constraints              string
+	Deprecated               string
+	IsDef                    bool
+	IsStatic                 bool
+	IsImplicitConversion     bool
+	Raises                   bool
+	RaisesDoc                string
+	ReturnType               string // TODO: remove
+	ReturnsDoc               string // TODO: remove
+	Returns                  *Returns
+	Signature                string
+	Parameters               []*Parameter
+	HasDefaultImplementation bool
+	MemberLink               `yaml:"-" json:"-"`
 }
 
 func (f *Function) checkMissing(path string, stats *missingStats) (missing []missingDocs) {

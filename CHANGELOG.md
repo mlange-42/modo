@@ -1,4 +1,10 @@
-## [[v0.11.11]](https://github.com/mlange-42/modo/compare/v0.11.9...v0.11.11)
+## [[v0.11.12]](https://github.com/mlange-42/modo/compare/v0.11.11...v0.11.12)
+
+### Other
+
+* Adds new JSON field `hasDefaultImplementation` to functions (#252)
+
+## [[v0.11.11]](https://github.com/mlange-42/modo/compare/v0.11.10...v0.11.11)
 
 ### Other
 
