@@ -2,7 +2,7 @@
 
 ### Other
 
-* Adds new JSON field `hasDefaultImplementation` to functions (#251)
+* Adds new JSON field `hasDefaultImplementation` to functions (#252)
 
 ## [[v0.11.11]](https://github.com/mlange-42/modo/compare/v0.11.10...v0.11.11)
 
