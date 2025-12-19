@@ -1,4 +1,4 @@
-[project]
+[workspace]
 authors = ["mlange-42 <martin_lange_@gmx.net>"]
 channels = ["conda-forge", "https://conda.modular.com/max-nightly", "https://repo.prefix.dev/modular-community"]
 description = "Modo test package"
