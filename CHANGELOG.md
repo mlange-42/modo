@@ -1,3 +1,9 @@
+## [[unpublished]](https://github.com/mlange-42/modo/compare/v0.11.12...main2)
+
+### Other
+
+* Removes support for pre 25.5 Mojo versions (#250)
+
 ## [[v0.11.12]](https://github.com/mlange-42/modo/compare/v0.11.11...v0.11.12)
 
 ### Other

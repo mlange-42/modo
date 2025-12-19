@@ -1,6 +1,6 @@
-[project]
+[workspace]
 authors = ["mlange-42 <martin_lange_@gmx.net>"]
-channels = ["conda-forge", "https://conda.modular.com/max"]
+channels = ["conda-forge", "https://repo.prefix.dev/max"]
 description = "Modo docs example package"
 name = "example"
 platforms = ["linux-64"]
@@ -9,4 +9,4 @@ version = "0.1.0"
 [tasks]
 
 [dependencies]
-max = "*"
+mojo = ">=25.5,<26"
