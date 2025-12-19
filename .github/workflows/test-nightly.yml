@@ -45,7 +45,7 @@ jobs:
       - name: Generate JSON docs
         run: |
           cd modular/mojo
-          pixi run mojo doc -o ../../stdlib.json stdlib/stdlib
+          pixi run mojo doc -o ../../stdlib.json stdlib/std
       - name: Create Markdown
         run: |
           go run . build -o markdown -i stdlib.json --format=mdbook
