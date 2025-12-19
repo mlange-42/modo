@@ -1,6 +1,6 @@
 [workspace]
 authors = ["mlange-42 <martin_lange_@gmx.net>"]
-channels = ["conda-forge", "https://conda.modular.com/max-nightly", "https://repo.prefix.dev/modular-community"]
+channels = ["conda-forge", "https://repo.prefix.dev/max"]
 description = "Modo test package"
 name = "test"
 platforms = ["linux-64"]
@@ -9,4 +9,4 @@ version = "0.1.0"
 [tasks]
 
 [dependencies]
-max = "*"
+mojo = ">=25.5.0,<26"
