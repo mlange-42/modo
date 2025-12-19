@@ -201,11 +201,13 @@ func (f *Function) checkMissing(path string, stats *missingStats) (missing []mis
 		stats.Total++
 
 		if !slices.Contains(initializers[:], f.Name) {
-			if f.Returns.Doc == "" {
-				missing = append(missing, missingDocs{newPath, "return docs"})
-				stats.Missing++
+			if f.Returns != nil {
+				if f.Returns.Doc == "" {
+					missing = append(missing, missingDocs{newPath, "return docs"})
+					stats.Missing++
+				}
+				stats.Total++
 			}
-			stats.Total++
 		}
 
 		for _, e := range f.Parameters {
