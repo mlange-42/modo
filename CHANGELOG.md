@@ -1,7 +1,8 @@
-## [[unpublished]](https://github.com/mlange-42/modo/compare/v0.11.12...main2)
+## [[v0.11.13]](https://github.com/mlange-42/modo/compare/v0.11.12...v0.11.13)
 
 ### Other
 
+* Adds new stability-related JSON fields (#257)
 * Removes support for pre 25.5 Mojo versions (#250)
 
 ## [[v0.11.12]](https://github.com/mlange-42/modo/compare/v0.11.11...v0.11.12)
