@@ -110,16 +110,19 @@ func (m *Module) checkMissing(path string, stats *missingStats) (missing []missi
 
 // Alias holds the document for an alias.
 type Alias struct {
-	MemberKind    `yaml:",inline"`
-	MemberName    `yaml:",inline"`
-	MemberSummary `yaml:",inline"`
-	Description   string
-	Type          string
-	Path          string
-	Value         string
-	Deprecated    string
-	Signature     string
-	Parameters    []*Parameter
+	MemberKind         `yaml:",inline"`
+	MemberName         `yaml:",inline"`
+	MemberSummary      `yaml:",inline"`
+	Description        string
+	Type               string
+	Path               string
+	Value              string
+	Deprecated         string
+	SinceVersion       string
+	IsStable           bool
+	IsStabilityTracked bool
+	Signature          string
+	Parameters         []*Parameter
 }
 
 func (a *Alias) checkMissing(path string, stats *missingStats) (missing []missingDocs) {
@@ -133,20 +136,23 @@ func (a *Alias) checkMissing(path string, stats *missingStats) (missing []missin
 
 // Struct holds the document for a struct.
 type Struct struct {
-	MemberKind    `yaml:",inline"`
-	MemberName    `yaml:",inline"`
-	MemberSummary `yaml:",inline"`
-	Description   string
-	Aliases       []*Alias
-	Constraints   string
-	Convention    string
-	Deprecated    string
-	Fields        []*Field
-	Functions     []*Function
-	Parameters    []*Parameter
-	ParentTraits  []*ParentTrait
-	Signature     string
-	MemberLink    `yaml:"-" json:"-"`
+	MemberKind         `yaml:",inline"`
+	MemberName         `yaml:",inline"`
+	MemberSummary      `yaml:",inline"`
+	Description        string
+	Aliases            []*Alias
+	Constraints        string
+	Convention         string
+	Deprecated         string
+	IsStable           bool
+	IsStabilityTracked bool
+	SinceVersion       string
+	Fields             []*Field
+	Functions          []*Function
+	Parameters         []*Parameter
+	ParentTraits       []*ParentTrait
+	Signature          string
+	MemberLink         `yaml:"-" json:"-"`
 }
 
 func (s *Struct) checkMissing(path string, stats *missingStats) (missing []missingDocs) {
@@ -178,6 +184,9 @@ type Function struct {
 	Async                    bool
 	Constraints              string
 	Deprecated               string
+	IsStable                 bool
+	IsStabilityTracked       bool
+	SinceVersion             string
 	IsDef                    bool
 	IsStatic                 bool
 	IsImplicitConversion     bool
@@ -247,16 +256,19 @@ func (f *Field) checkMissing(path string, stats *missingStats) (missing []missin
 
 // Trait holds the document for a trait.
 type Trait struct {
-	MemberKind    `yaml:",inline"`
-	MemberName    `yaml:",inline"`
-	MemberSummary `yaml:",inline"`
-	Description   string
-	Aliases       []*Alias
-	Fields        []*Field
-	Functions     []*Function
-	ParentTraits  []*ParentTrait
-	Deprecated    string
-	MemberLink    `yaml:"-" json:"-"`
+	MemberKind         `yaml:",inline"`
+	MemberName         `yaml:",inline"`
+	MemberSummary      `yaml:",inline"`
+	Description        string
+	Aliases            []*Alias
+	Fields             []*Field
+	Functions          []*Function
+	ParentTraits       []*ParentTrait
+	Deprecated         string
+	IsStable           bool
+	IsStabilityTracked bool
+	SinceVersion       string
+	MemberLink         `yaml:"-" json:"-"`
 }
 
 // ParentTrait holds name and path information for a parent trait.
@@ -318,6 +330,7 @@ type Parameter struct {
 	Path        string
 	PassingKind string
 	Default     string
+	Constraints string
 }
 
 func (p *Parameter) checkMissing(path string, stats *missingStats) (missing []missingDocs) {

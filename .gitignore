@@ -16,6 +16,7 @@
 # test directories
 /out/
 /multidoc/
+/markdown/
 
 # Compiled python modules.
 *.pyc
