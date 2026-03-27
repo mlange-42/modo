@@ -1,3 +1,9 @@
+// A helper tool to find newly added JSON fields.
+// Usage example:
+//
+//	go run ./internal/search stdlib.json <new-field> kind
+//
+// Will list all element kinds in which <new-field> appears.
 package main
 
 import (
