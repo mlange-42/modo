@@ -1,0 +1,40 @@
+<rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
+  <channel>
+    <title>Modo🧯 – subpkg</title>
+    <link>https://mlange-42.github.io/modo/mypkg/subpkg/</link>
+    <description>Recent content in subpkg on Modo🧯</description>
+    <generator>Hugo -- gohugo.io</generator>
+    <language>en-us</language>
+    
+	  <atom:link href="https://mlange-42.github.io/modo/mypkg/subpkg/index.xml" rel="self" type="application/rss+xml" />
+    
+    
+      
+        
+      
+    
+    
+    <item>
+      <title>submodule</title>
+      <link>https://mlange-42.github.io/modo/mypkg/subpkg/submodule/</link>
+      <pubDate>Mon, 01 Jan 0001 00:00:00 +0000</pubDate>
+      
+      <guid>https://mlange-42.github.io/modo/mypkg/subpkg/submodule/</guid>
+      <description>
+        
+        
+        &lt;p&gt;Mojo module &lt;a href=&#34;https://github.com/mlange-42/modo/tree/main/docs/src/mypkg/subpkg/submodule.mojo&#34; target=&#34;_blank&#34; rel=&#34;noopener&#34;&gt;🡭&lt;/a&gt;&lt;/p&gt;
+&lt;h1&gt;&lt;code&gt;submodule&lt;/code&gt;&lt;/h1&gt;&lt;p&gt;Module in subpkg.&lt;/p&gt;
+&lt;p&gt;This module is re-exported by &lt;a href=&#34;https://mlange-42.github.io/modo/mypkg/subpkg/&#34; &gt;&lt;code&gt;subpkg&lt;/code&gt;&lt;/a&gt;,
+so all its members are included.&lt;/p&gt;
+&lt;h2&gt;Functions&lt;span class=&#34;hx-absolute -hx-mt-20&#34; id=&#34;functions&#34;&gt;&lt;/span&gt;
+    &lt;a href=&#34;#functions&#34; class=&#34;subheading-anchor&#34; aria-label=&#34;Permalink for this section&#34;&gt;&lt;/a&gt;&lt;/h2&gt;&lt;ul&gt;
+&lt;li&gt;&lt;a href=&#34;https://mlange-42.github.io/modo/mypkg/subpkg/submodule/simple_func/&#34; &gt;&lt;code&gt;simple_func&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;li&gt;&lt;a href=&#34;https://mlange-42.github.io/modo/mypkg/subpkg/submodule/overloaded_func/&#34; &gt;&lt;code&gt;overloaded_func&lt;/code&gt;&lt;/a&gt;&lt;/li&gt;
+&lt;/ul&gt;
+
+      </description>
+    </item>
+    
+  </channel>
+</rss>
