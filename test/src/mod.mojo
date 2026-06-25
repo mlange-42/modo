@@ -25,7 +25,7 @@ struct Struct[StructParameter: Intable]:
 
     [.Struct.struct_method]"""
 
-    fn struct_method[T: Intable](self, arg: StructParameter) raises -> Int:
+    fn struct_method[T: Intable](self, arg: Self.StructParameter) raises -> Int:
         """[.ModuleAlias].
 
         [.Struct.struct_method]

@@ -11,5 +11,5 @@ struct Struct[StructParameter: Intable]:
 
     var struct_field: Int
 
-    fn struct_method(self, arg: StructParameter) -> Int:
+    fn struct_method(self, arg: Self.StructParameter) -> Int:
         return self.struct_field
