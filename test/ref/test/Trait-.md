@@ -8,7 +8,7 @@ Mojo trait [🡭](https://github.com/mlange-42/modo/blob/main/test/src/mod.mojo)
 
 ## Implemented traits
 
-`AnyType`, `UnknownDestructibility`
+`AnyType`
 
 ## Methods
 
