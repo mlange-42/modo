@@ -1,7 +1,7 @@
 name: Test stdlib stable
 
 env:
-  STDLIB_VERSION: stable
+  STDLIB_VERSION: max/v26.4
 
 on:
   schedule:
