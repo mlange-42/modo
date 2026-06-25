@@ -1,7 +1,7 @@
 name: Test stdlib stable
 
 env:
-  STDLIB_VERSION: stable
+  STDLIB_VERSION: max/v26.4
 
 on:
   schedule:
@@ -36,14 +36,10 @@ jobs:
           git clone https://github.com/modular/modular.git
           cd modular
           git checkout ${{env.STDLIB_VERSION}}
-      - name: Update pixi (temporary fix)
-        run: |
-          cd modular/mojo
-          pixi update
       - name: Install mojo and dependencies
         run: |
           cd modular/mojo
-          pixi install --locked
+          pixi install
           pixi run mojo --version
 
       - name: Generate JSON docs

@@ -21,11 +21,11 @@ var c = add(a, b)
 assert_equal(c, 3)
 ```
 """
-alias ModuleAlias2 = Int
+comptime ModuleAlias2 = Int
 
 
 struct Struct:
-    alias StructAlias = Int
+    comptime StructAlias = Int
 
     fn func(self):
         """

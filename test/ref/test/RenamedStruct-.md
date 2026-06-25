@@ -25,7 +25,7 @@ struct Struct[StructParameter: Intable]
 
 ## Implemented traits
 
-`AnyType`, `UnknownDestructibility`
+`AnyType`, `ImplicitlyDestructible`
 
 ## Methods
 

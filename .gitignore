@@ -29,3 +29,6 @@
 __pycache__/
 # Pymodo version
 /pymodo/_version.py
+# pixi environments
+.pixi/*
+!.pixi/config.toml

@@ -1,8 +1,8 @@
-alias MyIntAlias = Int
+comptime MyIntAlias = Int
 """An example module alias."""
 
 
-struct MyPair[T: Intable & Copyable]:
+struct MyPair[T: Intable & ImplicitlyCopyable]:
     """
     A simple example struct.
 
@@ -23,15 +23,15 @@ struct MyPair[T: Intable & Copyable]:
       T: The [.MyPair]'s element type.
     """
 
-    alias MyInt = MyIntAlias
-    """An example struct alias. Alias for [.MyIntAlias]"""
+    comptime MyInt = MyIntAlias
+    """An example struct alias. Alias for [.MyIntAlias]."""
 
-    var first: T
+    var first: Self.T
     """First struct field."""
-    var second: T
+    var second: Self.T
     """Second struct field."""
 
-    fn __init__(out self, first: T, second: T):
+    fn __init__(out self, first: Self.T, second: Self.T):
         """
         Creates a new [.MyPair].
 
