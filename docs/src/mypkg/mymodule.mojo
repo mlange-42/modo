@@ -2,7 +2,7 @@ comptime MyIntAlias = Int
 """An example module alias."""
 
 
-struct MyPair[T: Intable & Copyable]:
+struct MyPair[T: Intable & ImplicitlyCopyable]:
     """
     A simple example struct.
 
