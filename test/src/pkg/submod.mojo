@@ -1,4 +1,4 @@
-alias ModuleAlias = Int
+comptime ModuleAlias = Int
 
 
 struct Struct[StructParameter: Intable]:
@@ -7,7 +7,7 @@ struct Struct[StructParameter: Intable]:
     [.Struct], [.ModuleAlias]
     """
 
-    alias StructAlias = StructParameter
+    comptime StructAlias = Self.StructParameter
 
     var struct_field: Int
 
